@@ -1,15 +1,13 @@
 # 2 QUADRO “É – NÃO É – FAZ – NÃO FAZ”
 
-<!-- A preencher na tarefa T02 (#3). Critérios: entregas/ra1-criterios-de-aceite.md -->
-
 **QUADRO “É – NÃO É – FAZ – NÃO FAZ”**
 
 **NOME DO PRODUTO:** Aircraft Turnaround Orchestration System
 
 | É | Não é |
 |---|---|
-| | |
+| • Um sistema de orquestração operacional das atividades de turnaround de aeronaves.<br><br>• Uma visão compartilhada, em tempo real, das tarefas, dos responsáveis, das dependências e dos estados da operação.<br><br>• Um instrumento de apoio à decisão do Coordenador/Supervisor de Turnaround e da Autoridade de Liberação.<br><br>• Um mecanismo de acompanhamento da aderência ao planejamento, do caminho crítico e da projeção de conclusão do turnaround.<br><br>• Uma fonte centralizada e rastreável dos eventos, desvios, ações corretivas e decisões de liberação do turnaround. | • Um sistema de programação de voos, planejamento da malha aérea ou gerenciamento de slots aeroportuários.<br><br>• Um sistema de elaboração de escalas de tripulação ou de gerenciamento da jornada de tripulantes.<br><br>• Um sistema financeiro, contábil, de faturamento ou de processamento de pagamentos.<br><br>• Um sistema de controle de tráfego aéreo ou de integração operacional real com órgãos de controle de tráfego aéreo.<br><br>• Um sistema autônomo que substitui os operadores, o Coordenador/Supervisor de Turnaround ou a Autoridade de Liberação. |
 
 | Faz | Não faz |
 |---|---|
-| | |
+| • Abre e configura o turnaround com sua janela planejada, tarefas obrigatórias, dependências e responsáveis operacionais.<br><br>• Permite ao operador iniciar, pausar, concluir ou marcar uma tarefa como não aplicável, registrando os horários e a justificativa correspondente.<br><br>• Apresenta, em painel operacional, o estado das tarefas, a aderência ao planejamento, o caminho crítico e a projeção de conclusão do turnaround.<br><br>• Identifica riscos de atraso, emite alertas e apoia o supervisor no replanejamento das atividades e na redistribuição dos recursos disponíveis durante o turnaround.<br><br>• Verifica pendências obrigatórias e exceções, mantendo o registro da decisão tomada pela Autoridade de Liberação. | • Define ou altera horários de voos, rotas, slots aeroportuários ou a programação de chegadas e partidas.<br><br>• Elabora escalas de tripulação, dimensiona jornadas ou substitui sistemas de gestão de tripulantes.<br><br>• Calcula tarifas, custos operacionais, folha de pagamento, faturamento ou qualquer movimentação financeira.<br><br>• Emite autorizações de controle de tráfego aéreo, controla aeronaves em voo ou realiza integração operacional real com esses órgãos.<br><br>• Executa fisicamente as tarefas de solo, libera a aeronave automaticamente ou se sobrepõe à decisão da Autoridade de Liberação. |
