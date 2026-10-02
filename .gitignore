@@ -1,0 +1,8 @@
+# Graphify: arquivo de custo é local de cada máquina
+graphify-out/cost.json
+# Pasta de preparação temporária da base de conhecimento
+_kb-staging/
+graphify-out/cache/
+# Caminhos locais da máquina de quem gerou o grafo
+graphify-out/.graphify_python
+graphify-out/.graphify_root

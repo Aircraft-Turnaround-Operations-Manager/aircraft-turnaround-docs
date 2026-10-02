@@ -32,7 +32,7 @@ Atribuição de áreas confirmada pelo Rodrigo em 29/09/2026.
 | **A** | Acesso e planejamento: autenticação e perfis de acesso, abertura do turnaround, definição das tarefas do turnaround | RF-1 a RF-4 · US001 a US004 · UC01 a UC04 · RNF-1 a RNF-4 | Segurança (incl. LGPD) · Compatibilidade | Eduardo Fabri (`eduardofabrii`) |
 | **B** | Execução em solo: o operador consulta, inicia, pausa, conclui ou marca "não aplicável" nas tarefas | RF-5 a RF-8 · US005 a US008 · UC05 a UC08 · RNF-5 a RNF-8 | Confiabilidade · Portabilidade | João Pedro Cardoso de Liz (`Jcliz`) |
 | **C** | Monitoramento: dashboard em tempo real, cálculo de atraso e caminho crítico, alertas | RF-9 a RF-12 · US009 a US012 · UC09 a UC12 · RNF-9 a RNF-12 | Eficiência de desempenho · Usabilidade | João Vitor Correa Oliveira (`jvecodev`) |
-| **D** | Exceções e liberação: tratamento de exceção, redistribuição de recursos pelo supervisor, liberação da aeronave | RF-13 a RF-16 · US013 a US016 · UC13 a UC16 · RNF-13 a RNF-16 | Manutenibilidade · Confiabilidade | Rodrigo Alves (`rdsalvesPUC`) |
+| **D** | Exceções e liberação: tratamento de exceção, redistribuição de recursos pelo Coordenador de Turnaround, liberação da aeronave | RF-13 a RF-16 · US013 a US016 · UC13 a UC16 · RNF-13 a RNF-16 | Manutenibilidade · Confiabilidade | Rodrigo Alves (`rdsalvesPUC`) |
 
 Os escopos acima são **orientação para evitar sobreposição**. Os RFs em si são definidos por cada integrante na tarefa T06.
 
@@ -160,7 +160,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 **T12 · [RA1][Geral] Revisão cruzada e verificação independente**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
 - Descrição: com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
-- Critérios: K.1 a K.10, X.8, e todos os `Cxx.y` dos itens 1 a 11
+- Critérios: K.1 a K.11, X.8, e todos os `Cxx.y` dos itens 1 a 11
 - Bloqueada por: T01 a T11
 
 **T13 · [RA1][Geral] Consolidar em PDF e enviar no Canvas**
@@ -176,6 +176,11 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 ```markdown
 ## Objetivo
 <descrição da tarefa>
+
+## Insumos obrigatórios
+- Ler `CONTEXT.md` antes de começar.
+- Arquivos da pesquisa e decisões indicados para este item em `CONTEXT.md` (seção 9) ou em `pesquisa/README.md`: <links>
+- Decisões aplicáveis (`docs/adr/`): <ADRs>
 
 ## Critérios de aceite
 Referência: `entregas/ra1-criterios-de-aceite.md`

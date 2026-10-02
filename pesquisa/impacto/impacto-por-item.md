@@ -1,0 +1,43 @@
+---
+id: impacto-por-item
+titulo: "Impacto por item do template (seção 4.2)"
+tipo: impacto
+secao_original: "4.2"
+itens_template: [1, 2, 3, 4, 5, 6, 8]
+areas: []
+decisoes: [D1, D2, D4, D6, D7, D9]
+fontes: [1, 2, 3, 5, 7, 8, 9, 10, 13, 14, 15, 16, 18, 19, 20, 22, 26, 27, 29, 30, 39, 40, 41, 44, 45, 49, 54, 57, 60, 62]
+relacionados: [metricas-item-1, insumos-rfs, insumos-rnfs, lacunas-e-diferencial, papeis-e-atores]
+status: vigente
+atualizado: 2026-10-01
+---
+# Impacto por item do template (seção 4.2)
+
+> Base de conhecimento do projeto · origem: seção 4.2 do [relatório consolidado](../01-referencias-setor-e-similares.md) (congelado em 01/10/2026) · fontes numeradas em [fontes.md](../fontes.md) · convenções [Fato]/[Inferência] e índices no [mapa da pesquisa](../README.md).
+
+> **Decisões vigentes (prevalecem sobre o texto abaixo):** [D1 — Referência de horário: TOBT planejado + 5 min, unilateral](../../docs/adr/0001-referencia-horario-tobt-mais-5-min.md); [D2 — Metas percentuais do item 1: 80%](../../docs/adr/0002-metas-percentuais-80.md); [D4 — Quatro atores; Autoridade de Liberação é o representante da companhia](../../docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md); [D6 — Códigos de atraso: tabela completa da ANAC (72 códigos)](../../docs/adr/0006-codigos-de-atraso-tabela-anac.md); [D7 — Dados registrados pelo operador, inclusive QR Code lido pelo celular](../../docs/adr/0007-dados-do-operador-e-qr-code.md); [D9 — Nome único: Coordenador de Turnaround](../../docs/adr/0009-nome-coordenador-de-turnaround.md).
+>
+> O texto abaixo já está atualizado com as decisões D2, D6, D7 e D9; a versão original está no relatório consolidado.
+
+
+Nesta tabela, [n] indica a base de cada trecho. O texto é [Inferência] (candidatos e recomendações), exceto números e citações, que são [Fato] da fonte indicada.
+
+| Item do template | O que a pesquisa entrega (recomendações) | Fontes |
+|---|---|---|
+| **1 — 3 Objetivos** | (a) Trocar "horário planejado" por "TOBT planejado" e explicitar tolerância **+5 min** (M1). (b) Metas de M2 e M3: **80%** (decisão D2); 5 s e 2 min continuam como metas internas (M6–M8). (c) Definir "risco ao horário" pelos gatilhos do A-CDM: EIBT + MTTT > TOBT; embarque não iniciado até TOBT − X; prontidão não registrada em TOBT + 5 (M7). (d) Objetivo 2: M4 e M5 podem ficar, mas são regras de negócio; considerar trocar uma delas por uma métrica de resultado. (e) Princípio 1.2 sustentado; escrever "não é meta encurtar o turnaround programado". | [2][3][5][7][8][10][15][16][18] |
+| **2 — É / Não é / Faz / Não faz** | **Candidatos — É:** coordenador do turnaround orientado a marcos e tarefas; fonte única de status compartilhada pelos atores [1]; orientado a exceção [40][45]; auditável (todo registro com autor e horário). **Não é:** sistema A-CDM completo nem sequenciador de partidas (TSAT) [2]; AODB; sistema de escala de pessoal [45]; sistema de visão computacional ou sensores [41][49]; ferramenta para encurtar o turnaround programado ([Previsibilidade × velocidade](../topicos/previsibilidade-vs-velocidade.md)). **Faz:** registra marcos do turnaround (in-block, início do atendimento, início do embarque, fim do atendimento, pronto, off-block) [2]; calcula projeção de prontidão e caminho crítico; alerta pelos gatilhos T8, T11 e T12; registra a causa de atraso com o código da tabela da ANAC, 72 códigos (D6) [62]; confirma tarefas por leitura de QR Code no celular do operador, como a limpeza da cabine (D7); permite redistribuição de equipe pelo Coordenador de Turnaround; impede liberação com pendência [2]. **Não faz:** emitir TSAT ou autorização de acionamento/push-back (ATC); alterar plano de voo ou enviar DLA [7][8]; programar voos nem definir MTTT/turnaround programado; escala de tripulação; faturamento, SLA financeiro ou cobrança [54][60]; captura de eventos por sensores da aeronave ou por câmeras fixas no pátio (D7). | [1][2][7][8][16][40][41][45][49][54][60][62] |
+| **3 — Visão do Produto** | **Candidatos — Problemas (com fonte):** atraso reacionário = 46% dos minutos de atraso na Europa em 2023 [16]; só 67,9% das partidas europeias dentro de 15 min [16]; em aeroportos CDM, o desvio-padrão da precisão da decolagem cai de ~14 min para ~7 e ~5 min nos marcos de sequenciamento e off-block, ou seja, a imprecisão residual continua relevante [14]; embarque estocástico no caminho crítico dificulta prever o turnaround [20]. Como ilustração (declarado pelo fornecedor): TOBT com menos de 60% de acerto dentro de 5 min em grandes aeroportos e estimado manualmente por equipe ocupada [18]; imprecisão média do TOBT de 4–5 min [19]. **Cliente-alvo:** *ground handler* e companhia aérea, que são os responsáveis pelo TOBT [2][5]; secundário: centro de operações do aeroporto [2]. **Categoria-segmento:** software de gestão de operações de solo / turnaround management (mesma categoria de INFORM, Assaia, ADB SAFEGATE) [39][44][49]. **Benefício-chave:** aeronave pronta no TOBT, com desvio detectado cedo. **Diferencial-chave:** DF1 a DF5 ([Lacunas e diferencial](../similares/lacunas-e-diferencial.md)). **Meta-valor:** derivar das métricas M1, M2 e M9. Contexto Brasil: GRU é o primeiro aeroporto A-CDM do país (2020) [57]. | [2][5][16][18][19][20][39][44][49][57] |
+| **4 — BPMN TO BE** | **Início:** evento de mensagem "aeronave em posição" (AIBT) [2]. **Sequência:** início do atendimento (ACGT) → gateway paralelo com desembarque ∥ descarregamento ∥ água/lavatório ∥ abastecimento (condicional) ∥ inspeção → limpeza ∥ catering (após desembarque) → embarque ∥ carregamento → loadsheet → portas fechadas/ponte retirada → "Pronto para liberação" → liberação → off-block (AOBT) [2][20][22][29]. **Gateways com condição:** "tarefa aplicável?" (Não aplicável); "operador permite abastecer com passageiros?" [26][27]; "projeção > TOBT + 5?"; "há pendência obrigatória ou exceção aberta?". **Eventos:** temporizador TOBT − 15 (checagem com todas as equipes) e TOBT − 3 (portas e ponte) [13]; temporizador "embarque não iniciado até TOBT − X" [2]; temporizador TOBT + 5 sem prontidão [2]; evento de borda "atraso registrado" → subprocesso de exceção com código da tabela da ANAC [62] (D6); evento "atualizar TOBT" quando o desvio chega a 5 min [9][10]. **Lanes:** Operador de Solo/Rampa, Coordenador de Turnaround, Autoridade de Liberação e Motor de Eventos. ATC, se aparecer, como pool externo (caixa-preta) só para indicar a fronteira. | [2][9][10][13][16][20][22][26][27][29][62] |
+| **5 — Atores** | Os 4 atores correspondem a papéis reais ([Papéis e atores](../topicos/papeis-e-atores.md)). Ajustes: usar um nome único para o coordenador ("Coordenador de Turnaround") [30]; descrever o Operador como executante da própria empresa ou de prestador [16]; redescrever a Autoridade de Liberação como quem confirma a prontidão em nome da companhia, deixando claro que não é o ATC [2]; descrever o Motor de Eventos por analogia com o A-CDM System [2][3]. | [2][3][16][30] |
+| **6 — RFs (insumo)** | Ver [Insumos para RFs](insumos-rfs.md), agrupado pelas áreas A a D. | — |
+| **8 — RNFs (insumo)** | Ver [Insumos para RNFs](insumos-rnfs.md). | — |
+
+---
+
+## Ligações
+
+- **Decisões:** [D1](../../docs/adr/0001-referencia-horario-tobt-mais-5-min.md), [D2](../../docs/adr/0002-metas-percentuais-80.md), [D4](../../docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md), [D6](../../docs/adr/0006-codigos-de-atraso-tabela-anac.md), [D7](../../docs/adr/0007-dados-do-operador-e-qr-code.md), [D9](../../docs/adr/0009-nome-coordenador-de-turnaround.md)
+- **Itens da especificação:** [Item 1 — 3 Objetivos](../../especificacao/01-3-objetivos.md), [Item 2 — É / Não é / Faz / Não faz](../../especificacao/02-e-nao-e-faz-nao-faz.md), [Item 3 — Visão do Produto](../../especificacao/03-visao-do-produto.md), [Item 4 — Mapeamento de Negócios (BPMN TO BE)](../../especificacao/04-mapeamento-de-negocios.md), [Item 5 — Atores / Usuários](../../especificacao/05-atores-usuarios.md), [Item 6 — Requisitos Funcionais](../../especificacao/06-requisitos-funcionais/00-item.md), [Item 8 — Requisitos Não Funcionais](../../especificacao/08-requisitos-nao-funcionais/00-item.md)
+- **Relacionados:** [metricas-item-1](metricas-item-1.md), [insumos-rfs](insumos-rfs.md), [insumos-rnfs](insumos-rnfs.md), [lacunas-e-diferencial](../similares/lacunas-e-diferencial.md), [papeis-e-atores](../topicos/papeis-e-atores.md)
+- **Fontes citadas:** 1, 2, 3, 5, 7, 8, 9, 10, 13, 14, 15, 16, 18, 19, 20, 22, 26, 27, 29, 30, 39, 40, 41, 44, 45, 49, 54, 57, 60, 62 (em [fontes.md](../fontes.md))
+- **Contexto geral:** [CONTEXT.md](../../CONTEXT.md) · [mapa da pesquisa](../README.md)

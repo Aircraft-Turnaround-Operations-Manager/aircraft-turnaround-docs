@@ -1,0 +1,10 @@
+# Fora do grafo da base de conhecimento (mesma sintaxe do .gitignore)
+# Relatório consolidado congelado: o conteúdo vigente está dividido em pesquisa/topicos, similares e impacto
+pesquisa/01-referencias-setor-e-similares.md
+# Planos e briefings de execução (processo, não conhecimento do domínio)
+docs/planos/
+# Pasta de preparação temporária
+_kb-staging/
+# Texto de instruções para o projeto no claude.ai (meta, não domínio)
+claude/
+LICENSE
