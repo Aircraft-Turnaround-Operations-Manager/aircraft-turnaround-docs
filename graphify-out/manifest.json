@@ -1,0 +1,416 @@
+{
+  "AGENTS.md": {
+    "mtime": 1790907902.03156,
+    "seen": 1790910441.3818426,
+    "ast_hash": "23c6c2d5797ff5f74414fecc484a863e",
+    "semantic_hash": "23c6c2d5797ff5f74414fecc484a863e"
+  },
+  "CLAUDE.md": {
+    "mtime": 1790907902.307436,
+    "seen": 1790910441.3818471,
+    "ast_hash": "5ddf24819fe0577e3526461076d77980",
+    "semantic_hash": "5ddf24819fe0577e3526461076d77980"
+  },
+  "CONTEXT.md": {
+    "mtime": 1790907902.4611819,
+    "seen": 1790910441.381849,
+    "ast_hash": "34297124289ba3a4a06376597f04c11a",
+    "semantic_hash": "34297124289ba3a4a06376597f04c11a"
+  },
+  "README.md": {
+    "mtime": 1790907892.4715884,
+    "seen": 1790910441.3818498,
+    "ast_hash": "129fe8e806dc40c618db4b6b4548c4f4",
+    "semantic_hash": "129fe8e806dc40c618db4b6b4548c4f4"
+  },
+  "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
+    "mtime": 1790907902.5963235,
+    "seen": 1790910441.3818507,
+    "ast_hash": "5aa275bb23bd26f2ee12b36084de82ac",
+    "semantic_hash": "5aa275bb23bd26f2ee12b36084de82ac"
+  },
+  "docs/adr/0002-metas-percentuais-80.md": {
+    "mtime": 1790907902.7306259,
+    "seen": 1790910441.3818514,
+    "ast_hash": "af8d01d9eefb65b3732328c52d92ce42",
+    "semantic_hash": "af8d01d9eefb65b3732328c52d92ce42"
+  },
+  "docs/adr/0003-atualizar-previsao-na-antecipacao.md": {
+    "mtime": 1790907902.8618748,
+    "seen": 1790910441.3818524,
+    "ast_hash": "b7ab4354317ea16332d56fd84de85b6a",
+    "semantic_hash": "b7ab4354317ea16332d56fd84de85b6a"
+  },
+  "docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md": {
+    "mtime": 1790907902.994341,
+    "seen": 1790910441.381853,
+    "ast_hash": "def51e838514747c4ffc6ae6a6daeefe",
+    "semantic_hash": "def51e838514747c4ffc6ae6a6daeefe"
+  },
+  "docs/adr/0005-abastecimento-com-passageiros-configuravel.md": {
+    "mtime": 1790907903.1396065,
+    "seen": 1790910441.381854,
+    "ast_hash": "57b10502907da69f92e8cb6061ffe76b",
+    "semantic_hash": "57b10502907da69f92e8cb6061ffe76b"
+  },
+  "docs/adr/0006-codigos-de-atraso-tabela-anac.md": {
+    "mtime": 1790907903.2775342,
+    "seen": 1790910441.3818548,
+    "ast_hash": "60ed76a66bee6cde60bf113fd5091a8f",
+    "semantic_hash": "60ed76a66bee6cde60bf113fd5091a8f"
+  },
+  "docs/adr/0007-dados-do-operador-e-qr-code.md": {
+    "mtime": 1790907903.4162936,
+    "seen": 1790910441.3818555,
+    "ast_hash": "345f4d32f46446826af08d779c040867",
+    "semantic_hash": "345f4d32f46446826af08d779c040867"
+  },
+  "docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md": {
+    "mtime": 1790907903.55288,
+    "seen": 1790910441.3818562,
+    "ast_hash": "e70661a590597347dd881dd86f5978f7",
+    "semantic_hash": "e70661a590597347dd881dd86f5978f7"
+  },
+  "docs/adr/0009-nome-coordenador-de-turnaround.md": {
+    "mtime": 1790907903.6775804,
+    "seen": 1790910441.381857,
+    "ast_hash": "942acd1020fb19951a533df2188e8b6c",
+    "semantic_hash": "942acd1020fb19951a533df2188e8b6c"
+  },
+  "docs/adr/README.md": {
+    "mtime": 1790907903.8216064,
+    "seen": 1790910441.3818579,
+    "ast_hash": "aa2ee5b390c545f96f1ee460402266c6",
+    "semantic_hash": "aa2ee5b390c545f96f1ee460402266c6"
+  },
+  "docs/agents/domain.md": {
+    "mtime": 1790907892.4751115,
+    "seen": 1790910441.3818586,
+    "ast_hash": "2c5f2c5f8b714234251bc55dbfdc0da0",
+    "semantic_hash": "2c5f2c5f8b714234251bc55dbfdc0da0"
+  },
+  "docs/agents/issue-tracker.md": {
+    "mtime": 1790907892.4761083,
+    "seen": 1790910441.3818593,
+    "ast_hash": "744b02931f517ab68b446e8b3c757bdb",
+    "semantic_hash": "744b02931f517ab68b446e8b3c757bdb"
+  },
+  "docs/agents/triage-labels.md": {
+    "mtime": 1790907892.4771132,
+    "seen": 1790910441.38186,
+    "ast_hash": "85409347dbf487c8a25c9dac59708b83",
+    "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
+  },
+  "entregas/ra1-criterios-de-aceite.md": {
+    "mtime": 1790907904.3115454,
+    "seen": 1790910441.3818605,
+    "ast_hash": "bea8ad4c83d0bc81fbdbbdaf2691a791",
+    "semantic_hash": "bea8ad4c83d0bc81fbdbbdaf2691a791"
+  },
+  "entregas/ra1-tarefas.md": {
+    "mtime": 1790907904.493265,
+    "seen": 1790910441.3818614,
+    "ast_hash": "f3b47a7521c5ae059aa7f4cb5b0eea7a",
+    "semantic_hash": "f3b47a7521c5ae059aa7f4cb5b0eea7a"
+  },
+  "especificacao/01-3-objetivos.md": {
+    "mtime": 1790907892.4816346,
+    "seen": 1790910441.3818624,
+    "ast_hash": "5f1b5bb23398fffdd50dedef431da214",
+    "semantic_hash": "5f1b5bb23398fffdd50dedef431da214"
+  },
+  "especificacao/02-e-nao-e-faz-nao-faz.md": {
+    "mtime": 1790907892.483143,
+    "seen": 1790910441.381863,
+    "ast_hash": "b1288eedc83c1dfcf379a4f3dbe7cd26",
+    "semantic_hash": "b1288eedc83c1dfcf379a4f3dbe7cd26"
+  },
+  "especificacao/03-visao-do-produto.md": {
+    "mtime": 1790907892.4841528,
+    "seen": 1790910441.3818638,
+    "ast_hash": "3939f78dd867b341f924cb8a9b2ee89d",
+    "semantic_hash": "3939f78dd867b341f924cb8a9b2ee89d"
+  },
+  "especificacao/04-mapeamento-de-negocios.md": {
+    "mtime": 1790907892.4841528,
+    "seen": 1790910441.3818653,
+    "ast_hash": "d1dd6b5e794038660d864c6626528707",
+    "semantic_hash": "d1dd6b5e794038660d864c6626528707"
+  },
+  "especificacao/05-atores-usuarios.md": {
+    "mtime": 1790907892.485153,
+    "seen": 1790910441.3818657,
+    "ast_hash": "45ca0728223efe669db7ab26d1fcfb47",
+    "semantic_hash": "45ca0728223efe669db7ab26d1fcfb47"
+  },
+  "especificacao/06-requisitos-funcionais/00-item.md": {
+    "mtime": 1790907892.4861605,
+    "seen": 1790910441.3818665,
+    "ast_hash": "d6c9182d7ff0817482515137317ba561",
+    "semantic_hash": "d6c9182d7ff0817482515137317ba561"
+  },
+  "especificacao/06-requisitos-funcionais/area-a.md": {
+    "mtime": 1790907892.4871619,
+    "seen": 1790910441.3818672,
+    "ast_hash": "69b3d6f368ce8533fdedaee8a611914f",
+    "semantic_hash": "69b3d6f368ce8533fdedaee8a611914f"
+  },
+  "especificacao/06-requisitos-funcionais/area-b.md": {
+    "mtime": 1790907892.4886694,
+    "seen": 1790910441.3818681,
+    "ast_hash": "c8ea719a3a6725d0f93f4549fb76608e",
+    "semantic_hash": "c8ea719a3a6725d0f93f4549fb76608e"
+  },
+  "especificacao/06-requisitos-funcionais/area-c.md": {
+    "mtime": 1790907892.4886694,
+    "seen": 1790910441.3818688,
+    "ast_hash": "6be0ddfbe8f856f2d22659c07fef0e7c",
+    "semantic_hash": "6be0ddfbe8f856f2d22659c07fef0e7c"
+  },
+  "especificacao/06-requisitos-funcionais/area-d.md": {
+    "mtime": 1790907892.48968,
+    "seen": 1790910441.3818696,
+    "ast_hash": "04d58fc2ba78f64ac73c9cf41b2e6208",
+    "semantic_hash": "04d58fc2ba78f64ac73c9cf41b2e6208"
+  },
+  "especificacao/07-estorias-de-usuario/00-item.md": {
+    "mtime": 1790907892.4906805,
+    "seen": 1790910441.3818703,
+    "ast_hash": "1a177e1ce5033ecb87a579e344240914",
+    "semantic_hash": "1a177e1ce5033ecb87a579e344240914"
+  },
+  "especificacao/07-estorias-de-usuario/area-a.md": {
+    "mtime": 1790907892.4916816,
+    "seen": 1790910441.381871,
+    "ast_hash": "c5c4a9953ad6ef69df4bf70cbe7067c9",
+    "semantic_hash": "c5c4a9953ad6ef69df4bf70cbe7067c9"
+  },
+  "especificacao/07-estorias-de-usuario/area-b.md": {
+    "mtime": 1790907892.4931903,
+    "seen": 1790910441.381872,
+    "ast_hash": "b410c8ef840989f87995c388626b6c91",
+    "semantic_hash": "b410c8ef840989f87995c388626b6c91"
+  },
+  "especificacao/07-estorias-de-usuario/area-c.md": {
+    "mtime": 1790907892.4952004,
+    "seen": 1790910441.3818724,
+    "ast_hash": "db54392ec8cff75a68bf27062f7d1fa5",
+    "semantic_hash": "db54392ec8cff75a68bf27062f7d1fa5"
+  },
+  "especificacao/07-estorias-de-usuario/area-d.md": {
+    "mtime": 1790907892.496199,
+    "seen": 1790910441.3818731,
+    "ast_hash": "76855772180d0823116244d5dea4e60d",
+    "semantic_hash": "76855772180d0823116244d5dea4e60d"
+  },
+  "especificacao/08-requisitos-nao-funcionais/00-item.md": {
+    "mtime": 1790907892.4971986,
+    "seen": 1790910441.3818738,
+    "ast_hash": "c1297029af8ecc24f36d3facde0103ab",
+    "semantic_hash": "c1297029af8ecc24f36d3facde0103ab"
+  },
+  "especificacao/08-requisitos-nao-funcionais/area-a.md": {
+    "mtime": 1790907892.4997118,
+    "seen": 1790910441.3818748,
+    "ast_hash": "439fe654a2e8191ca3fe8368c2bb7bfd",
+    "semantic_hash": "439fe654a2e8191ca3fe8368c2bb7bfd"
+  },
+  "especificacao/08-requisitos-nao-funcionais/area-b.md": {
+    "mtime": 1790907892.500714,
+    "seen": 1790910441.3818755,
+    "ast_hash": "7618cab34e2e62e51eecd16f7de47024",
+    "semantic_hash": "7618cab34e2e62e51eecd16f7de47024"
+  },
+  "especificacao/08-requisitos-nao-funcionais/area-c.md": {
+    "mtime": 1790907892.5017166,
+    "seen": 1790910441.3818762,
+    "ast_hash": "1534000170c7b907b5d1e3b8e699508c",
+    "semantic_hash": "1534000170c7b907b5d1e3b8e699508c"
+  },
+  "especificacao/08-requisitos-nao-funcionais/area-d.md": {
+    "mtime": 1790907892.5017166,
+    "seen": 1790910441.381877,
+    "ast_hash": "0fc93ace9e64fdfdc8002f0c1b756404",
+    "semantic_hash": "0fc93ace9e64fdfdc8002f0c1b756404"
+  },
+  "especificacao/09-diagrama-geral-de-casos-de-uso.md": {
+    "mtime": 1790907892.5032227,
+    "seen": 1790910441.3818774,
+    "ast_hash": "610a85c1261dc89476a052fa52776a77",
+    "semantic_hash": "610a85c1261dc89476a052fa52776a77"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/00-item.md": {
+    "mtime": 1790907892.5042298,
+    "seen": 1790910441.3818784,
+    "ast_hash": "03bf7d3aa65c2dd368822a474e66dccb",
+    "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
+    "mtime": 1790907892.5052338,
+    "seen": 1790910441.381879,
+    "ast_hash": "cf38fcae5bd96aefb2bc81cde0f680a4",
+    "semantic_hash": "cf38fcae5bd96aefb2bc81cde0f680a4"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
+    "mtime": 1790907892.5062323,
+    "seen": 1790910441.3818798,
+    "ast_hash": "612c0953c0d6e8ebfb13a980cc3e2383",
+    "semantic_hash": "612c0953c0d6e8ebfb13a980cc3e2383"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
+    "mtime": 1790907892.5072317,
+    "seen": 1790910441.381881,
+    "ast_hash": "7d2197ecab0e63b4d48779870198d208",
+    "semantic_hash": "7d2197ecab0e63b4d48779870198d208"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
+    "mtime": 1790907892.5087378,
+    "seen": 1790910441.3818817,
+    "ast_hash": "6c7cc7cfda464c0184ecc378832c14d3",
+    "semantic_hash": "6c7cc7cfda464c0184ecc378832c14d3"
+  },
+  "especificacao/11-diagrama-de-atividades.md": {
+    "mtime": 1790907892.5107446,
+    "seen": 1790910441.3818827,
+    "ast_hash": "13e59e62596bd764e1f88a4d3c4ff5a7",
+    "semantic_hash": "13e59e62596bd764e1f88a4d3c4ff5a7"
+  },
+  "pesquisa/README.md": {
+    "mtime": 1790907905.5248525,
+    "seen": 1790910441.3818831,
+    "ast_hash": "76774899aae90c1509760223e91506c5",
+    "semantic_hash": "76774899aae90c1509760223e91506c5"
+  },
+  "pesquisa/fontes.md": {
+    "mtime": 1790907904.8195393,
+    "seen": 1790910441.3818839,
+    "ast_hash": "dccc928d58498202f905c094ec9f0e28",
+    "semantic_hash": "dccc928d58498202f905c094ec9f0e28"
+  },
+  "pesquisa/impacto/impacto-por-item.md": {
+    "mtime": 1790907904.9696708,
+    "seen": 1790910441.3818846,
+    "ast_hash": "6d5a18cadd5b4f19fcd0b601c02d9414",
+    "semantic_hash": "6d5a18cadd5b4f19fcd0b601c02d9414"
+  },
+  "pesquisa/impacto/insumos-rfs.md": {
+    "mtime": 1790907905.1088836,
+    "seen": 1790910441.3818855,
+    "ast_hash": "d91e2d9e72cc4568cd46e3cc7e0a9a8b",
+    "semantic_hash": "d91e2d9e72cc4568cd46e3cc7e0a9a8b"
+  },
+  "pesquisa/impacto/insumos-rnfs.md": {
+    "mtime": 1790907905.2432084,
+    "seen": 1790910441.3818862,
+    "ast_hash": "0324ae903bfdba69cb02082f3388643e",
+    "semantic_hash": "0324ae903bfdba69cb02082f3388643e"
+  },
+  "pesquisa/impacto/metricas-item-1.md": {
+    "mtime": 1790907905.3794768,
+    "seen": 1790910441.381887,
+    "ast_hash": "6f603ae5dcfdf5fdc2b886e3cd274a5e",
+    "semantic_hash": "6f603ae5dcfdf5fdc2b886e3cd274a5e"
+  },
+  "pesquisa/similares/README.md": {
+    "mtime": 1790907906.4042504,
+    "seen": 1790910441.3818874,
+    "ast_hash": "0dcc4b8f9f302ab9138c7c9c3f430dc3",
+    "semantic_hash": "0dcc4b8f9f302ab9138c7c9c3f430dc3"
+  },
+  "pesquisa/similares/adb-safegate.md": {
+    "mtime": 1790907905.659762,
+    "seen": 1790910441.3818886,
+    "ast_hash": "7ff05a4a2c5067ec4c9804044e6db26f",
+    "semantic_hash": "7ff05a4a2c5067ec4c9804044e6db26f"
+  },
+  "pesquisa/similares/assaia.md": {
+    "mtime": 1790907905.8005922,
+    "seen": 1790910441.3818893,
+    "ast_hash": "e39a67711781e105bdfe299f91719ba8",
+    "semantic_hash": "e39a67711781e105bdfe299f91719ba8"
+  },
+  "pesquisa/similares/inform-groundstar.md": {
+    "mtime": 1790907905.9415762,
+    "seen": 1790910441.38189,
+    "ast_hash": "1b7217d18aa4c1599562f86910b1f28a",
+    "semantic_hash": "1b7217d18aa4c1599562f86910b1f28a"
+  },
+  "pesquisa/similares/lacunas-e-diferencial.md": {
+    "mtime": 1790907906.1072917,
+    "seen": 1790910441.3818908,
+    "ast_hash": "5ac806c72bb69d5b8a64a4ba647b55bc",
+    "semantic_hash": "5ac806c72bb69d5b8a64a4ba647b55bc"
+  },
+  "pesquisa/similares/matriz-comparativa.md": {
+    "mtime": 1790907906.2604337,
+    "seen": 1790910441.3818915,
+    "ast_hash": "961236d3607197d00939948b17175375",
+    "semantic_hash": "961236d3607197d00939948b17175375"
+  },
+  "pesquisa/similares/sita.md": {
+    "mtime": 1790907906.5371976,
+    "seen": 1790910441.3818927,
+    "ast_hash": "42a27d4e47ec5deebb2a8cb1acf0be84",
+    "semantic_hash": "42a27d4e47ec5deebb2a8cb1acf0be84"
+  },
+  "pesquisa/similares/veovo.md": {
+    "mtime": 1790907906.6698031,
+    "seen": 1790910441.3818932,
+    "ast_hash": "70bc9622c5ff31f1e0b6ca0dcf90bbfa",
+    "semantic_hash": "70bc9622c5ff31f1e0b6ca0dcf90bbfa"
+  },
+  "pesquisa/topicos/a-cdm.md": {
+    "mtime": 1790907906.825018,
+    "seen": 1790910441.3818939,
+    "ast_hash": "8d17d5660284b9c46d6ac888fcbcaf40",
+    "semantic_hash": "8d17d5660284b9c46d6ac888fcbcaf40"
+  },
+  "pesquisa/topicos/atividades-e-dependencias.md": {
+    "mtime": 1790907906.978441,
+    "seen": 1790910441.3818948,
+    "ast_hash": "a7b7b4ca1c8308af5f28c3908aac7411",
+    "semantic_hash": "a7b7b4ca1c8308af5f28c3908aac7411"
+  },
+  "pesquisa/topicos/caminho-critico.md": {
+    "mtime": 1790907907.1071367,
+    "seen": 1790910441.3818958,
+    "ast_hash": "43b7d2a4eab47ef64631e1df7d010522",
+    "semantic_hash": "43b7d2a4eab47ef64631e1df7d010522"
+  },
+  "pesquisa/topicos/codigos-de-atraso.md": {
+    "mtime": 1790907907.2440052,
+    "seen": 1790910441.3818965,
+    "ast_hash": "db859bd19b6795257f6619d0bfbb1f27",
+    "semantic_hash": "db859bd19b6795257f6619d0bfbb1f27"
+  },
+  "pesquisa/topicos/marcos-e-horarios.md": {
+    "mtime": 1790907907.3741865,
+    "seen": 1790910441.3818972,
+    "ast_hash": "052286256c2cd017120e82cb0cc9dac5",
+    "semantic_hash": "052286256c2cd017120e82cb0cc9dac5"
+  },
+  "pesquisa/topicos/papeis-e-atores.md": {
+    "mtime": 1790907907.5185902,
+    "seen": 1790910441.381898,
+    "ast_hash": "561505fe4a2a8bdb8eac47b696a94683",
+    "semantic_hash": "561505fe4a2a8bdb8eac47b696a94683"
+  },
+  "pesquisa/topicos/previsibilidade-vs-velocidade.md": {
+    "mtime": 1790907907.6485126,
+    "seen": 1790910441.3818986,
+    "ast_hash": "2701938e318e3b1eaef60283adc558f7",
+    "semantic_hash": "2701938e318e3b1eaef60283adc558f7"
+  },
+  "pesquisa/topicos/referencias-iata.md": {
+    "mtime": 1790907907.787149,
+    "seen": 1790910441.3818996,
+    "ast_hash": "b3b881c5df8a2548dbd91f50e7ec06f4",
+    "semantic_hash": "b3b881c5df8a2548dbd91f50e7ec06f4"
+  },
+  "pesquisa/topicos/tolerancias-e-indicadores.md": {
+    "mtime": 1790907907.950696,
+    "seen": 1790910441.3819003,
+    "ast_hash": "38c814f30ef0088d5e013525393ef2d5",
+    "semantic_hash": "38c814f30ef0088d5e013525393ef2d5"
+  }
+}
