@@ -155,7 +155,7 @@ Resumo dos pesos:
 - [ ] **C05.4** As descrições são sucintas, sem ambiguidade e sem sobreposição de papéis.
 - [ ] **C05.5** Os atores são os mesmos usados nas lanes do BPMN (item 4), nos RFs (item 6), nas estórias (item 7) e nos casos de uso (itens 9 e 10).
 
-Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coordenador/Supervisor de Turnaround, Autoridade de Liberação e o ator não humano Motor de Eventos.
+Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coordenador de Turnaround (ADR-0009), Autoridade de Liberação e o ator não humano Motor de Eventos.
 
 ### 3.6 Item 6 — Relação de Requisitos Funcionais (0,5) · por integrante
 
@@ -271,6 +271,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.8** As lanes do BPMN (item 4) e as raias do diagrama de atividades (item 11) usam os atores do item 5.
 - [ ] **K.9** As contagens mínimas conferem por contagem real: RF ≥16, estórias ≥16, cada estória com ≥2 critérios, RNF ≥16, especificações ≥16.
 - [ ] **K.10** Todos os critérios gerais X.1 a X.10 estão atendidos.
+- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D9 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
 
 ---
 

@@ -1,0 +1,4 @@
+# Graphify: arquivo de custo é local de cada máquina
+graphify-out/cost.json
+# Pasta de preparação temporária da base de conhecimento
+_kb-staging/
