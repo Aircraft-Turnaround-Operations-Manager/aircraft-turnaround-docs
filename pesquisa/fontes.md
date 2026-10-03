@@ -6,16 +6,16 @@ secao_original: "6"
 itens_template: []
 areas: []
 decisoes: []
-fontes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64]
+fontes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
 relacionados: [mapa-pesquisa]
 status: vigente
-atualizado: 2026-10-01
+atualizado: 2026-10-02
 ---
 # Fontes da pesquisa
 
 > Base de conhecimento do projeto · lista única de fontes. Os números entre colchetes usados em todos os arquivos de `pesquisa/` e `docs/adr/` remetem a esta lista. **A numeração não muda:** fontes novas entram no fim, com o próximo número. Voltar ao [mapa da pesquisa](README.md).
 
-Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026.
+Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026; fontes 65 e 66 acessadas em 02/10/2026.
 
 1. EUROCONTROL. *Airport collaborative decision-making (A-CDM)* (página do conceito). https://www.eurocontrol.int/concept/airport-collaborative-decision-making
 2. EUROCONTROL. *EUROCONTROL Specification for Airport Collaborative Decision Making (A-CDM)*, Edição 1.0, 30/01/2025. https://www.eurocontrol.int/sites/default/files/2025-01/eurocontrol-specification-for-acdm.pdf
@@ -81,6 +81,8 @@ Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026.
 62. ANAC. *Portaria Regulatória nº 55/SPO/SSA*, de 06/08/2026 (DOU 11/08/2026), que altera a Portaria nº 791/SSO/2012 e institui a nova tabela de códigos de motivos de atraso e cancelamento (72 códigos, 12 categorias). https://www.anac.gov.br/assuntos/legislacao/legislacao-1/portaria-regulatoria/2026/portaria-regulatoria-55
 63. GE Aerospace. *Airport Cleanliness: There's An App For That*, nov/2020. https://www.geaerospace.com/news/articles/technology/airport-cleanliness-theres-app
 64. Miratag. *Aircraft Cabin Cleaning Checklist* (modelo de checklist digital). https://miratag.com/en/checklist-templates/aviation-cabin-cleaning-checklist
+65. Assaia (Petr Zhigalin). *Insight: Top 3 issues faced during turnarounds and how to avoid them* (artigo de fornecedor, sem data). https://www.assaia.com/resources/top-three-turnaround-issues
+66. LESCOHIER, Jenny. *The Communication Challenge Facing Modern Ramp Operations*. Aviation Pros, 26/05/2026. https://www.aviationpros.com/ground-support-worldwide/ground-handling/article/55377511/the-communication-challenge-facing-modern-ramp-operations
 
 ## Fontes procuradas e não lidas (respeitando bloqueios)
 
