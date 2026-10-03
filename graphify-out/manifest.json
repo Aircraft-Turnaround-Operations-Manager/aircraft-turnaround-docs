@@ -120,16 +120,16 @@
     "semantic_hash": "ba376f4b5162e23923e08ff4347d2901"
   },
   "especificacao/02-e-nao-e-faz-nao-faz.md": {
-    "mtime": 1790911621.9544132,
-    "seen": 1790911860.3269892,
-    "ast_hash": "ebd225dca1e00848532214601473fd4d",
-    "semantic_hash": "ebd225dca1e00848532214601473fd4d"
+    "mtime": 1791059490.0489688,
+    "seen": 1791059690.7331982,
+    "ast_hash": "21cb4ab037afca835cdd385ede217aae",
+    "semantic_hash": "21cb4ab037afca835cdd385ede217aae"
   },
   "especificacao/03-visao-do-produto.md": {
-    "mtime": 1790781336.3338952,
-    "seen": 1790911860.3269901,
-    "ast_hash": "3939f78dd867b341f924cb8a9b2ee89d",
-    "semantic_hash": "3939f78dd867b341f924cb8a9b2ee89d"
+    "mtime": 1791059490.0504732,
+    "seen": 1791059690.7331998,
+    "ast_hash": "3b9b2e3166ac73e290bca9dc06969217",
+    "semantic_hash": "3b9b2e3166ac73e290bca9dc06969217"
   },
   "especificacao/04-mapeamento-de-negocios.md": {
     "mtime": 1790781336.334898,
@@ -282,10 +282,10 @@
     "semantic_hash": "015ede942a7a94bf469143b8d8eb7d8b"
   },
   "pesquisa/fontes.md": {
-    "mtime": 1790911621.9635513,
-    "seen": 1790911860.3270137,
-    "ast_hash": "89945e1cab1ebcf433fd5f4d5d52ae28",
-    "semantic_hash": "89945e1cab1ebcf433fd5f4d5d52ae28"
+    "mtime": 1791059490.0504732,
+    "seen": 1791059690.7332294,
+    "ast_hash": "1f43f82a62ea6e4b9fc3ad7514441122",
+    "semantic_hash": "1f43f82a62ea6e4b9fc3ad7514441122"
   },
   "pesquisa/impacto/impacto-por-item.md": {
     "mtime": 1790911621.9645534,
