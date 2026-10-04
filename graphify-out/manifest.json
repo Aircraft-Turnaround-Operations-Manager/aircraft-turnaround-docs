@@ -1,9 +1,9 @@
 {
   "AGENTS.md": {
-    "mtime": 1790911621.9407463,
-    "seen": 1790911860.326965,
-    "ast_hash": "23c6c2d5797ff5f74414fecc484a863e",
-    "semantic_hash": "23c6c2d5797ff5f74414fecc484a863e"
+    "mtime": 1791081668.532299,
+    "seen": 1791081950.8073153,
+    "ast_hash": "c9347d65c6989405d9d53ba94697228b",
+    "semantic_hash": "c9347d65c6989405d9d53ba94697228b"
   },
   "CLAUDE.md": {
     "mtime": 1790911621.9407463,
@@ -12,16 +12,16 @@
     "semantic_hash": "5c24644a54eae7e0af3d7e1db45a1a58"
   },
   "CONTEXT.md": {
-    "mtime": 1790911621.9417465,
-    "seen": 1790911860.3269708,
-    "ast_hash": "ca11ea1d8d18a8844c446b440dc94959",
-    "semantic_hash": "ca11ea1d8d18a8844c446b440dc94959"
+    "mtime": 1791081668.5333066,
+    "seen": 1791081950.807323,
+    "ast_hash": "3996149ba089ebb604bb527974d429cc",
+    "semantic_hash": "3996149ba089ebb604bb527974d429cc"
   },
   "README.md": {
-    "mtime": 1790781336.3273835,
-    "seen": 1790911860.3269722,
-    "ast_hash": "129fe8e806dc40c618db4b6b4548c4f4",
-    "semantic_hash": "129fe8e806dc40c618db4b6b4548c4f4"
+    "mtime": 1791081668.534308,
+    "seen": 1791081950.8073242,
+    "ast_hash": "a1dc499edef1b6f2df975120021f1665",
+    "semantic_hash": "a1dc499edef1b6f2df975120021f1665"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -42,10 +42,10 @@
     "semantic_hash": "1ab322e2b4ba1a75a0eb3672722ade16"
   },
   "docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md": {
-    "mtime": 1790911621.9463894,
-    "seen": 1790911860.3269765,
-    "ast_hash": "e2624ec5791b7a5a2dea972e5c2e2bea",
-    "semantic_hash": "e2624ec5791b7a5a2dea972e5c2e2bea"
+    "mtime": 1791081668.536307,
+    "seen": 1791081950.8073301,
+    "ast_hash": "9332472f120bde5c09a802504a1994c8",
+    "semantic_hash": "9332472f120bde5c09a802504a1994c8"
   },
   "docs/adr/0005-abastecimento-com-passageiros-configuravel.md": {
     "mtime": 1790911621.9463894,
@@ -78,10 +78,10 @@
     "semantic_hash": "42e6008fc628f33c74be511ae8011e2c"
   },
   "docs/adr/README.md": {
-    "mtime": 1790911621.9488966,
-    "seen": 1790911860.3269818,
-    "ast_hash": "a2837d47bee87f15cff7d1d71c08a922",
-    "semantic_hash": "a2837d47bee87f15cff7d1d71c08a922"
+    "mtime": 1791081668.5383067,
+    "seen": 1791081950.8073385,
+    "ast_hash": "dfd94e0f18bd2fd301a61aa642b4f458",
+    "semantic_hash": "dfd94e0f18bd2fd301a61aa642b4f458"
   },
   "docs/agents/domain.md": {
     "mtime": 1790815972.2774098,
@@ -102,16 +102,16 @@
     "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
   },
   "entregas/ra1-criterios-de-aceite.md": {
-    "mtime": 1790911621.9509032,
-    "seen": 1790911860.326986,
-    "ast_hash": "bea8ad4c83d0bc81fbdbbdaf2691a791",
-    "semantic_hash": "bea8ad4c83d0bc81fbdbbdaf2691a791"
+    "mtime": 1791081668.5393078,
+    "seen": 1791081950.8073425,
+    "ast_hash": "f625cd468c0a51b5ee577d0a3dab1194",
+    "semantic_hash": "f625cd468c0a51b5ee577d0a3dab1194"
   },
   "entregas/ra1-tarefas.md": {
-    "mtime": 1790911621.9519024,
-    "seen": 1790911860.326987,
-    "ast_hash": "f3b47a7521c5ae059aa7f4cb5b0eea7a",
-    "semantic_hash": "f3b47a7521c5ae059aa7f4cb5b0eea7a"
+    "mtime": 1791081668.540305,
+    "seen": 1791081950.8073437,
+    "ast_hash": "e01ef906898f5bd1a7eb95d61c983d7b",
+    "semantic_hash": "e01ef906898f5bd1a7eb95d61c983d7b"
   },
   "especificacao/01-3-objetivos.md": {
     "mtime": 1790911621.9529035,
@@ -138,10 +138,10 @@
     "semantic_hash": "d1dd6b5e794038660d864c6626528707"
   },
   "especificacao/05-atores-usuarios.md": {
-    "mtime": 1790781336.335896,
-    "seen": 1790911860.3269918,
-    "ast_hash": "45ca0728223efe669db7ab26d1fcfb47",
-    "semantic_hash": "45ca0728223efe669db7ab26d1fcfb47"
+    "mtime": 1791081668.541534,
+    "seen": 1791081950.8073492,
+    "ast_hash": "9768c439710630aa6c22adc160de22d3",
+    "semantic_hash": "9768c439710630aa6c22adc160de22d3"
   },
   "especificacao/06-requisitos-funcionais/00-item.md": {
     "mtime": 1790781336.3378954,
@@ -276,10 +276,10 @@
     "semantic_hash": "13e59e62596bd764e1f88a4d3c4ff5a7"
   },
   "pesquisa/README.md": {
-    "mtime": 1790911621.962553,
-    "seen": 1790911860.3270128,
-    "ast_hash": "015ede942a7a94bf469143b8d8eb7d8b",
-    "semantic_hash": "015ede942a7a94bf469143b8d8eb7d8b"
+    "mtime": 1791081668.542529,
+    "seen": 1791081950.8073738,
+    "ast_hash": "84bd2c1153fb7a8263d19950e08aefaa",
+    "semantic_hash": "84bd2c1153fb7a8263d19950e08aefaa"
   },
   "pesquisa/fontes.md": {
     "mtime": 1791059490.0504732,
@@ -288,16 +288,16 @@
     "semantic_hash": "1f43f82a62ea6e4b9fc3ad7514441122"
   },
   "pesquisa/impacto/impacto-por-item.md": {
-    "mtime": 1790911621.9645534,
-    "seen": 1790911860.3270144,
-    "ast_hash": "d2f2315c20a0386b49854d08d307ebb9",
-    "semantic_hash": "d2f2315c20a0386b49854d08d307ebb9"
+    "mtime": 1791081668.5435312,
+    "seen": 1791081950.807376,
+    "ast_hash": "58550342cb5415056a1570bb889a857b",
+    "semantic_hash": "58550342cb5415056a1570bb889a857b"
   },
   "pesquisa/impacto/insumos-rfs.md": {
-    "mtime": 1790911621.9655535,
-    "seen": 1790911860.3270154,
-    "ast_hash": "a34a408b445ce7d8408923621de8c416",
-    "semantic_hash": "a34a408b445ce7d8408923621de8c416"
+    "mtime": 1791081668.5445297,
+    "seen": 1791081950.8073769,
+    "ast_hash": "daafd7d58afce1b60d75d0d72d2adc74",
+    "semantic_hash": "daafd7d58afce1b60d75d0d72d2adc74"
   },
   "pesquisa/impacto/insumos-rnfs.md": {
     "mtime": 1790911621.9665537,
@@ -354,10 +354,10 @@
     "semantic_hash": "5273b1dcfcf5124ece4ac09628002c9a"
   },
   "pesquisa/similares/veovo.md": {
-    "mtime": 1790911621.9725523,
-    "seen": 1790911860.3270242,
-    "ast_hash": "5aa2115fd92383317523150fd3f9239a",
-    "semantic_hash": "5aa2115fd92383317523150fd3f9239a"
+    "mtime": 1791081668.5445297,
+    "seen": 1791081950.8073869,
+    "ast_hash": "cddf5f320446fa7e01e531c35dd87140",
+    "semantic_hash": "cddf5f320446fa7e01e531c35dd87140"
   },
   "pesquisa/topicos/a-cdm.md": {
     "mtime": 1790911621.9735558,
@@ -384,16 +384,16 @@
     "semantic_hash": "4251df13ba3b362dde12b68c2fb51a2a"
   },
   "pesquisa/topicos/marcos-e-horarios.md": {
-    "mtime": 1790911621.9765613,
-    "seen": 1790911860.3270283,
-    "ast_hash": "19f5ebb35cca8471801842d040497c14",
-    "semantic_hash": "19f5ebb35cca8471801842d040497c14"
+    "mtime": 1791081668.5455291,
+    "seen": 1791081950.807392,
+    "ast_hash": "f82dbfe2097856d1be5bcdebc2a7ff8f",
+    "semantic_hash": "f82dbfe2097856d1be5bcdebc2a7ff8f"
   },
   "pesquisa/topicos/papeis-e-atores.md": {
-    "mtime": 1790911621.9775598,
-    "seen": 1790911860.327029,
-    "ast_hash": "97b5fe5d8ff2666d48c8e06dbd7ea54b",
-    "semantic_hash": "97b5fe5d8ff2666d48c8e06dbd7ea54b"
+    "mtime": 1791081668.5465279,
+    "seen": 1791081950.8073928,
+    "ast_hash": "e64ee5e5b37b2a3882bae45286be3271",
+    "semantic_hash": "e64ee5e5b37b2a3882bae45286be3271"
   },
   "pesquisa/topicos/previsibilidade-vs-velocidade.md": {
     "mtime": 1790911621.9775598,
@@ -412,5 +412,11 @@
     "seen": 1790911860.3270316,
     "ast_hash": "d972e40bcca5383101c408c68e408b63",
     "semantic_hash": "d972e40bcca5383101c408c68e408b63"
+  },
+  "docs/adr/0010-administrador-usuario-e-equipe-do-operador.md": {
+    "mtime": 1791081668.5373077,
+    "seen": 1791081950.8073373,
+    "ast_hash": "335e7fe3eddff9b2829a0ad8eff957b0",
+    "semantic_hash": "335e7fe3eddff9b2829a0ad8eff957b0"
   }
 }
