@@ -9,11 +9,11 @@ decisor: Rodrigo Alves
 itens_template: [2, 4, 5, 6, 9, 10, 11]
 areas: [D]
 fontes: [2, 4]
-relacionados: [papeis-e-atores, marcos-e-horarios, adr-0009]
+relacionados: [papeis-e-atores, marcos-e-horarios, adr-0009, adr-0010]
 ---
 # ADR-0004 — Quatro atores; Autoridade de Liberação é o representante da companhia
 
-- **Status:** aceita · **Data:** 01/10/2026 · **Decisor:** Rodrigo Alves · **Origem:** decisão D4 do [relatório de pesquisa](../../pesquisa/01-referencias-setor-e-similares.md) (seção 5)
+- **Status:** aceita, complementada por [ADR-0010](0010-administrador-usuario-e-equipe-do-operador.md) (Administrador do Sistema, ator abstrato Usuário e equipe do operador como dado) · **Data:** 01/10/2026 · **Decisor:** Rodrigo Alves · **Origem:** decisão D4 do [relatório de pesquisa](../../pesquisa/01-referencias-setor-e-similares.md) (seção 5)
 
 ## Contexto
 

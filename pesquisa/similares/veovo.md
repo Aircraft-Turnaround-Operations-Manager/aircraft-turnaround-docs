@@ -26,7 +26,7 @@ atualizado: 2026-10-01
 | Fonte do dado operacional | AODB e histórico do aeroporto mais dados em tempo real [Fato][51]. Câmeras/sensores: não informado. |
 | Métricas divulgadas — [Fato] (declarado pelo fornecedor) | "20% improvement" em previsões [51]; prever horários de bloco "to within one minute" [52]; até "90% accuracy" com ML contra menos de 60% do TOBT manual [18]. |
 | Relação com A-CDM | É um produto de A-CDM (marcos e sequenciamento pré-partida) [Fato][51]. |
-| O que vale incorporar [Inferência] | (1) Linha do tempo de marcos por turnaround; (2) ícones de status; (3) alertas e visões configuráveis por papel (casa com os 4 atores). |
+| O que vale incorporar [Inferência] | (1) Linha do tempo de marcos por turnaround; (2) ícones de status; (3) alertas e visões configuráveis por papel (casa com os perfis dos atores do projeto). |
 | O que fica fora do nosso escopo [Inferência] | Sequenciamento pré-partida e TSAT (função de ATC/aeroporto; integração com ATC excluída); ML preditivo (pode ser evolução futura, não MVP). |
 
 ---

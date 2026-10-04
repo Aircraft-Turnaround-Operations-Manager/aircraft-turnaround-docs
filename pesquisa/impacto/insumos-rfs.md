@@ -24,7 +24,7 @@ Capacidades observadas no setor e nos similares. **Não** são RFs redigidos. Na
 
 | Área | Capacidade observada | Fonte |
 |---|---|---|
-| **A** — Acesso e planejamento | Perfis de acesso e visões configuráveis por papel | [Fato][51] |
+| **A** — Acesso e planejamento | Perfis de acesso e visões configuráveis por papel; gestão de usuários, perfis e equipes pelo Administrador do Sistema e autenticação pelo ator abstrato Usuário ([D10](../../docs/adr/0010-administrador-usuario-e-equipe-do-operador.md)) | [Fato][51] |
 | A | Abrir o turnaround a partir do par chegada/partida, com horários de referência (SIBT/SOBT, EIBT, TOBT) | [Inferência] (base: [2][4]) |
 | A | Calcular o TOBT inicial como o mais tarde entre EIBT + MTTT e EOBT | [Fato][3] |
 | A | Modelo (template) de tarefas por tipo de aeronave/serviço, com dependências e marcação de "Não aplicável" | [Inferência] (base: [22][45]) |

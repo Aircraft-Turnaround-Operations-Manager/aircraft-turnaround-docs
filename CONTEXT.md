@@ -3,8 +3,8 @@ id: contexto
 titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
-atualizado: 2026-10-01
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009]
+atualizado: 2026-10-03
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010]
 ---
 # Contexto do projeto
 
@@ -21,12 +21,15 @@ relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004
 
 | Ator | Papel |
 |---|---|
-| **Operador de Solo/Rampa** | Executa as tarefas do turnaround, da própria empresa de *handling* ou de prestador contratado; registra início, pausa, conclusão, "não aplicável" e leituras de QR Code. |
+| **Operador de Solo/Rampa** | Executa as tarefas da **sua equipe ou especialidade** (abastecimento, limpeza, catering, rampa…), da própria empresa de *handling* ou de prestador contratado; a equipe é um dado do cadastro, não um ator separado; registra início, pausa, conclusão, "não aplicável" e leituras de QR Code. |
 | **Coordenador de Turnaround** | Coordena o turnaround, mantém atualizado o horário-alvo de prontidão (TOBT), trata alertas e exceções e redistribui recursos. |
 | **Autoridade de Liberação** | Representante da companhia aérea que confirma a prontidão da aeronave (equivalente ao marco *Aircraft Ready* do A-CDM). **Não** é a autorização do ATC. |
+| **Administrador do Sistema** | Mantém usuários, perfis de acesso e equipes ou especialidades; não atua nos turnarounds. |
 | **Motor de Eventos** | Ator não humano: recebe os registros, recalcula projeções e caminho crítico e emite alertas. |
 
-Decisões: [ADR-0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md), [ADR-0009](docs/adr/0009-nome-coordenador-de-turnaround.md).
+Decisões: [ADR-0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md), [ADR-0009](docs/adr/0009-nome-coordenador-de-turnaround.md), [ADR-0010](docs/adr/0010-administrador-usuario-e-equipe-do-operador.md).
+
+**Ator abstrato Usuário:** generaliza os quatro atores humanos (casos de uso comuns, como autenticar-se); aparece só no diagrama de casos de uso (item 9). O Motor de Eventos não o especializa.
 
 ## 3. Estados
 
@@ -58,12 +61,13 @@ Use a sigla com o nome em português na primeira ocorrência de cada item ([ADR-
 | D1 | Régua: pronto até o **TOBT planejado + 5 min**, unilateral | [0001](docs/adr/0001-referencia-horario-tobt-mais-5-min.md) |
 | D2 | Metas percentuais do item 1: **80%** | [0002](docs/adr/0002-metas-percentuais-80.md) |
 | D3 | Antecipação de 5 min ou mais → pedir atualização da previsão | [0003](docs/adr/0003-atualizar-previsao-na-antecipacao.md) |
-| D4 | 4 atores; Autoridade de Liberação = representante da companhia | [0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md) |
+| D4 | 4 atores operacionais; Autoridade de Liberação = representante da companhia (complementada pela D10) | [0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md) |
 | D5 | Abastecimento com passageiros a bordo: regra configurável por operador | [0005](docs/adr/0005-abastecimento-com-passageiros-configuravel.md) |
 | D6 | Códigos de atraso: tabela completa da **ANAC** (72 códigos) | [0006](docs/adr/0006-codigos-de-atraso-tabela-anac.md) |
 | D7 | Dados do operador, **inclusive QR Code pelo celular**; sem sensores da aeronave nem câmeras fixas | [0007](docs/adr/0007-dados-do-operador-e-qr-code.md) |
 | D8 | Siglas do A-CDM com nome em português | [0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md) |
 | D9 | Nome único: **Coordenador de Turnaround** | [0009](docs/adr/0009-nome-coordenador-de-turnaround.md) |
+| D10 | **Administrador do Sistema** como ator; ator abstrato **Usuário**; equipe do operador como dado | [0010](docs/adr/0010-administrador-usuario-e-equipe-do-operador.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
@@ -99,10 +103,10 @@ D8 (siglas) e D9 (nome do coordenador) valem para **todos** os itens. A coluna "
 | 2 — É / Não é / Faz / Não faz | [impacto por item](pesquisa/impacto/impacto-por-item.md), [lacunas e diferencial](pesquisa/similares/lacunas-e-diferencial.md) | D4, D6, D7 |
 | 3 — Visão do Produto | [impacto por item](pesquisa/impacto/impacto-por-item.md), [similares](pesquisa/similares/README.md), [matriz](pesquisa/similares/matriz-comparativa.md), [lacunas e diferencial](pesquisa/similares/lacunas-e-diferencial.md) | D2, D7 |
 | 4 — BPMN TO BE | [atividades e dependências](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [marcos](pesquisa/topicos/marcos-e-horarios.md) | D4, D5, D6, D7 |
-| 5 — Atores | [papéis e atores](pesquisa/topicos/papeis-e-atores.md) | D4 |
-| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área) | D1, D3, D4, D5, D6, D7 |
+| 5 — Atores | [papéis e atores](pesquisa/topicos/papeis-e-atores.md) | D4, D10 |
+| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área) | D1, D3, D4, D5, D6, D7, D10 |
 | 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7 |
 | 8 — RNFs | [insumos para RNFs](pesquisa/impacto/insumos-rnfs.md) | D1 |
-| 9 — Casos de uso | [papéis e atores](pesquisa/topicos/papeis-e-atores.md), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D4 |
-| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7 |
+| 9 — Casos de uso | [papéis e atores](pesquisa/topicos/papeis-e-atores.md), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D4, D10 |
+| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10 |
 | 11 — Diagrama de atividades | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [papéis](pesquisa/topicos/papeis-e-atores.md) | D4, D5 |
