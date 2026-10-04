@@ -17,7 +17,7 @@
 ### 1.3 Fluxo de trabalho
 
 - **Formato:** todo o conteúdo é produzido em arquivos **Markdown (.md)** no repositório `aircraft-turnaround-docs`, e não diretamente no .docx do template.
-- **Diagramas:** escritos como código, com **Mermaid** ou **PlantUML**, o que funcionar melhor para cada diagrama. O arquivo-fonte (`.mmd` ou `.puml`) fica versionado junto com a imagem exportada.
+- **Diagramas:** escritos como código, com **Mermaid** ou **PlantUML**, o que funcionar melhor para cada diagrama. O arquivo-fonte (`.mmd` ou `.puml`) fica versionado junto com a imagem exportada. Exceção: o BPMN do item 4 é feito em BPMN 2.0 (`.bpmn`), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1).
 - **Branches:** cada tarefa é feita em uma **branch própria**, e o trabalho entra na `main` por **pull request**. O PR aberto corresponde ao status **In review** no board.
 - **Consolidação:** quando todos os itens estiverem na `main`, os arquivos MD são consolidados em um único documento, na ordem e com os títulos do template, e exportados em **PDF**, que é o formato de envio no Canvas.
 
