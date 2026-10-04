@@ -21,7 +21,7 @@ Este repositório não tem código do sistema. Ele guarda três coisas:
 
 Antes de escrever qualquer parte da especificação, leia nesta ordem:
 
-1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D9, metas). A seção 9 dele diz o que ler para cada item.
+1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D10, metas). A seção 9 dele diz o que ler para cada item.
 2. **A issue da sua tarefa** no board [Especificação de Software - 6p](https://github.com/orgs/Aircraft-Turnaround-Operations-Manager/projects/1). Cada issue tem os critérios de aceite e um comentário "Insumos da base de conhecimento" com os arquivos e as decisões que valem para ela.
 3. **Só os arquivos de pesquisa indicados** para o seu item. Não é preciso ler a pesquisa inteira.
 
@@ -39,7 +39,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
 ├── docs/
-│   ├── adr/                   decisões do projeto (D1 a D9), uma por arquivo
+│   ├── adr/                   decisões do projeto (D1 a D10), uma por arquivo
 │   ├── agents/                configuração das skills de IA (issues, rótulos, documentos de domínio)
 │   └── planos/                planos de execução já concluídos (histórico)
 ├── claude/                    texto das instruções do projeto TCC no claude.ai
@@ -101,7 +101,7 @@ A especificação fala de um domínio técnico (operação de solo em aeroportos
 
 | Camada | Onde fica | Para que serve |
 |---|---|---|
-| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D9), uma decisão por arquivo, com contexto, opções e consequências. |
+| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D10), uma decisão por arquivo, com contexto, opções e consequências. |
 | **Pesquisa** | [`pesquisa/`](pesquisa/README.md) | O que o setor faz e o que os produtos similares oferecem, com fonte. |
 | **Resumo** | [`CONTEXT.md`](CONTEXT.md) | O essencial das duas camadas acima, em uma página. |
 

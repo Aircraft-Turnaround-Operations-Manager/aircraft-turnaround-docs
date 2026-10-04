@@ -29,7 +29,7 @@ Atribuição de áreas confirmada pelo Rodrigo em 29/09/2026.
 
 | Área | Escopo funcional | Numeração | RNF (ISO/IEC 25010) | Responsável |
 |---|---|---|---|---|
-| **A** | Acesso e planejamento: autenticação e perfis de acesso, abertura do turnaround, definição das tarefas do turnaround | RF-1 a RF-4 · US001 a US004 · UC01 a UC04 · RNF-1 a RNF-4 | Segurança (incl. LGPD) · Compatibilidade | Eduardo Fabri (`eduardofabrii`) |
+| **A** | Acesso e planejamento: autenticação e perfis de acesso (gestão de usuários, perfis e equipes pelo Administrador do Sistema, ADR-0010), abertura do turnaround, definição das tarefas do turnaround | RF-1 a RF-4 · US001 a US004 · UC01 a UC04 · RNF-1 a RNF-4 | Segurança (incl. LGPD) · Compatibilidade | Eduardo Fabri (`eduardofabrii`) |
 | **B** | Execução em solo: o operador consulta, inicia, pausa, conclui ou marca "não aplicável" nas tarefas | RF-5 a RF-8 · US005 a US008 · UC05 a UC08 · RNF-5 a RNF-8 | Confiabilidade · Portabilidade | João Pedro Cardoso de Liz (`Jcliz`) |
 | **C** | Monitoramento: dashboard em tempo real, cálculo de atraso e caminho crítico, alertas | RF-9 a RF-12 · US009 a US012 · UC09 a UC12 · RNF-9 a RNF-12 | Eficiência de desempenho · Usabilidade | João Vitor Correa Oliveira (`jvecodev`) |
 | **D** | Exceções e liberação: tratamento de exceção, redistribuição de recursos pelo Coordenador de Turnaround, liberação da aeronave | RF-13 a RF-16 · US013 a US016 · UC13 a UC16 · RNF-13 a RNF-16 | Manutenibilidade · Confiabilidade | Rodrigo Alves (`rdsalvesPUC`) |

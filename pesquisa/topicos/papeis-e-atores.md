@@ -1,23 +1,23 @@
 ---
 id: papeis-e-atores
-titulo: "Papéis reais e os 4 atores do projeto (P1.7)"
+titulo: "Papéis reais e os atores do projeto (P1.7)"
 tipo: pesquisa-topico
 secao_original: "2.7"
 itens_template: [4, 5, 9, 10, 11]
 areas: [A, D]
-decisoes: [D4, D9]
+decisoes: [D4, D9, D10]
 fontes: [2, 3, 4, 5, 7, 8, 13, 16, 29, 30, 31, 42, 57]
 relacionados: [marcos-e-horarios, impacto-por-item]
 status: vigente
 atualizado: 2026-10-01
 ---
-# Papéis reais e os 4 atores do projeto (P1.7)
+# Papéis reais e os atores do projeto (P1.7)
 
 > Base de conhecimento do projeto · origem: seção 2.7 do [relatório consolidado](../01-referencias-setor-e-similares.md) (congelado em 01/10/2026) · fontes numeradas em [fontes.md](../fontes.md) · convenções [Fato]/[Inferência] e índices no [mapa da pesquisa](../README.md).
 
-> **Decisões vigentes (prevalecem sobre o texto abaixo):** [D4 — Quatro atores; Autoridade de Liberação é o representante da companhia](../../docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md); [D9 — Nome único: Coordenador de Turnaround](../../docs/adr/0009-nome-coordenador-de-turnaround.md).
+> **Decisões vigentes (prevalecem sobre o texto abaixo):** [D4 — Quatro atores; Autoridade de Liberação é o representante da companhia](../../docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md); [D9 — Nome único: Coordenador de Turnaround](../../docs/adr/0009-nome-coordenador-de-turnaround.md); [D10 — Administrador do Sistema, ator abstrato Usuário e equipe do operador como dado](../../docs/adr/0010-administrador-usuario-e-equipe-do-operador.md).
 >
-> Nomes vigentes dos atores: Operador de Solo/Rampa, Coordenador de Turnaround (D9), Autoridade de Liberação (representante da companhia aérea que confirma a prontidão; não é o ATC — D4) e Motor de Eventos. Onde o texto abaixo usa "Coordenador/Supervisor", leia "Coordenador de Turnaround".
+> Nomes vigentes dos atores: Operador de Solo/Rampa (um único ator; a equipe ou especialidade é dado do cadastro — D10), Coordenador de Turnaround (D9), Autoridade de Liberação (representante da companhia aérea que confirma a prontidão; não é o ATC — D4) e Motor de Eventos, mais o Administrador do Sistema e o ator abstrato Usuário (D10). Onde o texto abaixo usa "Coordenador/Supervisor", leia "Coordenador de Turnaround".
 
 
 ## 2.7.1 Papéis encontrados nas fontes
