@@ -18,10 +18,10 @@
     "semantic_hash": "3996149ba089ebb604bb527974d429cc"
   },
   "README.md": {
-    "mtime": 1791081668.534308,
-    "seen": 1791081950.8073242,
-    "ast_hash": "a1dc499edef1b6f2df975120021f1665",
-    "semantic_hash": "a1dc499edef1b6f2df975120021f1665"
+    "mtime": 1791159899.6373167,
+    "seen": 1791160195.7315037,
+    "ast_hash": "834c7e361936abc73404a1fefa56d0bc",
+    "semantic_hash": "834c7e361936abc73404a1fefa56d0bc"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -108,10 +108,10 @@
     "semantic_hash": "f625cd468c0a51b5ee577d0a3dab1194"
   },
   "entregas/ra1-tarefas.md": {
-    "mtime": 1791081668.540305,
-    "seen": 1791081950.8073437,
-    "ast_hash": "e01ef906898f5bd1a7eb95d61c983d7b",
-    "semantic_hash": "e01ef906898f5bd1a7eb95d61c983d7b"
+    "mtime": 1791159899.6383169,
+    "seen": 1791160195.731524,
+    "ast_hash": "28027b62ed6e4ccab7de917271bfdc06",
+    "semantic_hash": "28027b62ed6e4ccab7de917271bfdc06"
   },
   "especificacao/01-3-objetivos.md": {
     "mtime": 1790911621.9529035,
@@ -132,10 +132,10 @@
     "semantic_hash": "3b9b2e3166ac73e290bca9dc06969217"
   },
   "especificacao/04-mapeamento-de-negocios.md": {
-    "mtime": 1790781336.334898,
-    "seen": 1790911860.3269908,
-    "ast_hash": "d1dd6b5e794038660d864c6626528707",
-    "semantic_hash": "d1dd6b5e794038660d864c6626528707"
+    "mtime": 1791159899.6393175,
+    "seen": 1791160195.731529,
+    "ast_hash": "dbe9d3175a4bbbf2e243bc376556ceeb",
+    "semantic_hash": "dbe9d3175a4bbbf2e243bc376556ceeb"
   },
   "especificacao/05-atores-usuarios.md": {
     "mtime": 1791081668.541534,
@@ -418,5 +418,11 @@
     "seen": 1791081950.8073373,
     "ast_hash": "335e7fe3eddff9b2829a0ad8eff957b0",
     "semantic_hash": "335e7fe3eddff9b2829a0ad8eff957b0"
+  },
+  "especificacao/diagramas/04-bpmn-to-be.png": {
+    "mtime": 1791159899.6453156,
+    "seen": 1791160195.731581,
+    "ast_hash": "57e9f874c25b11b55a9097514a30cea7",
+    "semantic_hash": "57e9f874c25b11b55a9097514a30cea7"
   }
 }
