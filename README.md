@@ -74,7 +74,7 @@ especificacao/
 - **Itens por integrante (6, 7, 8 e 10):** cada área edita **apenas o seu `area-x.md`**, assim não há conflito de merge. O `00-item.md` é da tarefa-mãe, que consolida.
 - **Tabelas dos itens 6 e 8:** cada `area-x.md` tem a tabela com o mesmo cabeçalho do template. Na consolidação, as 4 tabelas viram uma só.
 - **Numeração fixa por área:** A = RF-1 a RF-4, B = RF-5 a RF-8, C = RF-9 a RF-12, D = RF-13 a RF-16. O mesmo vale para USnnn, UCnn e RNF-n.
-- **Diagramas:** escritos como código em Mermaid (`.mmd`) ou PlantUML (`.puml`). A fonte e o `.png` exportado ficam juntos em `especificacao/diagramas/`, com o mesmo nome base (`04-bpmn-to-be`, `09-casos-de-uso`, `11-atividades`).
+- **Diagramas:** escritos como código em Mermaid (`.mmd`) ou PlantUML (`.puml`); o BPMN do item 4 é a exceção, em BPMN 2.0 (`.bpmn`, editável no bpmn.io ou no Camunda Modeler), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1). A fonte e o `.png` exportado ficam juntos em `especificacao/diagramas/`, com o mesmo nome base (`04-bpmn-to-be`, `09-casos-de-uso`, `11-atividades`).
 - **Comentários `<!-- ... -->`** nos arquivos ainda não preenchidos são orientações para quem escreve. Apague-os quando o item estiver pronto.
 - **Nome do produto:** sempre "Aircraft Turnaround Orchestration System", exatamente assim.
 
