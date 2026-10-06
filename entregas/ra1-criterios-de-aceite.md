@@ -10,7 +10,7 @@
 
 ### 0.1 Para quem monta o board (GitHub Projects)
 - Cada item das seções 3.1 a 3.11 vira **uma ou mais tarefas** no board.
-- Os itens marcados como **por integrante** (6, 7, 8 e 10) viram **uma tarefa por integrante**, com a cota mínima indicada.
+- Os itens marcados como **por integrante** (6, 7, 8 e 10) viram **uma tarefa por integrante**, com a cota mínima indicada (mínimo, não máximo; ADR-0011).
 - A ordem e os bloqueios entre tarefas estão na **seção 4**.
 - O corpo de cada tarefa deve copiar os IDs dos critérios correspondentes (ex.: `C07.1` a `C07.6`), para que o checklist acompanhe a tarefa.
 
@@ -24,7 +24,7 @@ Este protocolo segue a recomendação da Anthropic para o Claude Opus 5.5: mante
 
 1. **Condição de conclusão.** O trabalho só está concluído quando **todos** os critérios aplicáveis deste arquivo (IDs `Cxx.y` e `X.y`) estiverem marcados como atendidos, cada um com evidência. Qualquer outro estado é "em andamento".
 2. **Lista de tarefas antes de começar.** Antes de produzir qualquer coisa, crie uma lista de tarefas com **um item por ID de critério** no escopo pedido. Não agrupe critérios em um único item.
-3. **Evidência por critério.** Um critério só pode ser marcado como atendido com evidência concreta: seção do documento, quantidade contada (ex.: "16 RFs, RF-1 a RF-16"), nome do arquivo do diagrama. "Feito" sem evidência não conta.
+3. **Evidência por critério.** Um critério só pode ser marcado como atendido com evidência concreta: seção do documento, quantidade contada (ex.: "18 RFs, RF-1 a RF-18"), nome do arquivo do diagrama. "Feito" sem evidência não conta.
 4. **Contagem por comando, não por estimativa.** Todo critério com número mínimo (≥3, ≥16, ≥2 por estória etc.) deve ser conferido contando de fato: listar e contar os itens, não estimar.
 5. **Não encerrar com itens abertos.** Se a lista ainda tem itens abertos, não encerre com um resumo, uma oferta de continuar ou uma pergunta que não bloqueia o resto. Continue. Só pare se houver bloqueio real, e nesse caso diga **qual critério** está bloqueado e **por quê**.
 6. **Verificação independente ao final.** Ao terminar, faça uma segunda passagem de verificação **separada da escrita**: de preferência um subagente ou uma sessão nova que receba **apenas** este arquivo e o documento produzido, e percorra todos os IDs marcando atendido / não atendido / evidência. Qualquer "não atendido" volta para a lista de tarefas.
@@ -161,22 +161,22 @@ Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coorde
 
 **Template:** tabela `# | REQUISITO FUNCIONAL | ATOR / USUÁRIO | SPRINT`. Relacionar **todos** os requisitos do sistema completo.
 
-- [ ] **C06.1** **≥16 RFs** (4 por integrante).
-- [ ] **C06.2** Enumeração padrão **RF-n**, sequencial e sem lacunas.
+- [ ] **C06.1** **≥16 RFs** (no mínimo 4 por integrante, sem máximo; ADR-0011).
+- [ ] **C06.2** Enumeração padrão **RF-n**, sequencial e sem lacunas. Durante a escrita vale o ID provisório por área (RF-A1, RF-A2…), em sequência dentro da área; a numeração final RF-1…RF-n é aplicada e conferida no início do T12 (ADR-0011).
 - [ ] **C06.3** Cada RF está redigido de forma clara e **testável**: uma ação verificável, sem "etc." e sem termos vagos.
 - [ ] **C06.4** Cada RF é rastreado a um **ator** (coluna preenchida, com ator do item 5).
-- [ ] **C06.5** Cada RF é rastreado a um **objetivo** do item 1.
-- [ ] **C06.6** A **priorização** está presente: coluna SPRINT preenchida e/ou prioridade.
+- [ ] **C06.5** Cada RF é rastreado a um **objetivo** do item 1, na coluna **OBJETIVO** acrescentada à tabela do template.
+- [ ] **C06.6** A **priorização** está presente: coluna SPRINT preenchida e/ou prioridade. A coluna fica vazia enquanto as áreas escrevem; o grupo divide em sprints na consolidação (T06), depois que todos os RFs e RNFs estiverem definidos.
 - [ ] **C06.7** Há uma **breve justificativa** da priorização.
 - [ ] **C06.8** Os RFs cobrem o núcleo operacional do produto: orquestração do turnaround, execução paralela de tarefas, propagação de estado, cálculo de atraso e caminho crítico, dashboard em tempo real, alertas e redistribuição de recursos. Não se limitam a CRUD.
 
 ### 3.7 Item 7 — Relação de Estórias de Usuário (1,5) · por integrante
 
-**Template:** para cada estória, `USnnn – REQUISITO n: <nome>`, **COMO / POSSO / PARA** e Critérios de Aceite numerados em **DADO QUE / QUANDO / ENTÃO**.
+**Template:** para cada estória, `USnnn – REQUISITO n: <nome>` (durante a escrita, `US-<área><n> – REQUISITO RF-<área><n>: <nome>`; ADR-0011), **COMO / POSSO / PARA** e Critérios de Aceite numerados em **DADO QUE / QUANDO / ENTÃO**.
 
-- [ ] **C07.1** **≥16 estórias** (4 por integrante).
+- [ ] **C07.1** **≥16 estórias** (no mínimo 4 por integrante e sempre uma por RF; ADR-0011).
 - [ ] **C07.2** Todas no formato **COMO / POSSO / PARA**.
-- [ ] **C07.3** Cada estória está vinculada a um RF correspondente, com o número do RF no título.
+- [ ] **C07.3** Cada estória está vinculada a um RF correspondente, com o número do RF no título. Durante a escrita, a estória usa o ID provisório com o mesmo número do RF (US-A1 ↔ RF-A1; ADR-0011).
 - [ ] **C07.4** Cada estória tem **≥2 critérios de aceite**.
 - [ ] **C07.5** Todos os critérios estão no formato **DADO QUE / QUANDO / ENTÃO**, claros e **verificáveis**, com resultado observável.
 - [ ] **C07.6** Os critérios cobrem cenários diferentes (caminho principal e ao menos uma variação ou erro), e não repetições do mesmo cenário.
@@ -186,8 +186,8 @@ Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coorde
 
 **Template:** tabela `# | REQUISITO NÃO-FUNCIONAL | NORMA ISO/IEC 25010`. O plano de ensino exige a classificação pela ISO/IEC 25010.
 
-- [ ] **C08.1** **≥16 RNFs** (4 por integrante).
-- [ ] **C08.2** Enumeração padrão **RNF-n**.
+- [ ] **C08.1** **≥16 RNFs** (no mínimo 4 por integrante, sem máximo; ADR-0011).
+- [ ] **C08.2** Enumeração padrão **RNF-n**. Durante a escrita vale o ID provisório por área (RNF-A1, RNF-A2…); a numeração final RNF-1…RNF-n é aplicada e conferida no início do T12 (ADR-0011).
 - [ ] **C08.3** Cada RNF está classificado em uma característica da **ISO/IEC 25010**.
 - [ ] **C08.4** Cada RNF é **mensurável**, com medida ou critério de aceitação objetivo (ex.: tempo de resposta ≤ X s no percentil 95). Nada de "ser rápido" ou "ser seguro".
 - [ ] **C08.5** Cobre várias categorias: desempenho, segurança/LGPD, confiabilidade, usabilidade e manutenibilidade, no mínimo.
@@ -208,7 +208,7 @@ Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coorde
 
 **Template:** para cada caso de uso, no formato reduzido: **Nome, Ator(es), Descrição, Pré-condições, Pós-condições, Regras de negócio, Protótipo(s) de tela, Fluxo básico, Fluxos alternativos, Fluxos de exceção**. O plano de ensino pede **protótipos de tela de alta fidelidade**.
 
-- [ ] **C10.1** **≥16 especificações** (4 por integrante × 4 integrantes). Decisão fechada pelo grupo; o "mínimo 8" do plano de ensino não se aplica.
+- [ ] **C10.1** **≥16 especificações** (no mínimo 4 por integrante × 4 integrantes, sem máximo; ADR-0011). Decisão fechada pelo grupo; o "mínimo 8" do plano de ensino não se aplica.
 - [ ] **C10.2** Cada especificação tem os **10 campos** preenchidos.
 - [ ] **C10.3** Cada especificação tem **protótipo(s) de tela de alta fidelidade**.
 - [ ] **C10.4** Cada especificação tem **fluxo básico** completo, em passos numerados.
@@ -251,7 +251,7 @@ Itens 1, 2, 3  (base do produto)
 ```
 
 - **Uma pessoa só:** itens 1, 2 e 3; recomenda-se a mesma pessoa para o item 5 e para o item 4, por serem de visão única do produto.
-- **Por integrante (4 cada):** itens 6, 7, 8 e 10. Cada integrante fica com um conjunto de RFs e, a partir deles, com as estórias e as especificações de caso de uso correspondentes. Isso mantém a rastreabilidade RF → estória → caso de uso na mesma pessoa.
+- **Por integrante (no mínimo 4 cada, sem máximo; ADR-0011):** itens 6, 7, 8 e 10. Cada integrante fica com um conjunto de RFs e, a partir deles, com as estórias e as especificações de caso de uso correspondentes. Isso mantém a rastreabilidade RF → estória → caso de uso na mesma pessoa.
 - **Integração:** os itens 9 e 11 consolidam o trabalho de todos, então precisam de um responsável que junte as partes.
 - **Janela de tempo:** de 28/09 a 10/10. A semana de 01/10 é Poliweek.
 
@@ -271,12 +271,12 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.8** As lanes do BPMN (item 4) e as raias do diagrama de atividades (item 11) usam os atores do item 5.
 - [ ] **K.9** As contagens mínimas conferem por contagem real: RF ≥16, estórias ≥16, cada estória com ≥2 critérios, RNF ≥16, especificações ≥16.
 - [ ] **K.10** Todos os critérios gerais X.1 a X.10 estão atendidos.
-- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D10 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
+- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D11 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
 
 ---
 
 ## 6. Pontos em aberto
 
-- ~~**A1.** Quantidade de especificações de caso de uso.~~ **Resolvido:** 16 (4 por integrante × 4 integrantes), confirmado pelo grupo.
+- ~~**A1.** Quantidade de especificações de caso de uso.~~ **Resolvido:** no mínimo 16 (4 por integrante × 4 integrantes), confirmado pelo grupo; sem máximo (ADR-0011).
 - ~~**A2.** Quais itens são "dependentes da quantidade de integrantes".~~ **Resolvido:** itens 6, 7, 8 e 10 (os marcados na rubrica com "≥ mínimo por integrante"), confirmado pelo grupo.
 - ~~**A3.** Formato de envio.~~ **Resolvido:** **PDF**, gerado a partir da consolidação dos arquivos MD do repositório, seguindo a estrutura do template.

@@ -1,7 +1,7 @@
 <!-- A preencher na tarefa T07-B (#20). Critérios: entregas/ra1-criterios-de-aceite.md -->
-<!-- Área B · João Pedro Cardoso de Liz · US005 a US008, uma por RF (RF-5 a RF-8). Formato de cada estória:
+<!-- Área B · João Pedro Cardoso de Liz · US-B1, US-B2…: uma estória por RF da área, com o mesmo número (US-B1 ↔ RF-B1; ADR-0011). Formato de cada estória:
 
-## USnnn – REQUISITO n: <nome do RF>
+## US-Bn – REQUISITO RF-Bn: <nome do RF>
 
 **COMO:** ...
 **POSSO:** ...
