@@ -1,11 +1,25 @@
-<!-- A preencher na tarefa T06-B (#16). Critérios: entregas/ra1-criterios-de-aceite.md -->
-<!-- Área B · João Pedro Cardoso de Liz · RF-B1, RF-B2… (mínimo 4, sem máximo; acrescente linhas se precisar — ADR-0011) -->
-
-<!-- OBJETIVO: objetivo do item 1 que o RF atende (C06.5). SPRINT: deixar vazio; o grupo divide em sprints na consolidação (T06). -->
-
 | # | REQUISITO FUNCIONAL | ATOR / USUÁRIO | OBJETIVO | SPRINT |
 |---|---|---|---|---|
-| RF-B1 | | | | |
-| RF-B2 | | | | |
-| RF-B3 | | | | |
-| RF-B4 | | | | |
+| RF-B1 | O sistema deve permitir ao Operador de Solo/Rampa consultar a lista das tarefas da sua equipe atribuídas a ele, exibindo, para cada tarefa, o turnaround (aeronave e posição), o estado da tarefa, a janela planejada de início e de fim e as tarefas predecessoras ainda não concluídas. | Operador de Solo/Rampa | Obj. 2 | |
+| RF-B2 | O sistema deve permitir ao Operador de Solo/Rampa registrar o início de uma tarefa da sua equipe atribuída a ele, aceito só quando a tarefa está no estado "Pronta", que leva a tarefa ao estado "Em execução". Cada registro grava o autor e o horário. | Operador de Solo/Rampa | Obj. 1 e 2 | |
+| RF-B3 | O sistema deve permitir ao Operador de Solo/Rampa registrar a conclusão de uma tarefa da sua equipe atribuída a ele, aceita só quando a tarefa está no estado "Em execução" e, se a tarefa tiver pontos de confirmação por QR Code, só quando todos esses pontos estiverem confirmados, que leva a tarefa ao estado "Concluída". Cada registro grava o autor e o horário. | Operador de Solo/Rampa | Obj. 1 e 2 | |
+| RF-B4 | O sistema deve permitir ao Operador de Solo/Rampa pausar uma tarefa da sua equipe atribuída a ele, aceita só quando a tarefa está no estado "Em execução", com justificativa e, quando houver impedimento, com o código do motivo escolhido na tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62], que leva a tarefa ao estado "Pausada", e retomá-la, aceita só quando a tarefa está no estado "Pausada", que a devolve ao estado "Em execução". Cada registro grava o autor e o horário. | Operador de Solo/Rampa | Obj. 2 e 3 | |
+| RF-B5 | O sistema deve permitir ao Operador de Solo/Rampa marcar uma tarefa da sua equipe atribuída a ele como "Não aplicável", aceita só antes do início da tarefa, quando o modelo de tarefas do turnaround permite essa marcação para ela, e com justificativa escrita, que leva a tarefa ao estado "Não aplicável". Cada registro grava o autor e o horário. | Operador de Solo/Rampa | Obj. 2 e 3 | |
+| RF-B6 | O sistema deve permitir ao Operador de Solo/Rampa confirmar, ponto a ponto, a execução de uma tarefa da sua equipe atribuída a ele pela leitura, com a câmera do celular, do QR Code fixado no ponto da aeronave correspondente (por exemplo, zona, fileira ou assento da cabine na limpeza), aceita só quando a tarefa está no estado "Em execução". Cada leitura grava o autor e o horário e marca o ponto como confirmado; o sistema recusa o QR Code que não pertença a uma tarefa da sua equipe atribuída a ele no turnaround. A conclusão da tarefa continua sendo registrada pelo RF-B3. | Operador de Solo/Rampa | Obj. 2 | |
+| RF-B7 | O sistema deve registrar os marcos do atendimento em solo a partir dos registros dos operadores: o horário do primeiro início de tarefa registrado no turnaround como início real do atendimento em solo (ACGT), o horário do início da tarefa de embarque como início real do embarque (ASBT) e o horário da conclusão da última tarefa obrigatória como fim real do atendimento em solo (AEGT) [2][4]. | Motor de Eventos | Obj. 1 | |
+| RF-B8 | O sistema deve propagar o estado das tarefas e do turnaround a cada registro: quando o primeiro início de tarefa é registrado, o turnaround passa de "Em solo" para "Operações em andamento"; quando uma tarefa passa para "Concluída" ou "Não aplicável", cada tarefa sucessora cujas predecessoras estejam todas nesses dois estados passa de "Aguardando" para "Pronta"; quando todas as tarefas obrigatórias do turnaround estão nesses dois estados, o turnaround passa de "Operações em andamento" para "Pronto para liberação". Cada mudança de estado feita pela propagação é gravada com o horário e com o registro que a causou. | Motor de Eventos | Obj. 2 | |
+
+**Base dos RFs da área B.**
+
+| RF | Base |
+|---|---|
+| RF-B1 | [Fato] consulta das próprias tarefas pelo operador em app/web [43][46]; equipe do operador como dado (ADR-0010). |
+| RF-B2 | [Inferência] registro de início por tarefa (base: [2][40]); aceitar o início só de tarefa "Pronta" respeita as dependências entre as atividades [22]. |
+| RF-B3 | [Inferência] registro de conclusão por tarefa (base: [2][40]); aceitar a conclusão só de tarefa "Em execução" impede conclusão sem início, como pede a métrica do objetivo 2; exigir todos os pontos de QR Code confirmados antes da conclusão é regra do projeto (ADR-0007). |
+| RF-B4 | [Inferência] pausa com justificativa (pausa não descrita nas fontes), como nos itens 2 e 5; código do impedimento pela tabela completa da ANAC, 72 códigos (ADR-0006) [62]. |
+| RF-B5 | [Inferência] "Não aplicável" com justificativa; tarefas que admitem a marcação definidas no modelo de tarefas da área A (base: [22][45]). |
+| RF-B6 | [Inferência] confirmação por QR Code lido pelo celular (ADR-0007; base: [42][63][64]). |
+| RF-B7 | [Fato] marcos ACGT, ASBT e AEGT [2][4]; [Inferência] derivá-los dos registros de início e conclusão das tarefas é regra do projeto. |
+| RF-B8 | [Fato] dependências entre as atividades do turnaround, como a limpeza da cabine, que só começa depois do desembarque [22]; quadro "Faz" do item 2, que atribui a propagação de estado à área B; [Inferência] a regra de passagem para "Operações em andamento", "Pronta" e "Pronto para liberação" é do projeto e segue os estados do `CONTEXT.md`. |
+
+Fontes citadas: [2], [4], [22], [40], [42], [43], [45], [46], [62], [63] e [64], conforme a numeração de `pesquisa/fontes.md`.
