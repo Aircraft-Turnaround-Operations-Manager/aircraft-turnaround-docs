@@ -23,16 +23,16 @@
 
 ### 1.2 Divisão por área funcional (itens 6, 7, 8 e 10)
 
-Cada integrante fica com **uma área funcional** do sistema. Dentro dela, faz **4 RFs**, as **4 estórias** desses RFs, as **4 especificações de caso de uso** correspondentes (1 caso de uso por RF) e **4 RNFs** nas características da ISO/IEC 25010 indicadas. Assim a cadeia RF → estória → caso de uso fica com a mesma pessoa, e as áreas não se sobrepõem.
+Cada integrante fica com **uma área funcional** do sistema. Dentro dela, faz **no mínimo 4 RFs** (sem máximo), uma estória para cada RF, **no mínimo 4 especificações de caso de uso** e **no mínimo 4 RNFs** nas características da ISO/IEC 25010 indicadas (ADR-0011). Um RF além do mínimo pode ser coberto por um caso de uso já existente, por `include` ou `extend`. Assim a cadeia RF → estória → caso de uso fica com a mesma pessoa, e as áreas não se sobrepõem.
 
 Atribuição de áreas confirmada pelo Rodrigo em 29/09/2026.
 
-| Área | Escopo funcional | Numeração | RNF (ISO/IEC 25010) | Responsável |
+| Área | Escopo funcional | IDs provisórios (ADR-0011) | RNF (ISO/IEC 25010) | Responsável |
 |---|---|---|---|---|
-| **A** | Acesso e planejamento: autenticação e perfis de acesso (gestão de usuários, perfis e equipes pelo Administrador do Sistema, ADR-0010), abertura do turnaround, definição das tarefas do turnaround | RF-1 a RF-4 · US001 a US004 · UC01 a UC04 · RNF-1 a RNF-4 | Segurança (incl. LGPD) · Compatibilidade | Eduardo Fabri (`eduardofabrii`) |
-| **B** | Execução em solo: o operador consulta, inicia, pausa, conclui ou marca "não aplicável" nas tarefas | RF-5 a RF-8 · US005 a US008 · UC05 a UC08 · RNF-5 a RNF-8 | Confiabilidade · Portabilidade | João Pedro Cardoso de Liz (`Jcliz`) |
-| **C** | Monitoramento: dashboard em tempo real, cálculo de atraso e caminho crítico, alertas | RF-9 a RF-12 · US009 a US012 · UC09 a UC12 · RNF-9 a RNF-12 | Eficiência de desempenho · Usabilidade | João Vitor Correa Oliveira (`jvecodev`) |
-| **D** | Exceções e liberação: tratamento de exceção, redistribuição de recursos pelo Coordenador de Turnaround, liberação da aeronave | RF-13 a RF-16 · US013 a US016 · UC13 a UC16 · RNF-13 a RNF-16 | Manutenibilidade · Confiabilidade | Rodrigo Alves (`rdsalvesPUC`) |
+| **A** | Acesso e planejamento: autenticação e perfis de acesso (gestão de usuários, perfis e equipes pelo Administrador do Sistema, ADR-0010), abertura do turnaround, definição das tarefas do turnaround | RF-A1… · US-A1… · UC-A1… · RNF-A1… (mínimo 4 de cada) | Segurança (incl. LGPD) · Compatibilidade | Eduardo Fabri (`eduardofabrii`) |
+| **B** | Execução em solo: o operador consulta, inicia, pausa, conclui ou marca "não aplicável" nas tarefas | RF-B1… · US-B1… · UC-B1… · RNF-B1… (mínimo 4 de cada) | Confiabilidade · Portabilidade | João Pedro Cardoso de Liz (`Jcliz`) |
+| **C** | Monitoramento: dashboard em tempo real, cálculo de atraso e caminho crítico, alertas | RF-C1… · US-C1… · UC-C1… · RNF-C1… (mínimo 4 de cada) | Eficiência de desempenho · Usabilidade | João Vitor Correa Oliveira (`jvecodev`) |
+| **D** | Exceções e liberação: tratamento de exceção, redistribuição de recursos pelo Coordenador de Turnaround, liberação da aeronave | RF-D1… · US-D1… · UC-D1… · RNF-D1… (mínimo 4 de cada) | Manutenibilidade · Confiabilidade | Rodrigo Alves (`rdsalvesPUC`) |
 
 Os escopos acima são **orientação para evitar sobreposição**. Os RFs em si são definidos por cada integrante na tarefa T06.
 
@@ -45,7 +45,7 @@ Os escopos acima são **orientação para evitar sobreposição**. Os RFs em si 
 | `ra1` | `#1D76DB` | Todas as tarefas desta entrega |
 | `item-01` … `item-11` | `#C5DEF5` | Item do template a que a tarefa se refere |
 | `geral` | `#BFDADC` | Tarefas que não são de um item específico |
-| `por-integrante` | `#FBCA04` | Subtarefas da cota de 4 por integrante |
+| `por-integrante` | `#FBCA04` | Subtarefas da cota mínima de 4 por integrante (sem máximo) |
 | `area-a` … `area-d` | `#D4C5F9` | Área funcional (seção 1.2) |
 
 ---
@@ -94,61 +94,62 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 ### Fase 2 — Requisitos (todos)
 
-**T06 · [RA1][Item 06] Relação de Requisitos Funcionais (16 RFs)** — tarefa-mãe
+**T06 · [RA1][Item 06] Relação de Requisitos Funcionais (≥16 RFs)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-06`
-- Descrição: consolidar na tabela do template os 16 RFs das 4 áreas, com numeração RF-1 a RF-16 sem lacunas, ator, sprint/prioridade e justificativa da priorização.
+- Descrição: consolidar na tabela do template os RFs das 4 áreas (no mínimo 16), com os IDs provisórios até a renumeração do T12 e, no documento final, RF-1 a RF-n sem lacunas, ator, sprint/prioridade e justificativa da priorização.
 - Critérios: C06.1 a C06.8
 - Bloqueada por: T03, T05 · Bloqueia: T07, T09
 - Sub-issues:
-  - **T06-A** · RFs da área A (RF-1 a RF-4) · `eduardofabrii` · `ra1`, `item-06`, `por-integrante`, `area-a`
-  - **T06-B** · RFs da área B (RF-5 a RF-8) · `Jcliz` · `ra1`, `item-06`, `por-integrante`, `area-b`
-  - **T06-C** · RFs da área C (RF-9 a RF-12) · `jvecodev` · `ra1`, `item-06`, `por-integrante`, `area-c`
-  - **T06-D** · RFs da área D (RF-13 a RF-16) · `rdsalvesPUC` · `ra1`, `item-06`, `por-integrante`, `area-d`
-  - Critérios de cada sub-issue: C06.2 a C06.5 para os 4 RFs da área
+  - **T06-A** · RFs da área A (RF-A1…, mínimo 4) · `eduardofabrii` · `ra1`, `item-06`, `por-integrante`, `area-a`
+  - **T06-B** · RFs da área B (RF-B1…, mínimo 4) · `Jcliz` · `ra1`, `item-06`, `por-integrante`, `area-b`
+  - **T06-C** · RFs da área C (RF-C1…, mínimo 4) · `jvecodev` · `ra1`, `item-06`, `por-integrante`, `area-c`
+  - **T06-D** · RFs da área D (RF-D1…, mínimo 4) · `rdsalvesPUC` · `ra1`, `item-06`, `por-integrante`, `area-d`
+  - Critérios de cada sub-issue: C06.2 a C06.5 para todos os RFs da área (mínimo 4)
+  - Formato da tabela de cada área: `# | REQUISITO FUNCIONAL | ATOR / USUÁRIO | OBJETIVO | SPRINT`. A coluna OBJETIVO traz o objetivo do item 1 (C06.5). A coluna SPRINT fica **vazia** nas sub-issues: a divisão em sprints e a justificativa da priorização (C06.6 e C06.7) são feitas nesta tarefa-mãe, depois que todas as áreas definirem os RFs e os RNFs.
 
-**T07 · [RA1][Item 07] Relação de Estórias de Usuário (16 estórias)** — tarefa-mãe
+**T07 · [RA1][Item 07] Relação de Estórias de Usuário (≥16 estórias)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-07`
 - Critérios: C07.1 a C07.7
 - Bloqueada por: T06 · Bloqueia: T10
 - Sub-issues (cada uma bloqueada pela sub-issue de RF da mesma área):
-  - **T07-A** · Estórias US001 a US004 · `eduardofabrii` · `area-a`
-  - **T07-B** · Estórias US005 a US008 · `Jcliz` · `area-b`
-  - **T07-C** · Estórias US009 a US012 · `jvecodev` · `area-c`
-  - **T07-D** · Estórias US013 a US016 · `rdsalvesPUC` · `area-d`
+  - **T07-A** · Estórias US-A1… (uma por RF da área) · `eduardofabrii` · `area-a`
+  - **T07-B** · Estórias US-B1… (uma por RF da área) · `Jcliz` · `area-b`
+  - **T07-C** · Estórias US-C1… (uma por RF da área) · `jvecodev` · `area-c`
+  - **T07-D** · Estórias US-D1… (uma por RF da área) · `rdsalvesPUC` · `area-d`
   - Rótulos de cada: `ra1`, `item-07`, `por-integrante`, `area-x`
-  - Critérios de cada sub-issue: C07.2 a C07.7 para as 4 estórias da área (≥2 critérios DADO QUE/QUANDO/ENTÃO por estória)
+  - Critérios de cada sub-issue: C07.2 a C07.7 para todas as estórias da área (≥2 critérios DADO QUE/QUANDO/ENTÃO por estória)
 
-**T08 · [RA1][Item 08] Relação de Requisitos Não Funcionais (16 RNFs)** — tarefa-mãe
+**T08 · [RA1][Item 08] Relação de Requisitos Não Funcionais (≥16 RNFs)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-08`
 - Critérios: C08.1 a C08.5
 - Bloqueada por: T03 (pode correr em paralelo com T06 e T07)
 - Sub-issues:
-  - **T08-A** · RNF-1 a RNF-4 (Segurança/LGPD, Compatibilidade) · `eduardofabrii` · `area-a`
-  - **T08-B** · RNF-5 a RNF-8 (Confiabilidade, Portabilidade) · `Jcliz` · `area-b`
-  - **T08-C** · RNF-9 a RNF-12 (Eficiência de desempenho, Usabilidade) · `jvecodev` · `area-c`
-  - **T08-D** · RNF-13 a RNF-16 (Manutenibilidade, Confiabilidade) · `rdsalvesPUC` · `area-d`
+  - **T08-A** · RNF-A1…, mínimo 4 (Segurança/LGPD, Compatibilidade) · `eduardofabrii` · `area-a`
+  - **T08-B** · RNF-B1…, mínimo 4 (Confiabilidade, Portabilidade) · `Jcliz` · `area-b`
+  - **T08-C** · RNF-C1…, mínimo 4 (Eficiência de desempenho, Usabilidade) · `jvecodev` · `area-c`
+  - **T08-D** · RNF-D1…, mínimo 4 (Manutenibilidade, Confiabilidade) · `rdsalvesPUC` · `area-d`
   - Rótulos de cada: `ra1`, `item-08`, `por-integrante`, `area-x`
-  - Critérios de cada sub-issue: C08.2 a C08.4 para os 4 RNFs da área
+  - Critérios de cada sub-issue: C08.2 a C08.4 para todos os RNFs da área (mínimo 4)
 
 ### Fase 3 — Casos de uso (todos + integração)
 
 **T09 · [RA1][Item 09] Diagrama Geral de Casos de Uso**
 - Responsável: quem puxar · Rótulos: `ra1`, `item-09`
-- Descrição: um único diagrama com os 16 casos de uso (UC01 a UC16), montado a partir dos RFs de todas as áreas.
+- Descrição: um único diagrama com todos os casos de uso (no mínimo 16), montado a partir dos RFs de todas as áreas; todo RF coberto por pelo menos um caso de uso (K.3).
 - Critérios: C09.1 a C09.7
 - Bloqueada por: T06 · Bloqueia: T10
 
-**T10 · [RA1][Item 10] Especificações de Caso de Uso (16 especificações)** — tarefa-mãe
+**T10 · [RA1][Item 10] Especificações de Caso de Uso (≥16 especificações)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-10`
 - Critérios: C10.1 a C10.9
 - Bloqueada por: T07, T09 · Bloqueia: T11
 - Sub-issues:
-  - **T10-A** · UC01 a UC04, com protótipos · `eduardofabrii` · `area-a`
-  - **T10-B** · UC05 a UC08, com protótipos · `Jcliz` · `area-b`
-  - **T10-C** · UC09 a UC12, com protótipos · `jvecodev` · `area-c`
-  - **T10-D** · UC13 a UC16, com protótipos · `rdsalvesPUC` · `area-d`
+  - **T10-A** · UC-A1…, mínimo 4, com protótipos · `eduardofabrii` · `area-a`
+  - **T10-B** · UC-B1…, mínimo 4, com protótipos · `Jcliz` · `area-b`
+  - **T10-C** · UC-C1…, mínimo 4, com protótipos · `jvecodev` · `area-c`
+  - **T10-D** · UC-D1…, mínimo 4, com protótipos · `rdsalvesPUC` · `area-d`
   - Rótulos de cada: `ra1`, `item-10`, `por-integrante`, `area-x`
-  - Critérios de cada sub-issue: C10.2 a C10.9 para as 4 especificações da área (10 campos, protótipo de alta fidelidade, fluxos básico, alternativo e de exceção)
+  - Critérios de cada sub-issue: C10.2 a C10.9 para todas as especificações da área (mínimo 4) (10 campos, protótipo de alta fidelidade, fluxos básico, alternativo e de exceção)
 
 **T11 · [RA1][Item 11] Diagrama de Atividades**
 - Responsável: quem puxar · Rótulos: `ra1`, `item-11`
@@ -159,7 +160,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T12 · [RA1][Geral] Revisão cruzada e verificação independente**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
-- Descrição: com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
+- Descrição: antes de tudo, rodar a renumeração única dos IDs provisórios (RF-A1… → RF-1…, US-A1… → US001…, RNF-A1… → RNF-1…, UC-A1… → UC01…; ADR-0011), atualizar todas as referências cruzadas e registrar a correspondência em `entregas/ra1-renumeracao.md`. Depois, com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
 - Critérios: K.1 a K.11, X.8, e todos os `Cxx.y` dos itens 1 a 11
 - Bloqueada por: T01 a T11
 
