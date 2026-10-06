@@ -1,7 +1,7 @@
 <!-- A preencher na tarefa T07-D (#22). Critérios: entregas/ra1-criterios-de-aceite.md -->
-<!-- Área D · Rodrigo Alves · US013 a US016, uma por RF (RF-13 a RF-16). Formato de cada estória:
+<!-- Área D · Rodrigo Alves · US-D1, US-D2…: uma estória por RF da área, com o mesmo número (US-D1 ↔ RF-D1; ADR-0011). Formato de cada estória:
 
-## USnnn – REQUISITO n: <nome do RF>
+## US-Dn – REQUISITO RF-Dn: <nome do RF>
 
 **COMO:** ...
 **POSSO:** ...
