@@ -156,10 +156,10 @@
     "semantic_hash": "f916d56e0bbe5db9fc9c599bb56a1303"
   },
   "especificacao/06-requisitos-funcionais/area-b.md": {
-    "mtime": 1791250013.2388558,
-    "seen": 1791250201.612242,
-    "ast_hash": "cf75731ef183c5939e2e5b672d78f4bd",
-    "semantic_hash": "cf75731ef183c5939e2e5b672d78f4bd"
+    "mtime": 1791329043.7156289,
+    "seen": 1791329287.7882755,
+    "ast_hash": "8de4a6e06991dccd71269162139ba1b4",
+    "semantic_hash": "8de4a6e06991dccd71269162139ba1b4"
   },
   "especificacao/06-requisitos-funcionais/area-c.md": {
     "mtime": 1791250013.2388558,
@@ -186,10 +186,10 @@
     "semantic_hash": "ba4aaa2da99f0bc1a8f64c4caa627f38"
   },
   "especificacao/07-estorias-de-usuario/area-b.md": {
-    "mtime": 1791250013.2408614,
-    "seen": 1791250201.6122465,
-    "ast_hash": "5b92651fe78f97ebae575db87500b35e",
-    "semantic_hash": "5b92651fe78f97ebae575db87500b35e"
+    "mtime": 1791329043.7156289,
+    "seen": 1791329287.7882795,
+    "ast_hash": "8ed92b1500b78f775c03a6d60bc9ed74",
+    "semantic_hash": "8ed92b1500b78f775c03a6d60bc9ed74"
   },
   "especificacao/07-estorias-de-usuario/area-c.md": {
     "mtime": 1791250013.2408614,
@@ -216,10 +216,10 @@
     "semantic_hash": "df8e310ead579c9bd0380f0692c826aa"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1791250013.2438612,
-    "seen": 1791250201.6122594,
-    "ast_hash": "45518468e344da08f00a815f2b503612",
-    "semantic_hash": "45518468e344da08f00a815f2b503612"
+    "mtime": 1791329043.7156289,
+    "seen": 1791329287.7882812,
+    "ast_hash": "675e7f6c442210bbb4759acfac25db07",
+    "semantic_hash": "675e7f6c442210bbb4759acfac25db07"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
     "mtime": 1791250013.2438612,
