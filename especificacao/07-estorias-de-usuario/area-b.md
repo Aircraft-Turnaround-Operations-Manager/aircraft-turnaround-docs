@@ -1,4 +1,4 @@
-## US005 – REQUISITO 5: Consultar as tarefas da equipe atribuídas ao operador
+## US-B1 – REQUISITO RF-B1: Consultar as tarefas da equipe atribuídas ao operador
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** consultar no celular a lista das tarefas da minha equipe atribuídas a mim, com o turnaround (aeronave e posição), o estado, a janela planejada de início e de fim e as tarefas predecessoras ainda não concluídas
@@ -12,7 +12,7 @@
 | 2 | **DADO QUE:** uma tarefa atribuída a mim está no estado "Aguardando" porque uma tarefa predecessora não foi concluída <br> **QUANDO:** abro essa tarefa na lista <br> **ENTÃO:** o sistema mostra o nome da predecessora pendente e não oferece a opção de registrar o início |
 | 3 | **DADO QUE:** no mesmo turnaround existe uma tarefa de outra equipe, ou da minha equipe atribuída a outro operador <br> **QUANDO:** abro a lista de tarefas <br> **ENTÃO:** essa tarefa não aparece na minha lista |
 
-## US006 – REQUISITO 6: Registrar a execução da tarefa
+## US-B2 – REQUISITO RF-B2: Registrar a execução da tarefa
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** registrar o início e a conclusão de uma tarefa da minha equipe atribuída a mim
@@ -29,7 +29,7 @@
 | 5 | **DADO QUE:** todas as demais tarefas obrigatórias do turnaround estão nos estados "Concluída" ou "Não aplicável" <br> **QUANDO:** registro a conclusão da última tarefa obrigatória <br> **ENTÃO:** o sistema grava esse horário como fim real do atendimento em solo (AEGT) [2] e o turnaround passa para o estado "Pronto para liberação" |
 | 6 | **DADO QUE:** a tarefa de embarque atribuída a mim está no estado "Pronta" <br> **QUANDO:** registro o início da tarefa <br> **ENTÃO:** o sistema grava esse horário como início real do embarque (ASBT) [2] no turnaround |
 
-## US007 – REQUISITO 7: Registrar desvio na execução da tarefa
+## US-B3 – REQUISITO RF-B3: Registrar desvio na execução da tarefa
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** pausar uma tarefa da minha equipe atribuída a mim, com justificativa e, quando houver impedimento, com o código do motivo da tabela da Agência Nacional de Aviação Civil (ANAC), e retomá-la depois, ou marcá-la como "Não aplicável" com justificativa
@@ -47,7 +47,7 @@
 | 6 | **DADO QUE:** uma tarefa atribuída a mim já foi iniciada, ou o modelo de tarefas não permite marcá-la como "Não aplicável" <br> **QUANDO:** tento marcar a tarefa como "Não aplicável" <br> **ENTÃO:** o sistema recusa o registro, informa o motivo da recusa e a tarefa mantém o estado |
 | 7 | **DADO QUE:** uma tarefa atribuída a mim ainda não foi iniciada e o modelo de tarefas permite marcá-la como "Não aplicável" <br> **QUANDO:** tento marcar a tarefa como "Não aplicável" sem escrever a justificativa <br> **ENTÃO:** o sistema recusa o registro, pede a justificativa e a tarefa mantém o estado |
 
-## US008 – REQUISITO 8: Confirmar a execução da tarefa por QR Code
+## US-B4 – REQUISITO RF-B4: Confirmar a execução da tarefa por QR Code
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** ler com a câmera do celular os QR Codes fixados nos pontos da aeronave ligados a uma tarefa da minha equipe atribuída a mim, por exemplo as zonas, fileiras ou assentos da cabine na limpeza
@@ -61,9 +61,7 @@
 | 2 | **DADO QUE:** um QR Code pertence a uma tarefa de outra equipe, ou da minha equipe atribuída a outro operador <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema recusa a leitura, informa que o QR Code não pertence a uma tarefa atribuída a mim e não grava nenhum registro |
 | 3 | **DADO QUE:** um QR Code não corresponde a nenhum ponto cadastrado no turnaround <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema informa que o QR Code não foi reconhecido e não grava nenhum registro |
 
-## US-B5 – REQUISITO B5: Propagar o estado das tarefas e do turnaround
-
-<!-- US-B5 e RF-B5: numeração provisória. A numeração definitiva segue a regra de numeração por área que está sendo atualizada no plano de tarefas e no README. -->
+## US-B5 – REQUISITO RF-B5: Propagar o estado das tarefas e do turnaround
 
 **COMO:** Motor de Eventos
 **POSSO:** propagar o estado das tarefas e do turnaround a cada registro feito pelos operadores

@@ -21,7 +21,7 @@ Este repositório não tem código do sistema. Ele guarda três coisas:
 
 Antes de escrever qualquer parte da especificação, leia nesta ordem:
 
-1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D10, metas). A seção 9 dele diz o que ler para cada item.
+1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D11, metas). A seção 9 dele diz o que ler para cada item.
 2. **A issue da sua tarefa** no board [Especificação de Software - 6p](https://github.com/orgs/Aircraft-Turnaround-Operations-Manager/projects/1). Cada issue tem os critérios de aceite e um comentário "Insumos da base de conhecimento" com os arquivos e as decisões que valem para ela.
 3. **Só os arquivos de pesquisa indicados** para o seu item. Não é preciso ler a pesquisa inteira.
 
@@ -39,7 +39,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
 ├── docs/
-│   ├── adr/                   decisões do projeto (D1 a D10), uma por arquivo
+│   ├── adr/                   decisões do projeto (D1 a D11), uma por arquivo
 │   ├── agents/                configuração das skills de IA (issues, rótulos, documentos de domínio)
 │   └── planos/                planos de execução já concluídos (histórico)
 ├── claude/                    texto das instruções do projeto TCC no claude.ai
@@ -66,14 +66,14 @@ especificacao/
 ├── 09-diagrama-geral-de-casos-de-uso.md
 ├── 10-especificacoes-de-caso-de-uso/
 │   ├── 00-item.md + area-a.md … area-d.md
-│   └── prototipos/                  imagens dos protótipos de tela (ucNN-<tela>.png)
+│   └── prototipos/                  imagens dos protótipos de tela (uc-<área><n>-<tela>.png)
 ├── 11-diagrama-de-atividades.md
 └── diagramas/                       fonte e imagem exportada de cada diagrama
 ```
 
 - **Itens por integrante (6, 7, 8 e 10):** cada área edita **apenas o seu `area-x.md`**, assim não há conflito de merge. O `00-item.md` é da tarefa-mãe, que consolida.
-- **Tabelas dos itens 6 e 8:** cada `area-x.md` tem a tabela com o mesmo cabeçalho do template. Na consolidação, as 4 tabelas viram uma só.
-- **Numeração fixa por área:** A = RF-1 a RF-4, B = RF-5 a RF-8, C = RF-9 a RF-12, D = RF-13 a RF-16. O mesmo vale para USnnn, UCnn e RNF-n.
+- **Tabelas dos itens 6 e 8:** cada `area-x.md` tem a tabela com o mesmo cabeçalho. Na consolidação, as 4 tabelas viram uma só. No item 6, a tabela do template ganha a coluna **OBJETIVO** (objetivo do item 1 que o RF atende), e a coluna **SPRINT** fica vazia até a consolidação: o grupo divide em sprints depois que todas as áreas definirem os RFs e os RNFs.
+- **Quantidade e numeração (ADR-0011):** cada área faz **no mínimo 4** RFs, estórias, RNFs e especificações de caso de uso, **sem máximo**. Durante a escrita, os IDs são provisórios por área: RF-A1, RF-A2…, US-A1 (mesmo número do RF), RNF-A1…, UC-A1…. No início da revisão cruzada (T12), um script renumera tudo em sequência (RF-1…RF-n, US001…, RNF-1…, UC01…), na ordem A, B, C, D, e registra a correspondência em `entregas/ra1-renumeracao.md`.
 - **Diagramas:** escritos como código em Mermaid (`.mmd`) ou PlantUML (`.puml`); o BPMN do item 4 é a exceção, em BPMN 2.0 (`.bpmn`, editável no bpmn.io ou no Camunda Modeler), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1). A fonte e o `.png` exportado ficam juntos em `especificacao/diagramas/`, com o mesmo nome base (`04-bpmn-to-be`, `09-casos-de-uso`, `11-atividades`).
 - **Comentários `<!-- ... -->`** nos arquivos ainda não preenchidos são orientações para quem escreve. Apague-os quando o item estiver pronto.
 - **Nome do produto:** sempre "Aircraft Turnaround Orchestration System", exatamente assim.
@@ -101,7 +101,7 @@ A especificação fala de um domínio técnico (operação de solo em aeroportos
 
 | Camada | Onde fica | Para que serve |
 |---|---|---|
-| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D10), uma decisão por arquivo, com contexto, opções e consequências. |
+| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D11), uma decisão por arquivo, com contexto, opções e consequências. |
 | **Pesquisa** | [`pesquisa/`](pesquisa/README.md) | O que o setor faz e o que os produtos similares oferecem, com fonte. |
 | **Resumo** | [`CONTEXT.md`](CONTEXT.md) | O essencial das duas camadas acima, em uma página. |
 

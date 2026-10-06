@@ -1,9 +1,11 @@
 <!-- A preencher na tarefa T06-B (#16). Critérios: entregas/ra1-criterios-de-aceite.md -->
-<!-- Área B · João Pedro Cardoso de Liz · RF-5 a RF-8 -->
+<!-- Área B · João Pedro Cardoso de Liz · RF-B1, RF-B2… (mínimo 4, sem máximo; acrescente linhas se precisar — ADR-0011) -->
 
-| # | REQUISITO FUNCIONAL | ATOR / USUÁRIO | SPRINT |
-|---|---|---|---|
-| RF-5 | | | |
-| RF-6 | | | |
-| RF-7 | | | |
-| RF-8 | | | |
+<!-- OBJETIVO: objetivo do item 1 que o RF atende (C06.5). SPRINT: deixar vazio; o grupo divide em sprints na consolidação (T06). -->
+
+| # | REQUISITO FUNCIONAL | ATOR / USUÁRIO | OBJETIVO | SPRINT |
+|---|---|---|---|---|
+| RF-B1 | | | | |
+| RF-B2 | | | | |
+| RF-B3 | | | | |
+| RF-B4 | | | | |
