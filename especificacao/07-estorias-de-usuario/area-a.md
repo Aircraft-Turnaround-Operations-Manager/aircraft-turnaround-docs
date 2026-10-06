@@ -1,7 +1,7 @@
 <!-- A preencher na tarefa T07-A (#19). Critérios: entregas/ra1-criterios-de-aceite.md -->
-<!-- Área A · Eduardo Fabri · US001 a US004, uma por RF (RF-1 a RF-4). Formato de cada estória:
+<!-- Área A · Eduardo Fabri · US-A1, US-A2…: uma estória por RF da área, com o mesmo número (US-A1 ↔ RF-A1; ADR-0011). Formato de cada estória:
 
-## USnnn – REQUISITO n: <nome do RF>
+## US-An – REQUISITO RF-An: <nome do RF>
 
 **COMO:** ...
 **POSSO:** ...
