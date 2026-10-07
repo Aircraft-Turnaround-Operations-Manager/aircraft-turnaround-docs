@@ -83,7 +83,7 @@ O andamento de cada item está no board, e não neste arquivo.
 ## Entregas (`entregas/`)
 
 - [`ra1-tarefas.md`](entregas/ra1-tarefas.md): o plano do RA1. Divide os itens 1 a 11 em 30 tarefas, com responsáveis, dependências e o modelo de issue.
-- [`ra1-criterios-de-aceite.md`](entregas/ra1-criterios-de-aceite.md): a definição de pronto. Lista o que cada item precisa ter para valer a nota máxima da rubrica (`C01.1` … `C11.7`), as regras gerais do documento (`X.1` a `X.10`) e a revisão cruzada (`K.1` a `K.11`).
+- [`ra1-criterios-de-aceite.md`](entregas/ra1-criterios-de-aceite.md): a definição de pronto. Lista o que cada item precisa ter para valer a nota máxima da rubrica (`C01.1` … `C11.7`), as regras gerais do documento (`X.1` a `X.10`) e a revisão cruzada (`K.1` a `K.12`).
 
 Prazo do RA1: **10/10/2026, 23:59**, em PDF, no Canvas.
 
