@@ -98,6 +98,7 @@
 | 2 | **DADO QUE:** a tarefa de embarque está no estado "Pronta" <br> **QUANDO:** o Operador de Solo/Rampa registra o início dessa tarefa <br> **ENTÃO:** o sistema grava o horário desse registro como início real do embarque (ASBT) [2] no turnaround |
 | 3 | **DADO QUE:** todas as demais tarefas obrigatórias do turnaround estão nos estados "Concluída" ou "Não aplicável" <br> **QUANDO:** o Operador de Solo/Rampa registra a conclusão da última tarefa obrigatória <br> **ENTÃO:** o sistema grava o horário desse registro como fim real do atendimento em solo (AEGT) [2] no turnaround |
 | 4 | **DADO QUE:** o ACGT do turnaround já foi gravado <br> **QUANDO:** o Operador de Solo/Rampa registra o início de outra tarefa que não é a de embarque <br> **ENTÃO:** o sistema mantém o ACGT gravado e não grava nenhum outro marco |
+| 5 | **DADO QUE:** todas as demais tarefas obrigatórias do turnaround estão nos estados "Concluída" ou "Não aplicável" e a última tarefa obrigatória pendente ainda não foi iniciada <br> **QUANDO:** o Operador de Solo/Rampa marca essa tarefa como "Não aplicável" <br> **ENTÃO:** o sistema grava o horário dessa marcação como AEGT no turnaround |
 
 ## US-B8 – REQUISITO RF-B8: Propagar o estado das tarefas e do turnaround
 
@@ -114,5 +115,6 @@
 | 3 | **DADO QUE:** uma tarefa no estado "Aguardando" tem duas predecessoras, uma no estado "Em execução" e outra no estado "Pronta" <br> **QUANDO:** o Operador de Solo/Rampa registra a conclusão da predecessora que estava "Em execução" <br> **ENTÃO:** a tarefa continua no estado "Aguardando", porque ainda há predecessora pendente |
 | 4 | **DADO QUE:** uma tarefa no estado "Aguardando" tem duas predecessoras, uma no estado "Concluída" e outra ainda não iniciada <br> **QUANDO:** o Operador de Solo/Rampa marca a predecessora não iniciada como "Não aplicável" <br> **ENTÃO:** a tarefa passa para o estado "Pronta" |
 | 5 | **DADO QUE:** o turnaround está no estado "Operações em andamento" e só uma tarefa obrigatória não está nos estados "Concluída" ou "Não aplicável" <br> **QUANDO:** o Operador de Solo/Rampa registra a conclusão dessa tarefa <br> **ENTÃO:** o turnaround passa para o estado "Pronto para liberação" e o sistema grava o horário da mudança e o registro que a causou |
+| 6 | **DADO QUE:** o turnaround foi aberto e a tarefa de calçar a aeronave, que não tem predecessora, está no estado "Aguardando" <br> **QUANDO:** o turnaround entra no estado "Em solo", com o registro do horário real de chegada à posição (AIBT) [2] <br> **ENTÃO:** a tarefa de calçar a aeronave passa para o estado "Pronta" e o sistema grava o horário da mudança e o registro que a causou |
 
 Fontes citadas: [2] e [62], conforme a numeração de `pesquisa/fontes.md`.
