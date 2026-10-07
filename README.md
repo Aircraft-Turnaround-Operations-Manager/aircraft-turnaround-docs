@@ -225,6 +225,10 @@ Dois cuidados:
 - Os itens 6, 7, 8 e 10 têm uma tarefa-mãe e 4 sub-issues, uma por área.
 - Quem puxar uma tarefa sem responsável se atribui e move o card para **In progress**.
 
+### Pendências entre áreas
+
+As áreas não avançam no mesmo ritmo, então um texto pode depender de algo que outra área ainda não escreveu. O trabalho segue, e a amarração que faltou fica registrada em uma issue com o rótulo [`pendencia-cruzada`](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues?q=is%3Aissue+is%3Aopen+label%3Apendencia-cruzada), atribuída à área que precisa resolver. Essas issues bloqueiam a tarefa-mãe do item, e a revisão final exige que nenhuma esteja aberta (critério K.12). A regra completa está em [`entregas/ra1-tarefas.md`](entregas/ra1-tarefas.md), seção 1.4.
+
 ### Branches e pull requests
 
 - Uma branch por tarefa, no padrão `ra1/<tarefa>-<descricao-curta>`, em minúsculas e sem acentos. Exemplos: `ra1/t05-atores`, `ra1/t06-a-rfs-area-a`.

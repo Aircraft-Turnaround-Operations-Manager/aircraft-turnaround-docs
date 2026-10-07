@@ -272,6 +272,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.9** As contagens mínimas conferem por contagem real: RF ≥16, estórias ≥16, cada estória com ≥2 critérios, RNF ≥16, especificações ≥16.
 - [ ] **K.10** Todos os critérios gerais X.1 a X.10 estão atendidos.
 - [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D11 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
+- [ ] **K.12** Não há issue aberta com o rótulo `pendencia-cruzada`: toda amarração entre áreas foi resolvida, com o ID do requisito que a atende ou com a decisão do grupo registrada (`entregas/ra1-tarefas.md`, seção 1.4).
 
 ---
 

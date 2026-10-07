@@ -36,6 +36,16 @@ Atribuição de áreas confirmada pelo Rodrigo em 29/09/2026.
 
 Os escopos acima são **orientação para evitar sobreposição**. Os RFs em si são definidos por cada integrante na tarefa T06.
 
+### 1.4 Pendências cruzadas entre áreas
+
+As áreas não avançam no mesmo ritmo. É normal um RF, uma estória ou um caso de uso depender de algo que outra área ainda não escreveu (por exemplo, a área B supõe um modelo de tarefas que é da área A). **O trabalho não para por isso, mas a amarração que ficou faltando precisa ficar registrada.**
+
+- **Onde registrar:** em uma issue com o rótulo `pendencia-cruzada`, com o rótulo do item e o da área que precisa resolver, atribuída ao responsável dessa área. Há uma issue por área e item (por exemplo, "O que as áreas B e D esperam dos RFs da área A"), com uma linha marcável por pendência e a indicação de onde a suposição aparece.
+- **Quem registra:** quem escreve ou revisa. Ao supor algo de outra área, ou ao encontrar uma suposição numa revisão, acrescente uma linha na issue da área correspondente; se ela ainda não existir, crie.
+- **Bloqueio:** cada issue de pendência é registrada como bloqueio da tarefa-mãe do item (T06, T07, T08 ou T10). A consolidação não fecha com pendência aberta.
+- **Como fechar uma linha:** escrever ao lado o ID do requisito que atende (por exemplo, `→ RF-A3`) ou a decisão do grupo de não fazer. Se o requisito sair diferente do que a outra área supôs, o dono da área afetada ajusta o seu texto.
+- **Conferência por item:** quando todas as áreas tiverem entregado um item, a tarefa-mãe começa por uma conferência cruzada daquele item: percorrer as issues `pendencia-cruzada` do item, fechar cada linha e reler os textos das quatro áreas juntos.
+
 ---
 
 ## 2. Rótulos (labels) a criar no repositório `aircraft-turnaround-docs`
@@ -47,6 +57,7 @@ Os escopos acima são **orientação para evitar sobreposição**. Os RFs em si 
 | `geral` | `#BFDADC` | Tarefas que não são de um item específico |
 | `por-integrante` | `#FBCA04` | Subtarefas da cota mínima de 4 por integrante (sem máximo) |
 | `area-a` … `area-d` | `#D4C5F9` | Área funcional (seção 1.2) |
+| `pendencia-cruzada` | `#B60205` | Amarração que uma área deixou dependendo de outra (seção 1.4) |
 
 ---
 
@@ -161,7 +172,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 **T12 · [RA1][Geral] Revisão cruzada e verificação independente**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
 - Descrição: antes de tudo, rodar a renumeração única dos IDs provisórios (RF-A1… → RF-1…, US-A1… → US001…, RNF-A1… → RNF-1…, UC-A1… → UC01…; ADR-0011), atualizar todas as referências cruzadas e registrar a correspondência em `entregas/ra1-renumeracao.md`. Depois, com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
-- Critérios: K.1 a K.11, X.8, e todos os `Cxx.y` dos itens 1 a 11
+- Critérios: K.1 a K.12, X.8, e todos os `Cxx.y` dos itens 1 a 11
 - Bloqueada por: T01 a T11
 
 **T13 · [RA1][Geral] Consolidar em PDF e enviar no Canvas**
