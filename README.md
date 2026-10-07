@@ -83,7 +83,7 @@ O andamento de cada item está no board, e não neste arquivo.
 ## Entregas (`entregas/`)
 
 - [`ra1-tarefas.md`](entregas/ra1-tarefas.md): o plano do RA1. Divide os itens 1 a 11 em 30 tarefas, com responsáveis, dependências e o modelo de issue.
-- [`ra1-criterios-de-aceite.md`](entregas/ra1-criterios-de-aceite.md): a definição de pronto. Lista o que cada item precisa ter para valer a nota máxima da rubrica (`C01.1` … `C11.7`), as regras gerais do documento (`X.1` a `X.10`) e a revisão cruzada (`K.1` a `K.11`).
+- [`ra1-criterios-de-aceite.md`](entregas/ra1-criterios-de-aceite.md): a definição de pronto. Lista o que cada item precisa ter para valer a nota máxima da rubrica (`C01.1` … `C11.7`), as regras gerais do documento (`X.1` a `X.10`) e a revisão cruzada (`K.1` a `K.12`).
 
 Prazo do RA1: **10/10/2026, 23:59**, em PDF, no Canvas.
 
@@ -224,6 +224,10 @@ Dois cuidados:
 - As tarefas do RA1 são issues com o rótulo `ra1`, no board [Especificação de Software - 6p](https://github.com/orgs/Aircraft-Turnaround-Operations-Manager/projects/1).
 - Os itens 6, 7, 8 e 10 têm uma tarefa-mãe e 4 sub-issues, uma por área.
 - Quem puxar uma tarefa sem responsável se atribui e move o card para **In progress**.
+
+### Pendências entre áreas
+
+As áreas não avançam no mesmo ritmo, então um texto pode depender de algo que outra área ainda não escreveu. O trabalho segue, e a amarração que faltou fica registrada em uma issue com o rótulo [`pendencia-cruzada`](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues?q=is%3Aissue+is%3Aopen+label%3Apendencia-cruzada), atribuída à área que precisa resolver. Essas issues bloqueiam a tarefa-mãe do item, e a revisão final exige que nenhuma esteja aberta (critério K.12). A regra completa está em [`entregas/ra1-tarefas.md`](entregas/ra1-tarefas.md), seção 1.4.
 
 ### Branches e pull requests
 
