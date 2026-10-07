@@ -120,10 +120,10 @@
     "semantic_hash": "ba376f4b5162e23923e08ff4347d2901"
   },
   "especificacao/02-e-nao-e-faz-nao-faz.md": {
-    "mtime": 1791059490.0489688,
-    "seen": 1791059690.7331982,
-    "ast_hash": "21cb4ab037afca835cdd385ede217aae",
-    "semantic_hash": "21cb4ab037afca835cdd385ede217aae"
+    "mtime": 1791334177.7390254,
+    "seen": 1791334374.77186,
+    "ast_hash": "bbab911d458d353333ce301de51cadf5",
+    "semantic_hash": "bbab911d458d353333ce301de51cadf5"
   },
   "especificacao/03-visao-do-produto.md": {
     "mtime": 1791059490.0504732,
@@ -168,10 +168,10 @@
     "semantic_hash": "5e4c312c0e67d437506e67fa30850519"
   },
   "especificacao/06-requisitos-funcionais/area-d.md": {
-    "mtime": 1791250013.2398615,
-    "seen": 1791250201.6122437,
-    "ast_hash": "94e72182209aa0de5c673ecdfa16daac",
-    "semantic_hash": "94e72182209aa0de5c673ecdfa16daac"
+    "mtime": 1791334177.7390254,
+    "seen": 1791334374.7718692,
+    "ast_hash": "8475c6b8ace4de0985ec22fb6a5b0388",
+    "semantic_hash": "8475c6b8ace4de0985ec22fb6a5b0388"
   },
   "especificacao/07-estorias-de-usuario/00-item.md": {
     "mtime": 1790781336.3418956,
