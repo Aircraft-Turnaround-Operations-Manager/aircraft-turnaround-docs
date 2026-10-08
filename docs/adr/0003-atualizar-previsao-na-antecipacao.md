@@ -30,13 +30,18 @@ O princípio do projeto é a aderência ao plano: terminar antes não é meta.
 
 ## Decisão
 
-**(b)**, seguindo o padrão de mercado: quando a projeção de prontidão ficar 5 min ou mais **antes** do TOBT planejado, o sistema pede ao Coordenador de Turnaround que atualize a previsão.
+**(b)**, seguindo o padrão de mercado: quando a projeção de prontidão ficar 5 min ou mais **antes** do TOBT vigente, o sistema pede ao Coordenador de Turnaround que atualize a previsão.
+
+- **TOBT planejado:** definido na abertura do turnaround e fixo; é a régua da meta do objetivo 1 (ADR-0001).
+- **TOBT vigente:** a última previsão informada pelo Coordenador de Turnaround; começa igual ao planejado e muda a cada atualização.
+- **[Inferência]** Comparar com o vigente evita pedir a mesma atualização a cada recálculo: depois que o coordenador atualiza o TOBT, o pedido só volta se a projeção se afastar de novo 5 min ou mais, como nas regras que mandam atualizar quando a previsão muda 5 min ou mais [8][9].
 
 ## Consequências
 
 - O Motor de Eventos gera um aviso de "antecipação ≥ 5 min" (não é alerta de risco nem desvio negativo).
 - Regra de negócio nas áreas C (monitoramento) e D (replanejamento), com estórias que tenham critério DADO QUE/QUANDO/ENTÃO para o caso de antecipação.
 - A métrica unilateral da [ADR-0001](0001-referencia-horario-tobt-mais-5-min.md) não muda.
+- Revisão de 08/10/2026: a comparação passou do TOBT planejado para o TOBT vigente, alinhada ao RF-D6 e à US-D6; a meta continua medida contra o TOBT planejado.
 
 ---
 
