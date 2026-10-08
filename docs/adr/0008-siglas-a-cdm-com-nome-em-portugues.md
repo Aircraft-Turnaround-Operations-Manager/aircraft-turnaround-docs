@@ -29,6 +29,8 @@ relacionados: [marcos-e-horarios, a-cdm]
 
 **(a).** As siglas são usadas com o nome em português na primeira ocorrência de cada item da especificação.
 
+**Complemento (07/10/2026).** A regra vale para **toda** sigla usada na especificação, e não só para as de marcos e horários: inclui a própria A-CDM e as de órgãos e normas (por exemplo, ANAC, IATA e ISO/IEC). O formato é "nome em português (SIGLA)", também nas regras de negócio; depois da primeira ocorrência no item, usa-se só a sigla.
+
 ## Consequências
 
 - Glossário curto no [CONTEXT.md](../../CONTEXT.md); glossário completo em [Marcos e horários](../../pesquisa/topicos/marcos-e-horarios.md).
