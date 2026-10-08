@@ -304,6 +304,9 @@
   - **A2. Ponto já confirmado** (passo 6): o QR Code lido é de um ponto da tarefa que já foi confirmado.
     1. O sistema informa que o ponto já estava confirmado, mantém o registro da primeira leitura e não grava outro.
     2. O caso de uso volta ao passo 5.
+  - **A3. QR Code de outra tarefa dele em execução** (passo 6): o QR Code é de um ponto de outra tarefa atribuída ao operador, também "Em execução".
+    1. O sistema grava a leitura na tarefa a que o QR Code pertence, com o usuário e o horário, marca o ponto como "confirmado" nessa tarefa e informa em qual tarefa a leitura foi registrada (RF-B6).
+    2. O caso de uso volta ao passo 5.
 - **Fluxos de exceção:**
   - **E1. QR Code de tarefa não atribuída ao operador** (passo 6): o QR Code pertence a uma tarefa de outra equipe, ou da mesma equipe atribuída a outro operador.
     1. O sistema recusa a leitura, informa que o QR Code não pertence a uma tarefa atribuída a ele e não grava nenhum registro.
@@ -313,12 +316,9 @@
     2. O caso de uso volta ao passo 5.
   - **E3. QR Code de tarefa atribuída a ele fora de execução** (passo 6): o QR Code é de uma tarefa atribuída ao operador que está "Pronta" ou "Pausada", por exemplo porque a tarefa foi pausada com a câmera aberta ou o QR Code lido é de outra tarefa dele.
     1. O sistema recusa a leitura, informa que a tarefa precisa estar em execução e não grava nenhum registro.
-  - **E4. QR Code de outra tarefa dele em execução** (passo 6): o QR Code é de um ponto de outra tarefa atribuída ao operador, também "Em execução".
-    1. O sistema recusa a leitura, informa a qual tarefa o QR Code pertence e não grava nenhum registro.
-    2. O caso de uso volta ao passo 5.
-  - **E5. Câmera indisponível** (passo 4): o navegador não tem permissão de usar a câmera, ou o celular não tem câmera disponível.
+  - **E4. Câmera indisponível** (passo 4): o navegador não tem permissão de usar a câmera, ou o celular não tem câmera disponível.
     1. O sistema informa que a leitura precisa da câmera e como permitir o acesso no navegador, e não grava nenhum registro.
-  - **E6. Sem conexão com a internet** (passo 6):
+  - **E5. Sem conexão com a internet** (passo 6):
     1. O sistema guarda a leitura no celular com o horário da ação e exibe o ponto como "confirmado", com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; a leitura que já não for válida no servidor é recusada sem alterar a tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou, e o ponto volta para "a confirmar".
 
