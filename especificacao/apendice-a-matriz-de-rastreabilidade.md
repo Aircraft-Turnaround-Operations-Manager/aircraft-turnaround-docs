@@ -17,15 +17,15 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-B3, UC-B6, UC-B8 | RNF-B1, RNF-B2 |
 | RF-B7 | Obj. 1 | Motor de Eventos | US-B7 | UC-B5, UC-B7, UC-B8 | — |
 | RF-B8 | Obj. 2 | Motor de Eventos | US-B8 | UC-B2, UC-B4, UC-B5, UC-B8 | — |
-| RF-D1 | Obj. 3 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
-| RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D3 | Obj. 3 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
-| RF-D4 | Obj. 3 | Autoridade de Liberação | — | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
-| RF-D5 | Obj. 3 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
-| RF-D6 | Obj. 1 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
-| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D8 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D9 | Obj. 3 | Operador de Solo/Rampa | — | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | — | RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
+| RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | US-D2 | — | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D3 | Obj. 3 | Coordenador de Turnaround | US-D3 | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
+| RF-D4 | Obj. 3 | Autoridade de Liberação | US-D4 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D5 | Obj. 3 | Coordenador de Turnaround | US-D5 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D6 | Obj. 1 | Coordenador de Turnaround | US-D6 | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
+| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | US-D7 | — | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D8 | Obj. 2 | Coordenador de Turnaround | US-D8 | — | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D9 | Obj. 3 | Operador de Solo/Rampa | US-D9 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
 
 ### A.2 Objetivos × requisitos funcionais
 
@@ -52,15 +52,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.4 Lacunas encontradas
 
-- RF-D1 sem estória (K.2)
-- RF-D2 sem estória (K.2)
-- RF-D3 sem estória (K.2)
-- RF-D4 sem estória (K.2)
-- RF-D5 sem estória (K.2)
-- RF-D6 sem estória (K.2)
-- RF-D7 sem estória (K.2)
-- RF-D8 sem estória (K.2)
-- RF-D9 sem estória (K.2)
 - RF-D1 sem caso de uso (K.3)
 - RF-D2 sem caso de uso (K.3)
 - RF-D3 sem caso de uso (K.3)
