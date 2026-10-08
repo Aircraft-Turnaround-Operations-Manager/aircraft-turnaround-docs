@@ -36,10 +36,10 @@
     "semantic_hash": "0e53d3201a6875f46650cdc0121d02c4"
   },
   "docs/adr/0003-atualizar-previsao-na-antecipacao.md": {
-    "mtime": 1790911621.9453838,
-    "seen": 1790911860.3269756,
-    "ast_hash": "1ab322e2b4ba1a75a0eb3672722ade16",
-    "semantic_hash": "1ab322e2b4ba1a75a0eb3672722ade16"
+    "mtime": 1791431614.6715431,
+    "seen": 1791431825.16661,
+    "ast_hash": "2cb64a3b003e8383cc9121cfba859599",
+    "semantic_hash": "2cb64a3b003e8383cc9121cfba859599"
   },
   "docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md": {
     "mtime": 1791081668.536307,
@@ -198,10 +198,10 @@
     "semantic_hash": "ce4f312a26ea597fae7671e5fd705137"
   },
   "especificacao/07-estorias-de-usuario/area-d.md": {
-    "mtime": 1791250013.2418609,
-    "seen": 1791250201.6122487,
-    "ast_hash": "055e625807d44abcd40301b90c5ca5eb",
-    "semantic_hash": "055e625807d44abcd40301b90c5ca5eb"
+    "mtime": 1791431614.6715431,
+    "seen": 1791431825.1666453,
+    "ast_hash": "1fc2d76f937f30d0d050f73645260d6f",
+    "semantic_hash": "1fc2d76f937f30d0d050f73645260d6f"
   },
   "especificacao/08-requisitos-nao-funcionais/00-item.md": {
     "mtime": 1791250013.2428603,
@@ -444,9 +444,9 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791421803.2718992,
-    "seen": 1791423744.4360747,
-    "ast_hash": "0be4d1254c9a0de2c4cf3a91fd9ccd9e",
-    "semantic_hash": "0be4d1254c9a0de2c4cf3a91fd9ccd9e"
+    "mtime": 1791431614.6715431,
+    "seen": 1791431825.1666586,
+    "ast_hash": "e1a258c5f41c14e41d4ec16cf69b849b",
+    "semantic_hash": "e1a258c5f41c14e41d4ec16cf69b849b"
   }
 }
