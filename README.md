@@ -34,7 +34,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 ├── AGENTS.md                  regras para assistentes de IA (Codex, Copilot, Cursor e outros)
 ├── CLAUDE.md                  faz o Claude Code carregar o AGENTS.md e o CONTEXT.md
 │
-├── especificacao/             a entrega: itens 1 a 11 do template da disciplina
+├── especificacao/             a entrega: itens 1 a 11 do template da disciplina e o Apêndice A
 ├── entregas/                  plano de tarefas e critérios de aceite de cada entrega
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
@@ -43,6 +43,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 │   ├── agents/                configuração das skills de IA (issues, rótulos, documentos de domínio)
 │   └── planos/                planos de execução já concluídos (histórico)
 ├── claude/                    texto das instruções do projeto TCC no claude.ai
+├── scripts/                   script que gera a matriz de rastreabilidade (Apêndice A)
 │
 ├── graphify-out/              grafo de conhecimento gerado a partir dos arquivos acima
 ├── .graphifyignore            o que fica fora do grafo
@@ -68,6 +69,7 @@ especificacao/
 │   ├── 00-item.md + area-a.md … area-d.md
 │   └── prototipos/                  imagens dos protótipos de tela (uc-<área><n>-<tela>.png)
 ├── 11-diagrama-de-atividades.md
+├── apendice-a-matriz-de-rastreabilidade.md   gerado por script (ADR-0012)
 └── diagramas/                       fonte e imagem exportada de cada diagrama
 ```
 

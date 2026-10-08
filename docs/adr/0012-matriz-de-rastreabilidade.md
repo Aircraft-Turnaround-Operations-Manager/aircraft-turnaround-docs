@@ -6,7 +6,7 @@ decisao: D12
 status: aceita
 data: 2026-10-07
 decisor: Rodrigo Alves
-itens_template: [1, 5, 6, 7, 8, 9, 10]
+itens_template: [6, 7, 8, 10]
 areas: [A, B, C, D]
 fontes: []
 relacionados: [adr-0011]
