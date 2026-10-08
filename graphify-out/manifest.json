@@ -1,9 +1,9 @@
 {
   "AGENTS.md": {
-    "mtime": 1791423400.2814584,
-    "seen": 1791423744.4360106,
-    "ast_hash": "d754f810b4cc7b70976e4585cb5cd4a8",
-    "semantic_hash": "d754f810b4cc7b70976e4585cb5cd4a8"
+    "mtime": 1791427903.6070566,
+    "seen": 1791428341.1230664,
+    "ast_hash": "e036f388c4ea435847a61827c418c725",
+    "semantic_hash": "e036f388c4ea435847a61827c418c725"
   },
   "CLAUDE.md": {
     "mtime": 1790911621.9407463,
@@ -12,16 +12,16 @@
     "semantic_hash": "5c24644a54eae7e0af3d7e1db45a1a58"
   },
   "CONTEXT.md": {
-    "mtime": 1791423400.2824564,
-    "seen": 1791423744.4360154,
-    "ast_hash": "dd8d3fc610f881d834035dfc66d379e5",
-    "semantic_hash": "dd8d3fc610f881d834035dfc66d379e5"
+    "mtime": 1791427903.6070566,
+    "seen": 1791428341.1230707,
+    "ast_hash": "fc4713447d9422e9c5cb3fd874da7d69",
+    "semantic_hash": "fc4713447d9422e9c5cb3fd874da7d69"
   },
   "README.md": {
-    "mtime": 1791423400.2834558,
-    "seen": 1791423744.4360163,
-    "ast_hash": "3fb02a70b02eb118bfc76cc815248cbe",
-    "semantic_hash": "3fb02a70b02eb118bfc76cc815248cbe"
+    "mtime": 1791427903.6080222,
+    "seen": 1791428341.123072,
+    "ast_hash": "0fc61ced46e731f3da556010e4917eca",
+    "semantic_hash": "0fc61ced46e731f3da556010e4917eca"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -66,10 +66,10 @@
     "semantic_hash": "409b96db64bff1588186e52d98fc4e92"
   },
   "docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md": {
-    "mtime": 1790911621.9483905,
-    "seen": 1790911860.32698,
-    "ast_hash": "ee296ec08d69555fb783ca1a92c51c5c",
-    "semantic_hash": "ee296ec08d69555fb783ca1a92c51c5c"
+    "mtime": 1791428162.4343038,
+    "seen": 1791428341.123082,
+    "ast_hash": "d7ad0a5d04fb6f5959fb8f9097c6abe2",
+    "semantic_hash": "d7ad0a5d04fb6f5959fb8f9097c6abe2"
   },
   "docs/adr/0009-nome-coordenador-de-turnaround.md": {
     "mtime": 1790911621.9488966,
@@ -78,10 +78,10 @@
     "semantic_hash": "42e6008fc628f33c74be511ae8011e2c"
   },
   "docs/adr/README.md": {
-    "mtime": 1791423400.2844555,
-    "seen": 1791423744.436041,
-    "ast_hash": "d2936eeb4407bdd66045c5a0eb017d18",
-    "semantic_hash": "d2936eeb4407bdd66045c5a0eb017d18"
+    "mtime": 1791428162.4343038,
+    "seen": 1791428341.1230876,
+    "ast_hash": "fdc480478e0e61bc22e733239a7e4893",
+    "semantic_hash": "fdc480478e0e61bc22e733239a7e4893"
   },
   "docs/agents/domain.md": {
     "mtime": 1790815972.2774098,
