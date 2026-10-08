@@ -141,7 +141,7 @@ Cada arquivo `NNNN-titulo.md` registra uma decisão: contexto, opções consider
 
 O [Graphify](https://github.com/Graphify-Labs/graphify) lê os arquivos Markdown do repositório e monta um grafo: cada conceito, decisão, fonte ou item da especificação vira um nó, e cada relação entre eles vira uma ligação. O grafo ajuda a responder "o que eu preciso ler sobre X?" e "o que mais depende desta decisão?".
 
-**O grafo serve para achar o que ler. A decisão é sempre tomada pelos arquivos Markdown.**
+**Antes de escrever ou revisar um item, consulte o grafo** pelos nós e termos-chave do item, para ver o que se liga a ele nas outras áreas, nas ADRs e nos critérios. O grafo serve para achar o que ler; a decisão é sempre tomada pelos arquivos Markdown.
 
 | Arquivo | O que é |
 |---|---|
