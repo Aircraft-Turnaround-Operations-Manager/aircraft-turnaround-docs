@@ -67,7 +67,7 @@ Todos os arquivos ficam na pasta local "01 Especificacao de Software" (OneDrive,
 
 ## 2. Regras gerais (valem para o documento inteiro)
 
-- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012). As tabelas "Base" dos arquivos de área não entram no PDF.
+- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012).
 - [ ] **X.2 — Capa.** Nome do produto no lugar de "NOME DO PRODUTO DE SOFTWARE", os 4 autores no lugar de "NOME AUTOR 1..4" e ano **2026** (o template traz 2025).
 - [ ] **X.3 — Textos em azul.** Todos os textos personalizáveis (em azul) foram substituídos e estão na cor **preta**.
 - [ ] **X.4 — Textos em laranja.** Todos os quadros de aviso e textos de orientação em **laranja** foram removidos.
@@ -191,6 +191,7 @@ Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coorde
 - [ ] **C08.3** Cada RNF está classificado em uma característica da **ISO/IEC 25010**.
 - [ ] **C08.4** Cada RNF é **mensurável**, com medida ou critério de aceitação objetivo (ex.: tempo de resposta ≤ X s no percentil 95). Nada de "ser rápido" ou "ser seguro".
 - [ ] **C08.5** Cobre várias categorias: desempenho, segurança/LGPD, confiabilidade, usabilidade e manutenibilidade, no mínimo.
+- [ ] **C08.6** Cada RNF cita, no próprio texto, os RFs a que se aplica: por ID, por faixa ("RF-B1 a RF-B6") ou com "todos os RFs" (ADR-0012). Sem tabela "Base" abaixo da tabela.
 
 ### 3.9 Item 9 — Diagrama Geral de Casos de Uso (0,2)
 
@@ -217,6 +218,7 @@ Referência do projeto (já definida pelo grupo): Operador de Solo/Rampa, Coorde
 - [ ] **C10.7** A linguagem é testável: cada passo é observável.
 - [ ] **C10.8** Cada especificação corresponde a um caso de uso do diagrama (item 9), com o mesmo nome e os mesmos atores.
 - [ ] **C10.9** As regras de negócio são coerentes com as estórias e os RFs.
+- [ ] **C10.10** Cada especificação cita, nas regras de negócio ou nos fluxos, o ID dos RFs que atende (ADR-0012).
 
 ### 3.11 Item 11 — Diagrama de Atividades (0,2)
 

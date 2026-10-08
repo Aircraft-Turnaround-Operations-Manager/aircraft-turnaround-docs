@@ -9,17 +9,4 @@
 | RF-B7 | O sistema deve registrar os marcos do atendimento em solo a partir dos registros dos operadores: o horário do primeiro início de tarefa registrado no turnaround como início real do atendimento em solo (ACGT), o horário do início da tarefa de embarque como início real do embarque (ASBT) e o horário do registro que leva a última tarefa obrigatória pendente aos estados "Concluída" ou "Não aplicável" como fim real do atendimento em solo (AEGT) [2][4]. | Motor de Eventos | Obj. 1 | |
 | RF-B8 | O sistema deve propagar o estado das tarefas e do turnaround a cada registro: quando o turnaround entra no estado "Em solo", com o registro do horário real de chegada à posição (AIBT) [2], cada tarefa sem predecessora passa de "Aguardando" para "Pronta"; quando o primeiro início de tarefa é registrado, o turnaround passa de "Em solo" para "Operações em andamento"; quando uma tarefa passa para "Concluída" ou "Não aplicável", cada tarefa sucessora cujas predecessoras estejam todas nesses dois estados passa de "Aguardando" para "Pronta"; quando todas as tarefas obrigatórias do turnaround estão nesses dois estados, o turnaround passa de "Operações em andamento" para "Pronto para liberação". Cada mudança de estado feita pela propagação é gravada com o horário e com o registro que a causou. | Motor de Eventos | Obj. 2 | |
 
-**Base dos RFs da área B.**
-
-| RF | Base |
-|---|---|
-| RF-B1 | [Fato] consulta das próprias tarefas pelo operador em app/web [43][46]; equipe do operador como dado (ADR-0010). |
-| RF-B2 | [Inferência] registro de início por tarefa (base: [2][40]); aceitar o início só de tarefa "Pronta" respeita as dependências entre as atividades [22]. |
-| RF-B3 | [Inferência] registro de conclusão por tarefa (base: [2][40]); aceitar a conclusão só de tarefa "Em execução" impede conclusão sem início, como pede a métrica do objetivo 2; exigir todos os pontos de QR Code confirmados antes da conclusão é regra do projeto (ADR-0007). |
-| RF-B4 | [Inferência] pausa com justificativa (pausa não descrita nas fontes), como nos itens 2 e 5; código do impedimento pela tabela completa da ANAC, 72 códigos (ADR-0006) [62]. |
-| RF-B5 | [Inferência] "Não aplicável" com justificativa; tarefas que admitem a marcação definidas no modelo de tarefas da área A (base: [22][45]). |
-| RF-B6 | [Inferência] confirmação por QR Code lido pelo celular (ADR-0007; base: [42][63][64]). |
-| RF-B7 | [Fato] marcos ACGT, ASBT e AEGT [2][4]; [Inferência] derivá-los dos registros de início e conclusão das tarefas é regra do projeto; gravar o AEGT também quando a última tarefa obrigatória pendente é marcada "Não aplicável" mantém o AEGT como a entrada em "Pronto para liberação", como no `CONTEXT.md`. |
-| RF-B8 | [Fato] dependências entre as atividades do turnaround, como a limpeza da cabine, que só começa depois do desembarque [22]; quadro "Faz" do item 2, que atribui a propagação de estado à área B; [Inferência] a regra de passagem para "Operações em andamento", "Pronta" e "Pronto para liberação" é do projeto e segue os estados do `CONTEXT.md`; a tarefa sem predecessora fica "Pronta" na entrada em "Em solo", que corresponde ao AIBT [2], porque é quando a aeronave está na posição e o atendimento pode começar. |
-
-Fontes citadas: [2], [4], [22], [40], [42], [43], [45], [46], [62], [63] e [64], conforme a numeração de `pesquisa/fontes.md`.
+Fontes citadas: [2], [4] e [62], conforme a numeração de `pesquisa/fontes.md`.

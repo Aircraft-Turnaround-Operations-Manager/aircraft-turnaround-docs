@@ -132,7 +132,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T08 · [RA1][Item 08] Relação de Requisitos Não Funcionais (≥16 RNFs)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-08`
-- Critérios: C08.1 a C08.5
+- Critérios: C08.1 a C08.6
 - Bloqueada por: T03 (pode correr em paralelo com T06 e T07)
 - Sub-issues:
   - **T08-A** · RNF-A1…, mínimo 4 (Segurança/LGPD, Compatibilidade) · `eduardofabrii` · `area-a`
@@ -140,7 +140,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
   - **T08-C** · RNF-C1…, mínimo 4 (Eficiência de desempenho, Usabilidade) · `jvecodev` · `area-c`
   - **T08-D** · RNF-D1…, mínimo 4 (Manutenibilidade, Confiabilidade) · `rdsalvesPUC` · `area-d`
   - Rótulos de cada: `ra1`, `item-08`, `por-integrante`, `area-x`
-  - Critérios de cada sub-issue: C08.2 a C08.4 para todos os RNFs da área (mínimo 4)
+  - Critérios de cada sub-issue: C08.2 a C08.4 e C08.6 para todos os RNFs da área (mínimo 4)
 
 ### Fase 3 — Casos de uso (todos + integração)
 
@@ -152,7 +152,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T10 · [RA1][Item 10] Especificações de Caso de Uso (≥16 especificações)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra1`, `item-10`
-- Critérios: C10.1 a C10.9
+- Critérios: C10.1 a C10.10
 - Bloqueada por: T07, T09 · Bloqueia: T11
 - Sub-issues:
   - **T10-A** · UC-A1…, mínimo 4, com protótipos · `eduardofabrii` · `area-a`
@@ -160,7 +160,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
   - **T10-C** · UC-C1…, mínimo 4, com protótipos · `jvecodev` · `area-c`
   - **T10-D** · UC-D1…, mínimo 4, com protótipos · `rdsalvesPUC` · `area-d`
   - Rótulos de cada: `ra1`, `item-10`, `por-integrante`, `area-x`
-  - Critérios de cada sub-issue: C10.2 a C10.9 para todas as especificações da área (mínimo 4) (10 campos, protótipo de alta fidelidade, fluxos básico, alternativo e de exceção)
+  - Critérios de cada sub-issue: C10.2 a C10.10 para todas as especificações da área (mínimo 4) (10 campos, protótipo de alta fidelidade, fluxos básico, alternativo e de exceção)
 
 **T11 · [RA1][Item 11] Diagrama de Atividades**
 - Responsável: quem puxar · Rótulos: `ra1`, `item-11`
@@ -177,7 +177,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T13 · [RA1][Geral] Consolidar em PDF e enviar no Canvas**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
-- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais, seguidas do Apêndice A — Matriz de rastreabilidade, sem as tabelas "Base" dos arquivos de área (ADR-0012); quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
+- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012); quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
 - Critérios: X.1 a X.7, X.9, X.10
 - Bloqueada por: T12
 
