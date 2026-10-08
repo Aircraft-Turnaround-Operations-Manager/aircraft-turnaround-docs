@@ -19,7 +19,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0005](0005-abastecimento-com-passageiros-configuravel.md) | D5 | Abastecimento com passageiros a bordo: regra configurável por operador | 4, 6, 10, 11 |
 | [0006](0006-codigos-de-atraso-tabela-anac.md) | D6 | Códigos de atraso: tabela completa da ANAC (72 códigos) | 2, 4, 6, 7, 10 |
 | [0007](0007-dados-do-operador-e-qr-code.md) | D7 | Dados registrados pelo operador, inclusive QR Code lido pelo celular | 2, 3, 4, 6, 7, 10 |
-| [0008](0008-siglas-a-cdm-com-nome-em-portugues.md) | D8 | Siglas do A-CDM com nome em português | todos |
+| [0008](0008-siglas-a-cdm-com-nome-em-portugues.md) | D8 | Siglas do A-CDM com nome em português; vale para toda sigla, inclusive órgãos e normas | todos |
 | [0009](0009-nome-coordenador-de-turnaround.md) | D9 | Nome único: Coordenador de Turnaround | todos |
 | [0010](0010-administrador-usuario-e-equipe-do-operador.md) | D10 | Administrador do Sistema como ator; ator abstrato Usuário; equipe do operador como dado (complementa a 0004) | 5, 6, 7, 9, 10 |
 | [0011](0011-minimo-por-integrante-e-numeracao-provisoria.md) | D11 | Mínimo de 4 por integrante, sem máximo; numeração provisória por área e renumeração única no T12 | 6, 7, 8, 9, 10 |
