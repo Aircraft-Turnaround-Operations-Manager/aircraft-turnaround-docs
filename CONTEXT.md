@@ -96,7 +96,7 @@ Os 5 min têm referência direta no setor (tolerância em torno do TOBT). Os 80%
 - **Decisões:** [docs/adr/README.md](docs/adr/README.md)
 - **Fontes:** [pesquisa/fontes.md](pesquisa/fontes.md)
 - **Plano e critérios do RA1:** [entregas/ra1-tarefas.md](entregas/ra1-tarefas.md), [entregas/ra1-criterios-de-aceite.md](entregas/ra1-criterios-de-aceite.md)
-- **Grafo** (quando existir): `graphify-out/GRAPH_REPORT.md` e `graphify-out/graph.html`. Use para achar o que ler; decida pelos arquivos.
+- **Grafo:** `graphify-out/` (`GRAPH_REPORT.md`, `graph.html`, `graph.json`). **Antes de escrever ou revisar um item, consulte o grafo** pelos nós e termos-chave do item e leia o que se liga a eles nas outras áreas, ADRs e critérios; decida pelos arquivos (`AGENTS.md`, regra 6).
 
 ## 9. O que ler para cada item
 
