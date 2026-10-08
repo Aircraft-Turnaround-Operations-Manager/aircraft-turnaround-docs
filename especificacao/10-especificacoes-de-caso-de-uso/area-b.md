@@ -14,7 +14,10 @@
   4. Em tarefa "Aguardando", o detalhe mostra o nome de cada predecessora pendente e não oferece a opção "Iniciar" (US-B1, critério 2).
   5. A lista é ordenada pelo início planejado das tarefas.
   6. Turnaround aberto é o que ainda não chegou ao estado "Fora de bloco".
-- **Protótipo(s) de tela:** *(a incluir)* lista de tarefas (`prototipos/uc-b1-lista-de-tarefas.png`) e detalhe da tarefa (`prototipos/uc-b1-detalhe-da-tarefa.png`).
+- **Protótipo(s) de tela:** lista de tarefas e detalhe da tarefa.
+
+  ![UC-B1 – lista de tarefas](prototipos/uc-b1-lista-de-tarefas.png) ![UC-B1 – detalhe da tarefa](prototipos/uc-b1-detalhe-da-tarefa.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre a lista de tarefas no navegador do celular.
   2. O sistema exibe as tarefas da equipe do operador atribuídas a ele nos turnarounds abertos, ordenadas pelo início planejado, cada uma com o turnaround (aeronave e posição), o estado, a janela planejada de início e de fim e as predecessoras ainda não concluídas.
@@ -61,7 +64,10 @@
   2. Só o operador a quem a tarefa da sua equipe está atribuída pode iniciá-la (ADR-0010).
   3. O registro grava o usuário e o horário da ação. Sem conexão, o horário é o do celular no momento da ação, com precisão de minuto completo, e não o do envio (RNF-B2).
   4. O Motor de Eventos processa todo início aceito: o primeiro início do turnaround grava o início real do atendimento em solo (ACGT) e leva o turnaround de "Em solo" para "Operações em andamento"; o início da tarefa de embarque grava o início real do embarque (ASBT) [2] (UC-B7, UC-B8).
-- **Protótipo(s) de tela:** *(a incluir)* detalhe da tarefa com a opção "Iniciar" e a confirmação do início (`prototipos/uc-b2-iniciar-tarefa.png`).
+- **Protótipo(s) de tela:** detalhe da tarefa com a opção "Iniciar" e a confirmação do início.
+
+  ![UC-B2 – iniciar tarefa](prototipos/uc-b2-iniciar-tarefa.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre uma tarefa no estado "Pronta" na lista de tarefas (UC-B1).
   2. O sistema exibe o detalhe da tarefa com a opção "Iniciar".
@@ -111,7 +117,10 @@
   3. Só o operador a quem a tarefa da sua equipe está atribuída pode concluí-la (ADR-0010).
   4. O registro grava o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-B2).
   5. O Motor de Eventos processa toda conclusão aceita: as sucessoras cujas predecessoras terminaram passam para "Pronta"; a conclusão da última tarefa obrigatória grava o fim real do atendimento em solo (AEGT) [2][4] e leva o turnaround para "Pronto para liberação" (UC-B7, UC-B8).
-- **Protótipo(s) de tela:** *(a incluir)* detalhe da tarefa com a opção "Concluir", os pontos de QR Code confirmados e a confirmação da conclusão (`prototipos/uc-b3-concluir-tarefa.png`).
+- **Protótipo(s) de tela:** detalhe da tarefa com a opção "Concluir", os pontos de QR Code confirmados e a confirmação da conclusão.
+
+  ![UC-B3 – concluir tarefa](prototipos/uc-b3-concluir-tarefa.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre uma tarefa no estado "Em execução", sem pontos de QR Code, na lista de tarefas (UC-B1).
   2. O sistema exibe o detalhe da tarefa com a opção "Concluir".
@@ -174,7 +183,10 @@
   5. A tarefa "Pausada" não conta como terminada para a propagação: as sucessoras continuam "Aguardando" (RF-B8).
   6. Com a tarefa "Pausada", a leitura de QR Code e a conclusão são recusadas (UC-B6, UC-B3).
   7. A justificativa e o código gravados ficam disponíveis para o Coordenador de Turnaround, que pode agir antes que o horário-alvo de prontidão (TOBT) [2] fique em risco (US-B4); a exibição ao coordenador e o tratamento do risco são das áreas C e D.
-- **Protótipo(s) de tela:** *(a incluir)* formulário de pausa, com a justificativa e a escolha do código da ANAC (`prototipos/uc-b4-pausar-tarefa.png`), e detalhe da tarefa pausada com a opção "Retomar" (`prototipos/uc-b4-retomar-tarefa.png`).
+- **Protótipo(s) de tela:** formulário de pausa, com a justificativa e a escolha do código da ANAC, e detalhe da tarefa pausada com a opção "Retomar".
+
+  ![UC-B4 – pausar tarefa](prototipos/uc-b4-pausar-tarefa.png) ![UC-B4 – retomar tarefa](prototipos/uc-b4-retomar-tarefa.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre uma tarefa no estado "Em execução" na lista de tarefas (UC-B1).
   2. O sistema exibe o detalhe da tarefa com a opção "Pausar".
@@ -230,7 +242,10 @@
   4. A marcação grava o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-B2).
   5. Para a propagação, a tarefa "Não aplicável" conta como terminada, igual à "Concluída": as sucessoras sem outra predecessora pendente passam para "Pronta" (RF-B8); se era a última tarefa obrigatória pendente, o horário da marcação é gravado como fim real do atendimento em solo (AEGT) [2][4] e o turnaround passa para "Pronto para liberação" (RF-B7, RF-B8).
   6. A tarefa "Não aplicável" é final: não aceita início, pausa, conclusão nem leitura de QR Code.
-- **Protótipo(s) de tela:** *(a incluir)* formulário de marcação como "Não aplicável", com o campo de justificativa (`prototipos/uc-b5-nao-aplicavel.png`).
+- **Protótipo(s) de tela:** formulário de marcação como "Não aplicável", com o campo de justificativa.
+
+  ![UC-B5 – marcar como "Não aplicável"](prototipos/uc-b5-nao-aplicavel.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre, na lista de tarefas (UC-B1), uma tarefa "Aguardando" ou "Pronta" que o modelo permite marcar como "Não aplicável".
   2. O sistema exibe o detalhe da tarefa com a opção "Não aplicável".
@@ -285,7 +300,10 @@
   5. Os pontos são definidos por tarefa no modelo de tarefas, por zona, fileira ou assento. [Inferência] Ler assento por assento pode atrasar a limpeza; por isso a zona ou a fileira são as opções preferidas, e o assento fica como opção (ADR-0007).
   6. [Fato] Há leitura de QR Code para comprovar limpeza em aeroporto [63] e checklist digital de limpeza da cabine por zona [64]; [Inferência] ligar a leitura por ponto ao andamento do turnaround é regra do projeto (ADR-0007).
   7. A leitura usa a câmera do celular pelo navegador, sem aplicativo instalado (RNF-B3, RNF-B4).
-- **Protótipo(s) de tela:** *(a incluir)* leitura do QR Code pela câmera (`prototipos/uc-b6-leitura-qr-code.png`) e lista de pontos da tarefa, com os confirmados e os que faltam (`prototipos/uc-b6-pontos-da-tarefa.png`).
+- **Protótipo(s) de tela:** leitura do QR Code pela câmera e lista de pontos da tarefa, com os confirmados e os que faltam.
+
+  ![UC-B6 – leitura do QR Code](prototipos/uc-b6-leitura-qr-code.png) ![UC-B6 – pontos da tarefa](prototipos/uc-b6-pontos-da-tarefa.png)
+
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre, na lista de tarefas (UC-B1), uma tarefa "Em execução" com pontos de QR Code, por exemplo a limpeza da cabine com um QR Code por zona.
   2. O sistema exibe o detalhe com a lista de pontos, cada um marcado como "confirmado" ou "a confirmar", a contagem de confirmados, por exemplo "0 de 6 zonas", e a opção "Ler QR Code".
@@ -338,7 +356,10 @@
   4. O horário de cada marco é o horário da ação do operador, inclusive no registro feito sem conexão, e não o horário de chegada ao servidor (RNF-B2). [Inferência] É o que a régua do TOBT planejado + 5 minutos [2][3] (ADR-0001) precisa para medir a aderência.
   5. O início de uma tarefa que não é a de embarque, com o ACGT já gravado, não grava nenhum marco (US-B7, critério 4).
   6. [Fato] Os marcos e as siglas são os da tomada de decisão colaborativa em aeroportos (A-CDM) [2][4]; [Inferência] derivá-los dos registros de início, de conclusão e de "Não aplicável" é regra do projeto (RF-B7).
-- **Protótipo(s) de tela:** *(a incluir)* marcos do turnaround (ACGT, ASBT e AEGT) com os horários gravados, no detalhe do turnaround (`prototipos/uc-b7-marcos-do-turnaround.png`).
+- **Protótipo(s) de tela:** marcos do turnaround (ACGT, ASBT e AEGT) com os horários gravados, no detalhe do turnaround.
+
+  ![UC-B7 – marcos do turnaround](prototipos/uc-b7-marcos-do-turnaround.png)
+
 - **Fluxo básico:**
   1. O Motor de Eventos recebe um registro de início de tarefa aceito no servidor (UC-B2).
   2. O Motor de Eventos verifica que o turnaround ainda não tem ACGT.
@@ -386,7 +407,10 @@
   7. Abastecimento com passageiros a bordo (ADR-0005): a regra é configurável por operador aéreo (companhia aérea), com padrão "não permitido", o caso mais conservador [24]. Não permitido: o abastecimento tem o desembarque como predecessora, e o embarque tem o abastecimento como predecessora. Permitido: essas duas dependências não existem, e o abastecimento corre em paralelo ao fluxo de passageiros. [Fato] O operador aéreo só pode habilitar a regra quando cumpre as condições do Regulamento Brasileiro da Aviação Civil (RBAC) nº 91, seção 91.102(g) [27]: (1) procedimento aprovado e um tripulante de voo na cabine de pilotagem supervisionando; (2) no mínimo 50% dos comissários requeridos e/ou pessoas treinadas para dirigir uma evacuação de emergência, com os meios de evacuação disponíveis; (3) motores desligados, exceto a unidade auxiliar de energia (APU); e (4) comunicação entre o pessoal de solo e o tripulante na cabine dos pilotos.
   8. A mudança de estado aparece na lista do operador (UC-B1) e no painel em até 5 segundos, como pede o objetivo 2.
   9. Com o turnaround no estado lateral "Em exceção", a propagação entre as tarefas segue as regras 1 e 5; a entrada e a saída de "Em exceção" são tratadas na área D.
-- **Protótipo(s) de tela:** *(a incluir)* lista de tarefas do operador com a sucessora liberada ("Pronta") e o estado do turnaround atualizado (`prototipos/uc-b8-propagacao-de-estado.png`).
+- **Protótipo(s) de tela:** lista de tarefas do operador com a sucessora liberada ("Pronta") e o estado do turnaround atualizado.
+
+  ![UC-B8 – propagação de estado](prototipos/uc-b8-propagacao-de-estado.png)
+
 - **Fluxo básico:**
   1. O Motor de Eventos recebe um registro de conclusão de tarefa aceito no servidor (UC-B3), por exemplo a conclusão do desembarque.
   2. O Motor de Eventos identifica, no modelo de tarefas, as sucessoras da tarefa concluída, por exemplo a limpeza da cabine.
