@@ -10,18 +10,4 @@
 | RF-D8 | O sistema deve permitir ao Coordenador de Turnaround consultar, ao reatribuir uma tarefa, a lista dos operadores da mesma equipe da tarefa que estão disponíveis (sem tarefa em execução), ordenada pelo tempo desde a última tarefa concluída por cada um. | Coordenador de Turnaround | Obj. 2 | |
 | RF-D9 | O sistema deve permitir ao Operador de Solo/Rampa registrar o horário real de saída da posição (AOBT) [2] de um turnaround no estado "Liberado", depois da autorização de acionamento e push-back recebida fora do sistema, e com isso encerrar o turnaround no estado "Fora de bloco", recusando novos registros de tarefas e mantendo o histórico completo para consulta. O registro grava o autor e o horário. | Operador de Solo/Rampa | Obj. 3 | |
 
-**Base dos RFs da área D.**
-
-| RF | Base |
-|---|---|
-| RF-D1 | [Inferência] exceção com causa pela tabela completa da ANAC, 72 códigos (ADR-0006; base: [16][62]); estado "Em exceção" do `CONTEXT.md`. |
-| RF-D2 | [Fato] redistribuição de equipe entre tarefas e turnarounds nos similares [45][46][54]; equipe do operador como dado (ADR-0010). |
-| RF-D3 | [Inferência] fluxo "alerta → ação" (base: [42][54]); sustenta a meta do objetivo 3 de 90% dos alertas críticos com ação registrada em até 2 minutos. |
-| RF-D4 | [Fato] definição do marco *Aircraft Ready* [2]; [Inferência] recusar a confirmação com pendência ou exceção aberta é regra do projeto (ADR-0004) e sustenta a meta de 0 liberações com pendência. |
-| RF-D5 | [Inferência] ciclo de vida da exceção, regra do projeto: sem encerramento, a liberação ficaria bloqueada pelo RF-D4. |
-| RF-D6 | [Fato] atualização obrigatória do TOBT quando a previsão difere em 5 minutos ou mais [8][9][10][13]; antecipação de 5 minutos ou mais (ADR-0003). |
-| RF-D7 | [Inferência] replanejamento pelo Coordenador de Turnaround, como no quadro "Faz" do item 2; caminho crítico recalculado a cada evento (base: [24][45]). |
-| RF-D8 | [Fato] apoio do sistema à alocação de recursos em tempo real nos similares [45][46][54]; [Inferência] o critério de ordenação é regra do projeto. |
-| RF-D9 | [Fato] marco AOBT, registrado na saída da posição [2]; no BPMN do item 4, quem registra é o Operador de Solo/Rampa; [Inferência] o encerramento do turnaround a partir do AOBT é regra do projeto. |
-
-Fontes citadas: [2], [8], [9], [10], [13], [16], [24], [42], [45], [46], [54] e [62], conforme a numeração de `pesquisa/fontes.md`.
+Fontes citadas: [2], [8], [9] e [62], conforme a numeração de `pesquisa/fontes.md`.

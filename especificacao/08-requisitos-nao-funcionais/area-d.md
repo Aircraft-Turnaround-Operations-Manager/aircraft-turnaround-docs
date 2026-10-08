@@ -7,15 +7,4 @@
 | RNF-D5 | Cada transição de estado do turnaround (Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado e Fora de bloco) e cada regra de negócio da área D (recusa da liberação com tarefa obrigatória pendente ou exceção aberta no RF-D4; permanência do turnaround em "Em exceção" quando uma exceção é encerrada e outra continua aberta no RF-D5; recusa de registro de tarefa depois de "Fora de bloco" no RF-D9) deve ter pelo menos um teste automatizado, executado a cada integração na `main`; a integração só é aceita com 100% desses testes aprovados. | Manutenibilidade (testabilidade) |
 | RNF-D6 | Toda mudança de estado do turnaround, toda exceção e toda ação sobre alerta (RF-D1 a RF-D9) deve gerar um registro de log estruturado com o identificador do turnaround, o estado anterior e o novo, o autor, o horário e o registro que a causou, de modo que a linha do tempo completa de qualquer turnaround dos últimos 90 dias possa ser reconstruída a partir dos logs em até 5 minutos, conferido em um teste com um turnaround que passe por exceção e liberação. | Manutenibilidade (analisabilidade) |
 
-**Base dos RNFs da área D.**
-
-| RNF | Base |
-|---|---|
-| RNF-D1 | [Fato] suporte 24/7 citado pela SITA na sua solução de tomada de decisão colaborativa [53]; [Inferência] mesma meta e mesma medição do RNF-B1, aplicadas a todas as funções da área D, inclusive o registro do AOBT pelo operador (RF-D9), para não haver duplicação nem contradição entre as áreas (issue de pendência cruzada dos RNFs). |
-| RNF-D2 | [Inferência] os registros da área D sustentam as metas do objetivo 3 (0 liberações com pendência e 90% dos alertas críticos com ação em até 2 minutos), que dependem de nenhum registro se perder; 5 minutos e 100 registros são valores de teste do projeto. |
-| RNF-D3 | [Fato] vários valores da tomada de decisão colaborativa em aeroportos (A-CDM) são "local variable", definidos por cada aeroporto [2]; a Associação Internacional de Transporte Aéreo (IATA) recomenda a prontidão em "TOBT +/- X minutes" [5]; a checagem com as equipes em TOBT − 15 minutos vem do cartão de rampa dos aeroportos alemães [13]. [Inferência] o "X" da IATA é um parâmetro local; os valores atuais vêm das ADR-0001 e ADR-0003 e das metas do item 1. |
-| RNF-D4 | [Fato] a tabela da ANAC foi instituída por portaria e substitui a anterior [62]; [Inferência] guardar a versão no registro segue a ADR-0006, que manda versionar a tabela no repositório. |
-| RNF-D5 | [Inferência] as regras de negócio dos RF-D4, RF-D5 e RF-D9 e os estados do `CONTEXT.md` são o núcleo da área D; testá-los a cada integração é regra do projeto. |
-| RNF-D6 | [Fato] marcos registrados com responsável e horário [2]; [Inferência] 90 dias e 5 minutos são valores do projeto para permitir a análise de um turnaround depois da operação. |
-
-Fontes citadas: [2], [5], [13], [53] e [62], conforme a numeração de `pesquisa/fontes.md`.
+Fonte citada: [62], conforme a numeração de `pesquisa/fontes.md`.

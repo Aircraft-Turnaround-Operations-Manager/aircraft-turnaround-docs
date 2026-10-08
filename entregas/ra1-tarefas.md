@@ -177,7 +177,7 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T13 · [RA1][Geral] Consolidar em PDF e enviar no Canvas**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
-- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais, seguidas do Apêndice A — Matriz de rastreabilidade, sem as tabelas "Base" dos arquivos de área (ADR-0012); quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
+- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012); quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
 - Critérios: X.1 a X.7, X.9, X.10
 - Bloqueada por: T12
 

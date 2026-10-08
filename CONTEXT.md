@@ -38,7 +38,7 @@ Decisões: [ADR-0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md),
 
 ## 4. Glossário mínimo (siglas do setor)
 
-Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda** sigla vem com o nome em português na primeira ocorrência de cada item da especificação, no formato "nome em português (SIGLA)". Vale para as siglas desta tabela, **inclusive a própria A-CDM**, e para as de órgãos e normas (por exemplo, "Agência Nacional de Aviação Civil (ANAC)" e "Associação Internacional de Transporte Aéreo (IATA)"). Vale também nas tabelas "Base" e nas regras de negócio, e não só no texto corrido. Depois da primeira ocorrência no item, use só a sigla. Glossário completo: [marcos e horários](pesquisa/topicos/marcos-e-horarios.md).
+Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda** sigla vem com o nome em português na primeira ocorrência de cada item da especificação, no formato "nome em português (SIGLA)". Vale para as siglas desta tabela, **inclusive a própria A-CDM**, e para as de órgãos e normas (por exemplo, "Agência Nacional de Aviação Civil (ANAC)" e "Associação Internacional de Transporte Aéreo (IATA)"). Vale também nas regras de negócio, e não só no texto corrido. Depois da primeira ocorrência no item, use só a sigla. Glossário completo: [marcos e horários](pesquisa/topicos/marcos-e-horarios.md).
 
 | Sigla | Nome em português | Estado ou uso no projeto |
 |---|---|---|
@@ -72,7 +72,7 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D9 | Nome único: **Coordenador de Turnaround** | [0009](docs/adr/0009-nome-coordenador-de-turnaround.md) |
 | D10 | **Administrador do Sistema** como ator; ator abstrato **Usuário**; equipe do operador como dado | [0010](docs/adr/0010-administrador-usuario-e-equipe-do-operador.md) |
 | D11 | **Mínimo de 4 por integrante, sem máximo**; IDs provisórios por área (RF-A1, US-A1, RNF-A1, UC-A1) e renumeração sequencial única no início do T12 | [0011](docs/adr/0011-minimo-por-integrante-e-numeracao-provisoria.md) |
-| D12 | **Matriz de rastreabilidade** como Apêndice A, gerada por script; cada RNF cita os RFs a que se aplica; tabelas "Base" só no repositório, fora do PDF | [0012](docs/adr/0012-matriz-de-rastreabilidade.md) |
+| D12 | **Matriz de rastreabilidade** como Apêndice A, gerada por script; cada RNF cita os RFs a que se aplica; sem tabelas "Base" nos arquivos de área | [0012](docs/adr/0012-matriz-de-rastreabilidade.md) |
 
 ## 6. Metas do item 1 (vigentes)
 

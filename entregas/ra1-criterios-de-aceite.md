@@ -67,7 +67,7 @@ Todos os arquivos ficam na pasta local "01 Especificacao de Software" (OneDrive,
 
 ## 2. Regras gerais (valem para o documento inteiro)
 
-- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012). As tabelas "Base" dos arquivos de área não entram no PDF.
+- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012).
 - [ ] **X.2 — Capa.** Nome do produto no lugar de "NOME DO PRODUTO DE SOFTWARE", os 4 autores no lugar de "NOME AUTOR 1..4" e ano **2026** (o template traz 2025).
 - [ ] **X.3 — Textos em azul.** Todos os textos personalizáveis (em azul) foram substituídos e estão na cor **preta**.
 - [ ] **X.4 — Textos em laranja.** Todos os quadros de aviso e textos de orientação em **laranja** foram removidos.
