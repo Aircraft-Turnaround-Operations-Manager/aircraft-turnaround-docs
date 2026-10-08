@@ -22,7 +22,7 @@ atualizado: 2026-10-01
 
 ## 2.2.1 Os 16 marcos do A-CDM
 
-**[Fato][2][3]** A Especificação 2025 numera 16 marcos (MST, *milestone*), mais três marcos de degelo (numerados D1 a D3 pela EUROCONTROL; não confundir com as decisões D1–D11 do projeto) que não entram no nosso escopo:
+**[Fato][2][3]** A Especificação 2025 numera 16 marcos (MST, *milestone*), mais três marcos de degelo (numerados D1 a D3 pela EUROCONTROL; não confundir com as decisões D1–D12 do projeto) que não entram no nosso escopo:
 
 | Nº | Marco (original) | Horário registrado | Fonte |
 |---|---|---|---|

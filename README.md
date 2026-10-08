@@ -21,7 +21,7 @@ Este repositório não tem código do sistema. Ele guarda três coisas:
 
 Antes de escrever qualquer parte da especificação, leia nesta ordem:
 
-1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D11, metas). A seção 9 dele diz o que ler para cada item.
+1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D12, metas). A seção 9 dele diz o que ler para cada item.
 2. **A issue da sua tarefa** no board [Especificação de Software - 6p](https://github.com/orgs/Aircraft-Turnaround-Operations-Manager/projects/1). Cada issue tem os critérios de aceite e um comentário "Insumos da base de conhecimento" com os arquivos e as decisões que valem para ela.
 3. **Só os arquivos de pesquisa indicados** para o seu item. Não é preciso ler a pesquisa inteira.
 
@@ -39,7 +39,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
 ├── docs/
-│   ├── adr/                   decisões do projeto (D1 a D11), uma por arquivo
+│   ├── adr/                   decisões do projeto (D1 a D12), uma por arquivo
 │   ├── agents/                configuração das skills de IA (issues, rótulos, documentos de domínio)
 │   └── planos/                planos de execução já concluídos (histórico)
 ├── claude/                    texto das instruções do projeto TCC no claude.ai
@@ -71,6 +71,7 @@ especificacao/
 └── diagramas/                       fonte e imagem exportada de cada diagrama
 ```
 
+- **Matriz de rastreabilidade (ADR-0012):** o documento tem o Apêndice A, gerado por `python scripts/gerar_matriz_rastreabilidade.py` a partir dos arquivos de área. Para o cruzamento funcionar, cada estória traz o RF no título, cada caso de uso cita os RFs que atende e cada RNF cita os RFs a que se aplica (por ID, faixa "RF-B1 a RF-B6" ou "todos os RFs"). As tabelas "Base" dos arquivos de área ficam só no repositório e não vão para o PDF.
 - **Itens por integrante (6, 7, 8 e 10):** cada área edita **apenas o seu `area-x.md`**, assim não há conflito de merge. O `00-item.md` é da tarefa-mãe, que consolida.
 - **Tabelas dos itens 6 e 8:** cada `area-x.md` tem a tabela com o mesmo cabeçalho. Na consolidação, as 4 tabelas viram uma só. No item 6, a tabela do template ganha a coluna **OBJETIVO** (objetivo do item 1 que o RF atende), e a coluna **SPRINT** fica vazia até a consolidação: o grupo divide em sprints depois que todas as áreas definirem os RFs e os RNFs.
 - **Quantidade e numeração (ADR-0011):** cada área faz **no mínimo 4** RFs, estórias, RNFs e especificações de caso de uso, **sem máximo**. Durante a escrita, os IDs são provisórios por área: RF-A1, RF-A2…, US-A1 (mesmo número do RF), RNF-A1…, UC-A1…. No início da revisão cruzada (T12), um script renumera tudo em sequência (RF-1…RF-n, US001…, RNF-1…, UC01…), na ordem A, B, C, D, e registra a correspondência em `entregas/ra1-renumeracao.md`.
@@ -101,7 +102,7 @@ A especificação fala de um domínio técnico (operação de solo em aeroportos
 
 | Camada | Onde fica | Para que serve |
 |---|---|---|
-| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D11), uma decisão por arquivo, com contexto, opções e consequências. |
+| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D12), uma decisão por arquivo, com contexto, opções e consequências. |
 | **Pesquisa** | [`pesquisa/`](pesquisa/README.md) | O que o setor faz e o que os produtos similares oferecem, com fonte. |
 | **Resumo** | [`CONTEXT.md`](CONTEXT.md) | O essencial das duas camadas acima, em uma página. |
 

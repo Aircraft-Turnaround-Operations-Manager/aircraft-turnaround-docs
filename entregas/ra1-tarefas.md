@@ -171,13 +171,13 @@ Total: **30 issues** (14 principais + 16 sub-issues).
 
 **T12 · [RA1][Geral] Revisão cruzada e verificação independente**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
-- Descrição: antes de tudo, rodar a renumeração única dos IDs provisórios (RF-A1… → RF-1…, US-A1… → US001…, RNF-A1… → RNF-1…, UC-A1… → UC01…; ADR-0011), atualizar todas as referências cruzadas e registrar a correspondência em `entregas/ra1-renumeracao.md`. Depois, com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
-- Critérios: K.1 a K.12, X.8, e todos os `Cxx.y` dos itens 1 a 11
+- Descrição: antes de tudo, rodar a renumeração única dos IDs provisórios (RF-A1… → RF-1…, US-A1… → US001…, RNF-A1… → RNF-1…, UC-A1… → UC01…; ADR-0011), atualizar todas as referências cruzadas e registrar a correspondência em `entregas/ra1-renumeracao.md` e gerar de novo a matriz de rastreabilidade (`python scripts/gerar_matriz_rastreabilidade.py`, ADR-0012), que precisa ficar sem lacunas. Depois, com todos os MDs na `main`, executar o checklist de consistência cruzada e a verificação independente de todos os IDs (seção 0.3, passo 6, do arquivo de critérios), produzindo a tabela `ID | status | evidência`. Corrigir ou devolver aos responsáveis o que não passar.
+- Critérios: K.1 a K.13, X.8, e todos os `Cxx.y` dos itens 1 a 11
 - Bloqueada por: T01 a T11
 
 **T13 · [RA1][Geral] Consolidar em PDF e enviar no Canvas**
 - Responsável: quem puxar · Rótulos: `ra1`, `geral`
-- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais; quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
+- Descrição: consolidar todos os arquivos MD em um único documento seguindo a estrutura do template (capa com nome do produto, 4 autores e ano 2026; sumário; seções 1 a 11 na ordem e com os títulos originais, seguidas do Apêndice A — Matriz de rastreabilidade, sem as tabelas "Base" dos arquivos de área (ADR-0012); quadros no formato do template; diagramas como imagem legível), incluir a declaração de uso de IA preenchida, exportar em **PDF** e enviar na tarefa "Avaliação do RA 1 - Projeto" até **10/10/2026, 23:59**.
 - Critérios: X.1 a X.7, X.9, X.10
 - Bloqueada por: T12
 

@@ -3,8 +3,8 @@ id: contexto
 titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
-atualizado: 2026-10-05
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011]
+atualizado: 2026-10-07
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012]
 ---
 # Contexto do projeto
 
@@ -36,12 +36,15 @@ Decisões: [ADR-0004](docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md),
 - **Turnaround:** Em solo → Operações em andamento → Pronto para liberação → Liberado → Fora de bloco; estado lateral **Em exceção**. "Liberado" é ato interno da Autoridade de Liberação.
 - **Tarefa:** Aguardando → Pronta → Em execução → Concluída; ramos **Pausada** e **Não aplicável**.
 
-## 4. Glossário mínimo (siglas do A-CDM)
+## 4. Glossário mínimo (siglas do setor)
 
-Use a sigla com o nome em português na primeira ocorrência de cada item ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)). Glossário completo: [marcos e horários](pesquisa/topicos/marcos-e-horarios.md).
+Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda** sigla vem com o nome em português na primeira ocorrência de cada item da especificação, no formato "nome em português (SIGLA)". Vale para as siglas desta tabela, **inclusive a própria A-CDM**, e para as de órgãos e normas (por exemplo, "Agência Nacional de Aviação Civil (ANAC)" e "Associação Internacional de Transporte Aéreo (IATA)"). Vale também nas tabelas "Base" e nas regras de negócio, e não só no texto corrido. Depois da primeira ocorrência no item, use só a sigla. Glossário completo: [marcos e horários](pesquisa/topicos/marcos-e-horarios.md).
 
 | Sigla | Nome em português | Estado ou uso no projeto |
 |---|---|---|
+| A-CDM | Tomada de decisão colaborativa em aeroportos | Padrão de referência do setor para marcos, horários e alertas |
+| IATA | Associação Internacional de Transporte Aéreo | Fonte de recomendações do setor (ex.: A-CDM, códigos de atraso) |
+| ATC | Controle de tráfego aéreo | Fora de escopo; emite TSAT e autoriza acionamento e push-back |
 | SIBT / SOBT | Horário programado de chegada / de saída da posição | Referência da programação (fora de escopo alterar) |
 | EIBT | Horário estimado de chegada à posição | Planejamento do turnaround |
 | AIBT | Horário real de chegada à posição (in-block) | Entrada em **Em solo** |
@@ -69,6 +72,7 @@ Use a sigla com o nome em português na primeira ocorrência de cada item ([ADR-
 | D9 | Nome único: **Coordenador de Turnaround** | [0009](docs/adr/0009-nome-coordenador-de-turnaround.md) |
 | D10 | **Administrador do Sistema** como ator; ator abstrato **Usuário**; equipe do operador como dado | [0010](docs/adr/0010-administrador-usuario-e-equipe-do-operador.md) |
 | D11 | **Mínimo de 4 por integrante, sem máximo**; IDs provisórios por área (RF-A1, US-A1, RNF-A1, UC-A1) e renumeração sequencial única no início do T12 | [0011](docs/adr/0011-minimo-por-integrante-e-numeracao-provisoria.md) |
+| D12 | **Matriz de rastreabilidade** como Apêndice A, gerada por script; cada RNF cita os RFs a que se aplica; tabelas "Base" só no repositório, fora do PDF | [0012](docs/adr/0012-matriz-de-rastreabilidade.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
@@ -105,9 +109,9 @@ D8 (siglas) e D9 (nome do coordenador) valem para **todos** os itens. A coluna "
 | 3 — Visão do Produto | [impacto por item](pesquisa/impacto/impacto-por-item.md), [similares](pesquisa/similares/README.md), [matriz](pesquisa/similares/matriz-comparativa.md), [lacunas e diferencial](pesquisa/similares/lacunas-e-diferencial.md) | D2, D7 |
 | 4 — BPMN TO BE | [atividades e dependências](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [marcos](pesquisa/topicos/marcos-e-horarios.md) | D4, D5, D6, D7 |
 | 5 — Atores | [papéis e atores](pesquisa/topicos/papeis-e-atores.md) | D4, D10 |
-| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área) | D1, D3, D4, D5, D6, D7, D10, D11 |
-| 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7, D11 |
-| 8 — RNFs | [insumos para RNFs](pesquisa/impacto/insumos-rnfs.md) | D1, D11 |
+| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área) | D1, D3, D4, D5, D6, D7, D10, D11, D12 |
+| 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7, D11, D12 |
+| 8 — RNFs | [insumos para RNFs](pesquisa/impacto/insumos-rnfs.md) | D1, D11, D12 |
 | 9 — Casos de uso | [papéis e atores](pesquisa/topicos/papeis-e-atores.md), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D4, D10, D11 |
-| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11 |
+| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11, D12 |
 | 11 — Diagrama de atividades | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [papéis](pesquisa/topicos/papeis-e-atores.md) | D4, D5 |
