@@ -67,7 +67,7 @@ Todos os arquivos ficam na pasta local "01 Especificacao de Software" (OneDrive,
 
 ## 2. Regras gerais (valem para o documento inteiro)
 
-- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template.
+- [ ] **X.1 — Template.** O documento final (PDF consolidado a partir dos MDs do repositório) segue a estrutura do template oficial: seções na ordem de 1 a 11, títulos originais e quadros no formato do template, seguidas do Apêndice A — Matriz de rastreabilidade (ADR-0012). As tabelas "Base" dos arquivos de área não entram no PDF.
 - [ ] **X.2 — Capa.** Nome do produto no lugar de "NOME DO PRODUTO DE SOFTWARE", os 4 autores no lugar de "NOME AUTOR 1..4" e ano **2026** (o template traz 2025).
 - [ ] **X.3 — Textos em azul.** Todos os textos personalizáveis (em azul) foram substituídos e estão na cor **preta**.
 - [ ] **X.4 — Textos em laranja.** Todos os quadros de aviso e textos de orientação em **laranja** foram removidos.
@@ -271,8 +271,9 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.8** As lanes do BPMN (item 4) e as raias do diagrama de atividades (item 11) usam os atores do item 5.
 - [ ] **K.9** As contagens mínimas conferem por contagem real: RF ≥16, estórias ≥16, cada estória com ≥2 critérios, RNF ≥16, especificações ≥16.
 - [ ] **K.10** Todos os critérios gerais X.1 a X.10 estão atendidos.
-- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D11 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
+- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D12 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
 - [ ] **K.12** Não há issue aberta com o rótulo `pendencia-cruzada`: toda amarração entre áreas foi resolvida, com o ID do requisito que a atende ou com a decisão do grupo registrada (`entregas/ra1-tarefas.md`, seção 1.4).
+- [ ] **K.13** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois da renumeração, com o script `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012).
 
 ---
 
