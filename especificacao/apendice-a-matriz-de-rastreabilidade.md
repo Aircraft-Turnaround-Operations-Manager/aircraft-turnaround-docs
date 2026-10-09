@@ -17,6 +17,19 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-B3, UC-B6, UC-B8 | RNF-B1, RNF-B2 |
 | RF-B7 | Obj. 1 | Motor de Eventos | US-B7 | UC-B5, UC-B7, UC-B8 | — |
 | RF-B8 | Obj. 2 | Motor de Eventos | US-B8 | UC-B2, UC-B4, UC-B5, UC-B8 | — |
+| RF-C1 | Obj. 1 e 3 | Motor de Eventos | — | — | — |
+| RF-C2 | Obj. 1 e 3 | Motor de Eventos | — | — | — |
+| RF-C3 | Obj. 3 | Motor de Eventos | — | — | — |
+| RF-C4 | Obj. 2 e 3 | Coordenador de Turnaround | — | — | — |
+| RF-C5 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | — |
+| RF-C6 | Obj. 2 e 3 | Motor de Eventos | — | — | — |
+| RF-C7 | Obj. 3 | Motor de Eventos | — | — | — |
+| RF-C8 | Obj. 3 | Motor de Eventos | — | — | — |
+| RF-C9 | Obj. 3 | Motor de Eventos | — | — | — |
+| RF-C10 | Obj. 3 | Motor de Eventos | — | — | — |
+| RF-C11 | Obj. 2 | Motor de Eventos | — | — | — |
+| RF-C12 | Obj. 3 | Coordenador de Turnaround | — | — | — |
+| RF-C13 | Obj. 1 e 3 | Coordenador de Turnaround | — | — | — |
 | RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | — | RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
 | RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | US-D2 | — | RNF-D1, RNF-D2, RNF-D6 |
 | RF-D3 | Obj. 3 | Coordenador de Turnaround | US-D3 | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
@@ -31,9 +44,9 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 | Objetivo | RFs que o atendem |
 |---|---|
-| Objetivo 1 | RF-B2, RF-B3, RF-B7, RF-D6, RF-D7 |
-| Objetivo 2 | RF-B1, RF-B2, RF-B3, RF-B4, RF-B5, RF-B6, RF-B8, RF-D2, RF-D8 |
-| Objetivo 3 | RF-B4, RF-B5, RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D7, RF-D9 |
+| Objetivo 1 | RF-B2, RF-B3, RF-B7, RF-C1, RF-C2, RF-C5, RF-C13, RF-D6, RF-D7 |
+| Objetivo 2 | RF-B1, RF-B2, RF-B3, RF-B4, RF-B5, RF-B6, RF-B8, RF-C4, RF-C5, RF-C6, RF-C11, RF-D2, RF-D8 |
+| Objetivo 3 | RF-B4, RF-B5, RF-C1, RF-C2, RF-C3, RF-C4, RF-C6, RF-C7, RF-C8, RF-C9, RF-C10, RF-C12, RF-C13, RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D7, RF-D9 |
 
 ### A.3 Requisitos não funcionais × requisitos funcionais
 
@@ -52,6 +65,32 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.4 Lacunas encontradas
 
+- RF-C1 sem estória (K.2)
+- RF-C2 sem estória (K.2)
+- RF-C3 sem estória (K.2)
+- RF-C4 sem estória (K.2)
+- RF-C5 sem estória (K.2)
+- RF-C6 sem estória (K.2)
+- RF-C7 sem estória (K.2)
+- RF-C8 sem estória (K.2)
+- RF-C9 sem estória (K.2)
+- RF-C10 sem estória (K.2)
+- RF-C11 sem estória (K.2)
+- RF-C12 sem estória (K.2)
+- RF-C13 sem estória (K.2)
+- RF-C1 sem caso de uso (K.3)
+- RF-C2 sem caso de uso (K.3)
+- RF-C3 sem caso de uso (K.3)
+- RF-C4 sem caso de uso (K.3)
+- RF-C5 sem caso de uso (K.3)
+- RF-C6 sem caso de uso (K.3)
+- RF-C7 sem caso de uso (K.3)
+- RF-C8 sem caso de uso (K.3)
+- RF-C9 sem caso de uso (K.3)
+- RF-C10 sem caso de uso (K.3)
+- RF-C11 sem caso de uso (K.3)
+- RF-C12 sem caso de uso (K.3)
+- RF-C13 sem caso de uso (K.3)
 - RF-D1 sem caso de uso (K.3)
 - RF-D2 sem caso de uso (K.3)
 - RF-D3 sem caso de uso (K.3)
