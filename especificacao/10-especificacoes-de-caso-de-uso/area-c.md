@@ -77,6 +77,7 @@
   6. O cabeçalho mostra o estado do turnaround, o TOBT planejado, o TOBT vigente, a projeção de prontidão e a diferença em relação ao TOBT planejado, com a indicação "dentro" ou "fora da régua" (TOBT + 5, ADR-0001).
   7. O gráfico mostra, para cada tarefa, a janela planejada e a barra real ou projetada, com as linhas do horário atual e do TOBT planejado + 5.
   8. A linha do tempo se atualiza em até 5 segundos a cada novo registro ou recálculo do turnaround, sem recarregar a página.
+  9. Enquanto houver aviso de checagem em TOBT − 15 aberto para o turnaround (UC-C6), o cabeçalho mostra esse aviso, até a checagem ser registrada.
 - **Protótipo(s) de tela:** linha do tempo do turnaround, com o cabeçalho, a faixa de marcos e as tarefas no gráfico de planejado × real ou projetado.
 
   ![UC-C2 – linha do tempo](prototipos/uc-c2-linha-do-tempo.png)
