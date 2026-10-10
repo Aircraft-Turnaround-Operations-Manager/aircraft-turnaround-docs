@@ -6,16 +6,16 @@ secao_original: "6"
 itens_template: []
 areas: []
 decisoes: []
-fontes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+fontes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102]
 relacionados: [mapa-pesquisa]
 status: vigente
-atualizado: 2026-10-02
+atualizado: 2026-10-10
 ---
 # Fontes da pesquisa
 
 > Base de conhecimento do projeto · lista única de fontes. Os números entre colchetes usados em todos os arquivos de `pesquisa/` e `docs/adr/` remetem a esta lista. **A numeração não muda:** fontes novas entram no fim, com o próximo número. Voltar ao [mapa da pesquisa](README.md).
 
-Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026; fontes 65 e 66 acessadas em 02/10/2026.
+Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026; fontes 65 e 66 acessadas em 02/10/2026; fontes 67 a 102 acessadas em 10/10/2026.
 
 1. EUROCONTROL. *Airport collaborative decision-making (A-CDM)* (página do conceito). https://www.eurocontrol.int/concept/airport-collaborative-decision-making
 2. EUROCONTROL. *EUROCONTROL Specification for Airport Collaborative Decision Making (A-CDM)*, Edição 1.0, 30/01/2025. https://www.eurocontrol.int/sites/default/files/2025-01/eurocontrol-specification-for-acdm.pdf
@@ -83,6 +83,42 @@ Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026; f
 64. Miratag. *Aircraft Cabin Cleaning Checklist* (modelo de checklist digital). https://miratag.com/en/checklist-templates/aviation-cabin-cleaning-checklist
 65. Assaia (Petr Zhigalin). *Insight: Top 3 issues faced during turnarounds and how to avoid them* (artigo de fornecedor, sem data). https://www.assaia.com/resources/top-three-turnaround-issues
 66. LESCOHIER, Jenny. *The Communication Challenge Facing Modern Ramp Operations*. Aviation Pros, 26/05/2026. https://www.aviationpros.com/ground-support-worldwide/ground-handling/article/55377511/the-communication-challenge-facing-modern-ramp-operations
+67. IATA. *What is the IATA Standard Ground Handling Agreement (SGHA) and what has changed in the latest edition?* IATA Knowledge Hub, 11/11/2022. https://www.iata.org/en/publications/newsletters/iata-knowledge-hub/what-is-the-iata-standard-ground-handling-agreement-sgha-and-what-has-changed-in-the-latest-edition
+68. IATA. *IATA - Airport Handling Manual (AHM) と Standard Ground Handling Agreement (SGHA)* — apresentação ao 2º grupo de trabalho do MLIT (Japão) sobre diretrizes para transações justas em *ground handling*, 04/06/2025 (資料2). https://www.mlit.go.jp/koku/content/001893067.pdf
+69. Czech Airlines Handling, a.s. *Annex B 1.0 — Locations, Agreed Services, Facilities and Charges* (SGHA de jan/2013, Simplified Procedure), Praga (PRG), vigência 01/08/2017 a 31/07/2020 — Registro de Contratos da República Tcheca. https://smlouvy.gov.cz/smlouva/soubor/3827390/SGHA.pdf
+70. Letiště Ostrava, a.s. e UG Jet, s.r.o. *Annex B 1.0* (SGHA de jan/2018), Ostrava (OSR), a partir de 01/05/2024 — Registro de Contratos da República Tcheca. https://smlouvy.gov.cz/smlouva/soubor/35289122/Handlingov%C3%A1%20sml.%2C%20%C4%8D.%2024061.pdf
+71. Engadin Airport AG. *Ground Handling Agreement* (condições gerais e Anexo A adaptado), arquivo de 07/2023. https://www.engadin-airport.ch/wp-content/uploads/2023/07/Ground_Handling_Agreement.pdf
+72. IATA. *IGOM — layout review* (sumário de capítulos do IGOM; sem data nem edição). https://www.iata.org/contentassets/91d95de325874730bb509360bf7cdcb7/igom-layout-review.pdf
+73. IATA. *Aircraft Cleaning and Disinfection During and Post Pandemic*, ed. 2, 22/01/2021. https://www.iata.org/contentassets/094560b4bd9844fda520e9058a0fbe2e/aircraft-cleaning-guidance-covid.pdf
+74. IATA. *Best Practices on the Application of SSR Codes and Assistance Service* (sem data). https://www.iata.org/contentassets/7b3762815ac44a10b83ccf5560c1b308/best-practices-on-the-application-of-ssr-codes-and-assistance-service.pdf
+75. Swissport. *Aircraft cleaning services* (página de serviço). https://www.swissport.com/en/our-services/airport-ground-operations/ramp-handling/aircraft-cleaning-services
+76. ANVISA. *Resolução da Diretoria Colegiada — RDC nº 1.038, de 21 de agosto de 2026* (segurança sanitária em aeroportos e aeronaves; revoga a RDC nº 2/2003), DOU, Seção 1, p. 123 — republicação de 26/08/2026; cópia hospedada por Poder360 (versão certificada não conferida). https://static.poder360.com.br/uploads/2026/08/RESOLUCAO-DA-DIRETORIA-COLEGIADA-ANVISA-No-1.038-DE-21-DE-AGOSTO-DE-2026_-RESOLUCAO-DA-DIRETORIA-COLEGIADA-ANVISA-No-1.038-DE-21-DE-AGOSTO-DE-2026_-DOU-Imprensa-Nacional.pdf
+77. GIANOTTO, Juliano. *Anvisa cria novas regras para aeroportos e aéreas e amplia fiscalização baseada em risco sanitário*. AEROIN, 28/08/2026. https://aeroin.net/anvisa-cria-novas-regras-para-aeroportos-e-aereas-e-amplia-fiscalizacao-baseada-em-risco-sanitario/
+78. ANAC. *Resolução nº 280, de 11/07/2013* (assistência especial ao PNAE; texto compilado). https://www.anac.gov.br/assuntos/legislacao/legislacao-1/resolucoes/resolucoes-2013/resolucao-no-280-de-11-07-2013
+79. ANAC / Participa + Brasil. *Consulta Pública nº 02/2025 — Proposta de Resolução sobre assistência especial e acessibilidade de passageiros com necessidade de assistência especial ao serviço de transporte aéreo* (contribuições de 24/01/2025 a 26/05/2025). https://www.gov.br/participamaisbrasil/cp-02-2025
+80. União Europeia. *Regulamento (CE) nº 1107/2006*, de 05/07/2006, direitos das pessoas com deficiência e com mobilidade reduzida no transporte aéreo (EUR-Lex). https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32006R1107
+81. EUA, Departamento de Transportes. *14 CFR 382.27 — Advance notice requirements* (eCFR, texto atualizado até 07/10/2026). https://www.ecfr.gov/current/title-14/chapter-II/subchapter-A/part-382/subpart-C/section-382.27
+82. Hamburg Airport. *Quality Charter of Hamburg Airport (Quality Standards)* — assistência a PRM, out/2008 (cópia no repositório da Biblioteca Estadual e Universitária de Hamburgo). https://epub.sub.uni-hamburg.de/epub/volltexte/2014/32068/pdf/PRM_Quality_Standards1.pdf
+83. EASA. *FAQ — There was a suspected case in my airplane, will the aircraft be disinfected?* (sem data). https://www.easa.europa.eu/en/faq/115333
+84. EASA. *SIB 2022-03 — Enhanced cleaning and disinfection of aircraft surfaces – Operational Recommendations*, 05/04/2022 (marcado como retirado). https://ad.easa.europa.eu/blob/EASA_SIB_2022_03_withdrawn.pdf
+85. EASA. *EASA and ECDC formally retire COVID-19 Aviation Health Safety Protocol*, 29/06/2023. https://www.easa.europa.eu/en/node/138152
+86. CDC. *Preventing Spread of Diseases on Airplanes: Guidance for Cabin Crew*, atualizado em 15/05/2024. https://www.cdc.gov/port-health/php/airline-guidance/preventing-spread-of-disease-guidance-for-cabin-crew.html
+87. CDC. *Guidance for Decontamination and Waste Disposal on a Commercial Passenger Aircraft Carrying a Traveler with a Viral Hemorrhagic Fever*, 17/04/2024. https://cdc.gov/viral-hemorrhagic-fevers/php/partners/decontamination-and-waste-disposal-commercial-passenger-aircraft.html
+88. OMS. *Guide to Hygiene and Sanitation in Aviation*, 3ª ed., Genebra, 2009 (cópia do Ministério da Saúde da Índia; leitura parcial). https://ihpoe.mohfw.gov.in/assets/pdf/guide_hygiene_sanitation_aviation.pdf
+89. REYNOLDS, Christopher (The Canadian Press). *Public health agency launches probe into Air Canada vomit incident*. Global News, 06/09/2023. https://globalnews.ca/news/9943618/air-canada-vomit-seats-public-health-agency-probe
+90. KANABLE, Rebecca. *On-Time Aircraft Catering Delivery: Mastering the Art and Science of Flight-Ready Food*. Aviation Pros, 01/02/2024. https://aviationpros.com/53095492
+91. Munich Airport. *Airport CDM — FAQ*. https://www.munich-airport.com/airport-cdm/en/faq
+92. Genève Aéroport. *A-CDM Procedures LSGG* (sem data). https://levasion.gva.ch/de/Downloads/Professionnels/A-CDM-Procedures-Geneve-Aeroport.pdf
+93. Airport Authority Hong Kong. *Airport Collaborative Decision Making (A-CDM) Operations Guidelines*, versão 2.0, 20/10/2018 (cópia ICAO APAC). https://www.icao.int/sites/default/files/APAC/Documents/edocs/AGA/Airport%20Collaborative%20Decision%20Making/HKIA-A-CDM-Operations-Guidelines.pdf
+94. INFORM. *Demo clip: GroundStar TurnManager*. https://www.inform-software.com/en/expertise/downloads/demo-clip-gs-turnmanager
+95. INFORM. *PRM Software Solution* (folheto, sem data). https://www.inform-software.com/_Resources/Persistent/7/0/d/b/70db13a8a5cf28479471f28a2f1002454f9a22fa/inf-gs-prm.pdf
+96. Airport Technology. *TAV Technologies — Ground Handling Suite (GHS)* (conteúdo patrocinado), 20/10/2020. https://www.airport-technology.com/sponsored/tav-technologies-ghs/
+97. EPG (Ehrhardt + Partner). *Ground Handling System* (página de produto). https://epg.com/aviation/ground-handling-system/
+98. Tarmac Technologies. *AGOA* (página institucional). https://tarmactechnologies.com/
+99. Zafire Aviation. *FirstPRM* (página de produto). https://www.zafire.com/aviation/aviation-products/firstprm/
+100. Aviation Pros. *Smart Solution Manages Aircraft Turnaround Activities from Landing to Takeoff* (ADB SAFEGATE AiPRON 360), 10/10/2023. https://aviationpros.com/53071893
+101. SITA. *SITA Mobile Resource Manager*. https://www.sita.aero/solutions/sita-at-airports/sita-operations-at-airports/sita-airport-management/sita-mobile-resource-manager/
+102. Aviation Pros. *Veovo Resource Management* (página de produto), 08/07/2021. https://www.aviationpros.com/airport-business/airport-infrastructure-operations/airport-technology/product/21229746/veovo-veovo-resource-management
 
 ## Fontes procuradas e não lidas (respeitando bloqueios)
 
@@ -95,6 +131,13 @@ Fontes 1 a 61 acessadas em 30/09/2026; fontes 62 a 64 acessadas em 01/10/2026; f
 | DECEA — notícias sobre A-CDM em GRU | Página dinâmica sem o texto da notícia | [57][58] |
 | Airservices Australia — FAQ de A-CDM | Erro 500 | Outros procedimentos de aeroportos [7]–[12] |
 | Blog da ADB SAFEGATE (AiPRON 360) | Subdomínio desativado | Páginas de produto [49][50] |
+| IATA — *Health guidelines for cleaning crew* (doença transmissível suspeita) | Redireciona para login no portal da IATA | Orientação de limpeza da IATA [73] e do CDC [86] |
+| IATA — texto integral do SGHA (Anexo A) e do IGOM | Publicações pagas | Apresentação da IATA [68], anexos B publicados [69][70] e sumário do IGOM [72] |
+| OMS — guia de 2009, seção 3.2.4 e diretriz 3.6 (desinfecção depois de evento); cópia NCBI | Extração truncada; NCBI exige verificação anti-robô | Trechos gerais do mesmo guia [88] |
+| ANAC — apresentação da CP nº 02/2025 | Página com verificação anti-robô | Página da consulta no Participa + Brasil [79] |
+| Diário do Comércio — matéria sobre a nova RDC da ANVISA | Erro ao carregar | Texto da RDC [76] e AEROIN [77] |
+| EASA — *Guidance on Aircraft Cleaning and Disinfection* | Página sem o texto da orientação | FAQ [83] e SIB 2022-03 [84] |
+| OSHA — interpretação de 01/04/2014 sobre tripulação de cabine | Não trata de pessoal de limpeza | — |
 
 ---
 
