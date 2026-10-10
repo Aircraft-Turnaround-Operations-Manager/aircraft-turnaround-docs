@@ -31,15 +31,15 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-C12 | Obj. 3 | Coordenador de Turnaround | — | — | RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
 | RF-C13 | Obj. 1 e 3 | Coordenador de Turnaround | — | — | RNF-C3, RNF-C4, RNF-C8 |
 | RF-C14 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-C3 |
-| RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | — | RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
-| RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | US-D2 | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D3 | Obj. 3 | Coordenador de Turnaround | US-D3 | — | RNF-C5, RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
-| RF-D4 | Obj. 3 | Autoridade de Liberação | US-D4 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
-| RF-D5 | Obj. 3 | Coordenador de Turnaround | US-D5 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
-| RF-D6 | Obj. 1 | Coordenador de Turnaround | US-D6 | — | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
-| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | US-D7 | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D8 | Obj. 2 | Coordenador de Turnaround | US-D8 | — | RNF-D1, RNF-D2, RNF-D6 |
-| RF-D9 | Obj. 3 | Operador de Solo/Rampa | US-D9 | — | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | UC-D1 | RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
+| RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | US-D2 | UC-D2 | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D3 | Obj. 3 | Coordenador de Turnaround | US-D3 | UC-D3 | RNF-C5, RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
+| RF-D4 | Obj. 3 | Autoridade de Liberação | US-D4 | UC-D4 | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D5 | Obj. 3 | Coordenador de Turnaround | US-D5 | UC-D5 | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
+| RF-D6 | Obj. 1 | Coordenador de Turnaround | US-D6 | UC-D6 | RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
+| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | US-D7 | UC-D7 | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D8 | Obj. 2 | Coordenador de Turnaround | US-D8 | UC-D8 | RNF-D1, RNF-D2, RNF-D6 |
+| RF-D9 | Obj. 3 | Operador de Solo/Rampa | US-D9 | UC-D9 | RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
 
 ### A.2 Objetivos × requisitos funcionais
 
@@ -102,15 +102,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - RF-C12 sem caso de uso (K.3)
 - RF-C13 sem caso de uso (K.3)
 - RF-C14 sem caso de uso (K.3)
-- RF-D1 sem caso de uso (K.3)
-- RF-D2 sem caso de uso (K.3)
-- RF-D3 sem caso de uso (K.3)
-- RF-D4 sem caso de uso (K.3)
-- RF-D5 sem caso de uso (K.3)
-- RF-D6 sem caso de uso (K.3)
-- RF-D7 sem caso de uso (K.3)
-- RF-D8 sem caso de uso (K.3)
-- RF-D9 sem caso de uso (K.3)
 - RNF-B3 sem RF associado
 - RNF-B4 sem RF associado
 <!-- matriz:fim -->
