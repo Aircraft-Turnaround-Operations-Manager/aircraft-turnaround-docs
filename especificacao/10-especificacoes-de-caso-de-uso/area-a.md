@@ -394,7 +394,7 @@
   1. RF-A9 exige nome e identificador único de equipe ou especialidade; equipe é dado cadastral, não novo ator (ADR-0010).
   2. Equipe desativada não aceita novos vínculos. Desativação é recusada com usuários ativos vinculados ou tarefas pendentes em turnarounds não encerrados.
   3. Alterar nome preserva identificador interno e vínculos. Modelos com equipe desativada não podem gerar novas atribuições até sua revisão.
-  4. O administrador não reatribui tarefas operacionais para resolver um impedimento; isso fica no RF-D2.
+  4. O administrador não reatribui tarefas operacionais para resolver um impedimento; isso fica no UC-D2 (reatribuir tarefa).
 
 - **Protótipo(s) de tela:** lista e cadastro de equipes ou especialidades, com nome, identificador e situação.
 
