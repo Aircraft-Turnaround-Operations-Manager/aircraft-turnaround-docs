@@ -264,10 +264,10 @@
     "semantic_hash": "a39d9904e95bc7d8d396c867ee752e5c"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1791423400.292461,
-    "seen": 1791423744.4360726,
-    "ast_hash": "1b2c89d76039a481dccbd8ec5a3dee18",
-    "semantic_hash": "1b2c89d76039a481dccbd8ec5a3dee18"
+    "mtime": 1791639411.346991,
+    "seen": 1791639672.5872483,
+    "ast_hash": "54526485610309b6d71fe745ec9fa7a7",
+    "semantic_hash": "54526485610309b6d71fe745ec9fa7a7"
   },
   "especificacao/11-diagrama-de-atividades.md": {
     "mtime": 1790781336.354366,
@@ -444,10 +444,10 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791515381.7011023,
-    "seen": 1791611462.3558817,
-    "ast_hash": "10069a71ed3dcb537f26149b1760064f",
-    "semantic_hash": "10069a71ed3dcb537f26149b1760064f"
+    "mtime": 1791639411.377052,
+    "seen": 1791639672.5872521,
+    "ast_hash": "226716ea88615fbb2d1d572ccd8a36b4",
+    "semantic_hash": "226716ea88615fbb2d1d572ccd8a36b4"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
     "mtime": 1791610973.7538404,
@@ -532,5 +532,65 @@
     "seen": 1791611462.355918,
     "ast_hash": "b54d1041576ebd025a82d296c44e6ccf",
     "semantic_hash": "b54d1041576ebd025a82d296c44e6ccf"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d1-abrir-excecao.png": {
+    "mtime": 1791639411.3503563,
+    "seen": 1791639672.5872989,
+    "ast_hash": "cb4b1c567bf993d61a2d5f59d335b88a",
+    "semantic_hash": "cb4b1c567bf993d61a2d5f59d335b88a"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d2-reatribuir-tarefa.png": {
+    "mtime": 1791639411.3533084,
+    "seen": 1791639672.5873005,
+    "ast_hash": "7bff4b794799eb4388ebfb4652942fac",
+    "semantic_hash": "7bff4b794799eb4388ebfb4652942fac"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d3-registrar-acao-do-alerta.png": {
+    "mtime": 1791639411.3567686,
+    "seen": 1791639672.5873015,
+    "ast_hash": "c3794d200f93431aac64d07b2452cfcc",
+    "semantic_hash": "c3794d200f93431aac64d07b2452cfcc"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d4-confirmar-prontidao.png": {
+    "mtime": 1791639411.358474,
+    "seen": 1791639672.5873024,
+    "ast_hash": "99cedea634c45399aa85c7f3553ae3b8",
+    "semantic_hash": "99cedea634c45399aa85c7f3553ae3b8"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d5-encerrar-excecao.png": {
+    "mtime": 1791639411.3619144,
+    "seen": 1791639672.5873032,
+    "ast_hash": "9254e8a3ecfd233732c0f53a4949afa3",
+    "semantic_hash": "9254e8a3ecfd233732c0f53a4949afa3"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d6-atualizar-tobt.png": {
+    "mtime": 1791639411.365199,
+    "seen": 1791639672.587304,
+    "ast_hash": "44c3e441406a33567cd45405152a8390",
+    "semantic_hash": "44c3e441406a33567cd45405152a8390"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-acionar-servico-sob-demanda.png": {
+    "mtime": 1791639411.3681207,
+    "seen": 1791639672.587305,
+    "ast_hash": "f763e80fb7cc2a0d5460ac52d129e656",
+    "semantic_hash": "f763e80fb7cc2a0d5460ac52d129e656"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-replanejar-tarefas.png": {
+    "mtime": 1791639411.3712773,
+    "seen": 1791639672.5873058,
+    "ast_hash": "7b379e99341ffc0c57dd873288109088",
+    "semantic_hash": "7b379e99341ffc0c57dd873288109088"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d8-operadores-disponiveis.png": {
+    "mtime": 1791639411.3749335,
+    "seen": 1791639672.5873065,
+    "ast_hash": "69d585ae50cafbaeb559a3452a59b58b",
+    "semantic_hash": "69d585ae50cafbaeb559a3452a59b58b"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d9-registrar-saida-da-posicao.png": {
+    "mtime": 1791639411.3759923,
+    "seen": 1791639672.5873075,
+    "ast_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad",
+    "semantic_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad"
   }
 }
