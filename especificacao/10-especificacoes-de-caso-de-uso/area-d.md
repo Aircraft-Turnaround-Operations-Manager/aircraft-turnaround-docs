@@ -311,7 +311,7 @@
 
 ### Fluxo de exceção E2 – Tarefa obrigatória pendente (passo 6)
 
-*Condição:* o turnaround está em "Operações em andamento", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo porque uma tarefa obrigatória foi incluída no plano depois que a tela foi carregada (UC-D7).
+*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US-D4, critério 3).
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -332,10 +332,10 @@
 |---|---|
 | **Nome do caso de uso** | UC-D5 – Encerrar exceção |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround encerra uma exceção aberta, registrando a solução adotada. Quando não há outra exceção aberta, o turnaround volta ao estado em que estava antes da exceção e pode seguir para a liberação. Atende ao RF-D5 e à US-D5. |
+| **Descrição** | O Coordenador de Turnaround encerra uma exceção aberta, registrando a solução adotada. Quando não há outra exceção aberta, o turnaround sai de "Em exceção" para o estado que corresponde ao andamento das tarefas e pode seguir para a liberação. Atende ao RF-D5 e à US-D5. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está no estado "Em exceção", com ao menos uma exceção aberta (UC-D1). |
-| **Pós-condições** | **Sucesso:** a exceção está encerrada, com a solução, o usuário e o horário gravados; o turnaround voltou ao estado anterior, se não havia outra exceção aberta, ou continua "Em exceção".<br>**Recusa:** a exceção continua aberta e o turnaround continua "Em exceção". |
-| **Regras de negócio** | **RN1.** O encerramento exige a solução adotada; sem ela, é recusado (RF-D5; US-D5, critério 3).<br>**RN2.** O encerramento grava a solução, o usuário e o horário na exceção (RF-D5).<br>**RN3.** O turnaround só sai de "Em exceção" quando não há outra exceção aberta; com outra aberta, continua "Em exceção" (RF-D5; US-D5, critério 2).<br>**RN4.** Ao sair de "Em exceção", o turnaround volta ao estado anterior à exceção (RF-D5).<br>**RN5.** [Inferência] Se as tarefas obrigatórias terminaram durante a exceção, o estado de retorno é "Pronto para liberação", porque a propagação continua valendo com o turnaround "Em exceção" (UC-B8, regras 3 e 9).<br>**RN6.** A exceção encerrada continua no histórico do turnaround, com o código e a descrição originais (RNF-D4). |
+| **Pós-condições** | **Sucesso:** a exceção está encerrada, com a solução, o usuário e o horário gravados; o turnaround saiu de "Em exceção" para "Em solo", "Operações em andamento" ou "Pronto para liberação", conforme o andamento das tarefas, se não havia outra exceção aberta, ou continua "Em exceção".<br>**Recusa:** a exceção continua aberta e o turnaround continua "Em exceção". |
+| **Regras de negócio** | **RN1.** O encerramento exige a solução adotada; sem ela, é recusado (RF-D5; US-D5, critério 3).<br>**RN2.** O encerramento grava a solução, o usuário e o horário na exceção (RF-D5).<br>**RN3.** O turnaround só sai de "Em exceção" quando não há outra exceção aberta; com outra aberta, continua "Em exceção" (RF-D5; US-D5, critério 2).<br>**RN4.** Ao sair de "Em exceção", o turnaround vai para o estado que corresponde ao andamento das tarefas: "Em solo", se nenhuma tarefa foi iniciada; "Operações em andamento", se alguma foi iniciada e ainda há tarefa obrigatória pendente (RF-D5; US-D5, critérios 1 e 5).<br>**RN5.** Se todas as tarefas obrigatórias estão "Concluída" ou "Não aplicável", o estado de saída é "Pronto para liberação", porque a propagação entre as tarefas continua valendo com o turnaround "Em exceção" (RF-D5; US-D5, critério 4; UC-B8, regra 9).<br>**RN6.** A exceção encerrada continua no histórico do turnaround, com o código e a descrição originais (RNF-D4). |
 | **Protótipo(s) de tela** | Encerramento da exceção, com o resumo da exceção, o campo da solução adotada e o estado para o qual o turnaround volta.<br>![UC-D5 – encerrar exceção](prototipos/uc-d5-encerrar-excecao.png) |
 
 ### Fluxo básico
@@ -347,7 +347,7 @@
 | 3. O Coordenador de Turnaround escreve a solução adotada e confirma. |  |
 |  | 4. O sistema verifica que a solução foi preenchida e que a exceção continua aberta (**E1**, **E2**). |
 |  | 5. O sistema grava a solução, o usuário e o horário e encerra a exceção. |
-|  | 6. O sistema verifica que não há outra exceção aberta no turnaround e o devolve ao estado anterior à exceção, por exemplo "Operações em andamento". |
+|  | 6. O sistema verifica que não há outra exceção aberta no turnaround e o leva ao estado que corresponde ao andamento das tarefas (RN4), por exemplo "Operações em andamento". |
 |  | 7. O sistema exibe o turnaround no estado de retorno e a exceção como encerrada. O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Outra exceção aberta (passo 6)
@@ -483,7 +483,7 @@
 | **Descrição** | Com o turnaround em andamento, o Coordenador de Turnaround altera a janela planejada ou as dependências das tarefas ainda não iniciadas, para ajustar o plano diante de um desvio, e vê em seguida a projeção de prontidão e o caminho crítico recalculados. Pelo mesmo caso de uso, ele aciona um serviço sob demanda, incluindo no plano uma tarefa do catálogo do modelo de tarefas (ADR-0014). Pode ser executado a partir do registro da ação de um alerta (UC-D3). Atende ao RF-D7 e à US-D7. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está em "Em solo", "Operações em andamento" ou "Em exceção", com o plano de tarefas definido (área A).<br>3. Para alterar uma tarefa, ela está no estado "Aguardando" ou "Pronta". |
 | **Pós-condições** | **Sucesso:** a alteração está gravada com o usuário e o horário, e a projeção de prontidão e o caminho crítico foram recalculados e exibidos.<br>**Recusa:** a janela, as dependências e o plano ficam como estavam, e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-D7; US-D7, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-D7).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC-C3), e o sistema os exibe (RF-D7).<br>**RN4.** As travas são as do plano inicial: a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC-B8, regra 7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC-B8, regra 1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com responsável, janela planejada, dependências e motivo. Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC-B1) e, se for obrigatória, segura a liberação (UC-D4). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
+| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-D7; US-D7, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-D7).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC-C3), e o sistema os exibe (RF-D7).<br>**RN4.** As travas são as do plano inicial: a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC-B8, regra 7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC-B8, regra 1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com um operador ativo da equipe da tarefa como responsável, janela planejada, dependências e motivo; as sucessoras da tarefa incluída precisam estar ainda não iniciadas (RF-D7). Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC-B1) e, se for obrigatória, segura a liberação (UC-D4). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
 | **Protótipo(s) de tela** | Replanejamento de uma tarefa, com a janela planejada, as predecessoras e o resultado do recálculo; e acionamento de um serviço sob demanda, com o catálogo, o responsável, a janela, as dependências e o motivo.<br>![UC-D7 – replanejar tarefas](prototipos/uc-d7-replanejar-tarefas.png) ![UC-D7 – acionar serviço sob demanda](prototipos/uc-d7-acionar-servico-sob-demanda.png) |
 
 ### Fluxo básico
@@ -521,7 +521,7 @@
 | A3.1. O Coordenador de Turnaround seleciona "Acionar serviço sob demanda". |  |
 |  | A3.2. O sistema exibe o catálogo de serviços sob demanda do modelo de tarefas, cada um com a equipe e a duração planejada. |
 | A3.3. O Coordenador de Turnaround escolhe o serviço, por exemplo a limpeza profunda de assento, o responsável entre os operadores da equipe do serviço, a janela planejada, as predecessoras e as sucessoras, escreve o motivo e confirma. |  |
-|  | A3.4. O sistema verifica as travas (RN4 e RN5) e que o responsável, a janela e o motivo foram informados. |
+|  | A3.4. O sistema verifica as travas (RN4 e RN5), que o responsável, a janela e o motivo foram informados, que o responsável é operador ativo da equipe do serviço e que as sucessoras estão "Aguardando" ou "Pronta" (**E5**, **E6**). |
 |  | A3.5. O sistema inclui a tarefa no plano, grava a inclusão com o motivo, o usuário e o horário, e a tarefa aparece na lista do operador responsável (UC-B1). |
 |  | A3.6. O caso de uso segue do passo 7. |
 
@@ -577,6 +577,14 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 |  | E5.1. O sistema recusa a inclusão e indica o campo que falta; a tarefa não entra no plano. |
+
+### Fluxo de exceção E6 – Sucessora já iniciada (passo A3.4)
+
+*Condição:* uma das sucessoras informadas está "Em execução", "Pausada", "Concluída" ou "Não aplicável".
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E6.1. O sistema recusa a inclusão, mostra a sucessora já iniciada, e a tarefa não entra no plano. |
 
 ## UC-D8 – Consultar os operadores disponíveis da equipe
 
