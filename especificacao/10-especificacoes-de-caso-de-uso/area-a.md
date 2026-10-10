@@ -1,13 +1,20 @@
-## Regras comuns da área A
+**Casos de uso da área A no diagrama geral (item 9).** Os nomes e os atores abaixo são os que o diagrama deve usar (critério C10.8).
 
-Cada caso descreve uma ação do usuário. Pré-condições são o que precisa existir antes; pós-condições são o resultado. O fluxo básico mostra o caminho principal, os alternativos mostram outras escolhas e as exceções mostram erros ou impedimentos.
-
-Estas regras valem para todos os casos abaixo:
-
-- O sistema verifica o perfil e o acesso antes de cada ação protegida, mesmo com sessão aberta (RNF-A1).
-- Alterações guardam autor, horário e histórico (RNF-A2). Se houver falha ao salvar, não há alteração parcial nem mensagem de sucesso.
-- Se uma resposta se perder, a nova tentativa verifica o registro existente para evitar duplicidade.
-- Os protótipos finais preparados pelo João no [Figma](https://www.figma.com/design/jnyAawiHZsJdwKW3KjaLVs/aircraft?node-id=0-1) foram exportados em PNG e vinculados aos casos correspondentes, sem alteração das telas.
+| UC | Nome | Ator | Relacionamentos | RF e estória |
+|---|---|---|---|---|
+| UC-A1 | Autenticar-se | Usuário (ator abstrato) | — | RF-A1, US-A1 |
+| UC-A2 | Gerenciar usuários e perfis de acesso | Administrador do Sistema | — | RF-A2, US-A2 |
+| UC-A3 | Abrir turnaround | Coordenador de Turnaround | — | RF-A3, US-A3 |
+| UC-A4 | Criar modelo de tarefas | Coordenador de Turnaround | — | RF-A4, US-A4 |
+| UC-A5 | Confirmar plano inicial | Coordenador de Turnaround | — | RF-A5, US-A5 |
+| UC-A6 | Aplicar modelo de tarefas | Coordenador de Turnaround | — | RF-A6, US-A6 |
+| UC-A7 | Configurar pontos de confirmação | Coordenador de Turnaround | — | RF-A7, US-A7 |
+| UC-A8 | Definir dependências entre tarefas | Coordenador de Turnaround | — | RF-A8, US-A8 |
+| UC-A9 | Gerenciar equipes e especialidades | Administrador do Sistema | — | RF-A9, US-A9 |
+| UC-A10 | Atualizar referências de previsão | Coordenador de Turnaround | — | RF-A10, US-A10 |
+| UC-A11 | Configurar política de abastecimento | Coordenador de Turnaround | — | RF-A11, US-A11 |
+| UC-A12 | Registrar chegada à posição | Operador de Solo/Rampa | — | RF-A12, US-A12 |
+| UC-A13 | Corrigir chegada à posição | Coordenador de Turnaround | — | RF-A13, US-A13 |
 
 ## UC-A1 – Autenticar-se
 
@@ -115,7 +122,7 @@ Estas regras valem para todos os casos abaixo:
   1. RF-A3 exige voos e datas, companhia operadora, aeronave, posição, horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário-alvo de prontidão (TOBT) e tempo mínimo de turnaround (MTTT) em minutos positivos [2][4].
   2. Horários têm data e fuso. TOBT planejado é fixo e o vigente começa igual a ele (ADR-0003).
   3. Só pode existir um turnaround para os mesmos voos e datas. A programação dos voos não é alterada.
-  4. Abrir não registra horário real de chegada à posição (AIBT) [2][4], não entra em "Em solo" nem inicia tarefas. A chegada usa o fluxo de registro e confirmação.
+  4. Abrir não registra horário real de chegada à posição (AIBT) [2][4], não entra em "Em solo" nem inicia tarefas. A chegada é registrada no UC-A12.
 
 - **Protótipo(s) de tela:** abertura do turnaround com voos, companhia, aeronave, posição e referências de tempo.
 
@@ -387,7 +394,7 @@ Estas regras valem para todos os casos abaixo:
   1. RF-A9 exige nome e identificador único de equipe ou especialidade; equipe é dado cadastral, não novo ator (ADR-0010).
   2. Equipe desativada não aceita novos vínculos. Desativação é recusada com usuários ativos vinculados ou tarefas pendentes em turnarounds não encerrados.
   3. Alterar nome preserva identificador interno e vínculos. Modelos com equipe desativada não podem gerar novas atribuições até sua revisão.
-  4. O administrador não reatribui tarefas operacionais para resolver um impedimento; isso permanece na área D.
+  4. O administrador não reatribui tarefas operacionais para resolver um impedimento; isso fica no RF-D2.
 
 - **Protótipo(s) de tela:** lista e cadastro de equipes ou especialidades, com nome, identificador e situação.
 
@@ -598,5 +605,3 @@ Estas regras valem para todos os casos abaixo:
   - **E5. Falha na entrega do evento (passo 6):** o evento permanece para nova tentativa, sem repetir a correção nem seus efeitos.
 
 Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27], [45], [69], [70] e [71], conforme `pesquisa/fontes.md`.
-
-**Pendência:** conferir nomes e atores no diagrama geral (C10.8) quando ele for entregue no item 9. Os protótipos de alta fidelidade estão vinculados aos 13 casos de uso (C10.3); esta versão não declara C10.8 concluído.
