@@ -104,4 +104,17 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - RF-C14 sem caso de uso (K.3)
 - RNF-B3 sem RF associado
 - RNF-B4 sem RF associado
+- US-A1 sem RF correspondente
+- US-A2 sem RF correspondente
+- US-A3 sem RF correspondente
+- US-A4 sem RF correspondente
+- US-A5 sem RF correspondente
+- US-A6 sem RF correspondente
+- US-A7 sem RF correspondente
+- US-A8 sem RF correspondente
+- US-A9 sem RF correspondente
+- US-A10 sem RF correspondente
+- US-A11 sem RF correspondente
+- US-A12 sem RF correspondente
+- US-A13 sem RF correspondente
 <!-- matriz:fim -->
