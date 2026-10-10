@@ -43,7 +43,8 @@
     2. Os registros feitos a partir dela seguem o fluxo sem conexão de cada caso de uso (RNF-B2).
   - **E2. Sessão expirada** (passo 1):
     1. O sistema leva o operador à tela de autenticação.
-    2. Depois da autenticação, o caso de uso volta ao passo 2.
+    2. Os registros pendentes de envio continuam guardados no celular e só são enviados depois que o mesmo operador se autentica de novo (RNF-B2).
+    3. Depois da autenticação, o caso de uso volta ao passo 2.
   - **E3. Tarefa reatribuída a outro operador** (passo 3): a tarefa selecionada foi atribuída a outro operador depois que a lista foi carregada.
     1. O sistema informa que a tarefa não está mais atribuída a ele e a retira da lista.
     2. O caso de uso volta ao passo 2.
@@ -99,6 +100,7 @@
     1. O sistema guarda o registro no celular com o horário da ação e exibe a tarefa como "Em execução", com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes ao servidor em até 5 segundos, na ordem em que foram feitos, e retira a marca.
     3. Se o registro já não for válido no servidor no envio, por exemplo porque a tarefa foi reatribuída, o servidor o recusa sem alterar o estado da tarefa, e o sistema exibe no celular, em até 5 segundos depois que a conexão voltou, o aviso da recusa com o motivo e o estado atual da tarefa.
+    4. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos dos passos 2 e 3 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-B2).
 
 ## UC-B3 – Concluir tarefa
 
@@ -162,6 +164,7 @@
   - **E6. Sem conexão com a internet** (passo 6):
     1. O sistema guarda o registro no celular com o horário da ação e exibe a tarefa como "Concluída", com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; o registro que já não for válido no servidor é recusado sem alterar o estado da tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou.
+    3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-B2).
 
 ## UC-B4 – Pausar e retomar tarefa
 
@@ -223,6 +226,7 @@
   - **E4. Sem conexão com a internet** (passo 6 ou 11):
     1. O sistema guarda o registro no celular com o horário da ação e exibe o novo estado com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; o registro que já não for válido no servidor é recusado sem alterar o estado da tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou.
+    3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-B2).
 
 ## UC-B5 – Marcar tarefa como "Não aplicável"
 
@@ -279,6 +283,7 @@
   - **E4. Sem conexão com a internet** (passo 6):
     1. O sistema guarda o registro no celular com o horário da ação e exibe a tarefa como "Não aplicável", com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; o registro que já não for válido no servidor é recusado sem alterar o estado da tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou.
+    3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-B2).
 
 ## UC-B6 – Confirmar a execução da tarefa por QR Code
 
@@ -339,6 +344,7 @@
   - **E5. Sem conexão com a internet** (passo 6):
     1. O sistema guarda a leitura no celular com o horário da ação e exibe o ponto como "confirmado", com a marca "pendente de envio" (RNF-B2).
     2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; a leitura que já não for válida no servidor é recusada sem alterar a tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou, e o ponto volta para "a confirmar".
+    3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-B2).
 
 ## UC-B7 – Registrar os marcos do atendimento em solo
 
