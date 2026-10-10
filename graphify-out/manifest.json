@@ -150,10 +150,10 @@
     "semantic_hash": "52c067129d2b0854b6af383eba75be69"
   },
   "especificacao/06-requisitos-funcionais/area-a.md": {
-    "mtime": 1791665171.653617,
-    "seen": 1791667510.7029445,
-    "ast_hash": "2cb0e6b6cd1620db9eef70672f48e378",
-    "semantic_hash": "2cb0e6b6cd1620db9eef70672f48e378"
+    "mtime": 1791670036.032285,
+    "seen": 1791671087.5816405,
+    "ast_hash": "a63224dbd4ae5bde6ea5badb48f2c51f",
+    "semantic_hash": "a63224dbd4ae5bde6ea5badb48f2c51f"
   },
   "especificacao/06-requisitos-funcionais/area-b.md": {
     "mtime": 1791423400.2874553,
@@ -180,10 +180,10 @@
     "semantic_hash": "1a177e1ce5033ecb87a579e344240914"
   },
   "especificacao/07-estorias-de-usuario/area-a.md": {
-    "mtime": 1791250013.2398615,
-    "seen": 1791250201.6122456,
-    "ast_hash": "ba4aaa2da99f0bc1a8f64c4caa627f38",
-    "semantic_hash": "ba4aaa2da99f0bc1a8f64c4caa627f38"
+    "mtime": 1791670036.0328038,
+    "seen": 1791671087.5816548,
+    "ast_hash": "6ecf929c8891ecfe58166513045349c9",
+    "semantic_hash": "6ecf929c8891ecfe58166513045349c9"
   },
   "especificacao/07-estorias-de-usuario/area-b.md": {
     "mtime": 1791341129.2178967,
@@ -210,14 +210,14 @@
     "semantic_hash": "f4d3515af2096bddce835eb1fecc63e0"
   },
   "especificacao/08-requisitos-nao-funcionais/area-a.md": {
-    "mtime": 1791666230.2101145,
-    "seen": 1791667510.7029617,
+    "mtime": 1791670036.033811,
+    "seen": 1791671087.5816605,
     "ast_hash": "728bac29023c4a4cc8fd067ee7c87db7",
     "semantic_hash": "728bac29023c4a4cc8fd067ee7c87db7"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1791667187.806376,
-    "seen": 1791667510.7029634,
+    "mtime": 1791670036.033811,
+    "seen": 1791671087.5816615,
     "ast_hash": "2012f93b34952d92ab4759ee6446babc",
     "semantic_hash": "2012f93b34952d92ab4759ee6446babc"
   },
@@ -246,14 +246,14 @@
     "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1791423400.2914617,
-    "seen": 1791423744.43607,
-    "ast_hash": "d621f0a10b6a40b8bcae2782f4d12c34",
-    "semantic_hash": "d621f0a10b6a40b8bcae2782f4d12c34"
+    "mtime": 1791670725.7473357,
+    "seen": 1791671087.5816665,
+    "ast_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1",
+    "semantic_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791667187.808391,
-    "seen": 1791667510.702977,
+    "mtime": 1791670036.0358126,
+    "seen": 1791671087.5816674,
     "ast_hash": "f574e8fc5b0d9df79f03d17eb1500977",
     "semantic_hash": "f574e8fc5b0d9df79f03d17eb1500977"
   },
@@ -444,10 +444,10 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791666533.743819,
-    "seen": 1791667510.7029836,
-    "ast_hash": "3a86f54c6de91cc9358dd7a618a4e9c0",
-    "semantic_hash": "3a86f54c6de91cc9358dd7a618a4e9c0"
+    "mtime": 1791670725.7848125,
+    "seen": 1791671087.581672,
+    "ast_hash": "da616eab003ae6206af00329aa79efa4",
+    "semantic_hash": "da616eab003ae6206af00329aa79efa4"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
     "mtime": 1791610973.7538404,
@@ -592,5 +592,89 @@
     "seen": 1791639672.5873075,
     "ast_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad",
     "semantic_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-celular.png": {
+    "mtime": 1791670725.7503479,
+    "seen": 1791671087.581699,
+    "ast_hash": "2e9ef27bf10525dac2df4ab935f49e9d",
+    "semantic_hash": "2e9ef27bf10525dac2df4ab935f49e9d"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-web.png": {
+    "mtime": 1791670725.7528543,
+    "seen": 1791671087.5817,
+    "ast_hash": "c58c19c2270916623ca75e2907b64849",
+    "semantic_hash": "c58c19c2270916623ca75e2907b64849"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a10-atualizar-previsao.png": {
+    "mtime": 1791670725.7573688,
+    "seen": 1791671087.581701,
+    "ast_hash": "897406621e7c47f7e789ca65f116fe0c",
+    "semantic_hash": "897406621e7c47f7e789ca65f116fe0c"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a11-politica-de-abastecimento.png": {
+    "mtime": 1791670725.76038,
+    "seen": 1791671087.581702,
+    "ast_hash": "41616d6ed601689902b4e113cf3c99af",
+    "semantic_hash": "41616d6ed601689902b4e113cf3c99af"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a12-registrar-chegada.png": {
+    "mtime": 1791670725.7613816,
+    "seen": 1791671087.5817027,
+    "ast_hash": "42f7f089a0e0103d6ac509f17cca3e41",
+    "semantic_hash": "42f7f089a0e0103d6ac509f17cca3e41"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a13-corrigir-chegada.png": {
+    "mtime": 1791670725.764899,
+    "seen": 1791671087.5817034,
+    "ast_hash": "0876c1f7557ce8e1f725f62077f2173e",
+    "semantic_hash": "0876c1f7557ce8e1f725f62077f2173e"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a2-gerenciar-usuarios.png": {
+    "mtime": 1791670725.7674055,
+    "seen": 1791671087.5817041,
+    "ast_hash": "5b352efae451edad1d1a704e8470dac4",
+    "semantic_hash": "5b352efae451edad1d1a704e8470dac4"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a3-abrir-turnaround.png": {
+    "mtime": 1791670725.7699232,
+    "seen": 1791671087.5817049,
+    "ast_hash": "f4968b0ba1a419fcc2d236b0f86cd770",
+    "semantic_hash": "f4968b0ba1a419fcc2d236b0f86cd770"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a4-criar-modelo.png": {
+    "mtime": 1791670725.7709286,
+    "seen": 1791671087.581706,
+    "ast_hash": "ac5b065f19077f4d5e62d8af20214ab9",
+    "semantic_hash": "ac5b065f19077f4d5e62d8af20214ab9"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a5-confirmar-plano.png": {
+    "mtime": 1791670725.7729309,
+    "seen": 1791671087.5817068,
+    "ast_hash": "03b52bbc610d90229e59a3e211b53c8f",
+    "semantic_hash": "03b52bbc610d90229e59a3e211b53c8f"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a6-aplicar-modelo.png": {
+    "mtime": 1791670725.7750888,
+    "seen": 1791671087.5817075,
+    "ast_hash": "f8f241893c2a4dc326f6a73a7ea8bc05",
+    "semantic_hash": "f8f241893c2a4dc326f6a73a7ea8bc05"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a7-pontos-de-confirmacao.png": {
+    "mtime": 1791670725.7786057,
+    "seen": 1791671087.5817082,
+    "ast_hash": "723e3df10a8787645ba33a1c8ec5a8c7",
+    "semantic_hash": "723e3df10a8787645ba33a1c8ec5a8c7"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a8-definir-dependencias.png": {
+    "mtime": 1791670725.7812955,
+    "seen": 1791671087.5817091,
+    "ast_hash": "513af8623a20c8524968425a4bfaf8e8",
+    "semantic_hash": "513af8623a20c8524968425a4bfaf8e8"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a9-gerenciar-equipes.png": {
+    "mtime": 1791670725.7838123,
+    "seen": 1791671087.5817099,
+    "ast_hash": "67789d6d4eb59ead30c9d8eb78505272",
+    "semantic_hash": "67789d6d4eb59ead30c9d8eb78505272"
   }
 }
