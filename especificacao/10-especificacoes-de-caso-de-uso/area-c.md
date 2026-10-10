@@ -6,8 +6,8 @@
 | UC-C2 | Consultar a linha do tempo do turnaround | Coordenador de Turnaround | «extend» UC-C1 | RF-C5, US-C5 |
 | UC-C3 | Recalcular a projeção, o atraso e o caminho crítico | Motor de Eventos | «include» UC-C4 | RF-C1, RF-C2, RF-C3, US-C1 a US-C3 |
 | UC-C4 | Emitir alertas de risco ao horário | Motor de Eventos | incluído por UC-C3 | RF-C6 a RF-C10, US-C6 a US-C10 |
-| UC-C5 | Consultar a lista de alertas abertos | Coordenador de Turnaround | registro da ação no caso de uso da área D da US-D3 | RF-C12, US-C12 |
-| UC-C6 | Registrar a checagem com as equipes em TOBT − 15 | Motor de Eventos, Coordenador de Turnaround | — | RF-C11, US-C11 |
+| UC-C5 | Consultar a lista de alertas abertos | Coordenador de Turnaround | registro da ação no UC-D3 | RF-C12, US-C12 |
+| UC-C6 | Registrar a checagem com as equipes em TOBT − 15 | Motor de Eventos, Coordenador de Turnaround | — | RF-C11, RF-C14, US-C11, US-C14 |
 | UC-C7 | Consultar os indicadores de aderência | Coordenador de Turnaround | — | RF-C13, US-C13 |
 
 ## UC-C1 – Acompanhar os turnarounds no painel
@@ -70,10 +70,10 @@
 - **Pós-condições:** a linha do tempo exibe os dados do último recálculo do turnaround (UC-C3). A consulta não altera nenhum registro.
 - **Regras de negócio:**
   1. Cada tarefa mostra a equipe, o Operador de Solo/Rampa responsável, o estado, o início e o fim planejados, o início e o fim reais (ou projetados, com a marca "proj") e o atraso calculado no UC-C3, em minutos completos [3] (RF-C5, RF-C2).
-  2. Tarefa "Pausada" mostra também a justificativa e o código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] informados na pausa (UC-B4), por exemplo "36 (GF) FUELLING DEFUELLING, fuel supplier" (RF-C5).
+  2. Tarefa "Pausada" mostra também a justificativa e o código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] informados na pausa (UC-B4), por exemplo o código GF, de combustível (RF-C5).
   3. Tarefa "Não aplicável" mostra a justificativa e não tem atraso calculado (RF-C5, US-C5 critério 3).
   4. As tarefas do caminho crítico (RF-C3) e as marcadas como "impactadas" (RF-C2), com a tarefa de origem e os minutos de impacto, ficam destacadas.
-  5. A faixa de marcos mostra, com o horário, só os marcos já registrados: horário real de chegada à posição (AIBT), início real do atendimento em solo (ACGT), início real do embarque (ASBT), fim real do atendimento em solo (AEGT), horário real de prontidão (ARDT) e horário real de saída da posição (AOBT) [2]. Os marcos são gravados pelo UC-B7 e pela área D; a linha do tempo só os exibe.
+  5. A faixa de marcos mostra, com o horário, só os marcos já registrados: horário real de chegada à posição (AIBT), início real do atendimento em solo (ACGT), início real do embarque (ASBT), fim real do atendimento em solo (AEGT), horário real de prontidão (ARDT) e horário real de saída da posição (AOBT) [2]. Os marcos são gravados pelo UC-A12 (AIBT), pelo UC-B7 (ACGT, ASBT e AEGT), pelo UC-D4 (ARDT) e pelo UC-D9 (AOBT); a linha do tempo só os exibe.
   6. O cabeçalho mostra o estado do turnaround, o TOBT planejado, o TOBT vigente, a projeção de prontidão e a diferença em relação ao TOBT planejado, com a indicação "dentro" ou "fora da régua" (TOBT + 5, ADR-0001).
   7. O gráfico mostra, para cada tarefa, a janela planejada e a barra real ou projetada, com as linhas do horário atual e do TOBT planejado + 5.
   8. A linha do tempo se atualiza em até 5 segundos a cada novo registro ou recálculo do turnaround, sem recarregar a página.
@@ -216,7 +216,7 @@
 
 - **Nome do caso de uso:** Consultar a lista de alertas abertos
 - **Ator(es):** Coordenador de Turnaround
-- **Descrição:** O Coordenador de Turnaround consulta a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, os dados do gatilho, a tarefa, o horário de emissão, o tempo decorrido e a classificação, e a partir dela registra a ação tomada para cada alerta. O registro da ação é o caso de uso da área D que atende à US-D3. Atende ao RF-C12 e à US-C12.
+- **Descrição:** O Coordenador de Turnaround consulta a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, os dados do gatilho, a tarefa, o horário de emissão, o tempo decorrido e a classificação, e a partir dela registra a ação tomada para cada alerta. O registro da ação é o UC-D3. Atende ao RF-C12 e à US-C12.
 - **Pré-condições:**
   1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.
 - **Pós-condições:** a lista exibe todos os alertas abertos. A consulta não encerra nenhum alerta; o encerramento é feito pelo registro da ação (US-D3).
@@ -235,7 +235,7 @@
   1. O Coordenador de Turnaround seleciona "Alertas" no menu.
   2. O sistema exibe os alertas abertos do mais antigo para o mais recente: por exemplo, às 10:12, o alerta de projeção do PR-XMA emitido às 10:00 (12 minutos, crítico), o de tarefa pronta não iniciada do PR-OKV às 10:03 (9 minutos, crítico), o do PR-GTA às 10:10 (2 minutos, não crítico) e o de viabilidade do PR-AXB às 10:11 (1 minuto, crítico).
   3. O Coordenador de Turnaround seleciona "Registrar ação" no alerta mais antigo.
-  4. O sistema abre o registro da ação do alerta (área D, US-D3).
+  4. O sistema abre o registro da ação do alerta (UC-D3).
   5. Depois do registro, o sistema retira o alerta da lista em até 5 segundos e mantém os demais.
   6. O caso de uso termina.
 - **Fluxos alternativos:**
@@ -258,7 +258,7 @@
 
 - **Nome do caso de uso:** Registrar a checagem com as equipes em TOBT − 15
 - **Ator(es):** Motor de Eventos, Coordenador de Turnaround
-- **Descrição:** Quinze minutos antes do TOBT vigente, o Motor de Eventos exibe ao Coordenador de Turnaround um aviso de checagem com as tarefas obrigatórias não concluídas e as equipes responsáveis. O coordenador confere o prazo com essas equipes e registra a checagem, o que encerra o aviso. Atende ao RF-C11 e à US-C11.
+- **Descrição:** Quinze minutos antes do TOBT vigente, o Motor de Eventos exibe ao Coordenador de Turnaround um aviso de checagem com as tarefas obrigatórias não concluídas e as equipes responsáveis. O coordenador confere o prazo com essas equipes e registra a checagem, o que encerra o aviso. Atende aos RF-C11 e RF-C14 e às US-C11 e US-C14.
 - **Pré-condições:**
   1. O turnaround está no estado "Em solo", "Operações em andamento" ou "Em exceção".
   2. O Coordenador de Turnaround está autenticado com o perfil de coordenador.
@@ -269,7 +269,7 @@
   3. O aviso não é emitido para turnaround que já está em "Pronto para liberação" ou em estado posterior (US-C11, critério 2).
   4. O aviso lista as tarefas obrigatórias que ainda não estão "Concluída" ou "Não aplicável", cada uma com a equipe, o operador responsável, o estado e o fim projetado (UC-C3).
   5. O aviso não é alerta de risco: não entra na lista de alertas (UC-C5), não muda a cor do painel e não conta para a meta de 2 minutos do objetivo 3 (RF-C11).
-  6. O aviso é encerrado quando o Coordenador de Turnaround registra a checagem, com o usuário e o horário gravados (RF-C11).
+  6. O aviso é encerrado quando o Coordenador de Turnaround registra a checagem, com o usuário e o horário gravados; o registro é recusado quando o aviso já foi encerrado (RF-C14).
   7. A conversa com as equipes acontece fora do sistema (rádio ou telefone); o sistema registra só que a checagem foi feita.
 - **Protótipo(s) de tela:** aviso de checagem sobre o painel, com as tarefas pendentes, as equipes e a opção "Registrar checagem feita".
 
@@ -288,7 +288,7 @@
   - **A1. Lembrar depois** (passo 6): o Coordenador de Turnaround seleciona "Lembrar depois".
     1. O sistema fecha o aviso, que continua aberto e aparece na linha do tempo do turnaround (UC-C2) até a checagem ser registrada.
   - **A2. Checagem mostra atraso** (passo 5): uma equipe informa que não termina no prazo.
-    1. O Coordenador de Turnaround registra a checagem (passos 6 e 7) e trata o atraso na área D, por exemplo atualizando o TOBT (US-D6) ou reatribuindo a tarefa (US-D2).
+    1. O Coordenador de Turnaround registra a checagem (passos 6 e 7) e trata o atraso, por exemplo atualizando o TOBT (UC-D6) ou reatribuindo a tarefa (UC-D2).
   - **A3. Turnaround já pronto** (passo 2): o turnaround está em "Pronto para liberação" ou em estado posterior.
     1. O Motor de Eventos não emite o aviso, e o caso de uso termina.
 - **Fluxos de exceção:**
@@ -296,6 +296,9 @@
     1. O aviso fica gravado e aberto e é exibido quando a conexão volta.
   - **E2. TOBT vigente atualizado antes do aviso** (passo 1): o Coordenador de Turnaround atualiza o TOBT vigente do PR-YRB para 11:10 antes das 10:45.
     1. O Motor de Eventos passa o horário do aviso para 10:55, e o caso de uso volta ao passo 1.
+  - **E3. Aviso já encerrado** (passo 6): outro Coordenador de Turnaround já registrou a checagem do mesmo aviso.
+    1. O sistema recusa o registro, informa que o aviso já foi encerrado e mantém o autor e o horário do primeiro registro (RF-C14; US-C14, critério 2).
+    2. O caso de uso termina.
 
 ## UC-C7 – Consultar os indicadores de aderência
 
