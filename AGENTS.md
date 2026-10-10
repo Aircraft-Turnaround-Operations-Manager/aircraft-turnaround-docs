@@ -2,7 +2,7 @@
 
 ## Base de conhecimento do projeto (leia antes de qualquer tarefa de documentação)
 
-1. Leia `CONTEXT.md` (raiz). Ele resume produto, atores, estados, decisões D1–D12 e metas do item 1, e diz o que ler para cada item da especificação.
+1. Leia `CONTEXT.md` (raiz). Ele resume produto, atores, estados, decisões D1–D14 e metas do item 1, e diz o que ler para cada item da especificação.
 2. Abra só os arquivos indicados para o seu item (`CONTEXT.md`, seção 9, ou `pesquisa/README.md`). Não leia o relatório consolidado inteiro: `pesquisa/01-referencias-setor-e-similares.md` está congelado e serve só como histórico.
 3. Precedência: `docs/adr/` (decisões) > `pesquisa/` (pesquisa vigente) > rascunhos e textos antigos. Não contradiga uma decisão; se algo pedir mudança, registre a dúvida para o grupo em vez de mudar o texto.
 4. Ao usar número ou sigla do setor, cite a fonte pelo número de `pesquisa/fontes.md` e separe [Fato] de [Inferência] quando não for óbvio.
