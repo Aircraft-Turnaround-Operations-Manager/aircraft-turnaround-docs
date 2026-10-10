@@ -150,10 +150,10 @@
     "semantic_hash": "52c067129d2b0854b6af383eba75be69"
   },
   "especificacao/06-requisitos-funcionais/area-a.md": {
-    "mtime": 1791423400.2864566,
-    "seen": 1791423744.4360542,
-    "ast_hash": "e5ac6870f3ebd5e6776963579bda19a3",
-    "semantic_hash": "e5ac6870f3ebd5e6776963579bda19a3"
+    "mtime": 1791665171.653617,
+    "seen": 1791667510.7029445,
+    "ast_hash": "2cb0e6b6cd1620db9eef70672f48e378",
+    "semantic_hash": "2cb0e6b6cd1620db9eef70672f48e378"
   },
   "especificacao/06-requisitos-funcionais/area-b.md": {
     "mtime": 1791423400.2874553,
@@ -210,16 +210,16 @@
     "semantic_hash": "f4d3515af2096bddce835eb1fecc63e0"
   },
   "especificacao/08-requisitos-nao-funcionais/area-a.md": {
-    "mtime": 1791423400.2894576,
-    "seen": 1791423744.436064,
-    "ast_hash": "51a8d962043d2822959c91196f69b2bb",
-    "semantic_hash": "51a8d962043d2822959c91196f69b2bb"
+    "mtime": 1791666230.2101145,
+    "seen": 1791667510.7029617,
+    "ast_hash": "728bac29023c4a4cc8fd067ee7c87db7",
+    "semantic_hash": "728bac29023c4a4cc8fd067ee7c87db7"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1791423400.2894576,
-    "seen": 1791423744.436065,
-    "ast_hash": "593912b819a201783fe534c4ce6a7f04",
-    "semantic_hash": "593912b819a201783fe534c4ce6a7f04"
+    "mtime": 1791667187.806376,
+    "seen": 1791667510.7029634,
+    "ast_hash": "2012f93b34952d92ab4759ee6446babc",
+    "semantic_hash": "2012f93b34952d92ab4759ee6446babc"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
     "mtime": 1791515381.7001004,
@@ -252,10 +252,10 @@
     "semantic_hash": "d621f0a10b6a40b8bcae2782f4d12c34"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791507473.991418,
-    "seen": 1791611462.3558779,
-    "ast_hash": "abd74d07adc981debb896819cd3d6c50",
-    "semantic_hash": "abd74d07adc981debb896819cd3d6c50"
+    "mtime": 1791667187.808391,
+    "seen": 1791667510.702977,
+    "ast_hash": "f574e8fc5b0d9df79f03d17eb1500977",
+    "semantic_hash": "f574e8fc5b0d9df79f03d17eb1500977"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
     "mtime": 1791514002.5392265,
@@ -444,10 +444,10 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791639411.377052,
-    "seen": 1791639672.5872521,
-    "ast_hash": "226716ea88615fbb2d1d572ccd8a36b4",
-    "semantic_hash": "226716ea88615fbb2d1d572ccd8a36b4"
+    "mtime": 1791666533.743819,
+    "seen": 1791667510.7029836,
+    "ast_hash": "3a86f54c6de91cc9358dd7a618a4e9c0",
+    "semantic_hash": "3a86f54c6de91cc9358dd7a618a4e9c0"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
     "mtime": 1791610973.7538404,

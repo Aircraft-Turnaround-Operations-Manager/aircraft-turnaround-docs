@@ -1,59 +1,60 @@
 # Graph Report - aircraft-turnaround-docs  (2026-10-10)
 
 ## Corpus Check
-- 99 files · ~219,665 words
+- 99 files · ~222,939 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 4, .bpmn 1)
 
 ## Summary
-- 537 nodes · 2505 edges · 9 communities
-- Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 638 edges (avg confidence: 0.89)
+- 556 nodes · 2743 edges · 8 communities
+- Extraction: 75% EXTRACTED · 25% INFERRED · 0% AMBIGUOUS · INFERRED: 681 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cf456ec5`
+- Built from commit: `30057247`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Fontes, pesquisa, serviços sob demanda e Visão do Produto
 - CONTEXT, regras para IAs, plano, critérios e rastreabilidade
+- Fontes, serviços sob demanda e Visão do Produto
+- Área C, Motor de Eventos, TOBT e objetivo 3
+- Área D: estados, exceções e liberação
+- Pesquisa do setor, BPMN e similares
 - Área B: operador, casos de uso, protótipos e RNFs
-- Estados, liberação, chegada e saída (área D)
-- Área D: casos de uso, replanejamento e TOBT
-- Régua do TOBT, previsão e tolerâncias
-- Área C, Motor de Eventos e objetivo 3
-- BPMN: Motor de Eventos, monitoramento e checagem
+- Área A: acesso, planejamento, chegada e segurança
 - BPMN: tarefas de solo e abastecimento
 
 ## God Nodes (most connected - your core abstractions)
 1. `Fontes da pesquisa` - 79 edges
-2. `Operador de Solo/Rampa` - 67 edges
-3. `Coordenador de Turnaround` - 65 edges
+2. `Coordenador de Turnaround` - 76 edges
+3. `Operador de Solo/Rampa` - 70 edges
 4. `Serviços sob demanda no turnaround (limpeza com risco biológico, assistência extra, catering adicional)` - 65 edges
 5. `CONTEXT.md — Contexto do projeto` - 58 edges
-6. `EUROCONTROL Specification for A-CDM Ed. 1.0 (2025) [2]` - 43 edges
-7. `Objetivo 3: Antecipar desvios e assegurar liberacao segura` - 39 edges
+6. `EUROCONTROL Specification for A-CDM Ed. 1.0 (2025) [2]` - 46 edges
+7. `Objetivo 3: Antecipar desvios e assegurar liberacao segura` - 40 edges
 8. `Pesquisa - mapa da base de conhecimento` - 38 edges
-9. `Motor de Eventos` - 34 edges
-10. `Estados do turnaround` - 33 edges
+9. `Motor de Eventos` - 37 edges
+10. `Objetivo 2: Sincronizar equipes, recursos e atividades paralelas` - 36 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Pool externo: Controle de tráfego aéreo (ATC) — fora do escopo` --semantically_similar_to--> `ATC — Controle de tráfego aéreo (fora de escopo)`  [INFERRED] [semantically similar]
-  especificacao/diagramas/04-bpmn-to-be.png → CONTEXT.md
+- `ATC — Controle de tráfego aéreo (fora de escopo)` --semantically_similar_to--> `Pool externo: Controle de tráfego aéreo (ATC) — fora do escopo`  [INFERRED] [semantically similar]
+  CONTEXT.md → especificacao/diagramas/04-bpmn-to-be.png
+- `Refuelling with passengers on board (configurable rule)` --conceptually_related_to--> `Gateway exclusivo (abastecimento): Abastecimento com passageiros permitido? (Sim → abastecer; Não → aguardar "Desembarque concluído")`  [INFERRED]
+  pesquisa/topicos/atividades-e-dependencias.md → especificacao/diagramas/04-bpmn-to-be.png
+- `Turnaround activities A1-A13 with dependencies` --conceptually_related_to--> `Gateway paralelo: abertura das tarefas em paralelo após o ACGT`  [INFERRED]
+  pesquisa/topicos/atividades-e-dependencias.md → especificacao/diagramas/04-bpmn-to-be.png
 - `Turnaround critical path` --conceptually_related_to--> `Propagar estados e recalcular projeção, caminho crítico e aderência ao TOBT + 5 min`  [INFERRED]
   pesquisa/topicos/caminho-critico.md → especificacao/diagramas/04-bpmn-to-be.png
 - `Boarding as critical activity` --conceptually_related_to--> `Embarcar os passageiros (ASBT)`  [INFERRED]
   pesquisa/topicos/caminho-critico.md → especificacao/diagramas/04-bpmn-to-be.png
-- `A-CDM System / information platform` --semantically_similar_to--> `Motor de Eventos`  [INFERRED] [semantically similar]
-  pesquisa/topicos/papeis-e-atores.md → CONTEXT.md
-- `Tratar o alerta: redistribuir recursos, replanejar e registrar a causa (código ANAC)` --conceptually_related_to--> `ADR-0006 — Códigos de atraso tabela ANAC`  [INFERRED]
-  especificacao/diagramas/04-bpmn-to-be.png → docs/adr/0006-codigos-de-atraso-tabela-anac.md
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
+- **Requisitos funcionais da área A (RF-A1 a RF-A13)** — especificacao_06_requisitos_funcionais_area_a_rf_a1, especificacao_06_requisitos_funcionais_area_a_rf_a2, especificacao_06_requisitos_funcionais_area_a_rf_a3, especificacao_06_requisitos_funcionais_area_a_rf_a4, especificacao_06_requisitos_funcionais_area_a_rf_a5, especificacao_06_requisitos_funcionais_area_a_rf_a6, especificacao_06_requisitos_funcionais_area_a_rf_a7, especificacao_06_requisitos_funcionais_area_a_rf_a8, especificacao_06_requisitos_funcionais_area_a_rf_a9, especificacao_06_requisitos_funcionais_area_a_rf_a10, especificacao_06_requisitos_funcionais_area_a_rf_a11, especificacao_06_requisitos_funcionais_area_a_rf_a12, especificacao_06_requisitos_funcionais_area_a_rf_a13 [EXTRACTED 1.00]
+- **Requisitos não funcionais da área A (RNF-A1 a RNF-A6)** — especificacao_08_requisitos_nao_funcionais_area_a_rnf_a1, especificacao_08_requisitos_nao_funcionais_area_a_rnf_a2, especificacao_08_requisitos_nao_funcionais_area_a_rnf_a3, especificacao_08_requisitos_nao_funcionais_area_a_rnf_a4, especificacao_08_requisitos_nao_funcionais_area_a_rnf_a5, especificacao_08_requisitos_nao_funcionais_area_a_rnf_a6 [EXTRACTED 1.00]
 - **Cadeia RF → estória das ações de execução de tarefa do Operador de Solo/Rampa (RF-B2 a RF-B6, US-B2 a US-B6)** — especificacao_06_requisitos_funcionais_area_b_rf_b2, especificacao_06_requisitos_funcionais_area_b_rf_b3, especificacao_06_requisitos_funcionais_area_b_rf_b4, especificacao_06_requisitos_funcionais_area_b_rf_b5, especificacao_06_requisitos_funcionais_area_b_rf_b6, especificacao_07_estorias_de_usuario_area_b_us_b2, especificacao_07_estorias_de_usuario_area_b_us_b3, especificacao_07_estorias_de_usuario_area_b_us_b4, especificacao_07_estorias_de_usuario_area_b_us_b5, especificacao_07_estorias_de_usuario_area_b_us_b6 [EXTRACTED 1.00]
 - **Casos de uso da área B (UC-B1 a UC-B8)** — especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b1, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b2, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b3, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b4, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b5, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b6, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b7, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b8 [EXTRACTED 1.00]
 - **«include»: UC-B2, UC-B3 e UC-B5 incluem UC-B7 (marcos) e UC-B8 (propagação), executados pelo Motor de Eventos** — especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b2, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b3, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b5, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b7, especificacao_10_especificacoes_de_caso_de_uso_area_b_uc_b8, context_motor_de_eventos [EXTRACTED 1.00]
@@ -91,62 +92,58 @@
 - **Ciclo de vida da exceção e bloqueio da liberação (RF-D1, RF-D5, RF-D4)** — especificacao_06_requisitos_funcionais_area_d_rf_d1, especificacao_06_requisitos_funcionais_area_d_rf_d5, especificacao_06_requisitos_funcionais_area_d_rf_d4 [INFERRED 0.95]
 - **Reatribuição de tarefa entre operadores da mesma equipe (RF-D2, RF-D8)** — especificacao_06_requisitos_funcionais_area_d_rf_d2, especificacao_06_requisitos_funcionais_area_d_rf_d8 [INFERRED 0.95]
 
-## Communities (9 total, 0 thin omitted)
+## Communities (8 total, 0 thin omitted)
 
-### Community 0 - "Fontes, pesquisa, serviços sob demanda e Visão do Produto"
+### Community 0 - "CONTEXT, regras para IAs, plano, critérios e rastreabilidade"
+Cohesion: 0.07
+Nodes (80): Formato de arquivo de pesquisa (YAML + seção Ligações), AGENTS.md regra 8 — registrar a suposição sobre outra área em vez de inventar o requisito, AGENTS.md regra 9 — toda sigla com o nome em português na primeira ocorrência de cada item (inclusive A-CDM, ANAC, ISO/IEC), CONTEXT.md — Contexto do projeto, A-CDM — Tomada de decisão colaborativa em aeroportos, Administrador do Sistema, Aircraft Turnaround Orchestration System, IATA — Associação Internacional de Transporte Aéreo (+72 more)
+
+### Community 1 - "Fontes, serviços sob demanda e Visão do Produto"
 Cohesion: 0.05
-Nodes (113): ADR-0005 — Abastecimento com passageiros configurável, ADR-0014 — Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround, Catálogo de serviços sob demanda no modelo de tarefas (tarefas "sob demanda" com tipo de atividade, equipe e duração planejada; fora do plano até serem acionadas), Benefício-chave: aeronave pronta para liberação no TOBT, desvios tratados durante a operação, Categoria-segmento: software de gestão de turnaround / operações de solo, Diferencial-chave: grafo de tarefas com caminho crítico, bloqueio da liberação, registro pelo operador com QR Code, régua TOBT + 5 min, E2: turnaround dentro do planejado, medido pela régua TOBT planejado + 5 min, Item 3 Visao do Produto (+105 more)
+Nodes (87): EASA CAT.OP.MPA.195, ANAC RBAC 91.102(g), ADR-0014 — Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround, O atraso causado por serviço sob demanda conta na meta de 80% do objetivo 1 (ADR-0001 e ADR-0002 não mudam), Catálogo de serviços sob demanda no modelo de tarefas (tarefas "sob demanda" com tipo de atividade, equipe e duração planejada; fora do plano até serem acionadas), Benefício-chave: aeronave pronta para liberação no TOBT, desvios tratados durante a operação, Categoria-segmento: software de gestão de turnaround / operações de solo, Diferencial-chave: grafo de tarefas com caminho crítico, bloqueio da liberação, registro pelo operador com QR Code, régua TOBT + 5 min (+79 more)
 
-### Community 1 - "CONTEXT, regras para IAs, plano, critérios e rastreabilidade"
+### Community 2 - "Área C, Motor de Eventos, TOBT e objetivo 3"
+Cohesion: 0.09
+Nodes (85): Metas do item 1 (precisão, sincronização, desvios), Motor de Eventos, Risco ao horário (gatilhos A-CDM), TOBT — Horário-alvo de prontidão, ADR-0001 — TOBT planejado + 5 min, Heathrow pontualidade "verde" (>=79%), ADR-0003 — Atualizar previsão na antecipação, Aviso de antecipação >= 5 min (+77 more)
+
+### Community 3 - "Área D: estados, exceções e liberação"
 Cohesion: 0.07
-Nodes (76): Formato de arquivo de pesquisa (YAML + seção Ligações), AGENTS.md regra 8 — registrar a suposição sobre outra área em vez de inventar o requisito, AGENTS.md regra 9 — toda sigla com o nome em português na primeira ocorrência de cada item (inclusive A-CDM, ANAC, ISO/IEC), CONTEXT.md — Contexto do projeto, A-CDM — Tomada de decisão colaborativa em aeroportos, Administrador do Sistema, Aircraft Turnaround Orchestration System, IATA — Associação Internacional de Transporte Aéreo (+68 more)
+Nodes (71): AEGT — Fim real do atendimento em solo, ARDT — Horário real de prontidão (Aircraft Ready), ATC — Controle de tráfego aéreo (fora de escopo), Autoridade de Liberação, Estados do turnaround, Fora de escopo (voos, tripulação, financeiro, ATC), TSAT — Horário-alvo de autorização de acionamento, IATA AHM 730 (+63 more)
 
-### Community 2 - "Área B: operador, casos de uso, protótipos e RNFs"
-Cohesion: 0.10
-Nodes (74): Estados da tarefa, Operador de Solo/Rampa, EASA CAT.OP.MPA.195, ANAC RBAC 91.102(g), ADR-0006 — Códigos de atraso tabela ANAC, IATA AHM 730, IATA AHM 732, ANAC Portaria nº 55/2026 (+66 more)
-
-### Community 3 - "Estados, liberação, chegada e saída (área D)"
+### Community 4 - "Pesquisa do setor, BPMN e similares"
 Cohesion: 0.07
-Nodes (64): AEGT — Fim real do atendimento em solo, ARDT — Horário real de prontidão (Aircraft Ready), ATC — Controle de tráfego aéreo (fora de escopo), Autoridade de Liberação, Estados do turnaround, Fora de escopo (voos, tripulação, financeiro, ATC), MTTT — Tempo mínimo de turnaround, TSAT — Horário-alvo de autorização de acionamento (+56 more)
+Nodes (78): ADR-0002 — Metas percentuais 80%, ADR-0004 — Quatro atores e Autoridade de Liberação, ADR-0005 — Abastecimento com passageiros configurável, ADR-0006 — Códigos de atraso tabela ANAC, ADR-0009 — Nome Coordenador de Turnaround, Fluxo de trabalho 1.3: diagramas em Mermaid/PlantUML, exceto o BPMN do item 4 em BPMN 2.0 (.bpmn), Leitura do diagrama: caminho principal (abertura, viabilidade, AIBT, ACGT, tarefas em paralelo, ASBT, loadsheet, AEGT, ARDT, AOBT), Leitura do diagrama: eventos e mensagens (chegada, autorização do ATC, sinais de desembarque/abastecimento concluído, temporizador TOBT − 15 min) (+70 more)
 
-### Community 4 - "Área D: casos de uso, replanejamento e TOBT"
-Cohesion: 0.15
-Nodes (41): Metas do item 1 (precisão, sincronização, desvios), Risco ao horário (gatilhos A-CDM), TOBT — Horário-alvo de prontidão, Heathrow pontualidade "verde" (>=79%), Correção do AIBT pelo Coordenador de Turnaround (motivo, valor anterior e novo, autor e horário; até "Fora de bloco"; dispara o recálculo da projeção), O atraso causado por serviço sob demanda conta na meta de 80% do objetivo 1 (ADR-0001 e ADR-0002 não mudam), Janela planejada, Metrica: 80% das atividades na janela e 80% dos turnarounds prontos ate o TOBT planejado (tolerancia 5 min) (+33 more)
-
-### Community 5 - "Régua do TOBT, previsão e tolerâncias"
+### Community 5 - "Área B: operador, casos de uso, protótipos e RNFs"
 Cohesion: 0.12
-Nodes (42): ADR-0001 — TOBT planejado + 5 min, ADR-0002 — Metas percentuais 80%, ADR-0003 — Atualizar previsão na antecipação, Aviso de antecipação >= 5 min, TOBT planejado (fixo, régua da meta), TOBT vigente (última previsão informada), ADR-0004 — Quatro atores e Autoridade de Liberação, ADR-0009 — Nome Coordenador de Turnaround (+34 more)
+Nodes (68): Estados da tarefa, Operador de Solo/Rampa, ADR-0007 — Dados do operador e QR Code, Diferencial DF5 (QR Code por assento/fileira/zona), Leitura de QR Code pelo celular, Area B: Execucao de tarefas pelo operador, Atualizacao por dispositivo movel / QR code, Estados da tarefa: Aguardando, Pronta, Em execucao, Concluida, Pausada, Nao aplicavel (+60 more)
 
-### Community 6 - "Área C, Motor de Eventos e objetivo 3"
-Cohesion: 0.22
-Nodes (38): Motor de Eventos, Alerta de risco ao horario planejado, Caminho critico, Objetivo 3: Antecipar desvios e assegurar liberacao segura, Projecao de conclusao, Area C: Projecao, caminho critico, painel e alertas, E1: desvios detectados durante a operação (projeção e caminho crítico recalculados, alerta ao Coordenador de Turnaround), Leitura do diagrama: subprocessos de evento (monitoramento, tratamento de alerta, atualização da previsão, checagem em TOBT − 15 min) (+30 more)
+### Community 6 - "Área A: acesso, planejamento, chegada e segurança"
+Cohesion: 0.23
+Nodes (32): MTTT — Tempo mínimo de turnaround, Correção do AIBT pelo Coordenador de Turnaround (motivo, valor anterior e novo, autor e horário; até "Fora de bloco"; dispara o recálculo da projeção), Recusas do registro do AIBT (operador sem tarefa atribuída, horário futuro, chegada já registrada, plano inicial não confirmado), Janela planejada, Metrica: 100% tarefas com responsavel, painel atualizado em ate 5 s, Objetivo 1: Assegurar a precisao temporal do turnaround, Objetivo 2: Sincronizar equipes, recursos e atividades paralelas, Painel operacional (+24 more)
 
-### Community 7 - "BPMN: Motor de Eventos, monitoramento e checagem"
-Cohesion: 0.12
-Nodes (34): Fluxo de trabalho 1.3: diagramas em Mermaid/PlantUML, exceto o BPMN do item 4 em BPMN 2.0 (.bpmn), Leitura do diagrama: eventos e mensagens (chegada, autorização do ATC, sinais de desembarque/abastecimento concluído, temporizador TOBT − 15 min), RF-C11 — Exibir o aviso de checagem em TOBT − 15 min com as tarefas obrigatórias não concluídas e as equipes responsáveis, RF-C14 — Registrar a checagem com as equipes de um aviso de TOBT − 15 aberto e encerrar o aviso, Diagrama BPMN TO BE do turnaround (04-bpmn-to-be.png), Evento de início (mensagem): Voo previsto para a posição, Evento de início (mensagem, não interruptivo): Registro de andamento recebido (início, pausa, conclusão, não aplicável, QR Code), Evento de início (temporizador, não interruptivo): TOBT − 15 min (+26 more)
-
-### Community 8 - "BPMN: tarefas de solo e abastecimento"
-Cohesion: 0.20
+### Community 7 - "BPMN: tarefas de solo e abastecimento"
+Cohesion: 0.21
 Nodes (23): Gateway exclusivo (abastecimento): Abastecimento com passageiros permitido? (Sim → abastecer; Não → aguardar "Desembarque concluído"), Gateway exclusivo (embarque): Abastecimento com passageiros permitido? (Sim → embarcar; Não → aguardar "Abastecimento concluído"), Gateway paralelo: abertura das tarefas em paralelo após o ACGT, Gateway paralelo: junção de embarque e carregamento de bagagem e carga, Gateway paralelo: junção final das tarefas de solo, Gateway paralelo: junção de limpeza e catering, Gateway paralelo: limpeza da cabine e catering após o desembarque, Operador de Solo/Rampa (lane do BPMN) (+15 more)
 
 ## Knowledge Gaps
-- **9 isolated node(s):** `Amadeus (excluded candidate)`, `Cosmos (excluded candidate)`, `Heathrow pontualidade "verde" (>=79%)`, `Wayfinding (map issue + child tickets)`, `Item 11 Diagrama de Atividades` (+4 more)
+- **9 isolated node(s):** `Amadeus (excluded candidate)`, `Cosmos (excluded candidate)`, `Wayfinding (map issue + child tickets)`, `Dependências e ordem de execução dos itens`, `Item 11 Diagrama de Atividades` (+4 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 9 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Fontes da pesquisa` connect `Fontes, pesquisa, serviços sob demanda e Visão do Produto` to `CONTEXT, regras para IAs, plano, critérios e rastreabilidade`, `Área B: operador, casos de uso, protótipos e RNFs`, `Estados, liberação, chegada e saída (área D)`, `Área D: casos de uso, replanejamento e TOBT`, `Régua do TOBT, previsão e tolerâncias`, `Área C, Motor de Eventos e objetivo 3`, `BPMN: Motor de Eventos, monitoramento e checagem`?**
-  _High betweenness centrality (0.166) - this node is a cross-community bridge._
-- **Why does `CONTEXT.md — Contexto do projeto` connect `CONTEXT, regras para IAs, plano, critérios e rastreabilidade` to `Fontes, pesquisa, serviços sob demanda e Visão do Produto`, `Área B: operador, casos de uso, protótipos e RNFs`, `Estados, liberação, chegada e saída (área D)`, `Área D: casos de uso, replanejamento e TOBT`, `Régua do TOBT, previsão e tolerâncias`, `Área C, Motor de Eventos e objetivo 3`?**
-  _High betweenness centrality (0.118) - this node is a cross-community bridge._
-- **Why does `Serviços sob demanda no turnaround (limpeza com risco biológico, assistência extra, catering adicional)` connect `Fontes, pesquisa, serviços sob demanda e Visão do Produto` to `CONTEXT, regras para IAs, plano, critérios e rastreabilidade`, `Área B: operador, casos de uso, protótipos e RNFs`, `Área D: casos de uso, replanejamento e TOBT`, `Régua do TOBT, previsão e tolerâncias`, `Área C, Motor de Eventos e objetivo 3`?**
-  _High betweenness centrality (0.099) - this node is a cross-community bridge._
-- **Are the 25 inferred relationships involving `Operador de Solo/Rampa` (e.g. with `UC-D2 — Reatribuir tarefa` and `UC-D7 — Replanejar tarefas ainda não iniciadas`) actually correct?**
-  _`Operador de Solo/Rampa` has 25 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 14 inferred relationships involving `Coordenador de Turnaround` (e.g. with `Cliente-alvo: empresas de handling e companhias aéreas (responsáveis pelo TOBT)` and `E1: desvios detectados durante a operação (projeção e caminho crítico recalculados, alerta ao Coordenador de Turnaround)`) actually correct?**
+- **Why does `Fontes da pesquisa` connect `Fontes, serviços sob demanda e Visão do Produto` to `CONTEXT, regras para IAs, plano, critérios e rastreabilidade`, `Área C, Motor de Eventos, TOBT e objetivo 3`, `Área D: estados, exceções e liberação`, `Pesquisa do setor, BPMN e similares`, `Área B: operador, casos de uso, protótipos e RNFs`, `Área A: acesso, planejamento, chegada e segurança`?**
+  _High betweenness centrality (0.156) - this node is a cross-community bridge._
+- **Why does `CONTEXT.md — Contexto do projeto` connect `CONTEXT, regras para IAs, plano, critérios e rastreabilidade` to `Fontes, serviços sob demanda e Visão do Produto`, `Área C, Motor de Eventos, TOBT e objetivo 3`, `Área D: estados, exceções e liberação`, `Pesquisa do setor, BPMN e similares`, `Área B: operador, casos de uso, protótipos e RNFs`, `Área A: acesso, planejamento, chegada e segurança`?**
+  _High betweenness centrality (0.111) - this node is a cross-community bridge._
+- **Why does `Serviços sob demanda no turnaround (limpeza com risco biológico, assistência extra, catering adicional)` connect `Fontes, serviços sob demanda e Visão do Produto` to `CONTEXT, regras para IAs, plano, critérios e rastreabilidade`, `Área C, Motor de Eventos, TOBT e objetivo 3`, `Área D: estados, exceções e liberação`, `Pesquisa do setor, BPMN e similares`, `Área B: operador, casos de uso, protótipos e RNFs`, `Área A: acesso, planejamento, chegada e segurança`?**
+  _High betweenness centrality (0.095) - this node is a cross-community bridge._
+- **Are the 14 inferred relationships involving `Coordenador de Turnaround` (e.g. with `D9 — Nome único: Coordenador de Turnaround` and `Cliente-alvo: empresas de handling e companhias aéreas (responsáveis pelo TOBT)`) actually correct?**
   _`Coordenador de Turnaround` has 14 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Amadeus (excluded candidate)`, `Cosmos (excluded candidate)`, `Heathrow pontualidade "verde" (>=79%)` to the rest of the system?**
+- **Are the 25 inferred relationships involving `Operador de Solo/Rampa` (e.g. with `Leitura de QR Code pelo celular` and `Equipe ou especialidade do operador como dado do cadastro (não um ator por especialidade)`) actually correct?**
+  _`Operador de Solo/Rampa` has 25 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `Amadeus (excluded candidate)`, `Cosmos (excluded candidate)`, `Wayfinding (map issue + child tickets)` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Fontes, pesquisa, serviços sob demanda e Visão do Produto` be split into smaller, more focused modules?**
-  _Cohesion score 0.05030274802049371 - nodes in this community are weakly interconnected._
+- **Should `CONTEXT, regras para IAs, plano, critérios e rastreabilidade` be split into smaller, more focused modules?**
+  _Cohesion score 0.07211646136618141 - nodes in this community are weakly interconnected._
