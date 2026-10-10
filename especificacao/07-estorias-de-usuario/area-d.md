@@ -1,4 +1,4 @@
-## US-D1 – REQUISITO RF-D1: Abrir exceção com código de atraso da ANAC
+## US-D1 – REQUISITO RF-D1: Abrir exceção com código de atraso
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** abrir uma exceção em um turnaround, informando a tarefa afetada, a causa pelo código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] e uma descrição
@@ -54,12 +54,13 @@
 | 1 | **DADO QUE:** um turnaround está no estado "Pronto para liberação", com todas as tarefas obrigatórias nos estados "Concluída" ou "Não aplicável" e sem exceção aberta <br> **QUANDO:** confirmo a prontidão da aeronave <br> **ENTÃO:** o sistema grava o ARDT com o horário da confirmação, grava a decisão com o meu usuário e o turnaround passa para o estado "Liberado" |
 | 2 | **DADO QUE:** um turnaround está no estado "Em exceção", com uma exceção aberta <br> **QUANDO:** tento confirmar a prontidão da aeronave <br> **ENTÃO:** o sistema recusa a confirmação, informa a exceção aberta, não grava o ARDT e o turnaround mantém o estado |
 | 3 | **DADO QUE:** um turnaround está no estado "Operações em andamento", com a tarefa obrigatória de carregamento no estado "Em execução" <br> **QUANDO:** tento confirmar a prontidão da aeronave <br> **ENTÃO:** o sistema recusa a confirmação, lista a tarefa de carregamento como pendente, não grava o ARDT e o turnaround mantém o estado |
+| 4 | **DADO QUE:** um turnaround está no estado "Pronto para liberação" <br> **QUANDO:** abro esse turnaround para confirmar a prontidão <br> **ENTÃO:** o sistema exibe as condições da liberação: as tarefas obrigatórias, com o estado e o horário de cada uma, e a indicação de que não há exceção aberta, antes da opção de confirmar |
 
 ## US-D5 – REQUISITO RF-D5: Encerrar exceção
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** encerrar uma exceção, registrando a solução adotada
-**PARA:** que o turnaround volte ao estado em que estava antes da exceção e possa seguir para a liberação
+**PARA:** que o turnaround saia da exceção no estado que corresponde ao andamento das tarefas e possa seguir para a liberação
 
 **Critérios de Aceite:**
 
@@ -68,6 +69,8 @@
 | 1 | **DADO QUE:** um turnaround estava no estado "Operações em andamento" quando passou para "Em exceção", e só há uma exceção aberta <br> **QUANDO:** encerro essa exceção informando a solução <br> **ENTÃO:** o sistema grava a solução, o meu usuário e o horário na exceção, e o turnaround volta para o estado "Operações em andamento" |
 | 2 | **DADO QUE:** um turnaround está no estado "Em exceção", com duas exceções abertas <br> **QUANDO:** encerro uma delas informando a solução <br> **ENTÃO:** o sistema grava a solução da exceção encerrada e o turnaround continua "Em exceção", porque ainda há outra exceção aberta |
 | 3 | **DADO QUE:** um turnaround está no estado "Em exceção" <br> **QUANDO:** tento encerrar a exceção sem informar a solução <br> **ENTÃO:** o sistema recusa o encerramento, informa que a solução é obrigatória e a exceção continua aberta |
+| 4 | **DADO QUE:** um turnaround estava em "Operações em andamento" quando passou para "Em exceção" e, durante a exceção, todas as tarefas obrigatórias chegaram a "Concluída" ou "Não aplicável" <br> **QUANDO:** encerro a única exceção aberta informando a solução <br> **ENTÃO:** o turnaround passa para "Pronto para liberação", e não para "Operações em andamento" |
+| 5 | **DADO QUE:** um turnaround estava em "Em solo" quando passou para "Em exceção" e, durante a exceção, o Operador de Solo/Rampa iniciou a primeira tarefa <br> **QUANDO:** encerro a única exceção aberta informando a solução <br> **ENTÃO:** o turnaround passa para "Operações em andamento", e não volta para "Em solo" |
 
 ## US-D6 – REQUISITO RF-D6: Atualizar o TOBT quando a projeção se afasta 5 minutos ou mais
 
@@ -87,8 +90,8 @@
 ## US-D7 – REQUISITO RF-D7: Replanejar tarefas ainda não iniciadas
 
 **COMO:** Coordenador de Turnaround
-**POSSO:** alterar a janela planejada ou as dependências das tarefas ainda não iniciadas
-**PARA:** ajustar o plano diante de um desvio e ver em seguida a nova projeção de prontidão e o novo caminho crítico
+**POSSO:** alterar a janela planejada ou as dependências das tarefas ainda não iniciadas e acionar um serviço sob demanda do catálogo, incluindo-o no plano
+**PARA:** ajustar o plano diante de um desvio ou de um serviço que surgiu durante o turnaround e ver em seguida a nova projeção de prontidão e o novo caminho crítico
 
 **Critérios de Aceite:**
 
@@ -97,6 +100,9 @@
 | 1 | **DADO QUE:** a tarefa de catering está no estado "Aguardando" e faz parte do caminho crítico <br> **QUANDO:** antecipo a janela planejada de início dessa tarefa em 10 minutos <br> **ENTÃO:** o sistema grava a alteração com o meu usuário e o horário, e exibe a projeção de prontidão e o caminho crítico recalculados |
 | 2 | **DADO QUE:** a tarefa de abastecimento está no estado "Em execução" <br> **QUANDO:** tento alterar a janela planejada ou as dependências dessa tarefa <br> **ENTÃO:** o sistema recusa a alteração, informa que só tarefas ainda não iniciadas podem ser replanejadas e a tarefa mantém a janela e as dependências |
 | 3 | **DADO QUE:** a tarefa de carregamento está no estado "Pronta" e tem como predecessora o descarregamento <br> **QUANDO:** retiro essa dependência <br> **ENTÃO:** o sistema grava a alteração com o meu usuário e o horário, e exibe a projeção de prontidão e o caminho crítico recalculados sem essa dependência |
+| 4 | **DADO QUE:** a tripulação avisou que um assento precisa de limpeza profunda e o catálogo sob demanda do turnaround tem esse serviço, com duração planejada de 15 minutos <br> **QUANDO:** aciono o serviço, escolho um operador da equipe de limpeza, a janela, o desembarque como predecessora e o embarque como sucessora e informo o motivo <br> **ENTÃO:** o sistema inclui a tarefa no plano, grava a inclusão com o motivo, o meu usuário e o horário, a tarefa aparece na lista do operador escolhido e a projeção de prontidão e o caminho crítico são recalculados (ADR-0014) |
+| 5 | **DADO QUE:** o embarque já depende do catering e o catering está "Aguardando" <br> **QUANDO:** tento fazer o catering depender do embarque <br> **ENTÃO:** o sistema recusa a alteração, mostra as tarefas que formariam o ciclo e o plano fica como estava |
+| 6 | **DADO QUE:** a companhia do turnaround não permite abastecer com passageiros a bordo <br> **QUANDO:** tento retirar a dependência entre o abastecimento e o embarque <br> **ENTÃO:** o sistema recusa a alteração, informa a regra da companhia (ADR-0005) e o plano fica como estava |
 
 ## US-D8 – REQUISITO RF-D8: Consultar operadores disponíveis da equipe
 
