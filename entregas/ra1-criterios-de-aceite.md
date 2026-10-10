@@ -273,7 +273,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.8** As lanes do BPMN (item 4) e as raias do diagrama de atividades (item 11) usam os atores do item 5.
 - [ ] **K.9** As contagens mínimas conferem por contagem real: RF ≥16, estórias ≥16, cada estória com ≥2 critérios, RNF ≥16, especificações ≥16.
 - [ ] **K.10** Todos os critérios gerais X.1 a X.10 estão atendidos.
-- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D12 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
+- [ ] **K.11** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D14 (`docs/adr/`), e todo número ou sigla do setor usado na especificação cita a fonte da pesquisa (`pesquisa/fontes.md`).
 - [ ] **K.12** Não há issue aberta com o rótulo `pendencia-cruzada`: toda amarração entre áreas foi resolvida, com o ID do requisito que a atende ou com a decisão do grupo registrada (`entregas/ra1-tarefas.md`, seção 1.4).
 - [ ] **K.13** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois da renumeração, com o script `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012).
 
