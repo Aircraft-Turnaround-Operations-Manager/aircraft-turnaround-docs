@@ -76,7 +76,7 @@ As decisões D8 (siglas) e D9 (nome do coordenador) valem para **todos** os iten
 | [Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md) | 2.7 | 4, 5, 9, 10, 11 | A, D | D4, D9, D10 |
 | [Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md) | 2.8 | 2, 6, 7, 10 | B, D | D6 |
 | [Referências da IATA sobre ground handling (P1.9)](topicos/referencias-iata.md) | 2.9 | 3, 8 | — | D6 |
-| [Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md) | nova (10/10/2026) | 4, 6, 7, 10 | A, D | D1, D2, D3, D6, D7 |
+| [Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md) | nova (10/10/2026) | 4, 6, 7, 10 | A, D | D1, D2, D3, D6, D7, D14 |
 | [Similares de mercado — seleção (seção 3.1)](similares/README.md) | 3.1 | 3 | — | — |
 | [Ficha — Assaia (ApronAI e TurnaroundControl)](similares/assaia.md) | 3.2 | 3 | — | D7 |
 | [Ficha — INFORM GroundStar](similares/inform-groundstar.md) | 3.2 | 3 | — | — |

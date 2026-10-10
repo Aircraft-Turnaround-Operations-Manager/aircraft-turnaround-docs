@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-10-07
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, mapa-pesquisa]
+atualizado: 2026-10-10
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -24,6 +24,8 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0010](0010-administrador-usuario-e-equipe-do-operador.md) | D10 | Administrador do Sistema como ator; ator abstrato Usuário; equipe do operador como dado (complementa a 0004) | 5, 6, 7, 9, 10 |
 | [0011](0011-minimo-por-integrante-e-numeracao-provisoria.md) | D11 | Mínimo de 4 por integrante, sem máximo; numeração provisória por área e renumeração única no T12 | 6, 7, 8, 9, 10 |
 | [0012](0012-matriz-de-rastreabilidade.md) | D12 | Matriz de rastreabilidade como apêndice gerado por script; sem tabelas "Base" nos arquivos de área | 6, 7, 8, 10 |
+| [0013](0013-chegada-registrada-pelo-operador.md) | D13 | Chegada à posição (AIBT) registrada direto pelo operador, sem confirmação; o Coordenador de Turnaround pode corrigir | 6, 7, 10 |
+| [0014](0014-servicos-sob-demanda.md) | D14 | Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround; o atraso conta na meta de 80% | 6, 7, 10 |
 
 ---
 
