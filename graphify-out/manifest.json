@@ -1,7 +1,7 @@
 {
   "AGENTS.md": {
-    "mtime": 1791610973.7498212,
-    "seen": 1791611462.355823,
+    "mtime": 1791673868.4080832,
+    "seen": 1791674421.1426423,
     "ast_hash": "183ab2550ca8aa12c295f72d4a93cd96",
     "semantic_hash": "183ab2550ca8aa12c295f72d4a93cd96"
   },
@@ -12,14 +12,14 @@
     "semantic_hash": "5c24644a54eae7e0af3d7e1db45a1a58"
   },
   "CONTEXT.md": {
-    "mtime": 1791610973.750826,
-    "seen": 1791611462.3558278,
+    "mtime": 1791673868.4090836,
+    "seen": 1791674421.1426468,
     "ast_hash": "e6eea591a85e9ef51bfc9f54ac88794a",
     "semantic_hash": "e6eea591a85e9ef51bfc9f54ac88794a"
   },
   "README.md": {
-    "mtime": 1791610973.7518258,
-    "seen": 1791611462.355829,
+    "mtime": 1791673868.4100816,
+    "seen": 1791674421.142648,
     "ast_hash": "08247e962142606d3ccbc309dc61a6a8",
     "semantic_hash": "08247e962142606d3ccbc309dc61a6a8"
   },
@@ -78,8 +78,8 @@
     "semantic_hash": "42e6008fc628f33c74be511ae8011e2c"
   },
   "docs/adr/README.md": {
-    "mtime": 1791610973.7548258,
-    "seen": 1791611462.3558474,
+    "mtime": 1791673868.4165933,
+    "seen": 1791674421.1426663,
     "ast_hash": "ac05956372e526866ed09d9996b4899b",
     "semantic_hash": "ac05956372e526866ed09d9996b4899b"
   },
@@ -102,8 +102,8 @@
     "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
   },
   "entregas/ra1-criterios-de-aceite.md": {
-    "mtime": 1791610973.7558262,
-    "seen": 1791611462.355852,
+    "mtime": 1791673868.4175925,
+    "seen": 1791674421.1426702,
     "ast_hash": "342b52fd3aff37641e062b8fc532a0f3",
     "semantic_hash": "342b52fd3aff37641e062b8fc532a0f3"
   },
@@ -150,8 +150,8 @@
     "semantic_hash": "52c067129d2b0854b6af383eba75be69"
   },
   "especificacao/06-requisitos-funcionais/area-a.md": {
-    "mtime": 1791670036.032285,
-    "seen": 1791671087.5816405,
+    "mtime": 1791673868.4195938,
+    "seen": 1791674421.1426792,
     "ast_hash": "a63224dbd4ae5bde6ea5badb48f2c51f",
     "semantic_hash": "a63224dbd4ae5bde6ea5badb48f2c51f"
   },
@@ -162,8 +162,8 @@
     "semantic_hash": "0cc031852a309afffedb82ccf92c8d81"
   },
   "especificacao/06-requisitos-funcionais/area-c.md": {
-    "mtime": 1791514002.5367198,
-    "seen": 1791611462.3558624,
+    "mtime": 1791673868.4205961,
+    "seen": 1791674421.1426811,
     "ast_hash": "adc3735949231e49599c88861c7d25b2",
     "semantic_hash": "adc3735949231e49599c88861c7d25b2"
   },
@@ -180,8 +180,8 @@
     "semantic_hash": "1a177e1ce5033ecb87a579e344240914"
   },
   "especificacao/07-estorias-de-usuario/area-a.md": {
-    "mtime": 1791670036.0328038,
-    "seen": 1791671087.5816548,
+    "mtime": 1791673868.4215934,
+    "seen": 1791674421.142684,
     "ast_hash": "6ecf929c8891ecfe58166513045349c9",
     "semantic_hash": "6ecf929c8891ecfe58166513045349c9"
   },
@@ -192,10 +192,10 @@
     "semantic_hash": "1bd7b39130200084d567226d430304f2"
   },
   "especificacao/07-estorias-de-usuario/area-c.md": {
-    "mtime": 1791250013.2408614,
-    "seen": 1791250201.6122472,
-    "ast_hash": "ce4f312a26ea597fae7671e5fd705137",
-    "semantic_hash": "ce4f312a26ea597fae7671e5fd705137"
+    "mtime": 1791673868.4236345,
+    "seen": 1791674421.1426857,
+    "ast_hash": "9faf8545eccc4329384b73731336b93a",
+    "semantic_hash": "9faf8545eccc4329384b73731336b93a"
   },
   "especificacao/07-estorias-de-usuario/area-d.md": {
     "mtime": 1791431614.6715431,
@@ -210,20 +210,20 @@
     "semantic_hash": "f4d3515af2096bddce835eb1fecc63e0"
   },
   "especificacao/08-requisitos-nao-funcionais/area-a.md": {
-    "mtime": 1791670036.033811,
-    "seen": 1791671087.5816605,
+    "mtime": 1791673868.4246347,
+    "seen": 1791674421.1426888,
     "ast_hash": "728bac29023c4a4cc8fd067ee7c87db7",
     "semantic_hash": "728bac29023c4a4cc8fd067ee7c87db7"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1791670036.033811,
-    "seen": 1791671087.5816615,
+    "mtime": 1791673868.4246347,
+    "seen": 1791674421.1426895,
     "ast_hash": "2012f93b34952d92ab4759ee6446babc",
     "semantic_hash": "2012f93b34952d92ab4759ee6446babc"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
-    "mtime": 1791515381.7001004,
-    "seen": 1791611462.3558729,
+    "mtime": 1791673868.4266355,
+    "seen": 1791674421.1426904,
     "ast_hash": "f26a86ec6e0b327dbd3480e308ba454b",
     "semantic_hash": "f26a86ec6e0b327dbd3480e308ba454b"
   },
@@ -246,26 +246,26 @@
     "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1791670725.7473357,
-    "seen": 1791671087.5816665,
+    "mtime": 1791673868.4276357,
+    "seen": 1791674421.142695,
     "ast_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1",
     "semantic_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791670036.0358126,
-    "seen": 1791671087.5816674,
+    "mtime": 1791673868.4296334,
+    "seen": 1791674421.1426957,
     "ast_hash": "f574e8fc5b0d9df79f03d17eb1500977",
     "semantic_hash": "f574e8fc5b0d9df79f03d17eb1500977"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
-    "mtime": 1791514002.5392265,
-    "seen": 1791611462.3558788,
-    "ast_hash": "a39d9904e95bc7d8d396c867ee752e5c",
-    "semantic_hash": "a39d9904e95bc7d8d396c867ee752e5c"
+    "mtime": 1791674053.6298807,
+    "seen": 1791674421.1426966,
+    "ast_hash": "4df16204d68395de5a77bbb5aa717f4d",
+    "semantic_hash": "4df16204d68395de5a77bbb5aa717f4d"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1791639411.346991,
-    "seen": 1791639672.5872483,
+    "mtime": 1791673868.4306352,
+    "seen": 1791674421.1426976,
     "ast_hash": "54526485610309b6d71fe745ec9fa7a7",
     "semantic_hash": "54526485610309b6d71fe745ec9fa7a7"
   },
@@ -276,14 +276,14 @@
     "semantic_hash": "13e59e62596bd764e1f88a4d3c4ff5a7"
   },
   "pesquisa/README.md": {
-    "mtime": 1791610973.7568276,
-    "seen": 1791611462.3558824,
+    "mtime": 1791673868.5137534,
+    "seen": 1791674421.1427002,
     "ast_hash": "0fa711c47536d5d7dec1fd400e3e9106",
     "semantic_hash": "0fa711c47536d5d7dec1fd400e3e9106"
   },
   "pesquisa/fontes.md": {
-    "mtime": 1791609264.7269776,
-    "seen": 1791611462.3558836,
+    "mtime": 1791673868.5147495,
+    "seen": 1791674421.1427014,
     "ast_hash": "cb0809681814ccd538d1dd4478c65a90",
     "semantic_hash": "cb0809681814ccd538d1dd4478c65a90"
   },
@@ -384,8 +384,8 @@
     "semantic_hash": "4251df13ba3b362dde12b68c2fb51a2a"
   },
   "pesquisa/topicos/marcos-e-horarios.md": {
-    "mtime": 1791610973.757839,
-    "seen": 1791611462.3559015,
+    "mtime": 1791673868.5157518,
+    "seen": 1791674421.1427193,
     "ast_hash": "c848ba01ce22ba7d647d932e16a156fb",
     "semantic_hash": "c848ba01ce22ba7d647d932e16a156fb"
   },
@@ -444,26 +444,26 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791670725.7848125,
-    "seen": 1791671087.581672,
-    "ast_hash": "da616eab003ae6206af00329aa79efa4",
-    "semantic_hash": "da616eab003ae6206af00329aa79efa4"
+    "mtime": 1791674053.642876,
+    "seen": 1791674421.1426995,
+    "ast_hash": "b1d0dd958501e5aafc35e89e7af2118a",
+    "semantic_hash": "b1d0dd958501e5aafc35e89e7af2118a"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
-    "mtime": 1791610973.7538404,
-    "seen": 1791611462.3558455,
+    "mtime": 1791673868.413593,
+    "seen": 1791674421.1426642,
     "ast_hash": "8a8b71aeb1c01bb3852daf5e39ce0148",
     "semantic_hash": "8a8b71aeb1c01bb3852daf5e39ce0148"
   },
   "docs/adr/0014-servicos-sob-demanda.md": {
-    "mtime": 1791610973.7538404,
-    "seen": 1791611462.3558464,
+    "mtime": 1791673868.4145935,
+    "seen": 1791674421.1426651,
     "ast_hash": "a021f6cd395d63805a8634203d2840e2",
     "semantic_hash": "a021f6cd395d63805a8634203d2840e2"
   },
   "pesquisa/topicos/servicos-sob-demanda.md": {
-    "mtime": 1791610973.7588353,
-    "seen": 1791611462.3559053,
+    "mtime": 1791673868.5167525,
+    "seen": 1791674421.142723,
     "ast_hash": "88000ae2afedae937af50e73466782bd",
     "semantic_hash": "88000ae2afedae937af50e73466782bd"
   },
@@ -534,147 +534,189 @@
     "semantic_hash": "b54d1041576ebd025a82d296c44e6ccf"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d1-abrir-excecao.png": {
-    "mtime": 1791639411.3503563,
-    "seen": 1791639672.5872989,
+    "mtime": 1791673868.4633398,
+    "seen": 1791674421.1427553,
     "ast_hash": "cb4b1c567bf993d61a2d5f59d335b88a",
     "semantic_hash": "cb4b1c567bf993d61a2d5f59d335b88a"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d2-reatribuir-tarefa.png": {
-    "mtime": 1791639411.3533084,
-    "seen": 1791639672.5873005,
+    "mtime": 1791673868.4668503,
+    "seen": 1791674421.142756,
     "ast_hash": "7bff4b794799eb4388ebfb4652942fac",
     "semantic_hash": "7bff4b794799eb4388ebfb4652942fac"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d3-registrar-acao-do-alerta.png": {
-    "mtime": 1791639411.3567686,
-    "seen": 1791639672.5873015,
+    "mtime": 1791673868.471857,
+    "seen": 1791674421.1427572,
     "ast_hash": "c3794d200f93431aac64d07b2452cfcc",
     "semantic_hash": "c3794d200f93431aac64d07b2452cfcc"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d4-confirmar-prontidao.png": {
-    "mtime": 1791639411.358474,
-    "seen": 1791639672.5873024,
+    "mtime": 1791673868.474082,
+    "seen": 1791674421.142758,
     "ast_hash": "99cedea634c45399aa85c7f3553ae3b8",
     "semantic_hash": "99cedea634c45399aa85c7f3553ae3b8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d5-encerrar-excecao.png": {
-    "mtime": 1791639411.3619144,
-    "seen": 1791639672.5873032,
+    "mtime": 1791673868.4785924,
+    "seen": 1791674421.1427586,
     "ast_hash": "9254e8a3ecfd233732c0f53a4949afa3",
     "semantic_hash": "9254e8a3ecfd233732c0f53a4949afa3"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d6-atualizar-tobt.png": {
-    "mtime": 1791639411.365199,
-    "seen": 1791639672.587304,
+    "mtime": 1791673868.4836938,
+    "seen": 1791674421.1427593,
     "ast_hash": "44c3e441406a33567cd45405152a8390",
     "semantic_hash": "44c3e441406a33567cd45405152a8390"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-acionar-servico-sob-demanda.png": {
-    "mtime": 1791639411.3681207,
-    "seen": 1791639672.587305,
+    "mtime": 1791673868.4876914,
+    "seen": 1791674421.1427603,
     "ast_hash": "f763e80fb7cc2a0d5460ac52d129e656",
     "semantic_hash": "f763e80fb7cc2a0d5460ac52d129e656"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-replanejar-tarefas.png": {
-    "mtime": 1791639411.3712773,
-    "seen": 1791639672.5873058,
+    "mtime": 1791673868.4922094,
+    "seen": 1791674421.1427612,
     "ast_hash": "7b379e99341ffc0c57dd873288109088",
     "semantic_hash": "7b379e99341ffc0c57dd873288109088"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d8-operadores-disponiveis.png": {
-    "mtime": 1791639411.3749335,
-    "seen": 1791639672.5873065,
+    "mtime": 1791673868.4967282,
+    "seen": 1791674421.142762,
     "ast_hash": "69d585ae50cafbaeb559a3452a59b58b",
     "semantic_hash": "69d585ae50cafbaeb559a3452a59b58b"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d9-registrar-saida-da-posicao.png": {
-    "mtime": 1791639411.3759923,
-    "seen": 1791639672.5873075,
+    "mtime": 1791673868.4987285,
+    "seen": 1791674421.1427624,
     "ast_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad",
     "semantic_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-celular.png": {
-    "mtime": 1791670725.7503479,
-    "seen": 1791671087.581699,
+    "mtime": 1791673868.4321408,
+    "seen": 1791674421.1427252,
     "ast_hash": "2e9ef27bf10525dac2df4ab935f49e9d",
     "semantic_hash": "2e9ef27bf10525dac2df4ab935f49e9d"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-web.png": {
-    "mtime": 1791670725.7528543,
-    "seen": 1791671087.5817,
+    "mtime": 1791673868.4341562,
+    "seen": 1791674421.142726,
     "ast_hash": "c58c19c2270916623ca75e2907b64849",
     "semantic_hash": "c58c19c2270916623ca75e2907b64849"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a10-atualizar-previsao.png": {
-    "mtime": 1791670725.7573688,
-    "seen": 1791671087.581701,
+    "mtime": 1791673868.4361548,
+    "seen": 1791674421.142727,
     "ast_hash": "897406621e7c47f7e789ca65f116fe0c",
     "semantic_hash": "897406621e7c47f7e789ca65f116fe0c"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a11-politica-de-abastecimento.png": {
-    "mtime": 1791670725.76038,
-    "seen": 1791671087.581702,
+    "mtime": 1791673868.4381557,
+    "seen": 1791674421.1427276,
     "ast_hash": "41616d6ed601689902b4e113cf3c99af",
     "semantic_hash": "41616d6ed601689902b4e113cf3c99af"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a12-registrar-chegada.png": {
-    "mtime": 1791670725.7613816,
-    "seen": 1791671087.5817027,
+    "mtime": 1791673868.4391582,
+    "seen": 1791674421.1427288,
     "ast_hash": "42f7f089a0e0103d6ac509f17cca3e41",
     "semantic_hash": "42f7f089a0e0103d6ac509f17cca3e41"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a13-corrigir-chegada.png": {
-    "mtime": 1791670725.764899,
-    "seen": 1791671087.5817034,
+    "mtime": 1791673868.4416623,
+    "seen": 1791674421.1427298,
     "ast_hash": "0876c1f7557ce8e1f725f62077f2173e",
     "semantic_hash": "0876c1f7557ce8e1f725f62077f2173e"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a2-gerenciar-usuarios.png": {
-    "mtime": 1791670725.7674055,
-    "seen": 1791671087.5817041,
+    "mtime": 1791673868.442669,
+    "seen": 1791674421.1427305,
     "ast_hash": "5b352efae451edad1d1a704e8470dac4",
     "semantic_hash": "5b352efae451edad1d1a704e8470dac4"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a3-abrir-turnaround.png": {
-    "mtime": 1791670725.7699232,
-    "seen": 1791671087.5817049,
+    "mtime": 1791673868.444669,
+    "seen": 1791674421.1427314,
     "ast_hash": "f4968b0ba1a419fcc2d236b0f86cd770",
     "semantic_hash": "f4968b0ba1a419fcc2d236b0f86cd770"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a4-criar-modelo.png": {
-    "mtime": 1791670725.7709286,
-    "seen": 1791671087.581706,
+    "mtime": 1791673868.4461741,
+    "seen": 1791674421.1427324,
     "ast_hash": "ac5b065f19077f4d5e62d8af20214ab9",
     "semantic_hash": "ac5b065f19077f4d5e62d8af20214ab9"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a5-confirmar-plano.png": {
-    "mtime": 1791670725.7729309,
-    "seen": 1791671087.5817068,
+    "mtime": 1791673868.4488993,
+    "seen": 1791674421.1427333,
     "ast_hash": "03b52bbc610d90229e59a3e211b53c8f",
     "semantic_hash": "03b52bbc610d90229e59a3e211b53c8f"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a6-aplicar-modelo.png": {
-    "mtime": 1791670725.7750888,
-    "seen": 1791671087.5817075,
+    "mtime": 1791673868.4518983,
+    "seen": 1791674421.142734,
     "ast_hash": "f8f241893c2a4dc326f6a73a7ea8bc05",
     "semantic_hash": "f8f241893c2a4dc326f6a73a7ea8bc05"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a7-pontos-de-confirmacao.png": {
-    "mtime": 1791670725.7786057,
-    "seen": 1791671087.5817082,
+    "mtime": 1791673868.4539344,
+    "seen": 1791674421.142735,
     "ast_hash": "723e3df10a8787645ba33a1c8ec5a8c7",
     "semantic_hash": "723e3df10a8787645ba33a1c8ec5a8c7"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a8-definir-dependencias.png": {
-    "mtime": 1791670725.7812955,
-    "seen": 1791671087.5817091,
+    "mtime": 1791673868.4569354,
+    "seen": 1791674421.142736,
     "ast_hash": "513af8623a20c8524968425a4bfaf8e8",
     "semantic_hash": "513af8623a20c8524968425a4bfaf8e8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a9-gerenciar-equipes.png": {
-    "mtime": 1791670725.7838123,
-    "seen": 1791671087.5817099,
+    "mtime": 1791673868.4589348,
+    "seen": 1791674421.1427367,
     "ast_hash": "67789d6d4eb59ead30c9d8eb78505272",
     "semantic_hash": "67789d6d4eb59ead30c9d8eb78505272"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c1-painel-de-turnarounds.png": {
+    "mtime": 1791674053.630902,
+    "seen": 1791674421.142749,
+    "ast_hash": "7c8a9c4346ab5c512bce4e6f2a6a5c06",
+    "semantic_hash": "7c8a9c4346ab5c512bce4e6f2a6a5c06"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c2-linha-do-tempo.png": {
+    "mtime": 1791674053.632871,
+    "seen": 1791674421.1427503,
+    "ast_hash": "c7e27f697d68e4d6028c498e21609fc3",
+    "semantic_hash": "c7e27f697d68e4d6028c498e21609fc3"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c3-recalculo-e-caminho-critico.png": {
+    "mtime": 1791674053.6348777,
+    "seen": 1791674421.142751,
+    "ast_hash": "c9b5ae01d4b567cced53272e93f56c53",
+    "semantic_hash": "c9b5ae01d4b567cced53272e93f56c53"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c4-alerta-emitido.png": {
+    "mtime": 1791674053.6358788,
+    "seen": 1791674421.142752,
+    "ast_hash": "6a2d637cb3945802edac05c01686989b",
+    "semantic_hash": "6a2d637cb3945802edac05c01686989b"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c5-lista-de-alertas.png": {
+    "mtime": 1791674053.637872,
+    "seen": 1791674421.142753,
+    "ast_hash": "a0266dff39d85022ae3650538134772d",
+    "semantic_hash": "a0266dff39d85022ae3650538134772d"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c6-checagem-tobt-15.png": {
+    "mtime": 1791674053.63987,
+    "seen": 1791674421.1427536,
+    "ast_hash": "210a7ae190dc6000869559f6288d66b7",
+    "semantic_hash": "210a7ae190dc6000869559f6288d66b7"
+  },
+  "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c7-indicadores-de-aderencia.png": {
+    "mtime": 1791674053.641871,
+    "seen": 1791674421.1427543,
+    "ast_hash": "d1bdc30147839910568ddd0881270404",
+    "semantic_hash": "d1bdc30147839910568ddd0881270404"
   }
 }
