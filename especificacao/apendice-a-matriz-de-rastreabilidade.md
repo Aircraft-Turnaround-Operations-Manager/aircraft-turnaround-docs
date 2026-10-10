@@ -9,6 +9,19 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 | RF | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |
 |---|---|---|---|---|---|
+| RF-A1 | Obj. 2 | Usuário | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6 |
+| RF-A2 | Obj. 2 | Administrador do Sistema | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A3 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A4 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A5 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A6 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A7 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A8 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A9 | Obj. 2 | Administrador do Sistema | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A10 | Obj. 1 e 3 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A11 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A12 | Obj. 1 e 2 | Operador de Solo/Rampa | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A13 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
 | RF-B1 | Obj. 2 | Operador de Solo/Rampa | US-B1 | UC-B1, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-C1 |
 | RF-B2 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B2 | UC-B2, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
 | RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
@@ -45,18 +58,18 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 | Objetivo | RFs que o atendem |
 |---|---|
-| Objetivo 1 | RF-B2, RF-B3, RF-B7, RF-C1, RF-C2, RF-C5, RF-C13, RF-D6, RF-D7 |
-| Objetivo 2 | RF-B1, RF-B2, RF-B3, RF-B4, RF-B5, RF-B6, RF-B8, RF-C4, RF-C5, RF-C6, RF-C11, RF-C14, RF-D2, RF-D8 |
-| Objetivo 3 | RF-B4, RF-B5, RF-C1, RF-C2, RF-C3, RF-C4, RF-C6, RF-C7, RF-C8, RF-C9, RF-C10, RF-C12, RF-C13, RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D7, RF-D9 |
+| Objetivo 1 | RF-A3, RF-A5, RF-A8, RF-A10, RF-A11, RF-A12, RF-A13, RF-B2, RF-B3, RF-B7, RF-C1, RF-C2, RF-C5, RF-C13, RF-D6, RF-D7 |
+| Objetivo 2 | RF-A1, RF-A2, RF-A3, RF-A4, RF-A5, RF-A6, RF-A7, RF-A8, RF-A9, RF-A11, RF-A12, RF-A13, RF-B1, RF-B2, RF-B3, RF-B4, RF-B5, RF-B6, RF-B8, RF-C4, RF-C5, RF-C6, RF-C11, RF-C14, RF-D2, RF-D8 |
+| Objetivo 3 | RF-A10, RF-B4, RF-B5, RF-C1, RF-C2, RF-C3, RF-C4, RF-C6, RF-C7, RF-C8, RF-C9, RF-C10, RF-C12, RF-C13, RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D7, RF-D9 |
 
 ### A.3 Requisitos não funcionais × requisitos funcionais
 
 | RNF | Característica ISO/IEC 25010 | RFs cobertos |
 |---|---|---|
-| RNF-A1 | Segurança (confidencialidade e integridade), conforme a norma da Organização Internacional de Normalização e Comissão Eletrotécnica Internacional (ISO/IEC) 25010 | todos os RFs |
+| RNF-A1 | Segurança (confidencialidade e integridade) | todos os RFs |
 | RNF-A2 | Segurança (responsabilização e integridade) | todos os RFs |
 | RNF-A3 | Segurança (confidencialidade e autenticidade) | todos os RFs |
-| RNF-A4 | Compatibilidade (interoperabilidade) | — |
+| RNF-A4 | Compatibilidade (interoperabilidade) | RF-A2, RF-A3, RF-A4, RF-A5, RF-A6, RF-A7, RF-A8, RF-A9, RF-A10, RF-A11, RF-A12, RF-A13 |
 | RNF-A5 | Segurança (autenticidade e confidencialidade) | todos os RFs |
 | RNF-A6 | Segurança (confidencialidade e responsabilização) | todos os RFs |
 | RNF-B1 | Confiabilidade (disponibilidade) | RF-B1, RF-B2, RF-B3, RF-B4, RF-B5, RF-B6 |
@@ -80,6 +93,19 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.4 Lacunas encontradas
 
+- RF-A1 sem estória (K.2)
+- RF-A2 sem estória (K.2)
+- RF-A3 sem estória (K.2)
+- RF-A4 sem estória (K.2)
+- RF-A5 sem estória (K.2)
+- RF-A6 sem estória (K.2)
+- RF-A7 sem estória (K.2)
+- RF-A8 sem estória (K.2)
+- RF-A9 sem estória (K.2)
+- RF-A10 sem estória (K.2)
+- RF-A11 sem estória (K.2)
+- RF-A12 sem estória (K.2)
+- RF-A13 sem estória (K.2)
 - RF-C1 sem estória (K.2)
 - RF-C2 sem estória (K.2)
 - RF-C3 sem estória (K.2)
@@ -94,6 +120,19 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - RF-C12 sem estória (K.2)
 - RF-C13 sem estória (K.2)
 - RF-C14 sem estória (K.2)
+- RF-A1 sem caso de uso (K.3)
+- RF-A2 sem caso de uso (K.3)
+- RF-A3 sem caso de uso (K.3)
+- RF-A4 sem caso de uso (K.3)
+- RF-A5 sem caso de uso (K.3)
+- RF-A6 sem caso de uso (K.3)
+- RF-A7 sem caso de uso (K.3)
+- RF-A8 sem caso de uso (K.3)
+- RF-A9 sem caso de uso (K.3)
+- RF-A10 sem caso de uso (K.3)
+- RF-A11 sem caso de uso (K.3)
+- RF-A12 sem caso de uso (K.3)
+- RF-A13 sem caso de uso (K.3)
 - RF-C1 sem caso de uso (K.3)
 - RF-C2 sem caso de uso (K.3)
 - RF-C3 sem caso de uso (K.3)
@@ -108,7 +147,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - RF-C12 sem caso de uso (K.3)
 - RF-C13 sem caso de uso (K.3)
 - RF-C14 sem caso de uso (K.3)
-- RNF-A4 sem RF associado
 - RNF-B3 sem RF associado
 - RNF-B4 sem RF associado
 <!-- matriz:fim -->
