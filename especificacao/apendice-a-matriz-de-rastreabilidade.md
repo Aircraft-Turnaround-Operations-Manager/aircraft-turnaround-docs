@@ -9,19 +9,19 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 | RF | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |
 |---|---|---|---|---|---|
-| RF-A1 | Obj. 2 | Usuário | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6 |
-| RF-A2 | Obj. 2 | Administrador do Sistema | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A3 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A4 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A5 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A6 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A7 | Obj. 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A8 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A9 | Obj. 2 | Administrador do Sistema | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A10 | Obj. 1 e 3 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A11 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A12 | Obj. 1 e 2 | Operador de Solo/Rampa | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
-| RF-A13 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A1 | Obj. 2 | Usuário | US-A1 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6 |
+| RF-A2 | Obj. 2 | Administrador do Sistema | US-A2 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A3 | Obj. 1 e 2 | Coordenador de Turnaround | US-A3 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A4 | Obj. 2 | Coordenador de Turnaround | US-A4 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A5 | Obj. 1 e 2 | Coordenador de Turnaround | US-A5 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A6 | Obj. 2 | Coordenador de Turnaround | US-A6 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A7 | Obj. 2 | Coordenador de Turnaround | US-A7 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A8 | Obj. 1 e 2 | Coordenador de Turnaround | US-A8 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A9 | Obj. 2 | Administrador do Sistema | US-A9 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A10 | Obj. 1 e 3 | Coordenador de Turnaround | US-A10 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A11 | Obj. 1 e 2 | Coordenador de Turnaround | US-A11 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A12 | Obj. 1 e 2 | Operador de Solo/Rampa | US-A12 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
+| RF-A13 | Obj. 1 e 2 | Coordenador de Turnaround | US-A13 | — | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
 | RF-B1 | Obj. 2 | Operador de Solo/Rampa | US-B1 | UC-B1, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-C1 |
 | RF-B2 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B2 | UC-B2, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
 | RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
@@ -93,19 +93,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.4 Lacunas encontradas
 
-- RF-A1 sem estória (K.2)
-- RF-A2 sem estória (K.2)
-- RF-A3 sem estória (K.2)
-- RF-A4 sem estória (K.2)
-- RF-A5 sem estória (K.2)
-- RF-A6 sem estória (K.2)
-- RF-A7 sem estória (K.2)
-- RF-A8 sem estória (K.2)
-- RF-A9 sem estória (K.2)
-- RF-A10 sem estória (K.2)
-- RF-A11 sem estória (K.2)
-- RF-A12 sem estória (K.2)
-- RF-A13 sem estória (K.2)
 - RF-C1 sem estória (K.2)
 - RF-C2 sem estória (K.2)
 - RF-C3 sem estória (K.2)
