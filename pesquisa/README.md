@@ -7,9 +7,9 @@ itens_template: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 areas: [A, B, C, D]
 decisoes: [D1, D2, D3, D4, D5, D6, D7, D8, D9]
 fontes: [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 15, 26, 27, 62]
-relacionados: [a-cdm, marcos-e-horarios, tolerancias-e-indicadores, previsibilidade-vs-velocidade, atividades-e-dependencias, caminho-critico, papeis-e-atores, codigos-de-atraso, referencias-iata, similares, assaia, inform-groundstar, adb-safegate, veovo, sita, matriz-comparativa, lacunas-e-diferencial, metricas-item-1, impacto-por-item, insumos-rfs, insumos-rnfs, fontes]
+relacionados: [a-cdm, marcos-e-horarios, tolerancias-e-indicadores, previsibilidade-vs-velocidade, atividades-e-dependencias, caminho-critico, papeis-e-atores, codigos-de-atraso, referencias-iata, servicos-sob-demanda, similares, assaia, inform-groundstar, adb-safegate, veovo, sita, matriz-comparativa, lacunas-e-diferencial, metricas-item-1, impacto-por-item, insumos-rfs, insumos-rnfs, fontes]
 status: vigente
-atualizado: 2026-10-01
+atualizado: 2026-10-10
 ---
 # Pesquisa — mapa da base de conhecimento
 
@@ -58,10 +58,10 @@ As decisões D8 (siglas) e D9 (nome do coordenador) valem para **todos** os iten
 
 | Área | Leia |
 |---|---|
-| Área A — Acesso e planejamento | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Atividades, paralelismo e dependências (P1.5)](topicos/atividades-e-dependencias.md)<br>[Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
+| Área A — Acesso e planejamento | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Atividades, paralelismo e dependências (P1.5)](topicos/atividades-e-dependencias.md)<br>[Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md)<br>[Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
 | Área B — Execução em solo | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Atividades, paralelismo e dependências (P1.5)](topicos/atividades-e-dependencias.md)<br>[Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
 | Área C — Monitoramento | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Tolerâncias e indicadores de aderência (P1.3)](topicos/tolerancias-e-indicadores.md)<br>[Caminho crítico do turnaround (P1.6)](topicos/caminho-critico.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
-| Área D — Exceções e liberação | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Tolerâncias e indicadores de aderência (P1.3)](topicos/tolerancias-e-indicadores.md)<br>[Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md)<br>[Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
+| Área D — Exceções e liberação | [Marcos e horários do A-CDM (P1.2)](topicos/marcos-e-horarios.md)<br>[Tolerâncias e indicadores de aderência (P1.3)](topicos/tolerancias-e-indicadores.md)<br>[Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md)<br>[Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md)<br>[Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md)<br>[Insumos para os RFs, por área (seção 4.3)](impacto/insumos-rfs.md)<br>[Insumos para os RNFs (seção 4.4)](impacto/insumos-rnfs.md) |
 
 ## Todos os arquivos
 
@@ -76,6 +76,7 @@ As decisões D8 (siglas) e D9 (nome do coordenador) valem para **todos** os iten
 | [Papéis reais e os atores do projeto (P1.7)](topicos/papeis-e-atores.md) | 2.7 | 4, 5, 9, 10, 11 | A, D | D4, D9, D10 |
 | [Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md) | 2.8 | 2, 6, 7, 10 | B, D | D6 |
 | [Referências da IATA sobre ground handling (P1.9)](topicos/referencias-iata.md) | 2.9 | 3, 8 | — | D6 |
+| [Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md) | nova (10/10/2026) | 4, 6, 7, 10 | A, D | D1, D2, D3, D6, D7, D14 |
 | [Similares de mercado — seleção (seção 3.1)](similares/README.md) | 3.1 | 3 | — | — |
 | [Ficha — Assaia (ApronAI e TurnaroundControl)](similares/assaia.md) | 3.2 | 3 | — | D7 |
 | [Ficha — INFORM GroundStar](similares/inform-groundstar.md) | 3.2 | 3 | — | — |

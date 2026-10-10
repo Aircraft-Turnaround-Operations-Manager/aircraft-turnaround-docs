@@ -3,8 +3,8 @@ id: contexto
 titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
-atualizado: 2026-10-07
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012]
+atualizado: 2026-10-10
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014]
 ---
 # Contexto do projeto
 
@@ -73,6 +73,8 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D10 | **Administrador do Sistema** como ator; ator abstrato **Usuário**; equipe do operador como dado | [0010](docs/adr/0010-administrador-usuario-e-equipe-do-operador.md) |
 | D11 | **Mínimo de 4 por integrante, sem máximo**; IDs provisórios por área (RF-A1, US-A1, RNF-A1, UC-A1) e renumeração sequencial única no início do T12 | [0011](docs/adr/0011-minimo-por-integrante-e-numeracao-provisoria.md) |
 | D12 | **Matriz de rastreabilidade** como Apêndice A, gerada por script; cada RNF cita os RFs a que se aplica; sem tabelas "Base" nos arquivos de área | [0012](docs/adr/0012-matriz-de-rastreabilidade.md) |
+| D13 | Chegada à posição (AIBT) **registrada direto pelo Operador de Solo/Rampa**, sem confirmação; o Coordenador de Turnaround pode corrigir o valor | [0013](docs/adr/0013-chegada-registrada-pelo-operador.md) |
+| D14 | **Serviços sob demanda:** catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround com o turnaround em andamento; o atraso conta na meta de 80% | [0014](docs/adr/0014-servicos-sob-demanda.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
@@ -109,9 +111,9 @@ D8 (siglas) e D9 (nome do coordenador) valem para **todos** os itens. A coluna "
 | 3 — Visão do Produto | [impacto por item](pesquisa/impacto/impacto-por-item.md), [similares](pesquisa/similares/README.md), [matriz](pesquisa/similares/matriz-comparativa.md), [lacunas e diferencial](pesquisa/similares/lacunas-e-diferencial.md) | D2, D7 |
 | 4 — BPMN TO BE | [atividades e dependências](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [marcos](pesquisa/topicos/marcos-e-horarios.md) | D4, D5, D6, D7 |
 | 5 — Atores | [papéis e atores](pesquisa/topicos/papeis-e-atores.md) | D4, D10 |
-| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área) | D1, D3, D4, D5, D6, D7, D10, D11, D12 |
-| 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7, D11, D12 |
+| 6 — RFs | [insumos para RFs](pesquisa/impacto/insumos-rfs.md) (linha da sua área), [serviços sob demanda](pesquisa/topicos/servicos-sob-demanda.md) (áreas A e D) | D1, D3, D4, D5, D6, D7, D10, D11, D12, D13, D14 |
+| 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7, D11, D12, D13, D14 |
 | 8 — RNFs | [insumos para RNFs](pesquisa/impacto/insumos-rnfs.md) | D1, D11, D12 |
 | 9 — Casos de uso | [papéis e atores](pesquisa/topicos/papeis-e-atores.md), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D4, D10, D11 |
-| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11, D12 |
+| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11, D12, D13, D14 |
 | 11 — Diagrama de atividades | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [papéis](pesquisa/topicos/papeis-e-atores.md) | D4, D5 |
