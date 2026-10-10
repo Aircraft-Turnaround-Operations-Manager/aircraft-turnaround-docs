@@ -4,7 +4,7 @@ titulo: "Serviços sob demanda no turnaround (limpeza com risco biológico, assi
 tipo: pesquisa-topico
 itens_template: [4, 6, 7, 10]
 areas: [A, D]
-decisoes: [D1, D2, D3, D6, D7]
+decisoes: [D1, D2, D3, D6, D7, D14]
 fontes: [2, 16, 22, 34, 35, 40, 45, 46, 62, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102]
 relacionados: [atividades-e-dependencias, caminho-critico, tolerancias-e-indicadores, codigos-de-atraso, referencias-iata, a-cdm, marcos-e-horarios, inform-groundstar, assaia, sita, adb-safegate, veovo, matriz-comparativa, insumos-rfs]
 status: vigente
@@ -153,7 +153,9 @@ Todas as linhas são **declarações do fornecedor** nas páginas lidas.
 
 ---
 
-## 5. Impacto possível (opções para o grupo, sem decisão)
+## 5. Impacto possível (opções levantadas; decisão na ADR-0014)
+
+> **Decidido em 10/10/2026 ([ADR-0014](../../docs/adr/0014-servicos-sob-demanda.md)):** opções A-1, A-3 e D-1. O atraso causado por serviço sob demanda conta na meta de 80% (dúvida 1), e só o Coordenador de Turnaround aciona o serviço no sistema (dúvida 2). O texto abaixo fica como registro das opções analisadas.
 
 > RF-A4 a RF-A8 conforme o texto do PR #79 (branch `ra1/t06-a-requisitos-funcionais`), ainda não integrado à `main` em 10/10/2026. RF-D7 conforme a `main`. As opções abaixo são [Inferência] apoiadas nas fontes indicadas; nenhuma muda texto da especificação.
 
@@ -176,7 +178,7 @@ Todas as linhas são **declarações do fornecedor** nas páginas lidas.
 | D-4 | **Pedido de atualização do TOBT:** em qualquer opção, se o serviço entra na projeção, o RF-D6 pede atualização quando o afastamento chegar a 5 min; pode-se pedir também o motivo da mudança, como em Hong Kong. | A-CDM [2][91][92][93]; D3 | Alinha ao A-CDM sem regra nova de horário. | Pedir motivo na atualização seria acréscimo ao RF-D6. |
 | D-5 | **Serviço obrigatório bloqueia a liberação:** se a limpeza com risco biológico for incluída como obrigatória, o RF-D4 já recusa a liberação enquanto ela estiver pendente. | ANVISA art. 80 [76], quando vigorar | Usa o bloqueio que já existe. | Depende de a tarefa existir no plano (D-1). |
 
-### Dúvidas para o grupo (não decididas)
+### Dúvidas levantadas (as duas primeiras decididas na ADR-0014)
 
 1. **Meta do objetivo 1:** um atraso causado por serviço sob demanda legítimo (ex.: limpeza obrigatória pela ANVISA) conta contra os 80% (D1 e D2)? Mudar isso mexe em decisão; fica registrado como dúvida, sem proposta.
 2. **Quem aciona no sistema:** só o Coordenador de Turnaround, ou o Operador de Solo/Rampa também pode registrar que encontrou a necessidade (ex.: a equipe de limpeza acha vômito no assento)? A segunda opção toca a área B.
@@ -186,7 +188,7 @@ Todas as linhas são **declarações do fornecedor** nas páginas lidas.
 
 ## Ligações
 
-- **Decisões:** [D1](../../docs/adr/0001-referencia-horario-tobt-mais-5-min.md), [D2](../../docs/adr/0002-metas-percentuais-80.md), [D3](../../docs/adr/0003-atualizar-previsao-na-antecipacao.md), [D6](../../docs/adr/0006-codigos-de-atraso-tabela-anac.md), [D7](../../docs/adr/0007-dados-do-operador-e-qr-code.md)
+- **Decisões:** [D1](../../docs/adr/0001-referencia-horario-tobt-mais-5-min.md), [D2](../../docs/adr/0002-metas-percentuais-80.md), [D3](../../docs/adr/0003-atualizar-previsao-na-antecipacao.md), [D6](../../docs/adr/0006-codigos-de-atraso-tabela-anac.md), [D7](../../docs/adr/0007-dados-do-operador-e-qr-code.md), [D14](../../docs/adr/0014-servicos-sob-demanda.md)
 - **Itens da especificação:** [Item 4 — Mapeamento de Negócios (BPMN TO BE)](../../especificacao/04-mapeamento-de-negocios.md), [Item 6 — Requisitos Funcionais](../../especificacao/06-requisitos-funcionais/00-item.md), [Item 7 — Estórias de Usuário](../../especificacao/07-estorias-de-usuario/00-item.md), [Item 10 — Especificações de Caso de Uso](../../especificacao/10-especificacoes-de-caso-de-uso/00-item.md)
 - **Áreas do plano RA1:** [Área A — Acesso e planejamento](../../especificacao/06-requisitos-funcionais/area-a.md), [Área D — Exceções e liberação](../../especificacao/06-requisitos-funcionais/area-d.md) (divisão em [entregas/ra1-tarefas.md](../../entregas/ra1-tarefas.md), tabela 1.2)
 - **Relacionados:** [atividades-e-dependencias](atividades-e-dependencias.md), [caminho-critico](caminho-critico.md), [tolerancias-e-indicadores](tolerancias-e-indicadores.md), [codigos-de-atraso](codigos-de-atraso.md), [referencias-iata](referencias-iata.md), [a-cdm](a-cdm.md), [marcos-e-horarios](marcos-e-horarios.md), [inform-groundstar](../similares/inform-groundstar.md), [assaia](../similares/assaia.md), [sita](../similares/sita.md), [adb-safegate](../similares/adb-safegate.md), [veovo](../similares/veovo.md), [matriz-comparativa](../similares/matriz-comparativa.md), [insumos-rfs](../impacto/insumos-rfs.md)
