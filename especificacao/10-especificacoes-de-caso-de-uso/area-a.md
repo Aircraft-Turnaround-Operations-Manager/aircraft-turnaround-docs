@@ -150,10 +150,11 @@ Estas regras valem para todos os casos abaixo:
   - Recusa ou cancelamento: nenhum modelo criado.
 
 - **Regras de negócio:**
-  1. RF-A4 exige nome do modelo, tipo de aeronave, serviço e ao menos uma tarefa com nome, tipo de atividade, equipe ativa, duração positiva, obrigatoriedade e permissão de "Não aplicável".
+  1. RF-A4 exige nome do modelo, tipo de aeronave, serviço e ao menos uma tarefa com nome, tipo de atividade, equipe ativa, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda".
   2. Embarque, desembarque e abastecimento têm tipos explícitos; a identificação não depende do nome digitado. Para serviço com embarque de passageiros, exatamente uma tarefa representa o embarque [22][45].
   3. Criar modelo não copia tarefas para turnaround nem atribui operadores. Dependências e pontos são configurados nos casos próprios.
   4. A permissão de "Não aplicável" é por tarefa e não muda sua situação durante a criação do modelo.
+  5. Tarefas marcadas "sob demanda" ficam no catálogo, com tipo, equipe e duração planejada. Não entram no plano até serem acionadas pelo Coordenador de Turnaround (ADR-0014) [69][70][71].
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
 
@@ -169,6 +170,7 @@ Estas regras valem para todos os casos abaixo:
 - **Fluxos alternativos:**
   - **A1. Serviço sem embarque de passageiros (passo 3):** o coordenador escolhe esse serviço; o sistema não exige tarefa de embarque.
   - **A2. Cancelar (passo 4):** o coordenador cancela sem salvar.
+  - **A3. Serviço sob demanda (passo 3):** o coordenador marca uma tarefa, como limpeza profunda, como "sob demanda". O sistema a mantém no catálogo sem incluir automaticamente no plano.
 
 - **Fluxos de exceção:**
   - **E1. Configuração inválida (passo 5):** campo vazio, equipe inativa, duração não positiva ou número inválido de tarefas de embarque são indicados; o fluxo volta ao passo 3 sem gravação.
@@ -195,8 +197,9 @@ Estas regras valem para todos os casos abaixo:
   1. RF-A5 exige um operador ativo da equipe correspondente para 100% das tarefas; equipe do operador e da tarefa devem coincidir.
   2. Horários planejados incluem data e fuso; o fim deve ser posterior ao início. O início planejado da sucessora deve ser igual ou posterior ao fim planejado das predecessoras.
   3. Dependências não têm ciclos e respeitam a política de abastecimento. Tarefas independentes podem se sobrepor com operadores distintos.
-  4. O sistema verifica ausência de tarefa iniciada também ao salvar. Depois do primeiro início, alterações operacionais pertencem à área D.
+  4. O sistema verifica ausência de tarefa iniciada também ao salvar. Depois do primeiro início, alterações operacionais ficam no RF-D7.
   5. Plano e auditoria são salvos juntos, sem salvar apenas parte das tarefas (RNF-A2 e RNF-A4).
+  6. Serviço sob demanda já conhecido pode ser acionado do catálogo e incluído no plano inicial, com responsável, janela, dependências e política válidos (RF-A4, RF-A8 e RF-A11; ADR-0014). Os serviços não acionados permanecem fora do plano.
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
 
@@ -213,6 +216,7 @@ Estas regras valem para todos os casos abaixo:
   - **A1. Revisar antes do início (passo 1):** o coordenador abre um plano confirmado ainda sem início, altera os dados e segue no passo 4.
   - **A2. Tarefas paralelas (passo 3):** o coordenador atribui operadores distintos a tarefas independentes com janelas sobrepostas; o sistema aceita se as demais validações forem satisfeitas.
   - **A3. Cancelar (passo 4):** o coordenador cancela e preserva o plano anterior.
+  - **A4. Acionar serviço conhecido (passo 3):** o coordenador seleciona um serviço do catálogo sob demanda, inclui no plano e define responsável, janela e dependências. Segue no passo 4; o sistema aplica todas as validações do plano.
 
 - **Fluxos de exceção:**
   - **E1. Responsável inválido (passo 5):** o sistema lista tarefas sem operador ativo da equipe correspondente e não confirma.
@@ -234,14 +238,15 @@ Estas regras valem para todos os casos abaixo:
   3. Existe um modelo compatível com aeronave e serviço e uma política de abastecimento da companhia, usando padrão desabilitado na ausência de configuração.
 
 - **Pós-condições:**
-  - Sucesso: cópia independente e integral das tarefas e configurações, com auditoria.
+  - Sucesso: cópia independente das tarefas regulares, do catálogo sob demanda e de suas configurações, com auditoria.
   - Recusa ou cancelamento: cópia anterior e modelo original preservados.
 
 - **Regras de negócio:**
   1. RF-A6 exige compatibilidade de tipo de aeronave e serviço; não é permitido substituir tarefas com plano confirmado ou tarefa iniciada.
   2. Tarefas e pontos de código de resposta rápida (QR Code) recebem identificadores próprios. As dependências e os pontos ficam ligados às tarefas copiadas.
-  3. A cópia preserva tipo, equipe, duração, obrigatoriedade e permissão de "Não aplicável". A política da companhia é copiada com versão; com permissão desabilitada, a sequência de abastecimento é exigida.
+  3. A cópia preserva tipo, equipe, duração, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda". A política da companhia é copiada com versão; com permissão desabilitada, a sequência de abastecimento é exigida.
   4. Substituição exige confirmação. Copiar não atribui operadores, não inicia tarefas e não modifica o modelo original; edições futuras no modelo não alteram cópias existentes.
+  5. O catálogo sob demanda é copiado com dependências e pontos, mas suas tarefas ficam fora do plano até acionamento pelo RF-A5 ou RF-D7 (ADR-0014).
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
 
@@ -249,10 +254,10 @@ Estas regras valem para todos os casos abaixo:
   1. O Coordenador de Turnaround abre o turnaround e seleciona Aplicar modelo.
   2. O sistema lista os modelos compatíveis.
   3. O coordenador seleciona um modelo.
-  4. O sistema exibe tarefas, dependências, pontos e política que serão copiados.
+  4. O sistema exibe as tarefas regulares, o catálogo sob demanda, dependências, pontos e política que serão copiados.
   5. O coordenador confirma Aplicar modelo.
   6. O sistema verifica autorização e pré-condições, copia integralmente os dados e grava auditoria.
-  7. O sistema apresenta a cópia e acesso ao planejamento.
+  7. O sistema apresenta a cópia, distinguindo tarefas no plano e serviços ainda no catálogo, e acesso ao planejamento.
   8. O caso de uso termina.
 
 - **Fluxos alternativos:**
@@ -282,7 +287,7 @@ Estas regras valem para todos os casos abaixo:
 
 - **Regras de negócio:**
   1. RF-A7 permite definir pontos de código de resposta rápida (QR Code), cada um com nome e identificador únicos na mesma tarefa (ADR-0007).
-  2. Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura e o bloqueio da conclusão pertencem à área B.
+  2. Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura fica no RF-B6 e o bloqueio da conclusão no RF-B3.
   3. Os pontos são copiados quando o modelo é aplicado; editar o modelo não altera uma cópia existente nem confirma pontos automaticamente.
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
@@ -325,7 +330,7 @@ Estas regras valem para todos os casos abaixo:
   1. RF-A8 define predecessoras: tarefas que precisam terminar antes de outra. Só aceita tarefas do mesmo modelo ou turnaround; recusa tarefa inexistente, a própria tarefa e ciclos (como A depender de B e B depender de A).
   2. Ao confirmar o plano, o início planejado de cada tarefa deve ser igual ou posterior ao fim planejado de todas as suas predecessoras.
   3. Tarefas independentes podem executar em paralelo com operadores distintos, respeitada a política de abastecimento [22][45].
-  4. Editar o modelo não muda suas cópias. Alterações do plano durante a operação pertencem à área D.
+  4. Editar o modelo não muda suas cópias. Alterações do plano durante a operação ficam no RF-D7.
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
 
@@ -394,11 +399,11 @@ Estas regras valem para todos os casos abaixo:
 
 - **Ator(es):** Coordenador de Turnaround
 
-- **Descrição:** O coordenador atualiza dados de chegada estimada e tempo mínimo até a confirmação da chegada real. Atende ao RF-A10 e à US-A10.
+- **Descrição:** O coordenador atualiza dados de chegada estimada e tempo mínimo até o registro da chegada real (RF-A12). Atende ao RF-A10 e à US-A10.
 
 - **Pré-condições:**
   1. O Coordenador de Turnaround está autenticado e ativo.
-  2. O turnaround existe e não tem chegada confirmada.
+  2. O turnaround existe e não tem chegada registrada.
 
 - **Pós-condições:**
   - Sucesso: referências atualizadas e auditadas, disponíveis para o Motor de Eventos.
@@ -406,9 +411,9 @@ Estas regras valem para todos os casos abaixo:
 
 - **Regras de negócio:**
   1. RF-A10 permite alterar horário estimado de chegada à posição (EIBT) com data e fuso e tempo mínimo de turnaround (MTTT) em minutos positivos [3][7].
-  2. A edição não muda o horário-alvo de prontidão (TOBT) planejado fixo ou o vigente; atualização do vigente pertence à área D.
-  3. Ao salvar, o sistema confere novamente se a chegada ainda não foi confirmada. A área C verifica a viabilidade e gera os alertas; este caso fornece os dados.
-  4. Chegada pendente não registra o AIBT oficial. Editar previsão não confirma a chegada.
+  2. A edição não muda o horário-alvo de prontidão (TOBT) planejado fixo ou o vigente; atualização do vigente fica no RF-D6.
+  3. Ao salvar, o sistema confere novamente se a chegada ainda não foi registrada. A checagem de viabilidade e os alertas ficam no RF-C8; este caso fornece os dados.
+  4. Editar a previsão não registra a chegada nem altera os estados operacionais.
 
 - **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
 
@@ -416,7 +421,7 @@ Estas regras valem para todos os casos abaixo:
   1. O Coordenador de Turnaround abre as referências de previsão do turnaround.
   2. O sistema exibe EIBT e MTTT atuais e os horários-alvo somente para consulta.
   3. O coordenador altera um ou ambos os campos e seleciona Salvar previsão.
-  4. O sistema verifica autorização, formatos, MTTT positivo e ausência de chegada confirmada.
+  4. O sistema verifica autorização, formatos, MTTT positivo e ausência de chegada registrada.
   5. O sistema grava valores anteriores e novos e auditoria e disponibiliza o evento ao Motor de Eventos.
   6. O sistema apresenta os novos valores e preserva os horários-alvo.
   7. O caso de uso termina.
@@ -427,7 +432,7 @@ Estas regras valem para todos os casos abaixo:
 
 - **Fluxos de exceção:**
   - **E1. Dados inválidos (passo 4):** o sistema indica o campo e retorna ao passo 3 sem gravar.
-  - **E2. Chegada confirmada durante a edição (passo 4):** atualização recusada sem alterar valores.
+  - **E2. Chegada registrada durante a edição (passo 4):** atualização recusada sem alterar valores.
   - **E3. Falha de gravação (passo 5):** não há sucesso nem alteração parcial.
 
 ## UC-A11 – Configurar política de abastecimento
@@ -484,92 +489,88 @@ Estas regras valem para todos os casos abaixo:
 
 - **Ator(es):** Operador de Solo/Rampa
 
-- **Descrição:** O operador informa a chegada observada e envia o registro para confirmação do coordenador. Atende ao RF-A12 e à US-A12.
+- **Descrição:** O operador registra diretamente a chegada observada, colocando o turnaround em "Em solo". Atende ao RF-A12 e à US-A12.
 
 - **Pré-condições:**
   1. O Operador de Solo/Rampa está autenticado e ativo, com tarefa atribuída no turnaround.
-  2. O turnaround está aberto e ainda não tem chegada confirmada nem registro de chegada pendente.
+  2. O turnaround está aberto, tem plano inicial confirmado e ainda não tem chegada registrada.
 
 - **Pós-condições:**
-  - Sucesso: novo registro de chegada pendente, com horário real informado, operador, horário de envio e auditoria.
-  - Recusa ou cancelamento: nenhum novo registro e nenhuma alteração de AIBT; os dados e o estado operacional existentes não mudam.
+  - Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do RF-B8.
+  - Recusa ou cancelamento: nenhum registro novo ou alteração dos dados e estados existentes.
 
 - **Regras de negócio:**
-  1. RF-A12 exige horário real de chegada à posição (AIBT) com data e fuso [2][4], sem horário futuro. Até a confirmação, o horário é apenas uma proposta.
-  2. Apenas operador com tarefa atribuída nesse turnaround pode enviar. Existe no máximo um registro pendente por turnaround, inclusive em envios simultâneos.
-  3. Enviar não grava o AIBT oficial, não coloca o turnaround em "Em solo" e não libera tarefas. "Pendente" é situação do registro, não estado operacional.
-  4. Corrigir uma recusa cria novo envio ligado ao anterior, preservando o histórico. O operador não altera nem confirma um registro já decidido.
+  1. RF-A12 exige horário real de chegada à posição (AIBT), com data e fuso, sem horário futuro [2][4]. O AIBT e o horário do registro são campos distintos.
+  2. O registro exige operador com tarefa atribuída nesse turnaround e plano inicial confirmado. A chegada só pode ser registrada uma vez, inclusive em requisições simultâneas.
+  3. O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara RF-B8, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).
+  4. Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-A13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** Pendente; será preparado pelo João.
 
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre o turnaround associado a uma tarefa sua e seleciona Registrar chegada.
   2. O sistema apresenta aeronave, posição, voos e campo de horário real com data e fuso.
-  3. O operador informa o horário observado e seleciona Enviar para confirmação.
-  4. O sistema verifica autorização, vínculo com tarefa, horário válido, ausência de AIBT confirmado e de outro envio pendente.
-  5. O sistema grava o registro pendente e a auditoria, sem alterar o estado operacional.
-  6. O sistema exibe a pendência para o operador e a disponibiliza ao Coordenador de Turnaround.
+  3. O operador informa o horário observado e seleciona Registrar.
+  4. O sistema verifica autorização, vínculo com tarefa, plano confirmado, horário válido e não futuro e ausência de chegada registrada.
+  5. O sistema grava o AIBT, o operador, o horário do registro e a auditoria e coloca o turnaround em "Em solo".
+  6. O sistema disponibiliza o evento para a propagação do RF-B8 e exibe o horário real e o do registro separadamente.
   7. O caso de uso termina.
 
 - **Fluxos alternativos:**
-  - **A1. Corrigir envio recusado (passo 1):** o operador consulta o motivo, seleciona Corrigir e altera o horário; segue no passo 3. A gravação cria nova versão pendente, preservando a recusada.
-  - **A2. Cancelar (passo 3):** o operador cancela e nenhum registro é enviado.
+  - **A1. Cancelar (passo 3):** o operador cancela sem gravar a chegada.
 
 - **Fluxos de exceção:**
   - **E1. Horário inválido ou futuro (passo 4):** o sistema indica o campo e volta ao passo 3 sem gravar.
-  - **E2. Duplicidade (passo 4):** o sistema apresenta o registro pendente ou confirmado existente e não cria outro.
-  - **E3. Sem vínculo ou acesso revogado (passo 4):** o envio é recusado sem expor dados protegidos ou alterar registros.
-  - **E4. Falha ou resposta perdida (passo 5):** o sistema não anuncia sucesso; a nova tentativa consulta o registro existente para evitar duplicidade.
+  - **E2. Chegada já registrada (passo 4):** o sistema apresenta o registro existente e não cria outro nem repete a propagação.
+  - **E3. Sem vínculo, plano não confirmado ou acesso revogado (passo 4):** a ação é recusada sem alterar dados ou estados.
+  - **E4. Falha ou resposta perdida (passo 5):** o sistema não anuncia sucesso sem confirmação de gravação; a nova tentativa consulta o registro existente para evitar duplicidade.
+  - **E5. Falha na entrega do evento (passo 6):** o evento permanece para nova tentativa, sem criar outro registro nem repetir seus efeitos.
 
-## UC-A13 – Confirmar chegada à posição
+## UC-A13 – Corrigir chegada à posição
 
-- **Nome do caso de uso:** Confirmar chegada à posição
+- **Nome do caso de uso:** Corrigir chegada à posição
 
 - **Ator(es):** Coordenador de Turnaround
 
-- **Descrição:** O coordenador revisa a chegada enviada pelo operador e confirma ou recusa o registro. Atende ao RF-A13 e à US-A13.
+- **Descrição:** O coordenador corrige o AIBT registrado com motivo e histórico, mantendo os estados operacionais. Atende ao RF-A13 e à US-A13.
 
 - **Pré-condições:**
   1. O Coordenador de Turnaround está autenticado e ativo.
-  2. Existe registro de chegada pendente para o turnaround; confirmar exige também plano confirmado.
+  2. Existe AIBT registrado e o turnaround não está "Fora de bloco".
 
 - **Pós-condições:**
-  - Confirmação: AIBT oficial igual ao horário informado, decisão auditada, turnaround em "Em solo" e chegada enviada à área B.
-  - Recusa: motivo disponível ao operador para correção, sem registrar chegada oficial ou mudar o estado operacional.
-  - Cancelamento ou erro: nenhuma nova decisão; dados existentes preservados.
+  - Sucesso: AIBT corrigido, valor anterior, motivo, autor e horário da correção preservados; recálculo da projeção solicitado ao RF-C1.
+  - Cancelamento ou erro: AIBT e histórico anteriores preservados.
+  - Em todos os casos, os estados do turnaround e das tarefas não são alterados pela correção.
 
 - **Regras de negócio:**
-  1. RF-A13 permite decidir somente sobre envio pendente. Confirmar exige plano confirmado; recusar exige motivo escrito.
-  2. O horário real de chegada à posição (AIBT) [2][4] é o informado pelo operador. O horário do envio e o horário da confirmação são campos distintos e não substituem o AIBT.
-  3. Só confirmar registra o AIBT oficial e entra em "Em solo", acionando o Motor de Eventos na área B. Isso não inicia tarefas.
-  4. O registro guarda quem enviou e quem decidiu. Repetir a confirmação não muda os dados nem aciona a área B novamente.
-  5. Recusar exige correção pelo operador, sem apagar o histórico. O coordenador não edita o horário. Pendente, Confirmado e Recusado são situações do registro, não estados do turnaround.
+  1. RF-A13 permite corrigir o horário real de chegada à posição (AIBT), com data e fuso, enquanto o turnaround não estiver "Fora de bloco" (ADR-0013) [2][4].
+  2. A correção exige motivo escrito e horário válido, não futuro. O sistema guarda valor anterior, novo valor, motivo, autor e horário da correção (RNF-A2).
+  3. Corrigir não confirma nem registra outra chegada e não altera estados: dispara o recálculo da projeção de prontidão do RF-C1, sem repetir a propagação de entrada em "Em solo".
+  4. O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** Pendente; será preparado pelo João.
 
 - **Fluxo básico:**
-  1. O Coordenador de Turnaround abre os registros de chegada pendentes.
-  2. O sistema apresenta turnaround, aeronave, posição, horário real informado, operador e horário do envio.
-  3. O coordenador revisa os dados e seleciona Confirmar chegada.
-  4. O sistema verifica autorização, registro ainda pendente e plano confirmado.
-  5. O sistema salva a confirmação e a auditoria, registra o AIBT informado e coloca o turnaround em "Em solo".
-  6. O sistema disponibiliza o evento ao Motor de Eventos; a área B coloca em "Pronta" as tarefas sem predecessora, usando esse evento.
-  7. O sistema exibe a confirmação com horários real, de envio e de decisão separados.
+  1. O Coordenador de Turnaround abre a chegada registrada e seleciona Corrigir horário.
+  2. O sistema apresenta turnaround, AIBT atual e histórico de correções.
+  3. O coordenador informa o horário corrigido com data, fuso e motivo e seleciona Salvar correção.
+  4. O sistema verifica autorização, existência do AIBT, ausência do estado "Fora de bloco", motivo e horário válido e não futuro.
+  5. O sistema grava o novo AIBT e a auditoria com valor anterior, novo valor, motivo, autor e horário da correção, sem mudar os estados.
+  6. O sistema disponibiliza o evento para o recálculo da projeção do RF-C1.
+  7. O sistema exibe o AIBT atualizado e o histórico com horários real e da correção separados.
   8. O caso de uso termina.
 
 - **Fluxos alternativos:**
-  - **A1. Recusar (passo 3):** o coordenador informa motivo e confirma a recusa. O sistema verifica acesso e pendência, salva a decisão e a auditoria e mostra o motivo ao operador, sem alterar AIBT ou estado operacional. O caso termina.
-  - **A2. Concluir o plano primeiro (passo 3):** o coordenador mantém a chegada pendente, confirma o plano e retorna para revisar a chegada.
-  - **A3. Cancelar (passo 3 ou A1):** o coordenador cancela e preserva a pendência.
+  - **A1. Cancelar (passo 3):** o coordenador cancela e mantém o AIBT e o histórico anteriores.
 
 - **Fluxos de exceção:**
-  - **E1. Registro já decidido (passo 4 ou A1):** o sistema apresenta a decisão existente, sem sobrescrever horários ou duplicar propagação.
-  - **E2. Plano não confirmado (passo 4):** o sistema indica o impedimento e mantém a chegada pendente.
-  - **E3. Recusa sem motivo (A1):** o sistema exige o motivo e não grava a decisão.
-  - **E4. Falha ao salvar ou resposta perdida (passo 5):** o sistema não anuncia sucesso; a nova tentativa consulta a decisão atual, sem confirmar duas vezes.
-  - **E5. Falha ao avisar a área B (passo 6):** o sistema mantém o evento para tentar novamente, sem criar outra decisão ou repetir seus efeitos.
-  - **E6. Acesso revogado (passo 4 ou A1):** a ação é recusada sem alterar dados.
+  - **E1. Sem chegada ou encerramento durante a edição (passo 4):** o sistema informa o impedimento e não salva.
+  - **E2. Motivo vazio ou horário inválido ou futuro (passo 4):** o sistema indica o campo e retorna ao passo 3 sem gravar.
+  - **E3. Acesso revogado (passo 4):** a ação é recusada sem alterar dados.
+  - **E4. Falha ao salvar ou resposta perdida (passo 5):** o sistema não anuncia sucesso sem confirmação de gravação; a nova tentativa consulta a correção para evitar duplicidade.
+  - **E5. Falha na entrega do evento (passo 6):** o evento permanece para nova tentativa, sem repetir a correção nem seus efeitos.
 
-Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27] e [45], conforme `pesquisa/fontes.md`. Validações de unicidade, integridade e cópia são regras internas propostas.
+Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27], [45], [69], [70] e [71], conforme `pesquisa/fontes.md`.
 
-**Pendências:** protótipos de alta fidelidade (C10.3), integração dos nomes e atores no diagrama geral (C10.8) e revisão em equipe da proposta de chegada em duas etapas escolhida pelo autor. Esta versão não declara esses critérios concluídos e não cria um site.
+**Pendências:** vincular os protótipos de alta fidelidade que serão preparados pelo João (C10.3) e conferir nomes e atores no diagrama geral (C10.8). Esta versão não declara esses critérios concluídos.
