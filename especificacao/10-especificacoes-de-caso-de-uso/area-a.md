@@ -212,7 +212,7 @@
   1. RF-A5 exige um operador ativo da equipe correspondente para 100% das tarefas; equipe do operador e da tarefa devem coincidir.
   2. Horários planejados incluem data e fuso; o fim deve ser posterior ao início. O início planejado da sucessora deve ser igual ou posterior ao fim planejado das predecessoras.
   3. Dependências não têm ciclos e respeitam a política de abastecimento. Tarefas independentes podem se sobrepor com operadores distintos.
-  4. O sistema verifica ausência de tarefa iniciada também ao salvar. Depois do primeiro início, alterações operacionais ficam no RF-D7.
+  4. O sistema verifica ausência de tarefa iniciada também ao salvar. Depois do primeiro início, alterações operacionais ficam no UC-D7.
   5. Plano e auditoria são salvos juntos, sem salvar apenas parte das tarefas (RNF-A2 e RNF-A4).
   6. Serviço sob demanda já conhecido pode ser acionado do catálogo e incluído no plano inicial, com responsável, janela, dependências e política válidos (RF-A4, RF-A8 e RF-A11; ADR-0014). Os serviços não acionados permanecem fora do plano.
 
@@ -263,7 +263,7 @@
   2. Tarefas e pontos de código de resposta rápida (QR Code) recebem identificadores próprios. As dependências e os pontos ficam ligados às tarefas copiadas.
   3. A cópia preserva tipo, equipe, duração, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda". A política da companhia é copiada com versão; com permissão desabilitada, a sequência de abastecimento é exigida.
   4. Substituição exige confirmação. Copiar não atribui operadores, não inicia tarefas e não modifica o modelo original; edições futuras no modelo não alteram cópias existentes.
-  5. O catálogo sob demanda é copiado com dependências e pontos, mas suas tarefas ficam fora do plano até acionamento pelo RF-A5 ou RF-D7 (ADR-0014).
+  5. O catálogo sob demanda é copiado com dependências e pontos, mas suas tarefas ficam fora do plano até acionamento pelo RF-A5 ou UC-D7 (ADR-0014).
 
 - **Protótipo(s) de tela:** seleção do modelo compatível e confirmação da cópia de tarefas, catálogo, dependências, pontos e política.
 
@@ -306,7 +306,7 @@
 
 - **Regras de negócio:**
   1. RF-A7 permite definir pontos de código de resposta rápida (QR Code), cada um com nome e identificador únicos na mesma tarefa (ADR-0007).
-  2. Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura fica no RF-B6 e o bloqueio da conclusão no RF-B3.
+  2. Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura fica no UC-B6 e o bloqueio da conclusão no UC-B3.
   3. Os pontos são copiados quando o modelo é aplicado; editar o modelo não altera uma cópia existente nem confirma pontos automaticamente.
 
 - **Protótipo(s) de tela:** configuração dos pontos de confirmação da tarefa, com nome e identificador.
@@ -351,7 +351,7 @@
   1. RF-A8 define predecessoras: tarefas que precisam terminar antes de outra. Só aceita tarefas do mesmo modelo ou turnaround; recusa tarefa inexistente, a própria tarefa e ciclos (como A depender de B e B depender de A).
   2. Ao confirmar o plano, o início planejado de cada tarefa deve ser igual ou posterior ao fim planejado de todas as suas predecessoras.
   3. Tarefas independentes podem executar em paralelo com operadores distintos, respeitada a política de abastecimento [22][45].
-  4. Editar o modelo não muda suas cópias. Alterações do plano durante a operação ficam no RF-D7.
+  4. Editar o modelo não muda suas cópias. Alterações do plano durante a operação ficam no UC-D7.
 
 - **Protótipo(s) de tela:** configuração das predecessoras, com vínculos exigidos pela política de abastecimento.
 
@@ -436,8 +436,8 @@
 
 - **Regras de negócio:**
   1. RF-A10 permite alterar horário estimado de chegada à posição (EIBT) com data e fuso e tempo mínimo de turnaround (MTTT) em minutos positivos [3][7].
-  2. A edição não muda o horário-alvo de prontidão (TOBT) planejado fixo ou o vigente; atualização do vigente fica no RF-D6.
-  3. Ao salvar, o sistema confere novamente se a chegada ainda não foi registrada. A checagem de viabilidade e os alertas ficam no RF-C8; este caso fornece os dados.
+  2. A edição não muda o horário-alvo de prontidão (TOBT) planejado fixo ou o vigente; atualização do vigente fica no UC-D6.
+  3. Ao salvar, o sistema confere novamente se a chegada ainda não foi registrada. A checagem de viabilidade e os alertas ficam no UC-C4; este caso fornece os dados.
   4. Editar a previsão não registra a chegada nem altera os estados operacionais.
 
 - **Protótipo(s) de tela:** atualização do EIBT e do MTTT antes do registro da chegada, com horários-alvo somente para consulta.
@@ -525,13 +525,13 @@
   2. O turnaround está aberto, tem plano inicial confirmado e ainda não tem chegada registrada.
 
 - **Pós-condições:**
-  - Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do RF-B8.
+  - Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do UC-B8.
   - Recusa ou cancelamento: nenhum registro novo ou alteração dos dados e estados existentes.
 
 - **Regras de negócio:**
   1. RF-A12 exige horário real de chegada à posição (AIBT), com data e fuso, sem horário futuro [2][4]. O AIBT e o horário do registro são campos distintos.
   2. O registro exige operador com tarefa atribuída nesse turnaround e plano inicial confirmado. A chegada só pode ser registrada uma vez, inclusive em requisições simultâneas.
-  3. O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara RF-B8, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).
+  3. O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara UC-B8, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).
   4. Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-A13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação.
 
 - **Protótipo(s) de tela:** registro direto da chegada pelo operador no celular, com plano confirmado e horário real informado.
@@ -544,7 +544,7 @@
   3. O operador informa o horário observado e seleciona Registrar.
   4. O sistema verifica autorização, vínculo com tarefa, plano confirmado, horário válido e não futuro e ausência de chegada registrada.
   5. O sistema grava o AIBT, o operador, o horário do registro e a auditoria e coloca o turnaround em "Em solo".
-  6. O sistema disponibiliza o evento para a propagação do RF-B8 e exibe o horário real e o do registro separadamente.
+  6. O sistema disponibiliza o evento para a propagação do UC-B8 e exibe o horário real e o do registro separadamente.
   7. O caso de uso termina.
 
 - **Fluxos alternativos:**
@@ -570,14 +570,14 @@
   2. Existe AIBT registrado e o turnaround não está "Fora de bloco".
 
 - **Pós-condições:**
-  - Sucesso: AIBT corrigido, valor anterior, motivo, autor e horário da correção preservados; recálculo da projeção solicitado ao RF-C1.
+  - Sucesso: AIBT corrigido, valor anterior, motivo, autor e horário da correção preservados; recálculo da projeção solicitado ao UC-C3.
   - Cancelamento ou erro: AIBT e histórico anteriores preservados.
   - Em todos os casos, os estados do turnaround e das tarefas não são alterados pela correção.
 
 - **Regras de negócio:**
   1. RF-A13 permite corrigir o horário real de chegada à posição (AIBT), com data e fuso, enquanto o turnaround não estiver "Fora de bloco" (ADR-0013) [2][4].
   2. A correção exige motivo escrito e horário válido, não futuro. O sistema guarda valor anterior, novo valor, motivo, autor e horário da correção (RNF-A2).
-  3. Corrigir não confirma nem registra outra chegada e não altera estados: dispara o recálculo da projeção de prontidão do RF-C1, sem repetir a propagação de entrada em "Em solo".
+  3. Corrigir não confirma nem registra outra chegada e não altera estados: dispara o recálculo da projeção de prontidão do UC-C3, sem repetir a propagação de entrada em "Em solo".
   4. O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados.
 
 - **Protótipo(s) de tela:** correção do AIBT pelo coordenador, com valor registrado, novo horário e motivo.
@@ -590,7 +590,7 @@
   3. O coordenador informa o horário corrigido com data, fuso e motivo e seleciona Salvar correção.
   4. O sistema verifica autorização, existência do AIBT, ausência do estado "Fora de bloco", motivo e horário válido e não futuro.
   5. O sistema grava o novo AIBT e a auditoria com valor anterior, novo valor, motivo, autor e horário da correção, sem mudar os estados.
-  6. O sistema disponibiliza o evento para o recálculo da projeção do RF-C1.
+  6. O sistema disponibiliza o evento para o recálculo da projeção do UC-C3.
   7. O sistema exibe o AIBT atualizado e o histórico com horários real e da correção separados.
   8. O caso de uso termina.
 

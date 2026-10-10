@@ -24,20 +24,20 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-A13 | Obj. 1 e 2 | Coordenador de Turnaround | US-A13 | UC-A12, UC-A13 | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6 |
 | RF-B1 | Obj. 2 | Operador de Solo/Rampa | US-B1 | UC-B1, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-C1 |
 | RF-B2 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B2 | UC-B2, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
-| RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-A7, UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
+| RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
 | RF-B4 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B4 | UC-B4, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-D4 |
 | RF-B5 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B5 | UC-B5, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
-| RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-A7, UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
+| RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2 |
 | RF-B7 | Obj. 1 | Motor de Eventos | US-B7 | UC-B5, UC-B7, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6 |
-| RF-B8 | Obj. 2 | Motor de Eventos | US-B8 | UC-A12, UC-B2, UC-B4, UC-B5, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1 |
-| RF-C1 | Obj. 1 e 3 | Motor de Eventos | — | UC-A13 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3 |
+| RF-B8 | Obj. 2 | Motor de Eventos | US-B8 | UC-B2, UC-B4, UC-B5, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1 |
+| RF-C1 | Obj. 1 e 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3 |
 | RF-C2 | Obj. 1 e 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3 |
 | RF-C3 | Obj. 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C6, RNF-C7 |
 | RF-C4 | Obj. 2 e 3 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
 | RF-C5 | Obj. 1 e 2 | Coordenador de Turnaround | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
 | RF-C6 | Obj. 2 e 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
 | RF-C7 | Obj. 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
-| RF-C8 | Obj. 3 | Motor de Eventos | — | UC-A10 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
+| RF-C8 | Obj. 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
 | RF-C9 | Obj. 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
 | RF-C10 | Obj. 3 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
 | RF-C11 | Obj. 2 | Motor de Eventos | — | — | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3 |
@@ -49,8 +49,8 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-D3 | Obj. 3 | Coordenador de Turnaround | US-D3 | UC-D3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C5, RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
 | RF-D4 | Obj. 3 | Autoridade de Liberação | US-D4 | UC-D4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
 | RF-D5 | Obj. 3 | Coordenador de Turnaround | US-D5 | UC-D5 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
-| RF-D6 | Obj. 1 | Coordenador de Turnaround | US-D6 | UC-A10, UC-D6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
-| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | US-D7 | UC-A5, UC-A6, UC-A8, UC-D7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D6 |
+| RF-D6 | Obj. 1 | Coordenador de Turnaround | US-D6 | UC-D6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D3, RNF-D6 |
+| RF-D7 | Obj. 1 e 3 | Coordenador de Turnaround | US-D7 | UC-D7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D6 |
 | RF-D8 | Obj. 2 | Coordenador de Turnaround | US-D8 | UC-D8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D6 |
 | RF-D9 | Obj. 3 | Operador de Solo/Rampa | US-D9 | UC-D9 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D5, RNF-D6 |
 
@@ -107,12 +107,14 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - RF-C12 sem estória (K.2)
 - RF-C13 sem estória (K.2)
 - RF-C14 sem estória (K.2)
+- RF-C1 sem caso de uso (K.3)
 - RF-C2 sem caso de uso (K.3)
 - RF-C3 sem caso de uso (K.3)
 - RF-C4 sem caso de uso (K.3)
 - RF-C5 sem caso de uso (K.3)
 - RF-C6 sem caso de uso (K.3)
 - RF-C7 sem caso de uso (K.3)
+- RF-C8 sem caso de uso (K.3)
 - RF-C9 sem caso de uso (K.3)
 - RF-C10 sem caso de uso (K.3)
 - RF-C11 sem caso de uso (K.3)
