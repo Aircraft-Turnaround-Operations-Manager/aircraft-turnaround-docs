@@ -1,10 +1,3 @@
-**Termos usados nas histórias:**
-
-- Auditoria: registro de quem fez a alteração, quando e o que mudou (RNF-A2).
-- Janela: horários planejados de início e fim de uma tarefa.
-- Predecessora: tarefa que precisa terminar antes de outra começar.
-- Modelo: conjunto de tarefas e regras que pode ser reutilizado.
-
 ## US-A1 – REQUISITO RF-A1: Autenticar-se
 
 **COMO:** Usuário, ator abstrato que representa os quatro perfis humanos
@@ -36,17 +29,17 @@
 | 1 | **DADO QUE:** sou Administrador do Sistema autenticado <br> **QUANDO:** cadastro nome, identificador único, senha inicial, perfil Operador de Solo/Rampa e equipe ativa <br> **ENTÃO:** o operador fica ativo e pode entrar; o cadastro é auditado sem mostrar ou registrar a senha |
 | 2 | **DADO QUE:** existe um usuário <br> **QUANDO:** altero seu perfil e informo equipe ativa quando o perfil for operador <br> **ENTÃO:** os novos dados são gravados e auditados, sem alterar a senha, o identificador interno ou a situação ativa/desativada |
 | 3 | **DADO QUE:** existe um usuário ativo <br> **QUANDO:** confirmo sua desativação <br> **ENTÃO:** o histórico permanece, mas a próxima entrada ou ação protegida é bloqueada, mesmo com sessão aberta |
-| 4 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** há campo obrigatório vazio, falta senha inicial na criação, identificador duplicado, perfil fora dos quatro previstos ou operador sem equipe ativa <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
+| 4 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** há campo obrigatório vazio ou falta a senha inicial na criação <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
+| 5 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** informo um identificador de acesso que já pertence a outro usuário <br> **ENTÃO:** o sistema indica a duplicidade e não grava |
+| 6 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** escolho um perfil fora dos quatro previstos ou deixo um operador sem equipe ativa <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
 
 ## US-A3 – REQUISITO RF-A3: Abrir turnaround
 
 **COMO:** Coordenador de Turnaround
 
-**POSSO:** abrir o cadastro de um turnaround com os voos e suas referências
+**POSSO:** abrir o cadastro de um turnaround com os voos, a companhia, a aeronave, a posição, o horário programado de chegada à posição (SIBT), o horário programado de saída da posição (SOBT), o horário estimado de chegada à posição (EIBT), o horário-alvo de prontidão (TOBT) e o tempo mínimo de turnaround (MTTT) [2][4], com data e fuso nos horários e o MTTT em minutos positivos; o TOBT planejado fica fixo e o vigente começa igual a ele (ADR-0003)
 
 **PARA:** planejar as tarefas e comparar os horários previstos com os reais
-
-Os dados incluem horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário-alvo de prontidão (TOBT) e tempo mínimo de turnaround (MTTT) [2][4]. Os horários têm data e fuso; MTTT é recebido como entrada em minutos positivos. TOBT planejado é fixo; o vigente começa igual a ele (ADR-0003).
 
 **Critérios de Aceite:**
 
@@ -71,8 +64,9 @@ Os dados incluem horário programado de chegada à posição (SIBT), horário pr
 |---|---|
 | 1 | **DADO QUE:** há equipes ativas cadastradas <br> **QUANDO:** salvo um modelo com nome, aeronave, serviço e tarefas com nome, tipo, equipe, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda" <br> **ENTÃO:** o modelo e suas configurações são gravados com auditoria |
 | 2 | **DADO QUE:** o serviço inclui embarque de passageiros <br> **QUANDO:** salvo exatamente uma tarefa do tipo Embarque <br> **ENTÃO:** essa tarefa fica identificada para o marco de embarque mesmo que seu nome livre seja diferente |
-| 3 | **DADO QUE:** estou criando um modelo <br> **QUANDO:** há tarefa sem equipe ativa, duração não positiva ou, para serviço com embarque, nenhuma ou mais de uma tarefa desse tipo <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
+| 3 | **DADO QUE:** estou criando um modelo <br> **QUANDO:** há tarefa sem equipe ativa ou com duração não positiva <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
 | 4 | **DADO QUE:** cadastro uma limpeza profunda como "sob demanda" com tipo, equipe e duração planejada <br> **QUANDO:** salvo o modelo <br> **ENTÃO:** o serviço fica no catálogo e não entra no plano até ser acionado pelo Coordenador de Turnaround (ADR-0014) [69][70][71] |
+| 5 | **DADO QUE:** estou criando um modelo para um serviço com embarque de passageiros <br> **QUANDO:** o modelo não tem nenhuma tarefa do tipo Embarque ou tem mais de uma <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
 
 ## US-A5 – REQUISITO RF-A5: Confirmar plano inicial
 
@@ -108,6 +102,7 @@ Os dados incluem horário programado de chegada à posição (SIBT), horário pr
 | 2 | **DADO QUE:** já existe uma cópia, ainda sem plano confirmado ou tarefa iniciada <br> **QUANDO:** cancelo a confirmação de substituição <br> **ENTÃO:** a cópia anterior permanece inalterada |
 | 3 | **DADO QUE:** o modelo é incompatível, o plano está confirmado ou uma tarefa começou <br> **QUANDO:** tento aplicar <br> **ENTÃO:** o sistema informa a condição impeditiva e preserva as tarefas atuais |
 | 4 | **DADO QUE:** o modelo possui serviço sob demanda com dependências e pontos <br> **QUANDO:** aplico o modelo <br> **ENTÃO:** o serviço e seus vínculos são copiados para o catálogo do turnaround, mas não entram no plano até acionamento pelo RF-A5 ou RF-D7 |
+| 5 | **DADO QUE:** já existe uma cópia, ainda sem plano confirmado ou tarefa iniciada <br> **QUANDO:** confirmo a substituição por outro modelo compatível <br> **ENTÃO:** a cópia anterior é substituída pelas tarefas regulares e pelo catálogo sob demanda do novo modelo, com identificadores próprios e auditoria, sem alterar nenhum dos modelos |
 
 ## US-A7 – REQUISITO RF-A7: Configurar pontos de confirmação
 
@@ -205,10 +200,12 @@ Os dados incluem horário programado de chegada à posição (SIBT), horário pr
 
 | # | |
 |---|---|
-| 1 | **DADO QUE:** tenho tarefa atribuída nesse turnaround, o plano inicial está confirmado e não há chegada registrada <br> **QUANDO:** registro o horário real com data e fuso, sem horário futuro <br> **ENTÃO:** o AIBT é gravado com auditoria, o turnaround entra em "Em solo" e dispara a propagação do RF-B8, sem confirmação do coordenador nem início automático das tarefas |
+| 1 | **DADO QUE:** tenho tarefa atribuída nesse turnaround, o plano inicial está confirmado e não há chegada registrada <br> **QUANDO:** registro o horário real com data e fuso, sem horário futuro <br> **ENTÃO:** o AIBT é gravado com auditoria, o turnaround entra em "Em solo" e dispara a propagação do RF-B8, sem confirmação do Coordenador de Turnaround nem início automático das tarefas |
 | 2 | **DADO QUE:** já existe chegada registrada <br> **QUANDO:** tento registrar outra chegada, inclusive em requisições simultâneas <br> **ENTÃO:** o sistema recusa a duplicidade, mostra o registro existente e não sobrescreve o AIBT nem repete a propagação |
-| 3 | **DADO QUE:** o horário é futuro ou inválido, não tenho tarefa atribuída ou o plano inicial não está confirmado <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
+| 3 | **DADO QUE:** o horário informado é futuro ou inválido <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
 | 4 | **DADO QUE:** a aeronave chegou às 14:07 e faço o registro às 14:10 <br> **QUANDO:** salvo a chegada <br> **ENTÃO:** o AIBT fica 14:07 e o horário do registro fica 14:10, com meu usuário e ambos os horários preservados como dados distintos |
+| 5 | **DADO QUE:** não tenho tarefa atribuída nesse turnaround <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
+| 6 | **DADO QUE:** o plano inicial do turnaround ainda não está confirmado <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
 
 ## US-A13 – REQUISITO RF-A13: Corrigir chegada à posição
 
