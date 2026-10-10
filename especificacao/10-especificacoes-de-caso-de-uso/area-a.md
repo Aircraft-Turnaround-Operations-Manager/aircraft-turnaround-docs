@@ -7,7 +7,7 @@ Estas regras valem para todos os casos abaixo:
 - O sistema verifica o perfil e o acesso antes de cada ação protegida, mesmo com sessão aberta (RNF-A1).
 - Alterações guardam autor, horário e histórico (RNF-A2). Se houver falha ao salvar, não há alteração parcial nem mensagem de sucesso.
 - Se uma resposta se perder, a nova tentativa verifica o registro existente para evitar duplicidade.
-- Os protótipos serão preparados pelo João e depois vinculados aos casos correspondentes. As imagens da área B não substituem automaticamente as telas da A.
+- Os protótipos finais preparados pelo João no [Figma](https://www.figma.com/design/jnyAawiHZsJdwKW3KjaLVs/aircraft?node-id=0-1) foram exportados em PNG e vinculados aos casos correspondentes, sem alteração das telas.
 
 ## UC-A1 – Autenticar-se
 
@@ -30,7 +30,9 @@ Estas regras valem para todos os casos abaixo:
   2. O perfil vem do cadastro, não de uma escolha no login. Identificador inexistente, senha incorreta e usuário desativado recebem a mesma mensagem.
   3. A autorização é verificada em cada operação; desativação revoga o acesso na próxima requisição (RNF-A1).
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** autenticação pelo identificador de acesso e senha, no computador e no celular.
+
+  ![UC-A1 – autenticação web](prototipos/uc-a1-autenticar-web.png) ![UC-A1 – autenticação no celular](prototipos/uc-a1-autenticar-celular.png)
 
 - **Fluxo básico:**
   1. O Usuário abre a tela de autenticação.
@@ -70,7 +72,9 @@ Estas regras valem para todos os casos abaixo:
   3. Desativar preserva histórico e vínculos e revoga o acesso; tarefas existentes não são reatribuídas automaticamente. Editar dados não reativa um cadastro desativado.
   4. Editar perfil ou equipe mantém a senha, sem exibi-la. A senha inicial é entregue por canal autorizado fora deste caso, nunca pela auditoria ou resposta de cadastro.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** lista de usuários e cadastro com identificador de acesso, senha inicial, perfil e equipe do operador.
+
+  ![UC-A2 – gerenciar usuários](prototipos/uc-a2-gerenciar-usuarios.png)
 
 - **Fluxo básico:**
   1. O Administrador do Sistema abre Usuários e seleciona Novo usuário.
@@ -113,7 +117,9 @@ Estas regras valem para todos os casos abaixo:
   3. Só pode existir um turnaround para os mesmos voos e datas. A programação dos voos não é alterada.
   4. Abrir não registra horário real de chegada à posição (AIBT) [2][4], não entra em "Em solo" nem inicia tarefas. A chegada usa o fluxo de registro e confirmação.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** abertura do turnaround com voos, companhia, aeronave, posição e referências de tempo.
+
+  ![UC-A3 – abrir turnaround](prototipos/uc-a3-abrir-turnaround.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround seleciona Novo turnaround.
@@ -156,7 +162,9 @@ Estas regras valem para todos os casos abaixo:
   4. A permissão de "Não aplicável" é por tarefa e não muda sua situação durante a criação do modelo.
   5. Tarefas marcadas "sob demanda" ficam no catálogo, com tipo, equipe e duração planejada. Não entram no plano até serem acionadas pelo Coordenador de Turnaround (ADR-0014) [69][70][71].
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** criação do modelo com configurações das tarefas regulares e do catálogo sob demanda.
+
+  ![UC-A4 – criar modelo](prototipos/uc-a4-criar-modelo.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre Modelos e seleciona Novo modelo.
@@ -201,7 +209,9 @@ Estas regras valem para todos os casos abaixo:
   5. Plano e auditoria são salvos juntos, sem salvar apenas parte das tarefas (RNF-A2 e RNF-A4).
   6. Serviço sob demanda já conhecido pode ser acionado do catálogo e incluído no plano inicial, com responsável, janela, dependências e política válidos (RF-A4, RF-A8 e RF-A11; ADR-0014). Os serviços não acionados permanecem fora do plano.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** plano inicial com responsáveis, janelas, dependências, obrigatoriedade e inclusão de serviço sob demanda.
+
+  ![UC-A5 – confirmar plano inicial](prototipos/uc-a5-confirmar-plano.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre o planejamento.
@@ -248,7 +258,9 @@ Estas regras valem para todos os casos abaixo:
   4. Substituição exige confirmação. Copiar não atribui operadores, não inicia tarefas e não modifica o modelo original; edições futuras no modelo não alteram cópias existentes.
   5. O catálogo sob demanda é copiado com dependências e pontos, mas suas tarefas ficam fora do plano até acionamento pelo RF-A5 ou RF-D7 (ADR-0014).
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** seleção do modelo compatível e confirmação da cópia de tarefas, catálogo, dependências, pontos e política.
+
+  ![UC-A6 – aplicar modelo](prototipos/uc-a6-aplicar-modelo.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre o turnaround e seleciona Aplicar modelo.
@@ -290,7 +302,9 @@ Estas regras valem para todos os casos abaixo:
   2. Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura fica no RF-B6 e o bloqueio da conclusão no RF-B3.
   3. Os pontos são copiados quando o modelo é aplicado; editar o modelo não altera uma cópia existente nem confirma pontos automaticamente.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** configuração dos pontos de confirmação da tarefa, com nome e identificador.
+
+  ![UC-A7 – pontos de confirmação](prototipos/uc-a7-pontos-de-confirmacao.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre uma tarefa do modelo e seleciona Pontos de confirmação.
@@ -332,7 +346,9 @@ Estas regras valem para todos os casos abaixo:
   3. Tarefas independentes podem executar em paralelo com operadores distintos, respeitada a política de abastecimento [22][45].
   4. Editar o modelo não muda suas cópias. Alterações do plano durante a operação ficam no RF-D7.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** configuração das predecessoras, com vínculos exigidos pela política de abastecimento.
+
+  ![UC-A8 – definir dependências](prototipos/uc-a8-definir-dependencias.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre Dependências no modelo ou plano inicial.
@@ -373,7 +389,9 @@ Estas regras valem para todos os casos abaixo:
   3. Alterar nome preserva identificador interno e vínculos. Modelos com equipe desativada não podem gerar novas atribuições até sua revisão.
   4. O administrador não reatribui tarefas operacionais para resolver um impedimento; isso permanece na área D.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** lista e cadastro de equipes ou especialidades, com nome, identificador e situação.
+
+  ![UC-A9 – gerenciar equipes](prototipos/uc-a9-gerenciar-equipes.png)
 
 - **Fluxo básico:**
   1. O Administrador do Sistema abre Equipes e seleciona Nova equipe.
@@ -415,7 +433,9 @@ Estas regras valem para todos os casos abaixo:
   3. Ao salvar, o sistema confere novamente se a chegada ainda não foi registrada. A checagem de viabilidade e os alertas ficam no RF-C8; este caso fornece os dados.
   4. Editar a previsão não registra a chegada nem altera os estados operacionais.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** atualização do EIBT e do MTTT antes do registro da chegada, com horários-alvo somente para consulta.
+
+  ![UC-A10 – atualizar previsão](prototipos/uc-a10-atualizar-previsao.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre as referências de previsão do turnaround.
@@ -463,7 +483,9 @@ Estas regras valem para todos os casos abaixo:
      - Comunicação entre solo e cabine.
      Essas condições são verificadas na operação real, não automaticamente pelo sistema.
 
-- **Protótipo(s) de tela:** Pendente; não produzido nesta etapa por orientação do autor.
+- **Protótipo(s) de tela:** configuração da permissão de abastecimento com passageiros por companhia, com versão e histórico.
+
+  ![UC-A11 – política de abastecimento](prototipos/uc-a11-politica-de-abastecimento.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre a política de abastecimento de uma companhia.
@@ -505,7 +527,9 @@ Estas regras valem para todos os casos abaixo:
   3. O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara RF-B8, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).
   4. Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-A13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação.
 
-- **Protótipo(s) de tela:** Pendente; será preparado pelo João.
+- **Protótipo(s) de tela:** registro direto da chegada pelo operador no celular, com plano confirmado e horário real informado.
+
+  ![UC-A12 – registrar chegada](prototipos/uc-a12-registrar-chegada.png)
 
 - **Fluxo básico:**
   1. O Operador de Solo/Rampa abre o turnaround associado a uma tarefa sua e seleciona Registrar chegada.
@@ -549,7 +573,9 @@ Estas regras valem para todos os casos abaixo:
   3. Corrigir não confirma nem registra outra chegada e não altera estados: dispara o recálculo da projeção de prontidão do RF-C1, sem repetir a propagação de entrada em "Em solo".
   4. O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados.
 
-- **Protótipo(s) de tela:** Pendente; será preparado pelo João.
+- **Protótipo(s) de tela:** correção do AIBT pelo coordenador, com valor registrado, novo horário e motivo.
+
+  ![UC-A13 – corrigir chegada](prototipos/uc-a13-corrigir-chegada.png)
 
 - **Fluxo básico:**
   1. O Coordenador de Turnaround abre a chegada registrada e seleciona Corrigir horário.
@@ -573,4 +599,4 @@ Estas regras valem para todos os casos abaixo:
 
 Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27], [45], [69], [70] e [71], conforme `pesquisa/fontes.md`.
 
-**Pendências:** vincular os protótipos de alta fidelidade que serão preparados pelo João (C10.3) e conferir nomes e atores no diagrama geral (C10.8). Esta versão não declara esses critérios concluídos.
+**Pendência:** conferir nomes e atores no diagrama geral (C10.8) quando ele for entregue no item 9. Os protótipos de alta fidelidade estão vinculados aos 13 casos de uso (C10.3); esta versão não declara C10.8 concluído.
