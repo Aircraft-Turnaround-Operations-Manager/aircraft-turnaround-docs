@@ -5,15 +5,15 @@
 | UC-A1 | Autenticar-se | Usuário (ator abstrato) | — | RF-A1, US-A1 |
 | UC-A2 | Gerenciar usuários e perfis de acesso | Administrador do Sistema | — | RF-A2, US-A2 |
 | UC-A3 | Abrir turnaround | Coordenador de Turnaround | — | RF-A3, US-A3 |
-| UC-A4 | Criar modelo de tarefas | Coordenador de Turnaround | — | RF-A4, US-A4 |
-| UC-A5 | Confirmar plano inicial | Coordenador de Turnaround | — | RF-A5, US-A5 |
+| UC-A4 | Criar modelo de tarefas | Coordenador de Turnaround | estendido por UC-A7 e UC-A8 | RF-A4, US-A4 |
+| UC-A5 | Confirmar plano inicial | Coordenador de Turnaround | estendido por UC-A8 | RF-A5, US-A5 |
 | UC-A6 | Aplicar modelo de tarefas | Coordenador de Turnaround | — | RF-A6, US-A6 |
-| UC-A7 | Configurar pontos de confirmação | Coordenador de Turnaround | — | RF-A7, US-A7 |
-| UC-A8 | Definir dependências entre tarefas | Coordenador de Turnaround | — | RF-A8, US-A8 |
+| UC-A7 | Configurar pontos de confirmação | Coordenador de Turnaround | «extend» UC-A4 | RF-A7, US-A7 |
+| UC-A8 | Definir dependências entre tarefas | Coordenador de Turnaround | «extend» UC-A4 e UC-A5 | RF-A8, US-A8 |
 | UC-A9 | Gerenciar equipes e especialidades | Administrador do Sistema | — | RF-A9, US-A9 |
 | UC-A10 | Atualizar referências de previsão | Coordenador de Turnaround | — | RF-A10, US-A10 |
 | UC-A11 | Configurar política de abastecimento | Coordenador de Turnaround | — | RF-A11, US-A11 |
-| UC-A12 | Registrar chegada à posição | Operador de Solo/Rampa | — | RF-A12, US-A12 |
+| UC-A12 | Registrar chegada à posição | Operador de Solo/Rampa | «include» UC-B8 | RF-A12, US-A12 |
 | UC-A13 | Corrigir chegada à posição | Coordenador de Turnaround | — | RF-A13, US-A13 |
 
 ## UC-A1 – Autenticar-se
@@ -196,7 +196,7 @@
 |---|---|
 | **Nome do caso de uso** | UC-A4 – Criar modelo de tarefas |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador define um modelo reutilizável por tipo de aeronave e serviço, com tarefas classificadas. Atende ao RF-A4 e à US-A4. |
+| **Descrição** | O coordenador define um modelo reutilizável por tipo de aeronave e serviço, com tarefas classificadas. Pode ser estendido pelo UC-A7 (pontos de confirmação) e pelo UC-A8 (dependências). Atende ao RF-A4 e à US-A4. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há equipes ativas cadastradas. |
 | **Pós-condições** | Sucesso: modelo e configurações de tarefas gravados com auditoria.<br>Recusa ou cancelamento: nenhum modelo criado. |
 | **Regras de negócio** | **RN1.** RF-A4 exige nome do modelo, tipo de aeronave, serviço e ao menos uma tarefa com nome, tipo de atividade, equipe ativa, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda".<br>**RN2.** Embarque, desembarque e abastecimento têm tipos explícitos; a identificação não depende do nome digitado. Para serviço com embarque de passageiros, exatamente uma tarefa representa o embarque [22][45].<br>**RN3.** Criar modelo não copia tarefas para turnaround nem atribui operadores. Dependências e pontos são configurados nos casos próprios.<br>**RN4.** A permissão de "Não aplicável" é por tarefa e não muda sua situação durante a criação do modelo.<br>**RN5.** Tarefas marcadas "sob demanda" ficam no catálogo, com tipo, equipe e duração planejada. Não entram no plano até serem acionadas pelo Coordenador de Turnaround (ADR-0014) [69][70][71]. |
@@ -252,7 +252,7 @@
 |---|---|
 | **Nome do caso de uso** | UC-A5 – Confirmar plano inicial |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador define responsáveis e horários e confirma o plano antes do início das tarefas. Atende ao RF-A5 e à US-A5. |
+| **Descrição** | O coordenador define responsáveis e horários e confirma o plano antes do início das tarefas. Pode ser estendido pelo UC-A8 (dependências). Atende ao RF-A5 e à US-A5. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há modelo aplicado e nenhuma tarefa iniciada.<br>3. Há operadores ativos das equipes necessárias. |
 | **Pós-condições** | Sucesso: plano completo confirmado com responsáveis, horários, obrigatoriedade e auditoria.<br>Recusa ou cancelamento: último plano confirmado preservado e nenhum início real registrado. |
 | **Regras de negócio** | **RN1.** RF-A5 exige um operador ativo da equipe correspondente para 100% das tarefas; equipe do operador e da tarefa devem coincidir.<br>**RN2.** Horários planejados incluem data e fuso; o fim deve ser posterior ao início. O início planejado da sucessora deve ser igual ou posterior ao fim planejado das predecessoras.<br>**RN3.** Dependências não têm ciclos e respeitam a política de abastecimento. Tarefas independentes podem se sobrepor com operadores distintos.<br>**RN4.** O sistema verifica ausência de tarefa iniciada também ao salvar. Depois do primeiro início, alterações operacionais ficam no UC-D7.<br>**RN5.** Plano e auditoria são salvos juntos, sem salvar apenas parte das tarefas (RNF-A2 e RNF-A4).<br>**RN6.** Serviço sob demanda já conhecido pode ser acionado do catálogo e incluído no plano inicial, com responsável, janela, dependências e política válidos (RF-A4, RF-A8 e RF-A11; ADR-0014). Os serviços não acionados permanecem fora do plano. |
@@ -382,7 +382,7 @@
 |---|---|
 | **Nome do caso de uso** | UC-A7 – Configurar pontos de confirmação |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador define no modelo os pontos cuja confirmação será exigida na execução. Atende ao RF-A7 e à US-A7. |
+| **Descrição** | O coordenador define no modelo os pontos cuja confirmação será exigida na execução. Estende o UC-A4. Atende ao RF-A7 e à US-A7. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Existe tarefa no modelo para configurar. |
 | **Pós-condições** | Sucesso: lista de pontos exigidos salva no modelo com auditoria.<br>Recusa ou cancelamento: configuração anterior preservada. |
 | **Regras de negócio** | **RN1.** RF-A7 permite definir pontos de código de resposta rápida (QR Code), cada um com nome e identificador únicos na mesma tarefa (ADR-0007).<br>**RN2.** Sem pontos cadastrados, não há exigência de leitura por pontos. A leitura fica no UC-B6 e o bloqueio da conclusão no UC-B3.<br>**RN3.** Os pontos são copiados quando o modelo é aplicado; editar o modelo não altera uma cópia existente nem confirma pontos automaticamente. |
@@ -436,7 +436,7 @@
 |---|---|
 | **Nome do caso de uso** | UC-A8 – Definir dependências entre tarefas |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador define predecessoras no modelo ou plano inicial para coordenar a ordem das tarefas. Atende ao RF-A8 e à US-A8. |
+| **Descrição** | O coordenador define predecessoras no modelo ou plano inicial para coordenar a ordem das tarefas. Estende o UC-A4 e o UC-A5. Atende ao RF-A8 e à US-A8. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Existe modelo ou conjunto de tarefas no turnaround; no plano inicial, nenhuma tarefa começou. |
 | **Pós-condições** | Sucesso: dependências válidas gravadas com auditoria.<br>Recusa ou cancelamento: dependências anteriores preservadas. |
 | **Regras de negócio** | **RN1.** RF-A8 define predecessoras: tarefas que precisam terminar antes de outra. Só aceita tarefas do mesmo modelo ou turnaround; recusa tarefa inexistente, a própria tarefa e ciclos (como A depender de B e B depender de A).<br>**RN2.** Ao confirmar o plano, o início planejado de cada tarefa deve ser igual ou posterior ao fim planejado de todas as suas predecessoras.<br>**RN3.** Tarefas independentes podem executar em paralelo com operadores distintos, respeitada a política de abastecimento [22][45].<br>**RN4.** Editar o modelo não muda suas cópias. Alterações do plano durante a operação ficam no UC-D7. |
@@ -658,7 +658,7 @@
 |---|---|
 | **Nome do caso de uso** | UC-A12 – Registrar chegada à posição |
 | **Ator(es)** | Operador de Solo/Rampa |
-| **Descrição** | O operador registra diretamente a chegada observada, colocando o turnaround em "Em solo". Atende ao RF-A12 e à US-A12. |
+| **Descrição** | O operador registra diretamente a chegada observada, colocando o turnaround em "Em solo". Inclui o UC-B8 (propagação). Atende ao RF-A12 e à US-A12. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado e ativo, com tarefa atribuída no turnaround.<br>2. O turnaround está aberto, tem plano inicial confirmado e ainda não tem chegada registrada. |
 | **Pós-condições** | Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do UC-B8.<br>Recusa ou cancelamento: nenhum registro novo ou alteração dos dados e estados existentes. |
 | **Regras de negócio** | **RN1.** RF-A12 exige horário real de chegada à posição (AIBT), com data e fuso, sem horário futuro [2][4]. O AIBT e o horário do registro são campos distintos.<br>**RN2.** O registro exige operador com tarefa atribuída nesse turnaround e plano inicial confirmado. A chegada só pode ser registrada uma vez, inclusive em requisições simultâneas.<br>**RN3.** O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara UC-B8, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).<br>**RN4.** Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-A13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação. |
