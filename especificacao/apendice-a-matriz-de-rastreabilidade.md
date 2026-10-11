@@ -35,13 +35,13 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-C3 | Obj. 3 | Motor de Eventos | US-C3 | UC-C2, UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C6, RNF-C7, RNF-D1, RNF-D2 |
 | RF-C4 | Obj. 2 e 3 | Coordenador de Turnaround | US-C4 | UC-C1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C5 | Obj. 1 e 2 | Coordenador de Turnaround | US-C5 | UC-C2 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8, RNF-D1, RNF-D2 |
-| RF-C6 | Obj. 2 e 3 | Motor de Eventos | US-C6 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2, RNF-D3 |
+| RF-C6 | Obj. 2 e 3 | Motor de Eventos | US-C6 | UC-C4, UC-D3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C7 | Obj. 3 | Motor de Eventos | US-C7 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C8 | Obj. 3 | Motor de Eventos | US-C8 | UC-C3, UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2 |
 | RF-C9 | Obj. 3 | Motor de Eventos | US-C9 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C10 | Obj. 3 | Motor de Eventos | US-C10 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C11 | Obj. 2 | Motor de Eventos | US-C11 | UC-C6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-D1, RNF-D2, RNF-D3 |
-| RF-C12 | Obj. 3 | Coordenador de Turnaround | US-C12 | UC-C1, UC-C4, UC-C5 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8, RNF-D1, RNF-D2 |
+| RF-C12 | Obj. 3 | Coordenador de Turnaround | US-C12 | UC-C1, UC-C4, UC-C5, UC-D3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8, RNF-D1, RNF-D2 |
 | RF-C13 | Obj. 1 e 3 | Coordenador de Turnaround | US-C13 | UC-C7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-C4, RNF-C8, RNF-D1, RNF-D2, RNF-D3 |
 | RF-C14 | Obj. 2 | Coordenador de Turnaround | US-C14 | UC-C6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-C8, RNF-D1, RNF-D2 |
 | RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | UC-D1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C8, RNF-D1, RNF-D2, RNF-D4, RNF-D6 |

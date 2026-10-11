@@ -20,7 +20,7 @@
 | **Descrição** | O Operador de Solo/Rampa consulta, no celular, a lista das tarefas da sua equipe atribuídas a ele nos turnarounds abertos e abre o detalhe de uma tarefa para saber o que deve executar, em qual aeronave e a partir de quando pode começar. Atende ao RF-B1 e à US-B1. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. O cadastro do operador tem uma equipe ou especialidade, mantida pelo Administrador do Sistema (ADR-0010). |
 | **Pós-condições** | A lista e o detalhe exibidos contêm só tarefas da equipe do operador atribuídas a ele. A consulta não altera o estado de nenhuma tarefa nem do turnaround. |
-| **Regras de negócio** | **RN1.** Só aparecem as tarefas da equipe do operador atribuídas a ele; a tarefa de outra equipe, ou da mesma equipe atribuída a outro operador, não aparece, mesmo no mesmo turnaround (ADR-0010).<br>**RN2.** Cada tarefa mostra o turnaround (aeronave e posição), o estado da tarefa, a janela planejada de início e de fim e as tarefas predecessoras ainda não concluídas (RF-B1).<br>**RN3.** O detalhe só oferece as ações que o estado da tarefa permite: "Iniciar" em tarefa "Pronta" (UC-B2); "Concluir" e "Pausar" em tarefa "Em execução" (UC-B3, UC-B4), mais "Ler QR Code" quando a tarefa tem pontos de QR Code (UC-B6); "Retomar" em tarefa "Pausada" (UC-B4); "Não aplicável" em tarefa "Aguardando" ou "Pronta" quando o modelo de tarefas do turnaround permite (UC-B5).<br>**RN4.** Em tarefa "Aguardando", o detalhe mostra o nome de cada predecessora pendente e não oferece a opção "Iniciar" (US-B1, critério 2).<br>**RN5.** A lista é ordenada pelo início planejado das tarefas.<br>**RN6.** Turnaround aberto é o que ainda não chegou ao estado "Fora de bloco". |
+| **Regras de negócio** | **RN1.** Só aparecem as tarefas da equipe do operador atribuídas a ele; a tarefa de outra equipe, ou da mesma equipe atribuída a outro operador, não aparece, mesmo no mesmo turnaround (ADR-0010).<br>**RN2.** Cada tarefa mostra o turnaround (aeronave e posição), o estado da tarefa, a janela planejada de início e de fim e as tarefas predecessoras ainda não concluídas (RF-B1).<br>**RN3.** O detalhe só oferece as ações que o estado da tarefa permite: "Iniciar" em tarefa "Pronta" (UC-B2); "Concluir" e "Pausar" em tarefa "Em execução" (UC-B3, UC-B4), mais "Ler QR Code" quando a tarefa tem pontos de QR Code (UC-B6); "Retomar" em tarefa "Pausada" (UC-B4); "Não aplicável" em tarefa "Aguardando" ou "Pronta" quando o modelo de tarefas do turnaround permite (UC-B5).<br>**RN4.** Em tarefa "Aguardando", o detalhe mostra o nome de cada predecessora pendente e não permite acionar "Iniciar"; a opção fica ausente ou desabilitada (US-B1, critério 2).<br>**RN5.** A lista é ordenada pelo início planejado das tarefas.<br>**RN6.** Turnaround aberto é o que ainda não chegou ao estado "Fora de bloco". |
 | **Protótipo(s) de tela** | Lista de tarefas e detalhe da tarefa.<br>![UC-B1 – lista de tarefas](prototipos/uc-b1-lista-de-tarefas.png) ![UC-B1 – detalhe da tarefa](prototipos/uc-b1-detalhe-da-tarefa.png) |
 
 ### Fluxo básico
@@ -37,7 +37,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | A1.1. O Operador de Solo/Rampa seleciona uma tarefa no estado "Aguardando". |  |
-|  | A1.2. O sistema exibe o detalhe com o nome de cada predecessora ainda não concluída e sem a opção "Iniciar". |
+|  | A1.2. O sistema exibe o detalhe com o nome de cada predecessora ainda não concluída e sem a opção "Iniciar" habilitada. |
 |  | A1.3. O caso de uso volta ao passo 3 ou termina. |
 
 ### Fluxo alternativo A2 – Tarefa em outro estado (passo 3)
@@ -603,8 +603,8 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| E1.1. O Motor de Eventos grava o marco com o horário da ação guardado no celular, e não com o horário de chegada ao servidor (RN4). |  |
-|  | E1.2. O sistema exibe o marco com o horário da ação nos marcos do turnaround. |
+| E1.1. O Motor de Eventos aplica o fluxo básico ou o alternativo correspondente ao registro aceito (A1 a A5). Quando esse fluxo gera marco, grava-o com o horário da ação guardado no celular, e não com o horário de chegada ao servidor (RN4); nos demais casos, não grava marco. |  |
+|  | E1.2. O sistema exibe somente os marcos efetivamente gravados, com o horário da ação. O caso de uso termina. |
 
 ### Fluxo de exceção E2 – Registro recusado no servidor (passo 1)
 
@@ -696,6 +696,16 @@
 |---|---|
 | A7.1. O Motor de Eventos muda para "Pronta" cada tarefa do turnaround sem predecessora, por exemplo calçar a aeronave [22], e grava, para cada uma, o horário da mudança e o registro que a causou. |  |
 |  | A7.2. O sistema exibe essas tarefas como "Pronta" na lista dos operadores responsáveis (UC-B1) em até 5 segundos, e o caso de uso termina. |
+
+### Fluxo alternativo A8 – Inclusão de tarefa ou alteração de dependências (passo 1)
+
+*Condição:* o Coordenador de Turnaround incluiu tarefa ou alterou dependências no replanejamento (UC-D7).
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A8.1. O Motor de Eventos reavalia as tarefas afetadas ainda não iniciadas: deixa "Pronta" a tarefa sem predecessora ou com todas as predecessoras "Concluída" ou "Não aplicável"; mantém ou devolve a "Aguardando" a tarefa com predecessora pendente (RN1). |  |
+| A8.2. O Motor de Eventos grava cada mudança de estado com o horário e a alteração do plano que a causou (RN5). |  |
+|  | A8.3. O sistema exibe os estados atualizados na lista dos operadores responsáveis e no painel em até 5 segundos (RN8). O caso de uso termina. |
 
 ### Fluxo de exceção E1 – Registro recusado no servidor (passo 1)
 
