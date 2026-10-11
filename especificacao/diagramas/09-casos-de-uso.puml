@@ -2,8 +2,7 @@
 ' Item 9 — Diagrama geral de casos de uso
 ' Fonte única dos nomes, atores e relacionamentos: tabelas no topo de
 ' especificacao/10-especificacoes-de-caso-de-uso/area-a.md a area-d.md (critério C10.8).
-' Os casos de uso aparecem só pelo nome (sem ID), porque os IDs provisórios são
-' renumerados no T12 (ADR-0011).
+' IDs finais conforme entregas/ra1-renumeracao.md (ADR-0011).
 
 left to right direction
 skinparam shadowing false
@@ -35,121 +34,121 @@ AUT -up-|> USU
 rectangle "Aircraft Turnaround Orchestration System" {
 
   rectangle "Acesso e planejamento" {
-    usecase "Autenticar-se" as A1
-    usecase "Gerenciar usuários e\nperfis de acesso" as A2
-    usecase "Gerenciar equipes\ne especialidades" as A9
-    usecase "Abrir turnaround" as A3
-    usecase "Criar modelo de tarefas" as A4
-    usecase "Configurar pontos\nde confirmação" as A7
-    usecase "Definir dependências\nentre tarefas" as A8
-    usecase "Aplicar modelo de tarefas" as A6
-    usecase "Confirmar plano inicial" as A5
-    usecase "Configurar política\nde abastecimento" as A11
-    usecase "Atualizar referências\nde previsão" as A10
-    usecase "Registrar chegada\nà posição" as A12
-    usecase "Corrigir chegada\nà posição" as A13
+    usecase "UC01 — Autenticar-se" as UC01
+    usecase "UC02 — Gerenciar usuários e\nperfis de acesso" as UC02
+    usecase "UC09 — Gerenciar equipes\ne especialidades" as UC09
+    usecase "UC03 — Abrir turnaround" as UC03
+    usecase "UC04 — Criar modelo de tarefas" as UC04
+    usecase "UC07 — Configurar pontos\nde confirmação" as UC07
+    usecase "UC08 — Definir dependências\nentre tarefas" as UC08
+    usecase "UC06 — Aplicar modelo de tarefas" as UC06
+    usecase "UC05 — Confirmar plano inicial" as UC05
+    usecase "UC11 — Configurar política\nde abastecimento" as UC11
+    usecase "UC10 — Atualizar referências\nde previsão" as UC10
+    usecase "UC12 — Registrar chegada\nà posição" as UC12
+    usecase "UC13 — Corrigir chegada\nà posição" as UC13
   }
 
   rectangle "Execução em solo" {
-    usecase "Consultar as tarefas da equipe\natribuídas ao operador" as B1
-    usecase "Iniciar tarefa" as B2
-    usecase "Concluir tarefa" as B3
-    usecase "Pausar e retomar tarefa" as B4
-    usecase "Marcar tarefa como\n“Não aplicável”" as B5
-    usecase "Confirmar a execução da\ntarefa por QR Code" as B6
-    usecase "Registrar os marcos do\natendimento em solo" as B7
-    usecase "Propagar o estado das\ntarefas e do turnaround" as B8
+    usecase "UC14 — Consultar as tarefas da equipe\natribuídas ao operador" as UC14
+    usecase "UC15 — Iniciar tarefa" as UC15
+    usecase "UC16 — Concluir tarefa" as UC16
+    usecase "UC17 — Pausar e retomar tarefa" as UC17
+    usecase "UC18 — Marcar tarefa como\n“Não aplicável”" as UC18
+    usecase "UC19 — Confirmar a execução da\ntarefa por QR Code" as UC19
+    usecase "UC20 — Registrar os marcos do\natendimento em solo" as UC20
+    usecase "UC21 — Propagar o estado das\ntarefas e do turnaround" as UC21
   }
 
   rectangle "Monitoramento" {
-    usecase "Acompanhar os\nturnarounds no painel" as C1
-    usecase "Consultar a linha do\ntempo do turnaround" as C2
-    usecase "Recalcular a projeção, o\natraso e o caminho crítico" as C3
-    usecase "Emitir alertas de\nrisco ao horário" as C4
-    usecase "Consultar a lista de\nalertas abertos" as C5
-    usecase "Registrar a checagem com\nas equipes em TOBT − 15" as C6
-    usecase "Consultar os indicadores\nde aderência" as C7
+    usecase "UC22 — Acompanhar os\nturnarounds no painel" as UC22
+    usecase "UC23 — Consultar a linha do\ntempo do turnaround" as UC23
+    usecase "UC24 — Recalcular a projeção, o\natraso e o caminho crítico" as UC24
+    usecase "UC25 — Emitir alertas de\nrisco ao horário" as UC25
+    usecase "UC26 — Consultar a lista de\nalertas abertos" as UC26
+    usecase "UC27 — Registrar a checagem com\nas equipes em TOBT − 15" as UC27
+    usecase "UC28 — Consultar os indicadores\nde aderência" as UC28
   }
 
   rectangle "Exceções e liberação" {
-    usecase "Registrar a ação tomada\npara o alerta" as D3
-    usecase "Abrir exceção" as D1
-    usecase "Reatribuir tarefa" as D2
-    usecase "Consultar os operadores\ndisponíveis da equipe" as D8
-    usecase "Atualizar o TOBT" as D6
-    usecase "Replanejar tarefas\nainda não iniciadas" as D7
-    usecase "Encerrar exceção" as D5
-    usecase "Confirmar a prontidão e\nliberar a aeronave" as D4
-    usecase "Registrar a saída da posição\ne encerrar o turnaround" as D9
+    usecase "UC31 — Registrar a ação tomada\npara o alerta" as UC31
+    usecase "UC29 — Abrir exceção" as UC29
+    usecase "UC30 — Reatribuir tarefa" as UC30
+    usecase "UC36 — Consultar os operadores\ndisponíveis da equipe" as UC36
+    usecase "UC34 — Atualizar o TOBT" as UC34
+    usecase "UC35 — Replanejar tarefas\nainda não iniciadas" as UC35
+    usecase "UC33 — Encerrar exceção" as UC33
+    usecase "UC32 — Confirmar a prontidão e\nliberar a aeronave" as UC32
+    usecase "UC37 — Registrar a saída da posição\ne encerrar o turnaround" as UC37
   }
 }
 
 ' ---------- Associações ator × caso de uso ----------
-USU -- A1
+USU -- UC01
 
-ADM -- A2
-ADM -- A9
+ADM -- UC02
+ADM -- UC09
 
-COO -- A3
-COO -- A4
-COO -- A5
-COO -- A6
-COO -- A7
-COO -- A8
-COO -- A10
-COO -- A11
-COO -- A13
-COO -- C1
-COO -- C2
-COO -- C5
-COO -- C6
-COO -- C7
-COO -- D1
-COO -- D2
-COO -- D3
-COO -- D5
-COO -- D6
-COO -- D7
-COO -- D8
+COO -- UC03
+COO -- UC04
+COO -- UC05
+COO -- UC06
+COO -- UC07
+COO -- UC08
+COO -- UC10
+COO -- UC11
+COO -- UC13
+COO -- UC22
+COO -- UC23
+COO -- UC26
+COO -- UC27
+COO -- UC28
+COO -- UC29
+COO -- UC30
+COO -- UC31
+COO -- UC33
+COO -- UC34
+COO -- UC35
+COO -- UC36
 
-OPE -- A12
-OPE -- B1
-OPE -- B2
-OPE -- B3
-OPE -- B4
-OPE -- B5
-OPE -- B6
-OPE -- D9
+OPE -- UC12
+OPE -- UC14
+OPE -- UC15
+OPE -- UC16
+OPE -- UC17
+OPE -- UC18
+OPE -- UC19
+OPE -- UC37
 
-AUT -- D4
+AUT -- UC32
 
-B7 -- MOT
-B8 -- MOT
-C3 -- MOT
-C4 -- MOT
-C6 -- MOT
-D6 -- MOT
+UC20 -- MOT
+UC21 -- MOT
+UC24 -- MOT
+UC25 -- MOT
+UC27 -- MOT
+UC34 -- MOT
 
 ' ---------- «include» (base → incluído) ----------
-A12 ..> B8 : <<include>>
-B2 ..> B7 : <<include>>
-B2 ..> B8 : <<include>>
-B3 ..> B7 : <<include>>
-B3 ..> B8 : <<include>>
-B5 ..> B7 : <<include>>
-B5 ..> B8 : <<include>>
-C3 ..> C4 : <<include>>
-D2 ..> D8 : <<include>>
-D7 ..> B8 : <<include>>
+UC12 ..> UC21 : <<include>>
+UC15 ..> UC20 : <<include>>
+UC15 ..> UC21 : <<include>>
+UC16 ..> UC20 : <<include>>
+UC16 ..> UC21 : <<include>>
+UC18 ..> UC20 : <<include>>
+UC18 ..> UC21 : <<include>>
+UC24 ..> UC25 : <<include>>
+UC30 ..> UC36 : <<include>>
+UC35 ..> UC21 : <<include>>
 
 ' ---------- «extend» (extensão → base) ----------
-A7 ..> A4 : <<extend>>
-A8 ..> A4 : <<extend>>
-A8 ..> A5 : <<extend>>
-C2 ..> C1 : <<extend>>
-D1 ..> D3 : <<extend>>
-D2 ..> D3 : <<extend>>
-D6 ..> D3 : <<extend>>
-D7 ..> D3 : <<extend>>
+UC07 ..> UC04 : <<extend>>
+UC08 ..> UC04 : <<extend>>
+UC08 ..> UC05 : <<extend>>
+UC23 ..> UC22 : <<extend>>
+UC29 ..> UC31 : <<extend>>
+UC30 ..> UC31 : <<extend>>
+UC34 ..> UC31 : <<extend>>
+UC35 ..> UC31 : <<extend>>
 
 @enduml

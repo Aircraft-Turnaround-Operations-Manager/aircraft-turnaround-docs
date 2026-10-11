@@ -1,28 +1,28 @@
-**Casos de uso da área D no diagrama geral (item 9).** Os nomes e os atores abaixo são os que o diagrama deve usar (critério C10.8). No nome do UC-D6, TOBT é o horário-alvo de prontidão [2].
+**Casos de uso da área D no diagrama geral (item 9).** Os nomes e os atores abaixo são os que o diagrama deve usar (critério C10.8). No nome do UC34, TOBT é o horário-alvo de prontidão [2].
 
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
-| UC-D1 | Abrir exceção | Coordenador de Turnaround | «extend» UC-D3 | RF-D1, US-D1 |
-| UC-D2 | Reatribuir tarefa | Coordenador de Turnaround | «include» UC-D8; «extend» UC-D3 | RF-D2, US-D2 |
-| UC-D3 | Registrar a ação tomada para o alerta | Coordenador de Turnaround | aberto a partir do UC-C5; estendido por UC-D1, UC-D2, UC-D6 e UC-D7 | RF-D3, US-D3 |
-| UC-D4 | Confirmar a prontidão e liberar a aeronave | Autoridade de Liberação | — | RF-D4, US-D4 |
-| UC-D5 | Encerrar exceção | Coordenador de Turnaround | — | RF-D5, US-D5 |
-| UC-D6 | Atualizar o TOBT | Motor de Eventos, Coordenador de Turnaround | «extend» UC-D3 | RF-D6, US-D6 |
-| UC-D7 | Replanejar tarefas ainda não iniciadas | Coordenador de Turnaround | «include» UC-B8; «extend» UC-D3 | RF-D7, US-D7 |
-| UC-D8 | Consultar os operadores disponíveis da equipe | Coordenador de Turnaround | incluído por UC-D2 | RF-D8, US-D8 |
-| UC-D9 | Registrar a saída da posição e encerrar o turnaround | Operador de Solo/Rampa | — | RF-D9, US-D9 |
+| UC29 | Abrir exceção | Coordenador de Turnaround | «extend» UC31 | RF-36, US036 |
+| UC30 | Reatribuir tarefa | Coordenador de Turnaround | «include» UC36; «extend» UC31 | RF-37, US037 |
+| UC31 | Registrar a ação tomada para o alerta | Coordenador de Turnaround | aberto a partir do UC26; estendido por UC29, UC30, UC34 e UC35 | RF-38, US038 |
+| UC32 | Confirmar a prontidão e liberar a aeronave | Autoridade de Liberação | — | RF-39, US039 |
+| UC33 | Encerrar exceção | Coordenador de Turnaround | — | RF-40, US040 |
+| UC34 | Atualizar o TOBT | Motor de Eventos, Coordenador de Turnaround | «extend» UC31 | RF-41, US041 |
+| UC35 | Replanejar tarefas ainda não iniciadas | Coordenador de Turnaround | «include» UC21; «extend» UC31 | RF-42, US042 |
+| UC36 | Consultar os operadores disponíveis da equipe | Coordenador de Turnaround | incluído por UC30 | RF-43, US043 |
+| UC37 | Registrar a saída da posição e encerrar o turnaround | Operador de Solo/Rampa | — | RF-44, US044 |
 
-## UC-D1 – Abrir exceção
+## UC29 – Abrir exceção
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D1 – Abrir exceção |
+| **Nome do caso de uso** | UC29 – Abrir exceção |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround abre uma exceção em um turnaround, informando a tarefa afetada, a causa pelo código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] e uma descrição. O turnaround passa para o estado "Em exceção" e não pode ser liberado enquanto a exceção não for encerrada (UC-D5). Pode ser executado a partir do registro da ação de um alerta (UC-D3). Atende ao RF-D1 e à US-D1. |
+| **Descrição** | O Coordenador de Turnaround abre uma exceção em um turnaround, informando a tarefa afetada, a causa pelo código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] e uma descrição. O turnaround passa para o estado "Em exceção" e não pode ser liberado enquanto a exceção não for encerrada (UC33). Pode ser executado a partir do registro da ação de um alerta (UC31). Atende ao RF-36 e à US036. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está no estado "Em solo", "Operações em andamento", "Pronto para liberação" ou "Em exceção". |
 | **Pós-condições** | **Sucesso:** a exceção está aberta, com a tarefa afetada, o código da ANAC, a descrição, o usuário e o horário gravados, e o turnaround está no estado "Em exceção".<br>**Recusa:** nenhuma exceção é gravada e o turnaround mantém o estado. |
-| **Regras de negócio** | **RN1.** Toda exceção tem a tarefa afetada, um código da tabela de códigos de atraso da ANAC e uma descrição; sem o código, a abertura é recusada (RF-D1; US-D1, critério 2).<br>**RN2.** O código vem da tabela completa da ANAC, com 72 códigos em 12 categorias, cada um com sigla de duas letras e descrição em português [62] (ADR-0006). A exceção guarda o código, a descrição e a versão da tabela vigente no momento do registro (RNF-D4).<br>**RN3.** A abertura grava o usuário e o horário e leva o turnaround ao estado lateral "Em exceção" (RF-D1). O sistema guarda o estado em que o turnaround estava, para o retorno no encerramento (UC-D5).<br>**RN4.** Um turnaround pode ter mais de uma exceção aberta ao mesmo tempo; ele continua "Em exceção" enquanto houver ao menos uma (US-D1, critério 3).<br>**RN5.** Com exceção aberta, a confirmação da prontidão é recusada (UC-D4), o que atende à meta de zero liberações com exceção não resolvida do objetivo 3.<br>**RN6.** A exceção não muda o estado das tarefas: os operadores continuam registrando, e a propagação entre as tarefas segue valendo (UC-B8, RN9).<br>**RN7.** [Inferência] Só se abre exceção antes da liberação: no turnaround "Liberado" ou "Fora de bloco" a abertura não é oferecida, porque a prontidão só é confirmada sem exceção aberta (UC-D4). |
-| **Protótipo(s) de tela** | Formulário de abertura da exceção, com a tarefa afetada, a busca do código na tabela da ANAC e a descrição.<br>![UC-D1 – abrir exceção](prototipos/uc-d1-abrir-excecao.png) |
+| **Regras de negócio** | **RN1.** Toda exceção tem a tarefa afetada, um código da tabela de códigos de atraso da ANAC e uma descrição; sem o código, a abertura é recusada (RF-36; US036, critério 2).<br>**RN2.** O código vem da tabela completa da ANAC, com 72 códigos em 12 categorias, cada um com sigla de duas letras e descrição em português [62] (ADR-0006). A exceção guarda o código, a descrição e a versão da tabela vigente no momento do registro (RNF-22).<br>**RN3.** A abertura grava o usuário e o horário e leva o turnaround ao estado lateral "Em exceção" (RF-36). O sistema guarda o estado em que o turnaround estava, para o retorno no encerramento (UC33).<br>**RN4.** Um turnaround pode ter mais de uma exceção aberta ao mesmo tempo; ele continua "Em exceção" enquanto houver ao menos uma (US036, critério 3).<br>**RN5.** Com exceção aberta, a confirmação da prontidão é recusada (UC32), o que atende à meta de zero liberações com exceção não resolvida do objetivo 3.<br>**RN6.** A exceção não muda o estado das tarefas: os operadores continuam registrando, e a propagação entre as tarefas segue valendo (UC21, RN9).<br>**RN7.** [Inferência] Só se abre exceção antes da liberação: no turnaround "Liberado" ou "Fora de bloco" a abertura não é oferecida, porque a prontidão só é confirmada sem exceção aberta (UC32). |
+| **Protótipo(s) de tela** | Formulário de abertura da exceção, com a tarefa afetada, a busca do código na tabela da ANAC e a descrição.<br>![UC29 – abrir exceção](prototipos/uc-d1-abrir-excecao.png) |
 
 ### Fluxo básico
 
@@ -50,9 +50,9 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A2.1. O Coordenador de Turnaround escolhe "Abrir exceção" como ação de um alerta (UC-D3). |  |
+| A2.1. O Coordenador de Turnaround escolhe "Abrir exceção" como ação de um alerta (UC31). |  |
 |  | A2.2. O sistema exibe o formulário com a tarefa do alerta já escolhida, e o caso de uso segue do passo 4. |
-|  | A2.3. Depois do passo 7, o sistema grava a ação no alerta e o encerra (UC-D3). |
+|  | A2.3. Depois do passo 7, o sistema grava a ação no alerta e o encerra (UC31). |
 
 ### Fluxo alternativo A3 – Desistência (passo 5)
 
@@ -83,24 +83,24 @@
 |---|---|
 |  | E3.1. O sistema recusa a abertura, informa o estado atual do turnaround e não grava nenhuma exceção. |
 
-## UC-D2 – Reatribuir tarefa
+## UC30 – Reatribuir tarefa
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D2 – Reatribuir tarefa |
+| **Nome do caso de uso** | UC30 – Reatribuir tarefa |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround passa uma tarefa ainda não concluída a outro Operador de Solo/Rampa da mesma equipe que esteja disponível, informando o motivo, para recuperar o prazo quando o operador original está ocupado ou impedido. Os dois operadores são avisados. Inclui o caso de uso UC-D8, que lista os operadores disponíveis. Pode ser executado a partir do registro da ação de um alerta (UC-D3). Atende ao RF-D2 e à US-D2. |
+| **Descrição** | O Coordenador de Turnaround passa uma tarefa ainda não concluída a outro Operador de Solo/Rampa da mesma equipe que esteja disponível, informando o motivo, para recuperar o prazo quando o operador original está ocupado ou impedido. Os dois operadores são avisados. Inclui o caso de uso UC36, que lista os operadores disponíveis. Pode ser executado a partir do registro da ação de um alerta (UC31). Atende ao RF-37 e à US037. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. A tarefa pertence a um turnaround que ainda não está "Fora de bloco", está atribuída a um operador e está no estado "Aguardando", "Pronta", "Em execução" ou "Pausada". |
 | **Pós-condições** | **Sucesso:** a tarefa está atribuída ao novo operador, com o motivo, o usuário e o horário gravados, e os dois operadores foram avisados.<br>**Recusa:** a tarefa mantém o operador original e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** Só a tarefa ainda não concluída pode ser reatribuída; a tarefa "Concluída" ou "Não aplicável" é recusada (RF-D2; US-D2, critério 2).<br>**RN2.** O novo operador é da mesma equipe da tarefa e está disponível, isto é, sem tarefa "Em execução" (RF-D2, ADR-0010). A lista de quem pode receber a tarefa vem do UC-D8.<br>**RN3.** A reatribuição exige o motivo e grava o usuário e o horário (RF-D2).<br>**RN4.** A reatribuição não muda o estado da tarefa. Ela deixa de aparecer na lista do operador original e passa a aparecer só na do novo operador (UC-B1).<br>**RN5.** Os dois operadores recebem o aviso da reatribuição no celular (RF-D2).<br>**RN6.** O registro que o operador original fez sem conexão, antes de saber da reatribuição, é recusado quando chega ao servidor, sem mudar o estado da tarefa, e o operador recebe o aviso da recusa com o motivo (RNF-B2; US-D2, critério 4).<br>**RN7.** A reatribuição mantém a meta de 100% das tarefas com responsável, do objetivo 2: a tarefa nunca fica sem operador. |
-| **Protótipo(s) de tela** | Formulário de reatribuição, com a tarefa, o operador escolhido na lista de disponíveis e o motivo.<br>![UC-D2 – reatribuir tarefa](prototipos/uc-d2-reatribuir-tarefa.png) |
+| **Regras de negócio** | **RN1.** Só a tarefa ainda não concluída pode ser reatribuída; a tarefa "Concluída" ou "Não aplicável" é recusada (RF-37; US037, critério 2).<br>**RN2.** O novo operador é da mesma equipe da tarefa e está disponível, isto é, sem tarefa "Em execução" (RF-37, ADR-0010). A lista de quem pode receber a tarefa vem do UC36.<br>**RN3.** A reatribuição exige o motivo e grava o usuário e o horário (RF-37).<br>**RN4.** A reatribuição não muda o estado da tarefa. Ela deixa de aparecer na lista do operador original e passa a aparecer só na do novo operador (UC14).<br>**RN5.** Os dois operadores recebem o aviso da reatribuição no celular (RF-37).<br>**RN6.** O registro que o operador original fez sem conexão, antes de saber da reatribuição, é recusado quando chega ao servidor, sem mudar o estado da tarefa, e o operador recebe o aviso da recusa com o motivo (RNF-8; US037, critério 4).<br>**RN7.** A reatribuição mantém a meta de 100% das tarefas com responsável, do objetivo 2: a tarefa nunca fica sem operador. |
+| **Protótipo(s) de tela** | Formulário de reatribuição, com a tarefa, o operador escolhido na lista de disponíveis e o motivo.<br>![UC30 – reatribuir tarefa](prototipos/uc-d2-reatribuir-tarefa.png) |
 
 ### Fluxo básico
 
 | Ações do ator | Ações do sistema |
 |---|---|
 | 1. O Coordenador de Turnaround seleciona "Reatribuir" em uma tarefa no estado "Pronta", por exemplo a limpeza da cabine. |  |
-|  | 2. O sistema exibe o formulário com a tarefa, o operador atual e a lista dos operadores disponíveis da mesma equipe (UC-D8) (**E4**). |
+|  | 2. O sistema exibe o formulário com a tarefa, o operador atual e a lista dos operadores disponíveis da mesma equipe (UC36) (**E4**). |
 | 3. O Coordenador de Turnaround escolhe um operador da lista. |  |
 | 4. O Coordenador de Turnaround escreve o motivo e confirma. |  |
 |  | 5. O sistema verifica que a tarefa continua não concluída, que o operador escolhido é da mesma equipe e continua sem tarefa em execução e que o motivo foi preenchido (**E1**, **E2**, **E3**). |
@@ -111,9 +111,9 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A1.1. O Coordenador de Turnaround escolhe "Reatribuir tarefa" como ação de um alerta (UC-D3). |  |
+| A1.1. O Coordenador de Turnaround escolhe "Reatribuir tarefa" como ação de um alerta (UC31). |  |
 |  | A1.2. O sistema exibe o formulário com a tarefa do alerta já escolhida, e o caso de uso segue do passo 2. |
-|  | A1.3. Depois do passo 7, o sistema grava a ação no alerta e o encerra (UC-D3). |
+|  | A1.3. Depois do passo 7, o sistema grava a ação no alerta e o encerra (UC31). |
 
 ### Fluxo alternativo A2 – Tarefa em execução ou pausada (passo 1)
 
@@ -161,7 +161,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E4.1. O sistema informa que não há operador disponível na equipe (UC-D8), e a tarefa mantém o operador original. |
+|  | E4.1. O sistema informa que não há operador disponível na equipe (UC36), e a tarefa mantém o operador original. |
 
 ### Fluxo de exceção E5 – Registro do operador original feito sem conexão (depois do passo 7)
 
@@ -170,30 +170,30 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 |  | E5.1. Quando a conexão volta e o registro chega ao servidor, o sistema o recusa, e a tarefa não muda de estado. |
-|  | E5.2. O operador original recebe o aviso da recusa com o motivo (RNF-B2). |
+|  | E5.2. O operador original recebe o aviso da recusa com o motivo (RNF-8). |
 
-## UC-D3 – Registrar a ação tomada para o alerta
+## UC31 – Registrar a ação tomada para o alerta
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D3 – Registrar a ação tomada para o alerta |
+| **Nome do caso de uso** | UC31 – Registrar a ação tomada para o alerta |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround registra, para um alerta aberto, a ação que tomou: reatribuir tarefa, replanejar, atualizar a previsão ou abrir exceção. O registro grava o autor e o horário e encerra o alerta, de modo que todo alerta tenha uma resposta e que se possa medir o tempo entre o alerta e a ação. É aberto a partir da lista de alertas (UC-C5). É estendido pelos casos de uso UC-D1, UC-D2, UC-D6 e UC-D7, que executam a ação escolhida. Atende ao RF-D3 e à US-D3. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. Há um alerta aberto, emitido pelo Motor de Eventos (UC-C4). |
+| **Descrição** | O Coordenador de Turnaround registra, para um alerta aberto, a ação que tomou: reatribuir tarefa, replanejar, atualizar a previsão ou abrir exceção. O registro grava o autor e o horário e encerra o alerta, de modo que todo alerta tenha uma resposta e que se possa medir o tempo entre o alerta e a ação. É aberto a partir da lista de alertas (UC26). É estendido pelos casos de uso UC29, UC30, UC34 e UC35, que executam a ação escolhida. Atende ao RF-38 e à US038. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. Há um alerta aberto, emitido pelo Motor de Eventos (UC25). |
 | **Pós-condições** | **Sucesso:** o alerta está encerrado, com a ação, o usuário e o horário gravados, e não aparece mais na lista de alertas abertos.<br>**Recusa:** o alerta continua aberto e nenhuma ação é gravada. |
-| **Regras de negócio** | **RN1.** Todo alerta é encerrado por uma das quatro ações: "reatribuir tarefa", "replanejar", "atualizar a previsão" ou "abrir exceção"; sem a ação, o encerramento é recusado (RF-D3; US-D3, critério 2).<br>**RN2.** O registro grava a ação, o usuário e o horário no alerta e o retira da lista de alertas abertos (RF-D3).<br>**RN3.** O histórico do alerta mostra o horário do alerta, o horário da ação, a ação e o usuário, o que permite calcular o tempo de resposta (US-D3, critério 3).<br>**RN4.** A meta do objetivo 3 é ter ação registrada em até 2 minutos para pelo menos 90% dos alertas críticos. O prazo de 2 minutos é parâmetro de configuração (RNF-D3), e o registro mostra o tempo que resta para o alerta crítico.<br>**RN5.** A ação escolhida é executada pelo caso de uso correspondente: UC-D2 (reatribuir tarefa), UC-D7 (replanejar), UC-D6 (atualizar a previsão) ou UC-D1 (abrir exceção). O alerta só é encerrado quando a ação é aceita.<br>**RN6.** São tratados todos os alertas emitidos pelo UC-C4, inclusive os de tarefa pronta não iniciada, críticos ou não críticos (RF-C6, RF-C12). O aviso de antecipação de 5 minutos ou mais não é alerta de risco (ADR-0003) e é tratado no UC-D6. |
-| **Protótipo(s) de tela** | Registro da ação do alerta, com os dados do alerta, o tempo restante, as quatro ações e os campos da ação escolhida.<br>![UC-D3 – registrar a ação do alerta](prototipos/uc-d3-registrar-acao-do-alerta.png) |
+| **Regras de negócio** | **RN1.** Todo alerta é encerrado por uma das quatro ações: "reatribuir tarefa", "replanejar", "atualizar a previsão" ou "abrir exceção"; sem a ação, o encerramento é recusado (RF-38; US038, critério 2).<br>**RN2.** O registro grava a ação, o usuário e o horário no alerta e o retira da lista de alertas abertos (RF-38).<br>**RN3.** O histórico do alerta mostra o horário do alerta, o horário da ação, a ação e o usuário, o que permite calcular o tempo de resposta (US038, critério 3).<br>**RN4.** A meta do objetivo 3 é ter ação registrada em até 2 minutos para pelo menos 90% dos alertas críticos. O prazo de 2 minutos é parâmetro de configuração (RNF-21), e o registro mostra o tempo que resta para o alerta crítico.<br>**RN5.** A ação escolhida é executada pelo caso de uso correspondente: UC30 (reatribuir tarefa), UC35 (replanejar), UC34 (atualizar a previsão) ou UC29 (abrir exceção). O alerta só é encerrado quando a ação é aceita.<br>**RN6.** São tratados todos os alertas emitidos pelo UC25, inclusive os de tarefa pronta não iniciada, críticos ou não críticos (RF-27, RF-33). O aviso de antecipação de 5 minutos ou mais não é alerta de risco (ADR-0003) e é tratado no UC34. |
+| **Protótipo(s) de tela** | Registro da ação do alerta, com os dados do alerta, o tempo restante, as quatro ações e os campos da ação escolhida.<br>![UC31 – registrar a ação do alerta](prototipos/uc-d3-registrar-acao-do-alerta.png) |
 
 ### Fluxo básico
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| 1. O Coordenador de Turnaround seleciona "Registrar ação" em um alerta da lista de alertas abertos (UC-C5). |  |
+| 1. O Coordenador de Turnaround seleciona "Registrar ação" em um alerta da lista de alertas abertos (UC26). |  |
 |  | 2. O sistema exibe o alerta, com o tipo, a aeronave, a posição, os dados do gatilho e, no alerta crítico, o tempo que resta do prazo, e as quatro ações. |
 | 3. O Coordenador de Turnaround escolhe "Reatribuir tarefa". |  |
-|  | 4. O sistema exibe os campos da reatribuição, com a tarefa do alerta e os operadores disponíveis (UC-D2). |
+|  | 4. O sistema exibe os campos da reatribuição, com a tarefa do alerta e os operadores disponíveis (UC30). |
 | 5. O Coordenador de Turnaround escolhe o operador, escreve o motivo e confirma (**E1**). |  |
-|  | 6. O sistema executa a reatribuição (UC-D2) (**E2**). |
+|  | 6. O sistema executa a reatribuição (UC30) (**E2**). |
 |  | 7. O sistema grava no alerta a ação "reatribuir tarefa", o usuário e o horário, encerra o alerta e o retira da lista de alertas abertos (**E3**). O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Replanejar (passo 3)
@@ -201,7 +201,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | A1.1. O Coordenador de Turnaround escolhe "Replanejar". |  |
-|  | A1.2. O sistema exibe os campos do replanejamento e executa o UC-D7 na confirmação. |
+|  | A1.2. O sistema exibe os campos do replanejamento e executa o UC35 na confirmação. |
 |  | A1.3. O caso de uso segue do passo 7, com a ação "replanejar". |
 
 ### Fluxo alternativo A2 – Atualizar a previsão (passo 3)
@@ -209,7 +209,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | A2.1. O Coordenador de Turnaround escolhe "Atualizar TOBT". |  |
-|  | A2.2. O sistema exibe o TOBT vigente, a projeção e o campo do novo TOBT e executa o UC-D6 na confirmação. |
+|  | A2.2. O sistema exibe o TOBT vigente, a projeção e o campo do novo TOBT e executa o UC34 na confirmação. |
 |  | A2.3. O caso de uso segue do passo 7, com a ação "atualizar a previsão". |
 
 ### Fluxo alternativo A3 – Abrir exceção (passo 3)
@@ -217,7 +217,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | A3.1. O Coordenador de Turnaround escolhe "Abrir exceção". |  |
-|  | A3.2. O sistema exibe os campos da exceção e executa o UC-D1 na confirmação. |
+|  | A3.2. O sistema exibe os campos da exceção e executa o UC29 na confirmação. |
 |  | A3.3. O caso de uso segue do passo 7, com a ação "abrir exceção". |
 
 ### Fluxo alternativo A4 – Consulta do histórico (depois do passo 7)
@@ -245,7 +245,7 @@
 
 ### Fluxo de exceção E2 – Ação recusada (passo 6)
 
-*Condição:* o caso de uso da ação recusa o registro, por exemplo porque o operador escolhido deixou de estar disponível (UC-D2, E2).
+*Condição:* o caso de uso da ação recusa o registro, por exemplo porque o operador escolhido deixou de estar disponível (UC30, E2).
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -260,17 +260,17 @@
 |---|---|
 |  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados e não grava outro registro no alerta. |
 
-## UC-D4 – Confirmar a prontidão e liberar a aeronave
+## UC32 – Confirmar a prontidão e liberar a aeronave
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D4 – Confirmar a prontidão e liberar a aeronave |
+| **Nome do caso de uso** | UC32 – Confirmar a prontidão e liberar a aeronave |
 | **Ator(es)** | Autoridade de Liberação |
-| **Descrição** | A Autoridade de Liberação consulta as condições de um turnaround no estado "Pronto para liberação" e confirma a prontidão da aeronave. O sistema grava o horário real de prontidão (ARDT) [2] e a decisão, com o autor e o horário, e o turnaround passa para "Liberado". A confirmação é recusada enquanto houver tarefa obrigatória pendente ou exceção aberta. Atende ao RF-D4 e à US-D4. |
+| **Descrição** | A Autoridade de Liberação consulta as condições de um turnaround no estado "Pronto para liberação" e confirma a prontidão da aeronave. O sistema grava o horário real de prontidão (ARDT) [2] e a decisão, com o autor e o horário, e o turnaround passa para "Liberado". A confirmação é recusada enquanto houver tarefa obrigatória pendente ou exceção aberta. Atende ao RF-39 e à US039. |
 | **Pré-condições** | 1. A Autoridade de Liberação está autenticada com o perfil de autoridade de liberação.<br>2. O turnaround é de uma aeronave da companhia aérea que ela representa (ADR-0004). |
 | **Pós-condições** | **Sucesso:** o turnaround está no estado "Liberado", com o ARDT e a decisão gravados com o usuário e o horário.<br>**Recusa:** o ARDT não é gravado e o turnaround mantém o estado. |
-| **Regras de negócio** | **RN1.** A prontidão só é confirmada com o turnaround em "Pronto para liberação", isto é, com todas as tarefas obrigatórias nos estados "Concluída" ou "Não aplicável" e sem exceção aberta (RF-D4). É a regra que garante zero liberações com tarefa obrigatória pendente ou exceção não resolvida, do objetivo 3.<br>**RN2.** Com exceção aberta, a confirmação é recusada e o sistema informa a exceção; com tarefa obrigatória pendente, é recusada e o sistema lista as tarefas pendentes (US-D4, critérios 2 e 3).<br>**RN3.** O ARDT é o horário da confirmação (RF-D4). [Fato] É o marco *Aircraft Ready* da tomada de decisão colaborativa em aeroportos (A-CDM) [2].<br>**RN4.** A decisão é sempre da Autoridade de Liberação: o sistema não libera a aeronave sozinho, nem quando todas as condições estão cumpridas (ADR-0004).<br>**RN5.** "Liberado" é ato interno do sistema. A autorização de acionamento e de push-back continua com o controle de tráfego aéreo (ATC), fora do sistema; a saída da posição é registrada no UC-D9.<br>**RN6.** A decisão grava o usuário e o horário (RF-D4).<br>**RN7.** A tela mostra, para cada turnaround, o que falta para a liberação: as tarefas obrigatórias pendentes e as exceções abertas. |
-| **Protótipo(s) de tela** | Lista dos turnarounds da companhia e confirmação da prontidão, com as condições cumpridas, as tarefas obrigatórias e a opção "Confirmar prontidão".<br>![UC-D4 – confirmar a prontidão](prototipos/uc-d4-confirmar-prontidao-v2.png) |
+| **Regras de negócio** | **RN1.** A prontidão só é confirmada com o turnaround em "Pronto para liberação", isto é, com todas as tarefas obrigatórias nos estados "Concluída" ou "Não aplicável" e sem exceção aberta (RF-39). É a regra que garante zero liberações com tarefa obrigatória pendente ou exceção não resolvida, do objetivo 3.<br>**RN2.** Com exceção aberta, a confirmação é recusada e o sistema informa a exceção; com tarefa obrigatória pendente, é recusada e o sistema lista as tarefas pendentes (US039, critérios 2 e 3).<br>**RN3.** O ARDT é o horário da confirmação (RF-39). [Fato] É o marco *Aircraft Ready* da tomada de decisão colaborativa em aeroportos (A-CDM) [2].<br>**RN4.** A decisão é sempre da Autoridade de Liberação: o sistema não libera a aeronave sozinho, nem quando todas as condições estão cumpridas (ADR-0004).<br>**RN5.** "Liberado" é ato interno do sistema. A autorização de acionamento e de push-back continua com o controle de tráfego aéreo (ATC), fora do sistema; a saída da posição é registrada no UC37.<br>**RN6.** A decisão grava o usuário e o horário (RF-39).<br>**RN7.** A tela mostra, para cada turnaround, o que falta para a liberação: as tarefas obrigatórias pendentes e as exceções abertas. |
+| **Protótipo(s) de tela** | Lista dos turnarounds da companhia e confirmação da prontidão, com as condições cumpridas, as tarefas obrigatórias e a opção "Confirmar prontidão".<br>![UC32 – confirmar a prontidão](prototipos/uc-d4-confirmar-prontidao-v2.png) |
 
 ### Fluxo básico
 
@@ -311,7 +311,7 @@
 
 ### Fluxo de exceção E2 – Tarefa obrigatória pendente (passo 6)
 
-*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US-D4, critério 3).
+*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US039, critério 3).
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -326,17 +326,17 @@
 |---|---|
 |  | E3.1. O sistema informa que o turnaround já está "Liberado", mostra o ARDT e quem confirmou e não grava outro registro. |
 
-## UC-D5 – Encerrar exceção
+## UC33 – Encerrar exceção
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D5 – Encerrar exceção |
+| **Nome do caso de uso** | UC33 – Encerrar exceção |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround encerra uma exceção aberta, registrando a solução adotada. Quando não há outra exceção aberta, o turnaround sai de "Em exceção" para o estado que corresponde ao andamento das tarefas e pode seguir para a liberação. Atende ao RF-D5 e à US-D5. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está no estado "Em exceção", com ao menos uma exceção aberta (UC-D1). |
+| **Descrição** | O Coordenador de Turnaround encerra uma exceção aberta, registrando a solução adotada. Quando não há outra exceção aberta, o turnaround sai de "Em exceção" para o estado que corresponde ao andamento das tarefas e pode seguir para a liberação. Atende ao RF-40 e à US040. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está no estado "Em exceção", com ao menos uma exceção aberta (UC29). |
 | **Pós-condições** | **Sucesso:** a exceção está encerrada, com a solução, o usuário e o horário gravados; o turnaround saiu de "Em exceção" para "Em solo", "Operações em andamento" ou "Pronto para liberação", conforme o andamento das tarefas, se não havia outra exceção aberta, ou continua "Em exceção".<br>**Recusa:** a exceção continua aberta e o turnaround continua "Em exceção". |
-| **Regras de negócio** | **RN1.** O encerramento exige a solução adotada; sem ela, é recusado (RF-D5; US-D5, critério 3).<br>**RN2.** O encerramento grava a solução, o usuário e o horário na exceção (RF-D5).<br>**RN3.** O turnaround só sai de "Em exceção" quando não há outra exceção aberta; com outra aberta, continua "Em exceção" (RF-D5; US-D5, critério 2).<br>**RN4.** Ao sair de "Em exceção", o turnaround vai para o estado que corresponde ao andamento das tarefas: "Em solo", se nenhuma tarefa foi iniciada; "Operações em andamento", se alguma foi iniciada e ainda há tarefa obrigatória pendente (RF-D5; US-D5, critérios 1 e 5).<br>**RN5.** Se todas as tarefas obrigatórias estão "Concluída" ou "Não aplicável", o estado de saída é "Pronto para liberação", porque a propagação entre as tarefas continua valendo com o turnaround "Em exceção" (RF-D5; US-D5, critério 4; UC-B8, RN9).<br>**RN6.** A exceção encerrada continua no histórico do turnaround, com o código e a descrição originais (RNF-D4). |
-| **Protótipo(s) de tela** | Encerramento da exceção, com o resumo da exceção, o campo da solução adotada e o estado para o qual o turnaround volta.<br>![UC-D5 – encerrar exceção](prototipos/uc-d5-encerrar-excecao.png) |
+| **Regras de negócio** | **RN1.** O encerramento exige a solução adotada; sem ela, é recusado (RF-40; US040, critério 3).<br>**RN2.** O encerramento grava a solução, o usuário e o horário na exceção (RF-40).<br>**RN3.** O turnaround só sai de "Em exceção" quando não há outra exceção aberta; com outra aberta, continua "Em exceção" (RF-40; US040, critério 2).<br>**RN4.** Ao sair de "Em exceção", o turnaround vai para o estado que corresponde ao andamento das tarefas: "Em solo", se nenhuma tarefa foi iniciada; "Operações em andamento", se alguma foi iniciada e ainda há tarefa obrigatória pendente (RF-40; US040, critérios 1 e 5).<br>**RN5.** Se todas as tarefas obrigatórias estão "Concluída" ou "Não aplicável", o estado de saída é "Pronto para liberação", porque a propagação entre as tarefas continua valendo com o turnaround "Em exceção" (RF-40; US040, critério 4; UC21, RN9).<br>**RN6.** A exceção encerrada continua no histórico do turnaround, com o código e a descrição originais (RNF-22). |
+| **Protótipo(s) de tela** | Encerramento da exceção, com o resumo da exceção, o campo da solução adotada e o estado para o qual o turnaround volta.<br>![UC33 – encerrar exceção](prototipos/uc-d5-encerrar-excecao.png) |
 
 ### Fluxo básico
 
@@ -364,7 +364,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | A2.1. O sistema muda o turnaround para "Pronto para liberação", e ele passa a aparecer para a Autoridade de Liberação (UC-D4). O caso de uso termina. |
+|  | A2.1. O sistema muda o turnaround para "Pronto para liberação", e ele passa a aparecer para a Autoridade de Liberação (UC32). O caso de uso termina. |
 
 ### Fluxo alternativo A3 – Desistência (passo 3)
 
@@ -388,23 +388,23 @@
 |---|---|
 |  | E2.1. O sistema informa que a exceção já foi encerrada, mostra a solução, o usuário e o horário gravados e não grava outro registro. |
 
-## UC-D6 – Atualizar o TOBT
+## UC34 – Atualizar o TOBT
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D6 – Atualizar o TOBT |
+| **Nome do caso de uso** | UC34 – Atualizar o TOBT |
 | **Ator(es)** | Motor de Eventos, Coordenador de Turnaround |
-| **Descrição** | Quando a projeção de prontidão se afasta 5 minutos ou mais do TOBT vigente, para mais ou para menos, o Motor de Eventos solicita ao Coordenador de Turnaround a atualização do TOBT. O Coordenador de Turnaround informa o novo valor, e o sistema grava o valor anterior, o novo, o autor e o horário. Assim a previsão de prontidão continua confiável para quem depende dela. Pode ser executado a partir do registro da ação de um alerta (UC-D3). Atende ao RF-D6 e à US-D6. |
-| **Pré-condições** | 1. O turnaround está aberto e ainda não está "Liberado", com TOBT planejado e TOBT vigente.<br>2. O Motor de Eventos recalculou a projeção de prontidão (UC-C3).<br>3. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |
+| **Descrição** | Quando a projeção de prontidão se afasta 5 minutos ou mais do TOBT vigente, para mais ou para menos, o Motor de Eventos solicita ao Coordenador de Turnaround a atualização do TOBT. O Coordenador de Turnaround informa o novo valor, e o sistema grava o valor anterior, o novo, o autor e o horário. Assim a previsão de prontidão continua confiável para quem depende dela. Pode ser executado a partir do registro da ação de um alerta (UC31). Atende ao RF-41 e à US041. |
+| **Pré-condições** | 1. O turnaround está aberto e ainda não está "Liberado", com TOBT planejado e TOBT vigente.<br>2. O Motor de Eventos recalculou a projeção de prontidão (UC24).<br>3. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |
 | **Pós-condições** | **Sucesso:** o TOBT vigente é o novo valor, com o valor anterior, o novo, o usuário e o horário gravados; o TOBT planejado não mudou.<br>**Recusa:** o TOBT vigente não muda e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** A solicitação aparece quando a diferença entre a projeção de prontidão e o TOBT vigente chega a 5 minutos ou mais, para mais ou para menos (RF-D6). [Fato] As regras do TOBT pedem a atualização quando a previsão muda 5 minutos ou mais [8][9].<br>**RN2.** Com diferença menor que 5 minutos, não há solicitação (US-D6, critério 4). O limiar de 5 minutos é parâmetro de configuração (RNF-D3).<br>**RN3.** Quando a projeção fica 5 minutos ou mais antes do TOBT vigente, a solicitação aparece como aviso de antecipação, e não como alerta de risco (ADR-0003; US-D6, critério 2).<br>**RN4.** O TOBT planejado é definido na abertura do turnaround e não muda. O TOBT vigente começa igual a ele e muda a cada atualização (ADR-0003).<br>**RN5.** A meta do objetivo 1 continua medida contra o TOBT planejado, com tolerância de 5 minutos (ADR-0001); atualizar o TOBT vigente não muda essa medida.<br>**RN6.** A atualização grava o valor anterior, o novo valor, o usuário e o horário (RF-D6).<br>**RN7.** [Inferência] Depois da atualização, a solicitação só volta se a projeção se afastar de novo 5 minutos ou mais do TOBT vigente (ADR-0003). |
-| **Protótipo(s) de tela** | Atualização do TOBT, com o TOBT planejado, o TOBT vigente, a projeção de prontidão, a diferença e o campo do novo TOBT.<br>![UC-D6 – atualizar o TOBT](prototipos/uc-d6-atualizar-tobt.png) |
+| **Regras de negócio** | **RN1.** A solicitação aparece quando a diferença entre a projeção de prontidão e o TOBT vigente chega a 5 minutos ou mais, para mais ou para menos (RF-41). [Fato] As regras do TOBT pedem a atualização quando a previsão muda 5 minutos ou mais [8][9].<br>**RN2.** Com diferença menor que 5 minutos, não há solicitação (US041, critério 4). O limiar de 5 minutos é parâmetro de configuração (RNF-21).<br>**RN3.** Quando a projeção fica 5 minutos ou mais antes do TOBT vigente, a solicitação aparece como aviso de antecipação, e não como alerta de risco (ADR-0003; US041, critério 2).<br>**RN4.** O TOBT planejado é definido na abertura do turnaround e não muda. O TOBT vigente começa igual a ele e muda a cada atualização (ADR-0003).<br>**RN5.** A meta do objetivo 1 continua medida contra o TOBT planejado, com tolerância de 5 minutos (ADR-0001); atualizar o TOBT vigente não muda essa medida.<br>**RN6.** A atualização grava o valor anterior, o novo valor, o usuário e o horário (RF-41).<br>**RN7.** [Inferência] Depois da atualização, a solicitação só volta se a projeção se afastar de novo 5 minutos ou mais do TOBT vigente (ADR-0003). |
+| **Protótipo(s) de tela** | Atualização do TOBT, com o TOBT planejado, o TOBT vigente, a projeção de prontidão, a diferença e o campo do novo TOBT.<br>![UC34 – atualizar o TOBT](prototipos/uc-d6-atualizar-tobt.png) |
 
 ### Fluxo básico
 
 | Motor de Eventos | Coordenador de Turnaround | Sistema |
 |---|---|---|
-| 1. O Motor de Eventos recalcula a projeção de prontidão de um turnaround (UC-C3) e verifica que ela está 5 minutos ou mais depois do TOBT vigente, por exemplo TOBT vigente 10:30 e projeção 10:37. |  |  |
+| 1. O Motor de Eventos recalcula a projeção de prontidão de um turnaround (UC24) e verifica que ela está 5 minutos ou mais depois do TOBT vigente, por exemplo TOBT vigente 10:30 e projeção 10:37. |  |  |
 |  |  | 2. O sistema exibe ao Coordenador de Turnaround a solicitação de atualização do TOBT do turnaround, com o TOBT vigente e a projeção. |
 |  | 3. O Coordenador de Turnaround abre a solicitação. |  |
 |  |  | 4. O sistema exibe o TOBT planejado, o TOBT vigente, a projeção, a diferença e o campo do novo TOBT, preenchido com a projeção. |
@@ -441,8 +441,8 @@
 
 | Motor de Eventos | Coordenador de Turnaround | Sistema |
 |---|---|---|
-|  | A4.1. O Coordenador de Turnaround escolhe "Atualizar TOBT" como ação de um alerta (UC-D3). |  |
-|  |  | A4.2. O caso de uso segue do passo 4; depois do passo 7, o sistema grava a ação no alerta e o encerra (UC-D3). |
+|  | A4.1. O Coordenador de Turnaround escolhe "Atualizar TOBT" como ação de um alerta (UC31). |  |
+|  |  | A4.2. O caso de uso segue do passo 4; depois do passo 7, o sistema grava a ação no alerta e o encerra (UC31). |
 
 ### Fluxo alternativo A5 – Desistência (passo 5)
 
@@ -474,17 +474,17 @@
 |---|---|---|
 |  |  | E3.1. O sistema recusa a atualização, informa o estado atual do turnaround e retira a solicitação. |
 
-## UC-D7 – Replanejar tarefas ainda não iniciadas
+## UC35 – Replanejar tarefas ainda não iniciadas
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D7 – Replanejar tarefas ainda não iniciadas |
+| **Nome do caso de uso** | UC35 – Replanejar tarefas ainda não iniciadas |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | Com o turnaround em andamento, o Coordenador de Turnaround altera a janela planejada ou as dependências das tarefas ainda não iniciadas, para ajustar o plano diante de um desvio, e vê em seguida a projeção de prontidão e o caminho crítico recalculados. Pelo mesmo caso de uso, ele aciona um serviço sob demanda, incluindo no plano uma tarefa do catálogo do modelo de tarefas (ADR-0014). Pode ser executado a partir do registro da ação de um alerta (UC-D3) e inclui o UC-B8 (propagação) para ajustar o estado das tarefas não iniciadas. Atende ao RF-D7 e à US-D7. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está em "Em solo", "Operações em andamento" ou "Em exceção", com o plano de tarefas definido (UC-A5).<br>3. Para alterar uma tarefa, ela está no estado "Aguardando" ou "Pronta". |
+| **Descrição** | Com o turnaround em andamento, o Coordenador de Turnaround altera a janela planejada ou as dependências das tarefas ainda não iniciadas, para ajustar o plano diante de um desvio, e vê em seguida a projeção de prontidão e o caminho crítico recalculados. Pelo mesmo caso de uso, ele aciona um serviço sob demanda, incluindo no plano uma tarefa do catálogo do modelo de tarefas (ADR-0014). Pode ser executado a partir do registro da ação de um alerta (UC31) e inclui o UC21 (propagação) para ajustar o estado das tarefas não iniciadas. Atende ao RF-42 e à US042. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está em "Em solo", "Operações em andamento" ou "Em exceção", com o plano de tarefas definido (UC05).<br>3. Para alterar uma tarefa, ela está no estado "Aguardando" ou "Pronta". |
 | **Pós-condições** | **Sucesso:** a alteração está gravada com o usuário e o horário, e a projeção de prontidão e o caminho crítico foram recalculados e exibidos.<br>**Recusa:** a janela, as dependências e o plano ficam como estavam, e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-D7; US-D7, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-D7).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC-C3), e o sistema os exibe (RF-D7).<br>**RN4.** As travas são as do plano inicial: as referências a predecessoras e sucessoras precisam existir e pertencer ao mesmo turnaround (RF-D7); a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC-B8, RN7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC-B8, RN1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com um operador ativo da equipe da tarefa como responsável, janela planejada, dependências e motivo; as sucessoras da tarefa incluída precisam estar ainda não iniciadas (RF-D7). Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC-B1) e, se for obrigatória, segura a liberação (UC-D4). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
-| **Protótipo(s) de tela** | Replanejamento de uma tarefa, com a janela planejada, as predecessoras e o resultado do recálculo; e acionamento de um serviço sob demanda, com o catálogo, o responsável, a janela, as dependências e o motivo.<br>![UC-D7 – replanejar tarefas](prototipos/uc-d7-replanejar-tarefas.png) ![UC-D7 – acionar serviço sob demanda](prototipos/uc-d7-acionar-servico-sob-demanda.png) |
+| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-42; US042, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-42).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24), e o sistema os exibe (RF-42).<br>**RN4.** As travas são as do plano inicial: as referências a predecessoras e sucessoras precisam existir e pertencer ao mesmo turnaround (RF-42); a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC21, RN7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC21, RN1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com um operador ativo da equipe da tarefa como responsável, janela planejada, dependências e motivo; as sucessoras da tarefa incluída precisam estar ainda não iniciadas (RF-42). Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC14) e, se for obrigatória, segura a liberação (UC32). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
+| **Protótipo(s) de tela** | Replanejamento de uma tarefa, com a janela planejada, as predecessoras e o resultado do recálculo; e acionamento de um serviço sob demanda, com o catálogo, o responsável, a janela, as dependências e o motivo.<br>![UC35 – replanejar tarefas](prototipos/uc-d7-replanejar-tarefas.png) ![UC35 – acionar serviço sob demanda](prototipos/uc-d7-acionar-servico-sob-demanda.png) |
 
 ### Fluxo básico
 
@@ -496,7 +496,7 @@
 | 4. O Coordenador de Turnaround antecipa em 10 minutos o início e o fim planejados da tarefa e confirma. |  |
 |  | 5. O sistema verifica que a tarefa continua não iniciada, que a nova janela não começa antes do fim planejado das predecessoras e que a alteração não cria ciclo e que todas as referências a tarefas existem e pertencem ao mesmo turnaround (**E1**, **E2**, **E3**, **E4**, **E7**). |
 |  | 6. O sistema grava a alteração com o valor anterior, o novo valor, o usuário e o horário. |
-|  | 7. O Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC-C3). |
+|  | 7. O Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24). |
 |  | 8. O sistema exibe a projeção anterior e a nova e o novo caminho crítico. O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Retirar uma dependência (passo 4)
@@ -522,15 +522,15 @@
 |  | A3.2. O sistema exibe o catálogo de serviços sob demanda do modelo de tarefas, cada um com a equipe e a duração planejada. |
 | A3.3. O Coordenador de Turnaround escolhe o serviço, por exemplo a limpeza profunda de assento, o responsável entre os operadores da equipe do serviço, a janela planejada, as predecessoras e as sucessoras, escreve o motivo e confirma. |  |
 |  | A3.4. O sistema verifica as travas (RN4 e RN5), que o responsável, a janela e o motivo foram informados, que o responsável é operador ativo da equipe do serviço e que as sucessoras estão "Aguardando" ou "Pronta" e que todas as referências a predecessoras e sucessoras existem no mesmo turnaround (**E5**, **E6**, **E7**). |
-|  | A3.5. O sistema inclui a tarefa no plano, grava a inclusão com o motivo, o usuário e o horário, e a tarefa aparece na lista do operador responsável (UC-B1). |
+|  | A3.5. O sistema inclui a tarefa no plano, grava a inclusão com o motivo, o usuário e o horário, e a tarefa aparece na lista do operador responsável (UC14). |
 |  | A3.6. O caso de uso segue do passo 7. |
 
 ### Fluxo alternativo A4 – Replanejamento a partir de um alerta (passo 1)
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A4.1. O Coordenador de Turnaround escolhe "Replanejar" como ação de um alerta (UC-D3). |  |
-|  | A4.2. O caso de uso segue do passo 2; depois do passo 6, o sistema grava a ação no alerta e o encerra (UC-D3). |
+| A4.1. O Coordenador de Turnaround escolhe "Replanejar" como ação de um alerta (UC31). |  |
+|  | A4.2. O caso de uso segue do passo 2; depois do passo 6, o sistema grava a ação no alerta e o encerra (UC31). |
 
 ### Fluxo alternativo A5 – Desistência (passo 4)
 
@@ -592,29 +592,29 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E7.1. O sistema recusa a alteração ou inclusão, identifica a referência inválida e preserva o plano sem gravar a mudança (RF-D7). |
+|  | E7.1. O sistema recusa a alteração ou inclusão, identifica a referência inválida e preserva o plano sem gravar a mudança (RF-42). |
 |  | E7.2. O caso de uso volta ao formulário para corrigir as referências. |
 
-## UC-D8 – Consultar os operadores disponíveis da equipe
+## UC36 – Consultar os operadores disponíveis da equipe
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D8 – Consultar os operadores disponíveis da equipe |
+| **Nome do caso de uso** | UC36 – Consultar os operadores disponíveis da equipe |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | Ao reatribuir uma tarefa, o Coordenador de Turnaround consulta a lista dos operadores da mesma equipe da tarefa que estão disponíveis, ordenada pelo tempo desde a última tarefa concluída por cada um, para escolher rapidamente quem recebe a tarefa. É incluído pelo caso de uso UC-D2. Atende ao RF-D8 e à US-D8. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador e iniciou a reatribuição de uma tarefa (UC-D2).<br>2. A tarefa tem uma equipe ou especialidade, e os operadores têm a equipe no cadastro, mantido pelo Administrador do Sistema (ADR-0010). |
+| **Descrição** | Ao reatribuir uma tarefa, o Coordenador de Turnaround consulta a lista dos operadores da mesma equipe da tarefa que estão disponíveis, ordenada pelo tempo desde a última tarefa concluída por cada um, para escolher rapidamente quem recebe a tarefa. É incluído pelo caso de uso UC30. Atende ao RF-43 e à US043. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador e iniciou a reatribuição de uma tarefa (UC30).<br>2. A tarefa tem uma equipe ou especialidade, e os operadores têm a equipe no cadastro, mantido pelo Administrador do Sistema (ADR-0010). |
 | **Pós-condições** | a lista exibida contém só os operadores da equipe da tarefa sem tarefa em execução. A consulta não altera nenhuma tarefa nem a atribuição. |
-| **Regras de negócio** | **RN1.** Só aparecem os operadores da mesma equipe da tarefa (RF-D8, ADR-0010); os operadores de outras equipes não aparecem, mesmo sem tarefa em execução (US-D8, critério 2).<br>**RN2.** Disponível é o operador sem tarefa no estado "Em execução"; o operador com tarefa em execução não aparece (RF-D8).<br>**RN3.** O operador a quem a tarefa está atribuída não aparece na lista.<br>**RN4.** A lista é ordenada pelo tempo desde a última tarefa concluída por cada operador, do maior para o menor, e mostra esse tempo ao lado de cada nome (RF-D8; US-D8, critério 1).<br>**RN5.** Sem operador disponível na equipe, o sistema informa isso, e a tarefa mantém o operador original (US-D8, critério 3).<br>**RN6.** A consulta serve à meta de sincronização do objetivo 2: a tarefa troca de responsável sem ficar sem operador. |
-| **Protótipo(s) de tela** | Lista dos operadores disponíveis da equipe na reatribuição, ordenada pelo tempo livre, com o aviso de quem ficou fora da lista.<br>![UC-D8 – operadores disponíveis](prototipos/uc-d8-operadores-disponiveis.png) |
+| **Regras de negócio** | **RN1.** Só aparecem os operadores da mesma equipe da tarefa (RF-43, ADR-0010); os operadores de outras equipes não aparecem, mesmo sem tarefa em execução (US043, critério 2).<br>**RN2.** Disponível é o operador sem tarefa no estado "Em execução"; o operador com tarefa em execução não aparece (RF-43).<br>**RN3.** O operador a quem a tarefa está atribuída não aparece na lista.<br>**RN4.** A lista é ordenada pelo tempo desde a última tarefa concluída por cada operador, do maior para o menor, e mostra esse tempo ao lado de cada nome (RF-43; US043, critério 1).<br>**RN5.** Sem operador disponível na equipe, o sistema informa isso, e a tarefa mantém o operador original (US043, critério 3).<br>**RN6.** A consulta serve à meta de sincronização do objetivo 2: a tarefa troca de responsável sem ficar sem operador. |
+| **Protótipo(s) de tela** | Lista dos operadores disponíveis da equipe na reatribuição, ordenada pelo tempo livre, com o aviso de quem ficou fora da lista.<br>![UC36 – operadores disponíveis](prototipos/uc-d8-operadores-disponiveis.png) |
 
 ### Fluxo básico
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| 1. O Coordenador de Turnaround inicia a reatribuição de uma tarefa (UC-D2), por exemplo a limpeza da cabine. |  |
+| 1. O Coordenador de Turnaround inicia a reatribuição de uma tarefa (UC30), por exemplo a limpeza da cabine. |  |
 |  | 2. O sistema identifica a equipe da tarefa e os operadores dessa equipe sem tarefa em execução, fora o operador atual (**E1**). |
 |  | 3. O sistema exibe a lista ordenada pelo tempo desde a última tarefa concluída por cada um, por exemplo 25, 10 e 3 minutos, com esse tempo e a última aeronave atendida ao lado de cada nome. |
-| 4. O Coordenador de Turnaround escolhe um operador da lista, e a reatribuição continua no UC-D2 (**E2**). |  |
+| 4. O Coordenador de Turnaround escolhe um operador da lista, e a reatribuição continua no UC30 (**E2**). |  |
 |  | 5. O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Troca da tarefa (passo 4)
@@ -646,19 +646,19 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E2.1. O sistema retira o operador da lista; se ele já tinha sido escolhido, a confirmação é recusada no UC-D2 (E2). |
+|  | E2.1. O sistema retira o operador da lista; se ele já tinha sido escolhido, a confirmação é recusada no UC30 (E2). |
 
-## UC-D9 – Registrar a saída da posição e encerrar o turnaround
+## UC37 – Registrar a saída da posição e encerrar o turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC-D9 – Registrar a saída da posição e encerrar o turnaround |
+| **Nome do caso de uso** | UC37 – Registrar a saída da posição e encerrar o turnaround |
 | **Ator(es)** | Operador de Solo/Rampa |
-| **Descrição** | Depois que a autorização de acionamento e de push-back foi recebida do ATC, fora do sistema, o Operador de Solo/Rampa registra, no celular, o horário real de saída da posição (AOBT) [2] de um turnaround no estado "Liberado". O turnaround passa para "Fora de bloco" e fica encerrado: não aceita novos registros de tarefas, e o histórico completo continua disponível para consulta. Atende ao RF-D9 e à US-D9. |
-| **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. O turnaround está no estado "Liberado", com a prontidão confirmada pela Autoridade de Liberação (UC-D4).<br>3. A aeronave recebeu a autorização de acionamento e de push-back do ATC, fora do sistema. |
+| **Descrição** | Depois que a autorização de acionamento e de push-back foi recebida do ATC, fora do sistema, o Operador de Solo/Rampa registra, no celular, o horário real de saída da posição (AOBT) [2] de um turnaround no estado "Liberado". O turnaround passa para "Fora de bloco" e fica encerrado: não aceita novos registros de tarefas, e o histórico completo continua disponível para consulta. Atende ao RF-44 e à US044. |
+| **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. O turnaround está no estado "Liberado", com a prontidão confirmada pela Autoridade de Liberação (UC32).<br>3. A aeronave recebeu a autorização de acionamento e de push-back do ATC, fora do sistema. |
 | **Pós-condições** | **Sucesso:** o turnaround está no estado "Fora de bloco", com o AOBT, o usuário e o horário gravados, e o histórico de tarefas, marcos e decisões está disponível para consulta.<br>**Recusa:** o AOBT não é gravado e o turnaround mantém o estado. |
-| **Regras de negócio** | **RN1.** A saída só é registrada com o turnaround em "Liberado"; antes da confirmação da Autoridade de Liberação, o registro é recusado (RF-D9; US-D9, critério 2).<br>**RN2.** O AOBT é o horário do registro, gravado com o usuário (RF-D9). [Fato] É o marco de saída da posição (off-block) do A-CDM [2].<br>**RN3.** A autorização de acionamento e de push-back é do ATC e fica fora do sistema: o sistema não a emite nem a confere, e o operador registra a saída depois de recebê-la (RF-D9).<br>**RN4.** Com o AOBT gravado, o turnaround passa para "Fora de bloco" e está encerrado: todo registro de tarefa desse turnaround é recusado (RF-D9; US-D9, critério 3).<br>**RN5.** O histórico de tarefas, marcos e decisões do turnaround encerrado é mantido para consulta (RF-D9).<br>**RN6.** O dado vem de quem está na posição, como o registro da chegada (ADR-0007, ADR-0013). |
-| **Protótipo(s) de tela** | Turnaround liberado no celular do operador, com o ARDT e quem liberou, e a confirmação do registro da saída da posição.<br>![UC-D9 – registrar a saída da posição](prototipos/uc-d9-registrar-saida-da-posicao.png) |
+| **Regras de negócio** | **RN1.** A saída só é registrada com o turnaround em "Liberado"; antes da confirmação da Autoridade de Liberação, o registro é recusado (RF-44; US044, critério 2).<br>**RN2.** O AOBT é o horário do registro, gravado com o usuário (RF-44). [Fato] É o marco de saída da posição (off-block) do A-CDM [2].<br>**RN3.** A autorização de acionamento e de push-back é do ATC e fica fora do sistema: o sistema não a emite nem a confere, e o operador registra a saída depois de recebê-la (RF-44).<br>**RN4.** Com o AOBT gravado, o turnaround passa para "Fora de bloco" e está encerrado: todo registro de tarefa desse turnaround é recusado (RF-44; US044, critério 3).<br>**RN5.** O histórico de tarefas, marcos e decisões do turnaround encerrado é mantido para consulta (RF-44).<br>**RN6.** O dado vem de quem está na posição, como o registro da chegada (ADR-0007, ADR-0013). |
+| **Protótipo(s) de tela** | Turnaround liberado no celular do operador, com o ARDT e quem liberou, e a confirmação do registro da saída da posição.<br>![UC37 – registrar a saída da posição](prototipos/uc-d9-registrar-saida-da-posicao.png) |
 
 ### Fluxo básico
 
