@@ -216,22 +216,22 @@
     "semantic_hash": "728bac29023c4a4cc8fd067ee7c87db7"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1791673868.4246347,
-    "seen": 1791674421.1426895,
-    "ast_hash": "2012f93b34952d92ab4759ee6446babc",
-    "semantic_hash": "2012f93b34952d92ab4759ee6446babc"
+    "mtime": 1791680027.9515808,
+    "seen": 1791680306.5655692,
+    "ast_hash": "fec9de94bbd67ac9c4810541a76dde40",
+    "semantic_hash": "fec9de94bbd67ac9c4810541a76dde40"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
-    "mtime": 1791678590.7333941,
-    "seen": 1791679036.2724533,
-    "ast_hash": "86928fb98c292cd11008cd5bc1273e22",
-    "semantic_hash": "86928fb98c292cd11008cd5bc1273e22"
+    "mtime": 1791680027.9527674,
+    "seen": 1791680306.5655713,
+    "ast_hash": "4c96142dbbe24d8311b634a3c12a5a72",
+    "semantic_hash": "4c96142dbbe24d8311b634a3c12a5a72"
   },
   "especificacao/08-requisitos-nao-funcionais/area-d.md": {
-    "mtime": 1791678590.734393,
-    "seen": 1791679036.2724543,
-    "ast_hash": "a71623d2aec998aaeee745e0bfa5ef41",
-    "semantic_hash": "a71623d2aec998aaeee745e0bfa5ef41"
+    "mtime": 1791680027.9537716,
+    "seen": 1791680306.565572,
+    "ast_hash": "636b042ed59cf86f25fdee86298cd4c0",
+    "semantic_hash": "636b042ed59cf86f25fdee86298cd4c0"
   },
   "especificacao/09-diagrama-geral-de-casos-de-uso.md": {
     "mtime": 1790781336.348986,
@@ -246,28 +246,28 @@
     "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1791678906.4835422,
-    "seen": 1791679036.2724578,
-    "ast_hash": "c68e60686277c0caa6bba275854774c7",
-    "semantic_hash": "c68e60686277c0caa6bba275854774c7"
+    "mtime": 1791680263.844606,
+    "seen": 1791680306.5655754,
+    "ast_hash": "359a16653dd541cab133c3dd913e8d3a",
+    "semantic_hash": "359a16653dd541cab133c3dd913e8d3a"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791678906.4845405,
-    "seen": 1791679036.2724586,
-    "ast_hash": "c61a8fd624369b8d587124a576676ded",
-    "semantic_hash": "c61a8fd624369b8d587124a576676ded"
+    "mtime": 1791680263.845604,
+    "seen": 1791680306.5655766,
+    "ast_hash": "3b1d28a3bae99d1e1183cf4561dceda5",
+    "semantic_hash": "3b1d28a3bae99d1e1183cf4561dceda5"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
-    "mtime": 1791678906.4855418,
-    "seen": 1791679036.2724595,
-    "ast_hash": "b8c158c5d32eea40140d3cf0355963ef",
-    "semantic_hash": "b8c158c5d32eea40140d3cf0355963ef"
+    "mtime": 1791680263.8465698,
+    "seen": 1791680306.5655775,
+    "ast_hash": "c2477e6cc5195d5642dd8717303d3562",
+    "semantic_hash": "c2477e6cc5195d5642dd8717303d3562"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1791678906.4865398,
-    "seen": 1791679036.2724605,
-    "ast_hash": "7ff30e1ace051c307ddda7385860e831",
-    "semantic_hash": "7ff30e1ace051c307ddda7385860e831"
+    "mtime": 1791680263.8476038,
+    "seen": 1791680306.5655787,
+    "ast_hash": "de867e3d9db5c1fbb7765a9bec3e32af",
+    "semantic_hash": "de867e3d9db5c1fbb7765a9bec3e32af"
   },
   "especificacao/11-diagrama-de-atividades.md": {
     "mtime": 1790781336.354366,
@@ -444,10 +444,10 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791678650.8410935,
-    "seen": 1791679036.2724628,
-    "ast_hash": "ece722c380e215d4c20ac9c549ee2a4c",
-    "semantic_hash": "ece722c380e215d4c20ac9c549ee2a4c"
+    "mtime": 1791680263.8485687,
+    "seen": 1791680306.5655806,
+    "ast_hash": "c1480380d8fbe55547503914569787ab",
+    "semantic_hash": "c1480380d8fbe55547503914569787ab"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
     "mtime": 1791673868.413593,
