@@ -66,7 +66,7 @@
 - **Descrição:** O Coordenador de Turnaround abre, a partir do painel, a linha do tempo de um turnaround, com as tarefas, os horários planejados e os reais ou projetados, os atrasos, o caminho crítico, as tarefas impactadas e os marcos já registrados, para entender onde está o atraso e quem é o responsável antes de decidir como agir. Estende o UC-C1. Atende ao RF-C5 e à US-C5.
 - **Pré-condições:**
   1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.
-  2. O turnaround foi aberto (área A).
+  2. O turnaround foi aberto (UC-A3).
 - **Pós-condições:** a linha do tempo exibe os dados do último recálculo do turnaround (UC-C3). A consulta não altera nenhum registro.
 - **Regras de negócio:**
   1. Cada tarefa mostra a equipe, o Operador de Solo/Rampa responsável, o estado, o início e o fim planejados, o início e o fim reais (ou projetados, com a marca "proj") e o atraso calculado no UC-C3, em minutos completos [3] (RF-C5, RF-C2).
@@ -114,10 +114,10 @@
 - **Descrição:** A cada registro aceito, a cada alteração do plano e a cada minuto, o Motor de Eventos recalcula o fim projetado de cada tarefa obrigatória, a projeção de prontidão do turnaround, o atraso de cada tarefa, as tarefas impactadas e o caminho crítico, grava o resultado com a causa e compara a projeção com o TOBT planejado + 5 minutos e com o TOBT vigente. Inclui o UC-C4 (alertas). Atende aos RF-C1, RF-C2 e RF-C3 e às US-C1, US-C2 e US-C3.
 - **Pré-condições:**
   1. O turnaround foi aberto e não está nos estados "Liberado" nem "Fora de bloco".
-  2. O modelo de tarefas do turnaround tem, para cada tarefa, a janela planejada (início e fim), a duração planejada, as predecessoras e a indicação de obrigatória (área A).
+  2. O modelo de tarefas do turnaround tem, para cada tarefa, a janela planejada (início e fim), a duração planejada, as predecessoras e a indicação de obrigatória (UC-A4, UC-A6 e UC-A8).
 - **Pós-condições:** a projeção de prontidão, o atraso de cada tarefa, as tarefas impactadas e o caminho crítico estão gravados com o horário do recálculo e o registro que o causou; o UC-C4 foi executado com o resultado.
 - **Regras de negócio:**
-  1. O recálculo acontece a cada registro aceito de tarefa (UC-B2 a UC-B5, depois da propagação do UC-B8), a cada alteração do plano (US-D7), a cada atualização do TOBT vigente (US-D6) e a cada minuto, enquanto o turnaround não estiver em "Liberado" ou "Fora de bloco" (RF-C1).
+  1. O recálculo acontece a cada registro aceito de tarefa (UC-B2 a UC-B5, depois da propagação do UC-B8), a cada alteração do plano (US-D7), a cada atualização do TOBT vigente (US-D6), a cada correção da chegada à posição (US-A13) e a cada minuto, enquanto o turnaround não estiver em "Liberado" ou "Fora de bloco" (RF-C1).
   2. Fim projetado de cada tarefa obrigatória (RF-C1): "Concluída" → o fim real; "Em execução" → o maior valor entre o início real somado à duração planejada e o horário atual; "Pausada" → o horário atual somado à duração planejada que falta executar; "Aguardando" ou "Pronta" → o maior valor entre o início planejado, o fim projetado das predecessoras e o horário atual, somado à duração planejada. Tarefa "Não aplicável" não entra no cálculo.
   3. A projeção de prontidão é o maior fim projetado entre as tarefas obrigatórias (RF-C1). Ela é comparada com o TOBT planejado + 5 minutos, que é a régua do objetivo 1 (ADR-0001), e com o TOBT vigente. Quando ela se afasta 5 minutos ou mais do TOBT vigente, o sistema pede ao Coordenador de Turnaround a atualização do TOBT (US-D6); na antecipação, o pedido é aviso, e não alerta de risco (ADR-0003).
   4. O atraso de início é o início real menos o início planejado (ou o horário atual menos o início planejado, se a tarefa não começou e o início planejado já passou); o atraso de fim é o fim real ou projetado menos o fim planejado. Os dois são contados em minutos completos [3], e valor igual ou menor que zero conta como sem atraso (RF-C2).
@@ -148,7 +148,7 @@
     3. A projeção passa a 10:38, e o caso de uso segue do passo 4.
   - **A2. Tarefa marcada como "Não aplicável"** (passo 1): o registro recebido é uma marcação de "Não aplicável" (UC-B5).
     1. O Motor de Eventos retira a tarefa do cálculo e segue do passo 2; se a tarefa estava no caminho crítico, o caminho é recalculado sem ela.
-  - **A3. Alteração do plano ou do TOBT** (passo 1): o Coordenador de Turnaround altera a janela ou as dependências de tarefas não iniciadas (US-D7) ou atualiza o TOBT vigente (US-D6).
+  - **A3. Alteração do plano ou do TOBT** (passo 1): o Coordenador de Turnaround altera a janela ou as dependências de tarefas não iniciadas, aciona um serviço sob demanda (US-D7) ou atualiza o TOBT vigente (US-D6).
     1. O Motor de Eventos recalcula com o plano ou o TOBT novo e segue do passo 2.
   - **A4. Aeronave ainda não chegou à posição** (passo 1): o turnaround está aberto e sem AIBT.
     1. O Motor de Eventos calcula os fins projetados a partir dos inícios planejados, porque nenhuma tarefa começou, e segue do passo 3; a viabilidade é verificada no UC-C4 (RF-C8).
@@ -170,9 +170,9 @@
   2. Os parâmetros dos gatilhos estão configurados (RNF-D3).
 - **Pós-condições:** cada gatilho atendido gerou um alerta aberto, gravado com o tipo, o turnaround, a tarefa (quando houver), os dados do gatilho, o horário de emissão e a classificação; nenhum gatilho não atendido gerou alerta.
 - **Regras de negócio:**
-  1. **Tarefa pronta não iniciada (RF-C6):** a tarefa fica "Pronta" sem registro de início por mais de X minutos, contados a partir do mais tarde entre o momento em que passou a "Pronta" e o seu início planejado; X é parâmetro de configuração (por exemplo, limpeza não iniciada 3 minutos depois do fim do desembarque [42]).
+  1. **Tarefa pronta não iniciada (RF-C6):** a tarefa fica "Pronta" sem registro de início por mais de Y minutos, contados a partir do mais tarde entre o momento em que passou a "Pronta" e o seu início planejado; Y é parâmetro de configuração (RNF-D3) (por exemplo, limpeza não iniciada 3 minutos depois do fim do desembarque [42]).
   2. **Projeção além de TOBT + 5 (RF-C7):** um recálculo leva a projeção para mais de 5 minutos depois do TOBT planejado (ADR-0001). Para o mesmo turnaround, o alerta só é emitido de novo se a projeção voltar para até 5 minutos depois do TOBT planejado e passar outra vez desse limite.
-  3. **Viabilidade (RF-C8):** em turnaround sem AIBT, na abertura e a cada alteração do EIBT, do MTTT ou do TOBT vigente, o EIBT somado ao MTTT fica depois do TOBT vigente [3][7]. Os valores de EIBT, MTTT e TOBT planejado vêm da abertura do turnaround (área A; pendência registrada na issue #59).
+  3. **Viabilidade (RF-C8):** em turnaround sem AIBT, na abertura e a cada alteração do EIBT, do MTTT ou do TOBT vigente, o EIBT somado ao MTTT fica depois do TOBT vigente [3][7]. Os valores de EIBT, MTTT e TOBT planejado vêm da abertura do turnaround (UC-A3) e da atualização das previsões (UC-A10).
   4. **Embarque não iniciado (RF-C9):** o ASBT não foi registrado até X minutos antes do TOBT vigente; X é parâmetro de configuração (RNF-D3) [2].
   5. **Prontidão não registrada (RF-C10):** o ARDT não foi registrado até 5 minutos depois do TOBT vigente [2]. Os minutos são completos [3]: às 10:35:59 ainda não há alerta para TOBT 10:30; às 10:36:00, há.
   6. [Fato] Os gatilhos das regras 3, 4 e 5 são os da tomada de decisão colaborativa em aeroportos (A-CDM) [2][3][7]. [Inferência] Os das regras 1 e 2 são regras do projeto; o da regra 1 se apoia na regra observada em [42].
@@ -185,7 +185,7 @@
   ![UC-C4 – alerta emitido](prototipos/uc-c4-alerta-emitido.png)
 
 - **Fluxo básico:**
-  1. Às 10:11, o EIBT do PR-AXB, ainda sem AIBT, é alterado de 10:30 para 10:40 (área A).
+  1. Às 10:11, o EIBT do PR-AXB, ainda sem AIBT, é alterado de 10:30 para 10:40 (UC-A10).
   2. O Motor de Eventos verifica a viabilidade pela regra 3: EIBT 10:40 somado ao MTTT de 40 minutos dá 11:20, depois do TOBT vigente 11:15.
   3. O Motor de Eventos verifica que não há alerta de viabilidade aberto para o PR-AXB.
   4. O Motor de Eventos grava o alerta com o tipo "viabilidade", o turnaround, o EIBT, o MTTT, o TOBT vigente, o excesso de 5 minutos, o horário de emissão 10:11 e a classificação "crítico" (regra 7).
@@ -194,7 +194,7 @@
 - **Fluxos alternativos:**
   - **A1. Projeção além de TOBT + 5** (passo 1): às 10:00, o recálculo de minuto (UC-C3) leva a projeção do PR-XMA de 10:35 para 10:36, com TOBT planejado 10:30.
     1. O Motor de Eventos grava o alerta crítico com a projeção 10:36, o desvio de 6 minutos e as tarefas do caminho crítico com atraso (limpeza da cabine), e o caso de uso segue do passo 5.
-  - **A2. Tarefa pronta não iniciada** (passo 1): com X = 3, a limpeza da cabine do PR-OKV está "Pronta" desde 09:59 e, às 10:03, continua sem início.
+  - **A2. Tarefa pronta não iniciada** (passo 1): com Y = 3, a limpeza da cabine do PR-OKV está "Pronta" desde 09:59 e, às 10:03, continua sem início.
     1. O Motor de Eventos grava o alerta com a tarefa, a equipe, o operador responsável e 4 minutos de espera.
     2. Como a limpeza está no caminho crítico, o alerta é "crítico"; o mesmo gatilho no carregamento de bagagem do PR-GTA, fora do caminho crítico, gera alerta "não crítico". O caso de uso segue do passo 5.
   - **A3. Embarque não iniciado** (passo 1): com X = 20 e TOBT vigente 10:30, às 10:10 o ASBT não foi registrado.

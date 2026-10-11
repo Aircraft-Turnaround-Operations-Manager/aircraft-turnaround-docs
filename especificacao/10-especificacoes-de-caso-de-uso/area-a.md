@@ -76,7 +76,7 @@
 - **Regras de negócio:**
   1. RF-A2 exige nome, identificador único, perfil e, na criação, senha inicial protegida pelo RNF-A3. Operador de Solo/Rampa também exige equipe ativa.
   2. Somente o Administrador do Sistema executa a gestão. Administrar não concede permissão de atuar nos turnarounds.
-  3. Desativar preserva histórico e vínculos e revoga o acesso; tarefas existentes não são reatribuídas automaticamente. Editar dados não reativa um cadastro desativado.
+  3. Desativar preserva histórico e vínculos e revoga o acesso. Desativar um Operador de Solo/Rampa com tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado é recusado até a tarefa ser reatribuída (UC-A5 antes do início das tarefas; UC-D2 depois); o sistema não reatribui sozinho. Editar dados não reativa um cadastro desativado.
   4. Editar perfil ou equipe mantém a senha, sem exibi-la. A senha inicial é entregue por canal autorizado fora deste caso, nunca pela auditoria ou resposta de cadastro.
 
 - **Protótipo(s) de tela:** lista de usuários e cadastro com identificador de acesso, senha inicial, perfil e equipe do operador.
@@ -101,6 +101,7 @@
   - **E1. Campo inválido (passo 5):** dados obrigatórios ausentes, senha inicial vazia na criação, identificador duplicado, perfil inválido ou equipe ausente/inativa são indicados; não há gravação e o fluxo volta ao passo 3.
   - **E2. Acesso revogado (passo 5 ou A2):** o sistema recusa sem alterar dados.
   - **E3. Falha ao salvar (passo 6):** o sistema informa a falha, mantém os dados anteriores e permite nova tentativa.
+  - **E4. Operador com tarefa pendente (A2):** o usuário a desativar é Operador de Solo/Rampa com tarefa pendente em turnaround não encerrado; o sistema recusa a desativação, lista as tarefas a reatribuir e o usuário continua ativo (regra 3; US-A2, critério 7).
 
 ## UC-A3 – Abrir turnaround
 
@@ -577,7 +578,7 @@
 - **Regras de negócio:**
   1. RF-A13 permite corrigir o horário real de chegada à posição (AIBT), com data e fuso, enquanto o turnaround não estiver "Fora de bloco" (ADR-0013) [2][4].
   2. A correção exige motivo escrito e horário válido, não futuro. O sistema guarda valor anterior, novo valor, motivo, autor e horário da correção (RNF-A2).
-  3. Corrigir não confirma nem registra outra chegada e não altera estados: dispara o recálculo da projeção de prontidão do UC-C3, sem repetir a propagação de entrada em "Em solo".
+  3. Corrigir não confirma nem registra outra chegada e não altera estados: enquanto o turnaround não estiver "Liberado", dispara o recálculo da projeção de prontidão do UC-C3, sem repetir a propagação de entrada em "Em solo". Em "Liberado", o UC-C3 não recalcula, e a correção só fica no histórico.
   4. O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados.
 
 - **Protótipo(s) de tela:** correção do AIBT pelo coordenador, com valor registrado, novo horário e motivo.
@@ -590,7 +591,7 @@
   3. O coordenador informa o horário corrigido com data, fuso e motivo e seleciona Salvar correção.
   4. O sistema verifica autorização, existência do AIBT, ausência do estado "Fora de bloco", motivo e horário válido e não futuro.
   5. O sistema grava o novo AIBT e a auditoria com valor anterior, novo valor, motivo, autor e horário da correção, sem mudar os estados.
-  6. O sistema disponibiliza o evento para o recálculo da projeção do UC-C3.
+  6. Se o turnaround não está "Liberado", o sistema disponibiliza o evento para o recálculo da projeção do UC-C3.
   7. O sistema exibe o AIBT atualizado e o histórico com horários real e da correção separados.
   8. O caso de uso termina.
 
