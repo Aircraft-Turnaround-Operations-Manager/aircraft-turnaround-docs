@@ -1,17 +1,17 @@
 # Graph Report - aircraft-turnaround-docs  (2026-10-10)
 
 ## Corpus Check
-- 120 files · ~353,947 words
+- 120 files · ~354,008 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 4, .bpmn 1)
 
 ## Summary
-- 625 nodes · 3447 edges · 15 communities
+- 625 nodes · 3450 edges · 15 communities
 - Extraction: 77% EXTRACTED · 23% INFERRED · 0% AMBIGUOUS · INFERRED: 804 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fccbb4ed`
+- Built from commit: `d8cbc67d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -42,19 +42,19 @@
 7. `Motor de Eventos` - 53 edges
 8. `Estados do turnaround` - 46 edges
 9. `Objetivo 3: Antecipar desvios e assegurar liberacao segura` - 46 edges
-10. `UC-C3 — Recalcular a projeção, o atraso e o caminho crítico` - 45 edges
+10. `RNF-D1 — Disponibilidade de 99,5% ao mês, 24 h por dia, das funções dos RF-A1 a RF-A13, RF-B7, RF-B8, RF-C1 a RF-C14 e RF-D1 a RF-D9 (Confiabilidade: disponibilidade)` - 45 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `ATC — Controle de tráfego aéreo (fora de escopo)` --semantically_similar_to--> `Pool externo: Controle de tráfego aéreo (ATC) — fora do escopo`  [INFERRED] [semantically similar]
   CONTEXT.md → especificacao/diagramas/04-bpmn-to-be.png
-- `A-CDM — Tomada de decisão colaborativa em aeroportos` --semantically_similar_to--> `A-CDM (Airport Collaborative Decision Making)`  [INFERRED] [semantically similar]
-  CONTEXT.md → pesquisa/topicos/a-cdm.md
 - `Motor de Eventos` --conceptually_related_to--> `Protótipo UC-B8 — lista de tarefas com a sucessora liberada (celular)`  [INFERRED]
   CONTEXT.md → especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b8-propagacao-de-estado.png
 - `Motor de Eventos` --conceptually_related_to--> `Motor de Eventos (lane do BPMN)`  [INFERRED]
   CONTEXT.md → especificacao/diagramas/04-bpmn-to-be.png
 - `Motor de Eventos` --semantically_similar_to--> `A-CDM System / information platform`  [INFERRED] [semantically similar]
   CONTEXT.md → pesquisa/topicos/papeis-e-atores.md
+- `MTTT — Tempo mínimo de turnaround` --conceptually_related_to--> `Verificar a viabilidade (EIBT + MTTT ≤ TOBT)`  [INFERRED]
+  CONTEXT.md → especificacao/diagramas/04-bpmn-to-be.png
 
 ## Import Cycles
 - None detected.
@@ -168,7 +168,7 @@ Cohesion: 0.40
 Nodes (5): P1: desvios percebidos tarde e propagados (atraso reacionário 46%, 67,9% das partidas em até 15 min), EUROCONTROL CODA Digest 2023 [16], Rodriguez-Sanz & Herrera 2020 - Turnaround time allocation RL [23], IATA AHM 730 two-digit delay codes, Reactionary delay (46% of EU delay minutes 2023)
 
 ## Knowledge Gaps
-- **9 isolated node(s):** `Heathrow pontualidade "verde" (>=79%)`, `Wayfinding (map issue + child tickets)`, `Dependências e ordem de execução dos itens`, `Item 11 Diagrama de Atividades`, `GRU first A-CDM airport in Brazil (2020)` (+4 more)
+- **9 isolated node(s):** `Heathrow pontualidade "verde" (>=79%)`, `Wayfinding (map issue + child tickets)`, `Dependências e ordem de execução dos itens`, `Item 11 Diagrama de Atividades`, `Amadeus (excluded candidate)` (+4 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 9 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 
 ## Suggested Questions

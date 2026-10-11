@@ -246,16 +246,16 @@
     "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1791680263.844606,
-    "seen": 1791680306.5655754,
-    "ast_hash": "359a16653dd541cab133c3dd913e8d3a",
-    "semantic_hash": "359a16653dd541cab133c3dd913e8d3a"
+    "mtime": 1791680927.977604,
+    "seen": 1791680957.8867702,
+    "ast_hash": "1087f0d3e2b7e6a12f4ee43dadb43c86",
+    "semantic_hash": "1087f0d3e2b7e6a12f4ee43dadb43c86"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791680263.845604,
-    "seen": 1791680306.5655766,
-    "ast_hash": "3b1d28a3bae99d1e1183cf4561dceda5",
-    "semantic_hash": "3b1d28a3bae99d1e1183cf4561dceda5"
+    "mtime": 1791680927.978608,
+    "seen": 1791680957.886772,
+    "ast_hash": "241f9fd4280e4aff741ce7b8087b8b8e",
+    "semantic_hash": "241f9fd4280e4aff741ce7b8087b8b8e"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
     "mtime": 1791680263.8465698,
@@ -264,10 +264,10 @@
     "semantic_hash": "c2477e6cc5195d5642dd8717303d3562"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1791680263.8476038,
-    "seen": 1791680306.5655787,
-    "ast_hash": "de867e3d9db5c1fbb7765a9bec3e32af",
-    "semantic_hash": "de867e3d9db5c1fbb7765a9bec3e32af"
+    "mtime": 1791680927.9795988,
+    "seen": 1791680957.886774,
+    "ast_hash": "a02bb1fc6da179c5e708e56810df76dc",
+    "semantic_hash": "a02bb1fc6da179c5e708e56810df76dc"
   },
   "especificacao/11-diagrama-de-atividades.md": {
     "mtime": 1790781336.354366,
@@ -444,8 +444,8 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791680263.8485687,
-    "seen": 1791680306.5655806,
+    "mtime": 1791680749.8915844,
+    "seen": 1791680957.886776,
     "ast_hash": "c1480380d8fbe55547503914569787ab",
     "semantic_hash": "c1480380d8fbe55547503914569787ab"
   },
