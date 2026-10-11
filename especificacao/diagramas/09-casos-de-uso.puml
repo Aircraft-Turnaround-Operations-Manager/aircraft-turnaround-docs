@@ -1,0 +1,155 @@
+@startuml 09-casos-de-uso
+' Item 9 — Diagrama geral de casos de uso
+' Fonte única dos nomes, atores e relacionamentos: tabelas no topo de
+' especificacao/10-especificacoes-de-caso-de-uso/area-a.md a area-d.md (critério C10.8).
+' Os casos de uso aparecem só pelo nome (sem ID), porque os IDs provisórios são
+' renumerados no T12 (ADR-0011).
+
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+}
+skinparam rectangle {
+  BorderColor #333333
+}
+skinparam ArrowColor #333333
+
+actor "//Usuário//\n(ator abstrato)" as USU
+actor "Administrador do Sistema" as ADM
+actor "Coordenador de Turnaround" as COO
+actor "Operador de Solo/Rampa" as OPE
+actor "Autoridade de Liberação" as AUT
+actor "Motor de Eventos\n<<sistema>>" as MOT
+
+ADM -up-|> USU
+COO -up-|> USU
+OPE -up-|> USU
+AUT -up-|> USU
+
+rectangle "Aircraft Turnaround Orchestration System" {
+
+  rectangle "Acesso e planejamento" {
+    usecase "Autenticar-se" as A1
+    usecase "Gerenciar usuários e\nperfis de acesso" as A2
+    usecase "Gerenciar equipes\ne especialidades" as A9
+    usecase "Abrir turnaround" as A3
+    usecase "Criar modelo de tarefas" as A4
+    usecase "Configurar pontos\nde confirmação" as A7
+    usecase "Definir dependências\nentre tarefas" as A8
+    usecase "Aplicar modelo de tarefas" as A6
+    usecase "Confirmar plano inicial" as A5
+    usecase "Configurar política\nde abastecimento" as A11
+    usecase "Atualizar referências\nde previsão" as A10
+    usecase "Registrar chegada\nà posição" as A12
+    usecase "Corrigir chegada\nà posição" as A13
+  }
+
+  rectangle "Execução em solo" {
+    usecase "Consultar as tarefas da equipe\natribuídas ao operador" as B1
+    usecase "Iniciar tarefa" as B2
+    usecase "Concluir tarefa" as B3
+    usecase "Pausar e retomar tarefa" as B4
+    usecase "Marcar tarefa como\n“Não aplicável”" as B5
+    usecase "Confirmar a execução da\ntarefa por QR Code" as B6
+    usecase "Registrar os marcos do\natendimento em solo" as B7
+    usecase "Propagar o estado das\ntarefas e do turnaround" as B8
+  }
+
+  rectangle "Monitoramento" {
+    usecase "Acompanhar os\nturnarounds no painel" as C1
+    usecase "Consultar a linha do\ntempo do turnaround" as C2
+    usecase "Recalcular a projeção, o\natraso e o caminho crítico" as C3
+    usecase "Emitir alertas de\nrisco ao horário" as C4
+    usecase "Consultar a lista de\nalertas abertos" as C5
+    usecase "Registrar a checagem com\nas equipes em TOBT − 15" as C6
+    usecase "Consultar os indicadores\nde aderência" as C7
+  }
+
+  rectangle "Exceções e liberação" {
+    usecase "Registrar a ação tomada\npara o alerta" as D3
+    usecase "Abrir exceção" as D1
+    usecase "Reatribuir tarefa" as D2
+    usecase "Consultar os operadores\ndisponíveis da equipe" as D8
+    usecase "Atualizar o TOBT" as D6
+    usecase "Replanejar tarefas\nainda não iniciadas" as D7
+    usecase "Encerrar exceção" as D5
+    usecase "Confirmar a prontidão e\nliberar a aeronave" as D4
+    usecase "Registrar a saída da posição\ne encerrar o turnaround" as D9
+  }
+}
+
+' ---------- Associações ator × caso de uso ----------
+USU -- A1
+
+ADM -- A2
+ADM -- A9
+
+COO -- A3
+COO -- A4
+COO -- A5
+COO -- A6
+COO -- A7
+COO -- A8
+COO -- A10
+COO -- A11
+COO -- A13
+COO -- C1
+COO -- C2
+COO -- C5
+COO -- C6
+COO -- C7
+COO -- D1
+COO -- D2
+COO -- D3
+COO -- D5
+COO -- D6
+COO -- D7
+COO -- D8
+
+OPE -- A12
+OPE -- B1
+OPE -- B2
+OPE -- B3
+OPE -- B4
+OPE -- B5
+OPE -- B6
+OPE -- D9
+
+AUT -- D4
+
+B7 -- MOT
+B8 -- MOT
+C3 -- MOT
+C4 -- MOT
+C6 -- MOT
+D6 -- MOT
+
+' ---------- «include» (base → incluído) ----------
+A12 ..> B8 : <<include>>
+B2 ..> B7 : <<include>>
+B2 ..> B8 : <<include>>
+B3 ..> B7 : <<include>>
+B3 ..> B8 : <<include>>
+B5 ..> B7 : <<include>>
+B5 ..> B8 : <<include>>
+C3 ..> C4 : <<include>>
+D2 ..> D8 : <<include>>
+D7 ..> B8 : <<include>>
+
+' ---------- «extend» (extensão → base) ----------
+A7 ..> A4 : <<extend>>
+A8 ..> A4 : <<extend>>
+A8 ..> A5 : <<extend>>
+C2 ..> C1 : <<extend>>
+D1 ..> D3 : <<extend>>
+D2 ..> D3 : <<extend>>
+D6 ..> D3 : <<extend>>
+D7 ..> D3 : <<extend>>
+
+@enduml
