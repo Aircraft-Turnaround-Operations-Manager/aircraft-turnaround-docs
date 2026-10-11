@@ -225,5 +225,6 @@
 | 3 | **DADO QUE:** o turnaround está "Fora de bloco" ou ainda não há AIBT registrado <br> **QUANDO:** tento corrigir a chegada <br> **ENTÃO:** a alteração é recusada sem gravar correção nem disparar recálculo |
 | 4 | **DADO QUE:** estou autenticado como Operador de Solo/Rampa <br> **QUANDO:** tento corrigir o AIBT já registrado <br> **ENTÃO:** a alteração é recusada porque a correção exige Coordenador de Turnaround (RNF-A1) |
 | 5 | **DADO QUE:** o AIBT registrado é 14:07 <br> **QUANDO:** às 14:20 corrijo para 14:05 com motivo <br> **ENTÃO:** o AIBT vigente fica 14:05; o valor anterior 14:07 e o horário da correção 14:20 continuam no histórico, sem substituir o horário real pelo da edição |
+| 6 | **DADO QUE:** há AIBT registrado e o turnaround está "Liberado" <br> **QUANDO:** o Coordenador de Turnaround salva uma correção válida, com data, fuso e motivo <br> **ENTÃO:** o novo AIBT e o histórico da correção são gravados; os estados são preservados e a projeção não é recalculada (ADR-0013) |
 
 Fontes citadas: [2], [3], [4], [7], [24], [26], [27], [69], [70] e [71], conforme `pesquisa/fontes.md`.
