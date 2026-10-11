@@ -1,8 +1,8 @@
 ## US-C1 – REQUISITO RF-C1: Recalcular a projeção de prontidão
 
 **COMO:** Motor de Eventos
-**POSSO:** recalcular a projeção de prontidão do turnaround a cada registro de tarefa, a cada alteração do plano e a cada minuto
-**PARA:** que o Coordenador de Turnaround saiba, a todo momento, se a aeronave fica pronta dentro do horário-alvo de prontidão (TOBT) [2] planejado mais 5 minutos (ADR-0001)
+**POSSO:** recalcular a projeção de prontidão do turnaround a cada registro de tarefa, a cada alteração do plano, a cada atualização do horário-alvo de prontidão (TOBT) [2] vigente, a cada correção da chegada à posição e a cada minuto
+**PARA:** que o Coordenador de Turnaround saiba, a todo momento, se a aeronave fica pronta dentro do TOBT planejado mais 5 minutos (ADR-0001)
 
 **Critérios de Aceite:**
 
@@ -76,16 +76,16 @@
 ## US-C6 – REQUISITO RF-C6: Alertar tarefa pronta não iniciada
 
 **COMO:** Motor de Eventos
-**POSSO:** emitir um alerta ao Coordenador de Turnaround quando uma tarefa fica "Pronta" sem registro de início por mais de X minutos, sendo X um parâmetro configurável
+**POSSO:** emitir um alerta ao Coordenador de Turnaround quando uma tarefa fica "Pronta" sem registro de início por mais de Y minutos, sendo Y um parâmetro configurável
 **PARA:** que a espera de uma equipe seja percebida antes de atrasar as tarefas seguintes, como na regra de limpeza não iniciada 3 minutos depois do fim do desembarque [42]
 
 **Critérios de Aceite:**
 
 | # | |
 |---|---|
-| 1 | **DADO QUE:** X é 3 minutos e a limpeza da cabine do PR-OKV, com início planejado 09:58, está "Pronta" desde 09:59 <br> **QUANDO:** às 10:03 a limpeza continua sem registro de início <br> **ENTÃO:** o sistema emite o alerta com o turnaround, a tarefa, a equipe, o Operador de Solo/Rampa responsável e 4 minutos de espera |
-| 2 | **DADO QUE:** X é 3 minutos e o catering ficou "Pronta" às 09:50, com início planejado 10:00 <br> **QUANDO:** às 10:02 o catering continua sem registro de início <br> **ENTÃO:** o sistema não emite alerta, porque a espera conta a partir do início planejado, mais tarde que a entrada em "Pronta", e é de 2 minutos |
-| 3 | **DADO QUE:** X é 3 minutos e a limpeza da cabine está "Pronta" desde 09:59 <br> **QUANDO:** o Operador de Solo/Rampa registra o início às 10:01 <br> **ENTÃO:** o sistema não emite alerta para essa tarefa |
+| 1 | **DADO QUE:** Y é 3 minutos e a limpeza da cabine do PR-OKV, com início planejado 09:58, está "Pronta" desde 09:59 <br> **QUANDO:** às 10:03 a limpeza continua sem registro de início <br> **ENTÃO:** o sistema emite o alerta com o turnaround, a tarefa, a equipe, o Operador de Solo/Rampa responsável e 4 minutos de espera |
+| 2 | **DADO QUE:** Y é 3 minutos e o catering ficou "Pronta" às 09:50, com início planejado 10:00 <br> **QUANDO:** às 10:02 o catering continua sem registro de início <br> **ENTÃO:** o sistema não emite alerta, porque a espera conta a partir do início planejado, mais tarde que a entrada em "Pronta", e é de 2 minutos |
+| 3 | **DADO QUE:** Y é 3 minutos e a limpeza da cabine está "Pronta" desde 09:59 <br> **QUANDO:** o Operador de Solo/Rampa registra o início às 10:01 <br> **ENTÃO:** o sistema não emite alerta para essa tarefa |
 
 ## US-C7 – REQUISITO RF-C7: Alertar projeção além de TOBT + 5
 

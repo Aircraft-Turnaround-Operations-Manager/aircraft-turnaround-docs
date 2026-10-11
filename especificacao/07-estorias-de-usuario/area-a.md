@@ -32,6 +32,7 @@
 | 4 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** há campo obrigatório vazio ou falta a senha inicial na criação <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
 | 5 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** informo um identificador de acesso que já pertence a outro usuário <br> **ENTÃO:** o sistema indica a duplicidade e não grava |
 | 6 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** escolho um perfil fora dos quatro previstos ou deixo um operador sem equipe ativa <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
+| 7 | **DADO QUE:** um Operador de Solo/Rampa tem tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado <br> **QUANDO:** tento desativá-lo <br> **ENTÃO:** o sistema recusa a desativação, lista as tarefas que precisam ser reatribuídas antes (RF-A5 ou RF-D2) e o usuário continua ativo |
 
 ## US-A3 – REQUISITO RF-A3: Abrir turnaround
 
@@ -219,7 +220,7 @@
 
 | # | |
 |---|---|
-| 1 | **DADO QUE:** há AIBT registrado e o turnaround não está "Fora de bloco" <br> **QUANDO:** salvo um horário corrigido válido, não futuro, com data, fuso e motivo <br> **ENTÃO:** o novo AIBT é gravado com valor anterior, motivo, autor e horário da correção; a projeção é recalculada pelo RF-C1, sem mudar o estado do turnaround nem das tarefas |
+| 1 | **DADO QUE:** há AIBT registrado e o turnaround não está "Liberado" nem "Fora de bloco" <br> **QUANDO:** salvo um horário corrigido válido, não futuro, com data, fuso e motivo <br> **ENTÃO:** o novo AIBT é gravado com valor anterior, motivo, autor e horário da correção; a projeção é recalculada pelo RF-C1, sem mudar o estado do turnaround nem das tarefas |
 | 2 | **DADO QUE:** estou corrigindo a chegada <br> **QUANDO:** falta motivo ou o horário é inválido ou futuro <br> **ENTÃO:** o sistema informa o impedimento e preserva o AIBT e os estados |
 | 3 | **DADO QUE:** o turnaround está "Fora de bloco" ou ainda não há AIBT registrado <br> **QUANDO:** tento corrigir a chegada <br> **ENTÃO:** a alteração é recusada sem gravar correção nem disparar recálculo |
 | 4 | **DADO QUE:** estou autenticado como Operador de Solo/Rampa <br> **QUANDO:** tento corrigir o AIBT já registrado <br> **ENTÃO:** a alteração é recusada porque a correção exige Coordenador de Turnaround (RNF-A1) |
