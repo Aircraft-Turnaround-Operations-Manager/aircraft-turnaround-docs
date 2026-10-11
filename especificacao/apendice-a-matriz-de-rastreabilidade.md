@@ -22,13 +22,13 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-A11 | Obj. 1 e 2 | Coordenador de Turnaround | US-A11 | UC-A5, UC-A11 | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6, RNF-C8, RNF-D1, RNF-D2 |
 | RF-A12 | Obj. 1 e 2 | Operador de Solo/Rampa | US-A12 | UC-A10, UC-A12 | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6, RNF-B3, RNF-C1, RNF-D1, RNF-D2 |
 | RF-A13 | Obj. 1 e 2 | Coordenador de Turnaround | US-A13 | UC-A12, UC-A13 | RNF-A1, RNF-A2, RNF-A3, RNF-A4, RNF-A5, RNF-A6, RNF-C8, RNF-D1, RNF-D2 |
-| RF-B1 | Obj. 2 | Operador de Solo/Rampa | US-B1 | UC-B1, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B3, RNF-B4, RNF-C1, RNF-D2 |
-| RF-B2 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B2 | UC-B2, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
-| RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
-| RF-B4 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B4 | UC-B4, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2, RNF-D4 |
-| RF-B5 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B5 | UC-B5, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
-| RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-B3, UC-B6, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
-| RF-B7 | Obj. 1 | Motor de Eventos | US-B7 | UC-B5, UC-B7, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2 |
+| RF-B1 | Obj. 2 | Operador de Solo/Rampa | US-B1 | UC-B1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B3, RNF-B4, RNF-C1, RNF-D2 |
+| RF-B2 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B2 | UC-B2 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
+| RF-B3 | Obj. 1 e 2 | Operador de Solo/Rampa | US-B3 | UC-B3, UC-B6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
+| RF-B4 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B4 | UC-B4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2, RNF-D4 |
+| RF-B5 | Obj. 2 e 3 | Operador de Solo/Rampa | US-B5 | UC-B5 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
+| RF-B6 | Obj. 2 | Operador de Solo/Rampa | US-B6 | UC-B3, UC-B6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-B1, RNF-B2, RNF-B3, RNF-D2 |
+| RF-B7 | Obj. 1 | Motor de Eventos | US-B7 | UC-B5, UC-B7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2 |
 | RF-B8 | Obj. 2 | Motor de Eventos | US-B8 | UC-B2, UC-B4, UC-B5, UC-B8 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-D1, RNF-D2 |
 | RF-C1 | Obj. 1 e 3 | Motor de Eventos | US-C1 | UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-D1, RNF-D2 |
 | RF-C2 | Obj. 1 e 3 | Motor de Eventos | US-C2 | UC-C2, UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-D1, RNF-D2 |
