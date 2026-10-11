@@ -1,0 +1,68 @@
+@startuml
+!pragma useVerticalIf on
+title Aircraft Turnaround Orchestration System\n11.1 — Ciclo de vida do turnaround
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam activityBackgroundColor #EEF4FA
+skinparam activityBorderColor #34536E
+skinparam ArrowColor #34536E
+|Coordenador de Turnaround|
+start
+:Abrir turnaround; aplicar modelo;\natribuir responsáveis e confirmar plano\n(UC-A3, UC-A6, UC-A5);
+|Motor de Eventos|
+:Verificar viabilidade antes da chegada\n(RF-C8);
+if (EIBT + MTTT > TOBT vigente?) then ([sim])
+  :Emitir alerta de risco;
+  |Coordenador de Turnaround|
+  :Tratar risco; ajustar referências ou\nprevisão e registrar ação\n(UC-A10, UC-D6, UC-D3);
+else ([não])
+endif
+|Operador de Solo/Rampa|
+:Registrar chegada real à posição\n(UC-A12);
+|Motor de Eventos|
+:Gravar AIBT; colocar em Em solo;\npropagar tarefas para Pronta\n(UC-B8);
+note right
+  Chegada registrada diretamente pelo operador.
+  Coordenador pode corrigir o horário (UC-A13),
+  sem alterar o estado das tarefas.
+end note
+repeat
+  |Operador de Solo/Rampa|
+  :Executar tarefas disponíveis\nem paralelo — vista 11.2;
+  note right
+    Cada registro segue a vista 11.3.
+    Monitoramento e intervenções da vista 11.4
+    ocorrem durante a execução, não após ela.
+  end note
+  |Autoridade de Liberação|
+  :Consultar tarefas obrigatórias\ne exceções (UC-D4);
+  if (Obrigatória pendente ou exceção aberta?) then ([sim])
+    |Motor de Eventos|
+    :Manter confirmação bloqueada;
+    |Coordenador de Turnaround|
+    :Tratar pendências; encerrar exceção\nsomente com solução registrada\n(UC-D5);
+    |Motor de Eventos|
+    :Restaurar estado conforme tarefas;\npropagar e recalcular;
+  else ([não])
+    |Autoridade de Liberação|
+    :Confirmar prontidão (UC-D4);
+    |Motor de Eventos|
+    if (Estado Pronto para liberação e sem nova pendência?) then ([sim])
+      :Gravar ARDT e estado Liberado;
+    else ([não])
+      :Recusar confirmação; mostrar motivo;\npreservar estado;
+    endif
+  endif
+repeat while (Turnaround ainda não Liberado?) is ([sim]) not ([não])
+|Operador de Solo/Rampa|
+:Após autorização externa de acionamento\ne push-back, registrar saída (UC-D9);
+note right
+  Autorização do controle de tráfego aéreo
+  recebida fora do sistema.
+end note
+|Motor de Eventos|
+:Gravar AOBT; passar a Fora de bloco;\nrecusar novos registros de tarefas;\npreservar histórico;
+stop
+@enduml

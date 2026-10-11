@@ -1,0 +1,72 @@
+@startuml
+!pragma useVerticalIf on
+title Aircraft Turnaround Orchestration System\n11.4 — Eventos, alertas e intervenções
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam activityBackgroundColor #EEF4FA
+skinparam activityBorderColor #34536E
+|Motor de Eventos|
+start
+:Receber registro aceito, alteração do plano,\ncorreção da chegada, atualização de\nprevisão ou temporizador;
+if (Há registro de tarefa ou chegada?) then ([sim])
+  :Atualizar marcos e propagar estados\n(UC-B7, UC-B8);
+else ([não])
+endif
+if (Turnaround Liberado ou Fora de bloco?) then ([sim])
+  :Preservar histórico sem novo recálculo;
+  stop
+else ([não])
+endif
+:Recalcular projeção, atraso e caminho crítico;\natualizar painel (UC-C3, UC-C1);
+if (Gatilho de alerta ou aviso atingido?) then ([sim])
+  :Emitir alerta conforme RF-C6 a RF-C10\nou aviso de checagem RF-C11;
+  |Coordenador de Turnaround|
+  if (É aviso de checagem?) then ([sim])
+    :Conferir prazo com equipes;\nregistrar checagem (UC-C6);
+  else ([não])
+    :Consultar alerta e linha do tempo\n(UC-C5, UC-C2);
+    switch (Ação escolhida?)
+    case ([reatribuir])
+      :Consultar operador disponível da equipe;\nreatribuir com motivo (UC-D8, UC-D2);
+    case ([replanejar])
+      :Alterar tarefas não iniciadas ou incluir\nserviço sob demanda com responsável,\njanela, dependências e motivo (UC-D7);
+    case ([atualizar previsão])
+      :Atualizar TOBT vigente\n(UC-D6);
+    case ([abrir exceção])
+      :Informar causa e descrição\nda exceção (UC-D1);
+    endswitch
+    |Motor de Eventos|
+    if (Foi solicitada abertura de exceção válida?) then ([sim])
+      :Gravar exceção;\npassar a Em exceção;
+    else ([não])
+    endif
+    |Coordenador de Turnaround|
+    :Informar ação tomada\n(UC-D3);
+    |Motor de Eventos|
+    if (Ação válida e efetivamente registrada?) then ([sim])
+      :Gravar autor e horário;\nencerrar alerta;
+    else ([não])
+      :Recusar registro; manter alerta aberto;
+    endif
+  endif
+else ([não])
+endif
+|Motor de Eventos|
+if (Projeção difere do TOBT vigente em pelo menos 5 min?) then ([sim])
+  :Solicitar atualização da previsão;
+  |Coordenador de Turnaround|
+  :Atualizar TOBT vigente;\npreservar TOBT planejado (UC-D6);
+else ([não])
+endif
+|Motor de Eventos|
+:Processar novos eventos gerados\nno próximo ciclo;
+note right
+  Alterações recusadas não geram mudança.
+  Replanejar: sem ciclos; somente tarefas não
+  iniciadas; respeitar política de abastecimento.
+  Exceção só encerra com solução (UC-D5).
+end note
+stop
+@enduml
