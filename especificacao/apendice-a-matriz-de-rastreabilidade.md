@@ -33,16 +33,16 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-C1 | Obj. 1 e 3 | Motor de Eventos | US-C1 | UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3 |
 | RF-C2 | Obj. 1 e 3 | Motor de Eventos | US-C2 | UC-C2, UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3 |
 | RF-C3 | Obj. 3 | Motor de Eventos | US-C3 | UC-C2, UC-C3 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C6, RNF-C7 |
-| RF-C4 | Obj. 2 e 3 | Coordenador de Turnaround | US-C4 | UC-C1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
+| RF-C4 | Obj. 2 e 3 | Coordenador de Turnaround | US-C4 | UC-C1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8, RNF-D3 |
 | RF-C5 | Obj. 1 e 2 | Coordenador de Turnaround | US-C5 | UC-C2 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
-| RF-C6 | Obj. 2 e 3 | Motor de Eventos | US-C6 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
-| RF-C7 | Obj. 3 | Motor de Eventos | US-C7 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
+| RF-C6 | Obj. 2 e 3 | Motor de Eventos | US-C6 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D3 |
+| RF-C7 | Obj. 3 | Motor de Eventos | US-C7 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D3 |
 | RF-C8 | Obj. 3 | Motor de Eventos | US-C8 | UC-C3, UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
-| RF-C9 | Obj. 3 | Motor de Eventos | US-C9 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
-| RF-C10 | Obj. 3 | Motor de Eventos | US-C10 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5 |
-| RF-C11 | Obj. 2 | Motor de Eventos | US-C11 | UC-C6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3 |
+| RF-C9 | Obj. 3 | Motor de Eventos | US-C9 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D3 |
+| RF-C10 | Obj. 3 | Motor de Eventos | US-C10 | UC-C4 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C2, RNF-C3, RNF-C5, RNF-D3 |
+| RF-C11 | Obj. 2 | Motor de Eventos | US-C11 | UC-C6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-D3 |
 | RF-C12 | Obj. 3 | Coordenador de Turnaround | US-C12 | UC-C1, UC-C4, UC-C5 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C1, RNF-C3, RNF-C4, RNF-C5, RNF-C6, RNF-C7, RNF-C8 |
-| RF-C13 | Obj. 1 e 3 | Coordenador de Turnaround | US-C13 | UC-C7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-C4, RNF-C8 |
+| RF-C13 | Obj. 1 e 3 | Coordenador de Turnaround | US-C13 | UC-C7 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3, RNF-C4, RNF-C8, RNF-D3 |
 | RF-C14 | Obj. 2 | Coordenador de Turnaround | US-C14 | UC-C6 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-C3 |
 | RF-D1 | Obj. 3 | Coordenador de Turnaround | US-D1 | UC-D1 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D4, RNF-D6 |
 | RF-D2 | Obj. 2 e 3 | Coordenador de Turnaround | US-D2 | UC-D2 | RNF-A1, RNF-A2, RNF-A3, RNF-A5, RNF-A6, RNF-D1, RNF-D2, RNF-D6 |
@@ -86,7 +86,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RNF-C8 | Usabilidade (operabilidade) | RF-C4, RF-C5, RF-C12, RF-C13 |
 | RNF-D1 | Confiabilidade (disponibilidade) | RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D6, RF-D7, RF-D8, RF-D9 |
 | RNF-D2 | Confiabilidade (recuperabilidade) | RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D6, RF-D7, RF-D8, RF-D9 |
-| RNF-D3 | Manutenibilidade (modificabilidade) | RF-D3, RF-D6 |
+| RNF-D3 | Manutenibilidade (modificabilidade) | RF-C4, RF-C6, RF-C7, RF-C9, RF-C10, RF-C11, RF-C13, RF-D3, RF-D6 |
 | RNF-D4 | Manutenibilidade (modificabilidade) | RF-B4, RF-D1 |
 | RNF-D5 | Manutenibilidade (testabilidade) | RF-D4, RF-D5, RF-D9 |
 | RNF-D6 | Manutenibilidade (analisabilidade) | RF-D1, RF-D2, RF-D3, RF-D4, RF-D5, RF-D6, RF-D7, RF-D8, RF-D9 |
