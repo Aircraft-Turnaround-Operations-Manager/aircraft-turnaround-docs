@@ -144,34 +144,34 @@
     "semantic_hash": "9768c439710630aa6c22adc160de22d3"
   },
   "especificacao/06-requisitos-funcionais/00-item.md": {
-    "mtime": 1791250013.236852,
-    "seen": 1791250201.61224,
-    "ast_hash": "52c067129d2b0854b6af383eba75be69",
-    "semantic_hash": "52c067129d2b0854b6af383eba75be69"
+    "mtime": 1791678328.886299,
+    "seen": 1791679036.2724392,
+    "ast_hash": "e393fc853cae15db2306167a00925e70",
+    "semantic_hash": "e393fc853cae15db2306167a00925e70"
   },
   "especificacao/06-requisitos-funcionais/area-a.md": {
-    "mtime": 1791673868.4195938,
-    "seen": 1791674421.1426792,
-    "ast_hash": "a63224dbd4ae5bde6ea5badb48f2c51f",
-    "semantic_hash": "a63224dbd4ae5bde6ea5badb48f2c51f"
+    "mtime": 1791678328.886299,
+    "seen": 1791679036.272441,
+    "ast_hash": "d82987292025d4adbcefc1d7cd8b3b9a",
+    "semantic_hash": "d82987292025d4adbcefc1d7cd8b3b9a"
   },
   "especificacao/06-requisitos-funcionais/area-b.md": {
-    "mtime": 1791423400.2874553,
-    "seen": 1791423744.4360552,
-    "ast_hash": "0cc031852a309afffedb82ccf92c8d81",
-    "semantic_hash": "0cc031852a309afffedb82ccf92c8d81"
+    "mtime": 1791678328.887299,
+    "seen": 1791679036.2724419,
+    "ast_hash": "b0fd9b0fadb9586a6f6de89cacc28366",
+    "semantic_hash": "b0fd9b0fadb9586a6f6de89cacc28366"
   },
   "especificacao/06-requisitos-funcionais/area-c.md": {
-    "mtime": 1791673868.4205961,
-    "seen": 1791674421.1426811,
-    "ast_hash": "adc3735949231e49599c88861c7d25b2",
-    "semantic_hash": "adc3735949231e49599c88861c7d25b2"
+    "mtime": 1791678328.888299,
+    "seen": 1791679036.2724428,
+    "ast_hash": "318be51d1e1093b145eb5c8420614afd",
+    "semantic_hash": "318be51d1e1093b145eb5c8420614afd"
   },
   "especificacao/06-requisitos-funcionais/area-d.md": {
-    "mtime": 1791423400.2884564,
-    "seen": 1791423744.436057,
-    "ast_hash": "b102d118fdec6805dc1f5edd9f7cc2e1",
-    "semantic_hash": "b102d118fdec6805dc1f5edd9f7cc2e1"
+    "mtime": 1791678328.8892994,
+    "seen": 1791679036.272444,
+    "ast_hash": "cd45eca84bfb200f453dba7f55d3dd42",
+    "semantic_hash": "cd45eca84bfb200f453dba7f55d3dd42"
   },
   "especificacao/07-estorias-de-usuario/00-item.md": {
     "mtime": 1790781336.3418956,
@@ -180,28 +180,28 @@
     "semantic_hash": "1a177e1ce5033ecb87a579e344240914"
   },
   "especificacao/07-estorias-de-usuario/area-a.md": {
-    "mtime": 1791673868.4215934,
-    "seen": 1791674421.142684,
-    "ast_hash": "6ecf929c8891ecfe58166513045349c9",
-    "semantic_hash": "6ecf929c8891ecfe58166513045349c9"
+    "mtime": 1791678328.8892994,
+    "seen": 1791679036.2724462,
+    "ast_hash": "8a7ceaf29088ea96d86123887cea7e38",
+    "semantic_hash": "8a7ceaf29088ea96d86123887cea7e38"
   },
   "especificacao/07-estorias-de-usuario/area-b.md": {
-    "mtime": 1791341129.2178967,
-    "seen": 1791341408.6862175,
-    "ast_hash": "1bd7b39130200084d567226d430304f2",
-    "semantic_hash": "1bd7b39130200084d567226d430304f2"
+    "mtime": 1791678328.8902996,
+    "seen": 1791679036.2724469,
+    "ast_hash": "804de9de2e3b45d6c2d09836fefb71d7",
+    "semantic_hash": "804de9de2e3b45d6c2d09836fefb71d7"
   },
   "especificacao/07-estorias-de-usuario/area-c.md": {
-    "mtime": 1791673868.4236345,
-    "seen": 1791674421.1426857,
-    "ast_hash": "9faf8545eccc4329384b73731336b93a",
-    "semantic_hash": "9faf8545eccc4329384b73731336b93a"
+    "mtime": 1791678328.8912995,
+    "seen": 1791679036.272448,
+    "ast_hash": "523d1a3f650b9067e2d6583970e979c1",
+    "semantic_hash": "523d1a3f650b9067e2d6583970e979c1"
   },
   "especificacao/07-estorias-de-usuario/area-d.md": {
-    "mtime": 1791431614.6715431,
-    "seen": 1791431825.1666453,
-    "ast_hash": "1fc2d76f937f30d0d050f73645260d6f",
-    "semantic_hash": "1fc2d76f937f30d0d050f73645260d6f"
+    "mtime": 1791678328.8912995,
+    "seen": 1791679036.2724488,
+    "ast_hash": "56c2283751f0561244e28f07e5b548cb",
+    "semantic_hash": "56c2283751f0561244e28f07e5b548cb"
   },
   "especificacao/08-requisitos-nao-funcionais/00-item.md": {
     "mtime": 1791250013.2428603,
@@ -222,16 +222,16 @@
     "semantic_hash": "2012f93b34952d92ab4759ee6446babc"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
-    "mtime": 1791673868.4266355,
-    "seen": 1791674421.1426904,
-    "ast_hash": "f26a86ec6e0b327dbd3480e308ba454b",
-    "semantic_hash": "f26a86ec6e0b327dbd3480e308ba454b"
+    "mtime": 1791678590.7333941,
+    "seen": 1791679036.2724533,
+    "ast_hash": "86928fb98c292cd11008cd5bc1273e22",
+    "semantic_hash": "86928fb98c292cd11008cd5bc1273e22"
   },
   "especificacao/08-requisitos-nao-funcionais/area-d.md": {
-    "mtime": 1791423400.2914617,
-    "seen": 1791423744.4360669,
-    "ast_hash": "ece5514314ff376aa7828785c616ea49",
-    "semantic_hash": "ece5514314ff376aa7828785c616ea49"
+    "mtime": 1791678590.734393,
+    "seen": 1791679036.2724543,
+    "ast_hash": "a71623d2aec998aaeee745e0bfa5ef41",
+    "semantic_hash": "a71623d2aec998aaeee745e0bfa5ef41"
   },
   "especificacao/09-diagrama-geral-de-casos-de-uso.md": {
     "mtime": 1790781336.348986,
@@ -246,28 +246,28 @@
     "semantic_hash": "03bf7d3aa65c2dd368822a474e66dccb"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1791673868.4276357,
-    "seen": 1791674421.142695,
-    "ast_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1",
-    "semantic_hash": "aed6121d88bee4c1b0cfabbe7d7b43b1"
+    "mtime": 1791678906.4835422,
+    "seen": 1791679036.2724578,
+    "ast_hash": "c68e60686277c0caa6bba275854774c7",
+    "semantic_hash": "c68e60686277c0caa6bba275854774c7"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1791673868.4296334,
-    "seen": 1791674421.1426957,
-    "ast_hash": "f574e8fc5b0d9df79f03d17eb1500977",
-    "semantic_hash": "f574e8fc5b0d9df79f03d17eb1500977"
+    "mtime": 1791678906.4845405,
+    "seen": 1791679036.2724586,
+    "ast_hash": "c61a8fd624369b8d587124a576676ded",
+    "semantic_hash": "c61a8fd624369b8d587124a576676ded"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
-    "mtime": 1791674053.6298807,
-    "seen": 1791674421.1426966,
-    "ast_hash": "4df16204d68395de5a77bbb5aa717f4d",
-    "semantic_hash": "4df16204d68395de5a77bbb5aa717f4d"
+    "mtime": 1791678906.4855418,
+    "seen": 1791679036.2724595,
+    "ast_hash": "b8c158c5d32eea40140d3cf0355963ef",
+    "semantic_hash": "b8c158c5d32eea40140d3cf0355963ef"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1791673868.4306352,
-    "seen": 1791674421.1426976,
-    "ast_hash": "54526485610309b6d71fe745ec9fa7a7",
-    "semantic_hash": "54526485610309b6d71fe745ec9fa7a7"
+    "mtime": 1791678906.4865398,
+    "seen": 1791679036.2724605,
+    "ast_hash": "7ff30e1ace051c307ddda7385860e831",
+    "semantic_hash": "7ff30e1ace051c307ddda7385860e831"
   },
   "especificacao/11-diagrama-de-atividades.md": {
     "mtime": 1790781336.354366,
@@ -444,10 +444,10 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791674053.642876,
-    "seen": 1791674421.1426995,
-    "ast_hash": "b1d0dd958501e5aafc35e89e7af2118a",
-    "semantic_hash": "b1d0dd958501e5aafc35e89e7af2118a"
+    "mtime": 1791678650.8410935,
+    "seen": 1791679036.2724628,
+    "ast_hash": "ece722c380e215d4c20ac9c549ee2a4c",
+    "semantic_hash": "ece722c380e215d4c20ac9c549ee2a4c"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
     "mtime": 1791673868.413593,
