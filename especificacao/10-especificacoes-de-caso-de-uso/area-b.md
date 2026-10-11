@@ -185,7 +185,7 @@
   4. A pausa e a retomada gravam o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-B2).
   5. A tarefa "Pausada" não conta como terminada para a propagação: as sucessoras continuam "Aguardando" (RF-B8).
   6. Com a tarefa "Pausada", a leitura de QR Code e a conclusão são recusadas (UC-B6, UC-B3).
-  7. A justificativa e o código gravados ficam disponíveis para o Coordenador de Turnaround, que pode agir antes que o horário-alvo de prontidão (TOBT) [2] fique em risco (US-B4); a exibição ao coordenador e o tratamento do risco são das áreas C e D.
+  7. A justificativa e o código gravados ficam disponíveis para o Coordenador de Turnaround, que pode agir antes que o horário-alvo de prontidão (TOBT) [2] fique em risco (US-B4); a exibição ao coordenador e o tratamento do risco ficam nos casos de uso UC-C4 e UC-D3.
 - **Protótipo(s) de tela:** formulário de pausa, com a justificativa e a escolha do código da ANAC, e detalhe da tarefa pausada com a opção "Retomar".
 
   ![UC-B4 – pausar tarefa](prototipos/uc-b4-pausar-tarefa.png) ![UC-B4 – retomar tarefa](prototipos/uc-b4-retomar-tarefa.png)
@@ -241,7 +241,7 @@
   - **Recusa:** a tarefa mantém o estado anterior e nenhum registro é gravado.
 - **Regras de negócio:**
   1. Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ser marcada como "Não aplicável" (RF-B5).
-  2. Só a tarefa que o modelo de tarefas do turnaround permite marcar como "Não aplicável" pode ser marcada; o modelo é definido na área A ([Inferência], base: [22][45]).
+  2. Só a tarefa que o modelo de tarefas do turnaround permite marcar como "Não aplicável" pode ser marcada; o modelo é definido no UC-A4 ([Inferência], base: [22][45]).
   3. A marcação exige justificativa escrita (RF-B5).
   4. A marcação grava o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-B2).
   5. Para a propagação, a tarefa "Não aplicável" conta como terminada, igual à "Concluída": as sucessoras sem outra predecessora pendente passam para "Pronta" (RF-B8); se era a última tarefa obrigatória pendente, o horário da marcação é gravado como fim real do atendimento em solo (AEGT) [2][4] e o turnaround passa para "Pronto para liberação" (RF-B7, RF-B8).
@@ -398,21 +398,21 @@
 
 - **Nome do caso de uso:** Propagar o estado das tarefas e do turnaround
 - **Ator(es):** Motor de Eventos
-- **Descrição:** A cada registro aceito, o Motor de Eventos propaga o estado para as tarefas e para o turnaround: a entrada do turnaround em "Em solo" deixa "Pronta" cada tarefa sem predecessora; o primeiro início leva o turnaround de "Em solo" para "Operações em andamento"; a tarefa que termina ("Concluída" ou "Não aplicável") libera as sucessoras sem outra predecessora pendente, que passam de "Aguardando" para "Pronta"; e, quando todas as tarefas obrigatórias terminam, o turnaround passa para "Pronto para liberação". É incluído pelos casos de uso UC-B2, UC-B3 e UC-B5. Atende ao RF-B8 e à US-B8.
+- **Descrição:** A cada registro aceito, o Motor de Eventos propaga o estado para as tarefas e para o turnaround: a entrada do turnaround em "Em solo" deixa "Pronta" cada tarefa sem predecessora; o primeiro início leva o turnaround de "Em solo" para "Operações em andamento"; a tarefa que termina ("Concluída" ou "Não aplicável") libera as sucessoras sem outra predecessora pendente, que passam de "Aguardando" para "Pronta"; e, quando todas as tarefas obrigatórias terminam, o turnaround passa para "Pronto para liberação". Também ajusta as tarefas não iniciadas quando o Coordenador de Turnaround inclui tarefa ou altera dependências no replanejamento (UC-D7). É incluído pelos casos de uso UC-B2, UC-B3 e UC-B5. Atende ao RF-B8 e à US-B8.
 - **Pré-condições:**
-  1. Um registro de início (UC-B2), de conclusão (UC-B3) ou de "Não aplicável" (UC-B5) chegou ao servidor, ou o turnaround entrou no estado "Em solo" com o registro do horário real de chegada à posição (AIBT) [2].
-  2. O turnaround tem modelo de tarefas com as dependências entre as tarefas e as tarefas obrigatórias identificadas (área A).
+  1. Um registro de início (UC-B2), de conclusão (UC-B3) ou de "Não aplicável" (UC-B5) chegou ao servidor, ou o turnaround entrou no estado "Em solo" com o registro do horário real de chegada à posição (AIBT) [2], ou o Coordenador de Turnaround incluiu tarefa ou alterou dependências no replanejamento (UC-D7).
+  2. O turnaround tem modelo de tarefas com as dependências entre as tarefas e as tarefas obrigatórias identificadas (UC-A4, UC-A6 e UC-A8).
 - **Pós-condições:** as tarefas e o turnaround estão nos estados que as regras determinam, e cada mudança feita pela propagação está gravada com o horário e com o registro que a causou.
 - **Regras de negócio:**
-  1. Uma tarefa sucessora passa de "Aguardando" para "Pronta" quando todas as suas predecessoras estão "Concluída" ou "Não aplicável" (RF-B8). Predecessora "Aguardando", "Pronta", "Em execução" ou "Pausada" mantém a sucessora em "Aguardando".
+  1. Uma tarefa sucessora passa de "Aguardando" para "Pronta" quando todas as suas predecessoras estão "Concluída" ou "Não aplicável" (RF-B8). Predecessora "Aguardando", "Pronta", "Em execução" ou "Pausada" mantém a sucessora em "Aguardando". No replanejamento (UC-D7), a tarefa não iniciada que ganha predecessora pendente volta de "Pronta" para "Aguardando" (RF-B8; US-B8, critério 7).
   2. Quando o turnaround entra no estado "Em solo", com o registro do AIBT, cada tarefa sem predecessora passa de "Aguardando" para "Pronta" (RF-B8). O primeiro início de tarefa registrado leva o turnaround de "Em solo" para "Operações em andamento" (RF-B8).
   3. Quando todas as tarefas obrigatórias estão "Concluída" ou "Não aplicável", o turnaround passa de "Operações em andamento" para "Pronto para liberação" (RF-B8). As tarefas não obrigatórias não seguram essa passagem.
-  4. "Pronto para liberação" não é a liberação: o turnaround só passa para "Liberado" pela confirmação da Autoridade de Liberação (área D).
+  4. "Pronto para liberação" não é a liberação: o turnaround só passa para "Liberado" pela confirmação da Autoridade de Liberação (UC-D4).
   5. Cada mudança de estado feita pela propagação grava o horário e o registro que a causou (RF-B8).
   6. As dependências vêm do modelo de tarefas do turnaround. [Fato] Exemplos do setor: a limpeza da cabine e o catering só começam depois do desembarque [22][29], e o embarque espera o fim da limpeza [24][29].
   7. Abastecimento com passageiros a bordo (ADR-0005): a regra é configurável por operador aéreo (companhia aérea), com padrão "não permitido", o caso mais conservador [24]. Não permitido: o abastecimento tem o desembarque como predecessora, e o embarque tem o abastecimento como predecessora. Permitido: essas duas dependências não existem, e o abastecimento corre em paralelo ao fluxo de passageiros. [Fato] O operador aéreo só pode habilitar a regra quando cumpre as condições do Regulamento Brasileiro da Aviação Civil (RBAC) nº 91, seção 91.102(g) [27]: (1) procedimento aprovado e um tripulante de voo na cabine de pilotagem supervisionando; (2) no mínimo 50% dos comissários requeridos e/ou pessoas treinadas para dirigir uma evacuação de emergência, com os meios de evacuação disponíveis; (3) motores desligados, exceto a unidade auxiliar de energia (APU); e (4) comunicação entre o pessoal de solo e o tripulante na cabine dos pilotos.
   8. A mudança de estado aparece na lista do operador (UC-B1) e no painel em até 5 segundos, como pede o objetivo 2.
-  9. Com o turnaround no estado lateral "Em exceção", a propagação entre as tarefas segue as regras 1 e 5; a entrada e a saída de "Em exceção" são tratadas na área D.
+  9. Com o turnaround no estado lateral "Em exceção", a propagação entre as tarefas segue as regras 1 e 5; a entrada e a saída de "Em exceção" são tratadas no UC-D1 e no UC-D5.
 - **Protótipo(s) de tela:** lista de tarefas do operador com a sucessora liberada ("Pronta") e o estado do turnaround atualizado.
 
   ![UC-B8 – propagação de estado](prototipos/uc-b8-propagacao-de-estado.png)
