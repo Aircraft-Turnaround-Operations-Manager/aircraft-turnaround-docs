@@ -1,0 +1,61 @@
+@startuml
+!pragma useVerticalIf on
+title Aircraft Turnaround Orchestration System\n11.2 — Dependências e execução paralela
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam activityBackgroundColor #EEF4FA
+skinparam activityBorderColor #34536E
+|Operador de Solo/Rampa|
+start
+:Executar preparação de rampa\nconforme modelo;
+note right
+  Cada ação de execução chama a vista 11.3.
+  Operadores distintos, da equipe responsável,
+  executam tarefas independentes.
+end note
+|Motor de Eventos|
+if (Política permite abastecer com passageiros?) then ([sim])
+  |Operador de Solo/Rampa|
+  fork
+    :Desembarcar passageiros;
+    fork
+      :Limpar cabine;
+    fork again
+      :Executar catering;
+    end fork
+    :Embarcar passageiros;
+  fork again
+    :Abastecer aeronave;
+  fork again
+    :Descarregar bagagem e carga;
+    :Carregar bagagem e carga;
+  fork again
+    :Executar serviços de rampa\ne inspeção previstos no modelo;
+  end fork
+else ([não])
+  |Operador de Solo/Rampa|
+  fork
+    :Desembarcar passageiros;
+    fork
+      :Limpar cabine;
+    fork again
+      :Executar catering;
+    fork again
+      :Abastecer aeronave;
+    end fork
+    :Embarcar passageiros;
+  fork again
+    :Descarregar bagagem e carga;
+    :Carregar bagagem e carga;
+  fork again
+    :Executar serviços de rampa\ne inspeção previstos no modelo;
+  end fork
+endif
+:Preparar documentação de peso\ne balanceamento conforme modelo;
+:Fechar portas e retirar ponte/escada\nconforme modelo;
+|Motor de Eventos|
+:Propagar conclusão das obrigatórias;\nregistrar fim do atendimento;
+stop
+@enduml

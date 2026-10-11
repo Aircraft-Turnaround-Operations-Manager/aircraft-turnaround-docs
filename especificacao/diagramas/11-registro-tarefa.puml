@@ -1,0 +1,57 @@
+@startuml
+!pragma useVerticalIf on
+title Aircraft Turnaround Orchestration System\n11.3 — Registro de uma tarefa
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam activityBackgroundColor #EEF4FA
+skinparam activityBorderColor #34536E
+|Operador de Solo/Rampa|
+start
+:Consultar tarefa da sua equipe\natribuída a si (UC-B1);
+if (Marcar Não aplicável?) then ([sim])
+  :Solicitar marcação com justificativa\n(UC-B5);
+else ([não])
+  :Solicitar início (UC-B2);
+endif
+|Motor de Eventos|
+if (Registro válido para atribuição, estado e modelo?) then ([não])
+  :Recusar registro; mostrar motivo;\npreservar estado anterior;
+  stop
+else ([sim])
+  :Gravar autor, horário e estado;\npropagar e recalcular — vista 11.4;
+endif
+if (Tarefa Não aplicável?) then ([sim])
+  stop
+else ([não])
+endif
+|Operador de Solo/Rampa|
+repeat
+  |Operador de Solo/Rampa|
+  :Executar tarefa;
+  if (Necessário pausar?) then ([sim])
+    :Registrar pausa com justificativa\ne código do impedimento, se houver\n(UC-B4);
+    :Retomar quando possível\n(UC-B4);
+    note right
+      Pausa: somente Em execução.
+      Retomada: somente Pausada.
+      Cada registro aceito chama a vista 11.4.
+    end note
+  else ([não])
+  endif
+  if (Tarefa possui pontos de QR Code?) then ([sim])
+    :Ler e confirmar pontos\ncom o celular (UC-B6);
+  else ([não])
+  endif
+  :Solicitar conclusão (UC-B3);
+  |Motor de Eventos|
+  if (Em execução, atribuída e todos os pontos confirmados?) then ([sim])
+    :Gravar Concluída, autor e horário;
+  else ([não])
+    :Recusar conclusão; mostrar motivo\ne pontos pendentes; manter estado;
+  endif
+repeat while (Conclusão recusada?) is ([sim]) not ([não])
+:Propagar sucessoras; atualizar marcos;\nrecalcular e atualizar painel — vista 11.4;
+stop
+@enduml
