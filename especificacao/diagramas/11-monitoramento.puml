@@ -11,31 +11,35 @@ skinparam activityBorderColor #34536E
 start
 :Receber registro aceito, alteração do plano,\ncorreção da chegada, atualização de\nprevisão ou temporizador;
 if (Há registro de tarefa ou chegada?) then ([sim])
-  :Atualizar marcos e propagar estados\n(UC-B7, UC-B8);
+  :Atualizar marcos e propagar estados\n(UC20, UC21);
 else ([não])
+  if (Há alteração do plano?) then ([sim])
+    :Propagar estados das tarefas não iniciadas\nconforme as novas dependências (UC21, UC35);
+  else ([não])
+  endif
 endif
 if (Turnaround Liberado ou Fora de bloco?) then ([sim])
   :Preservar histórico sem novo recálculo;
   stop
 else ([não])
 endif
-:Recalcular projeção, atraso e caminho crítico;\natualizar painel (UC-C3, UC-C1);
+:Recalcular projeção, atraso e caminho crítico;\natualizar painel (UC24, UC22);
 if (Gatilho de alerta ou aviso atingido?) then ([sim])
-  :Emitir alerta conforme RF-C6 a RF-C10\nou aviso de checagem RF-C11;
+  :Emitir alerta conforme RF-27 a RF-31\nou aviso de checagem RF-32;
   |Coordenador de Turnaround|
   if (É aviso de checagem?) then ([sim])
-    :Conferir prazo com equipes;\nregistrar checagem (UC-C6);
+    :Conferir prazo com equipes;\nregistrar checagem (UC27);
   else ([não])
-    :Consultar alerta e linha do tempo\n(UC-C5, UC-C2);
+    :Consultar alerta e linha do tempo\n(UC26, UC23);
     switch (Ação escolhida?)
     case ([reatribuir])
-      :Consultar operador disponível da equipe;\nreatribuir com motivo (UC-D8, UC-D2);
+      :Consultar operador disponível da equipe;\nreatribuir com motivo (UC36, UC30);
     case ([replanejar])
-      :Alterar tarefas não iniciadas ou incluir\nserviço sob demanda com responsável,\njanela, dependências e motivo (UC-D7);
+      :Alterar tarefas não iniciadas ou incluir\nserviço sob demanda com responsável,\njanela, dependências e motivo (UC35);
     case ([atualizar previsão])
-      :Atualizar TOBT vigente\n(UC-D6);
+      :Atualizar TOBT vigente\n(UC34);
     case ([abrir exceção])
-      :Informar causa e descrição\nda exceção (UC-D1);
+      :Informar causa e descrição\nda exceção (UC29);
     endswitch
     |Motor de Eventos|
     if (Foi solicitada abertura de exceção válida?) then ([sim])
@@ -43,7 +47,7 @@ if (Gatilho de alerta ou aviso atingido?) then ([sim])
     else ([não])
     endif
     |Coordenador de Turnaround|
-    :Informar ação tomada\n(UC-D3);
+    :Informar ação tomada\n(UC31);
     |Motor de Eventos|
     if (Ação válida e efetivamente registrada?) then ([sim])
       :Gravar autor e horário;\nencerrar alerta;
@@ -57,7 +61,7 @@ endif
 if (Projeção difere do TOBT vigente em pelo menos 5 min?) then ([sim])
   :Solicitar atualização da previsão;
   |Coordenador de Turnaround|
-  :Atualizar TOBT vigente;\npreservar TOBT planejado (UC-D6);
+  :Atualizar TOBT vigente;\npreservar TOBT planejado (UC34);
 else ([não])
 endif
 |Motor de Eventos|
@@ -66,7 +70,7 @@ note right
   Alterações recusadas não geram mudança.
   Replanejar: sem ciclos; somente tarefas não
   iniciadas; respeitar política de abastecimento.
-  Exceção só encerra com solução (UC-D5).
+  Exceção só encerra com solução (UC33).
 end note
 stop
 @enduml

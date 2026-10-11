@@ -10,22 +10,22 @@ skinparam activityBorderColor #34536E
 skinparam ArrowColor #34536E
 |Coordenador de Turnaround|
 start
-:Abrir turnaround; aplicar modelo;\natribuir responsáveis e confirmar plano\n(UC-A3, UC-A6, UC-A5);
+:Abrir turnaround; aplicar modelo;\natribuir responsáveis e confirmar plano\n(UC03, UC06, UC05);
 |Motor de Eventos|
-:Verificar viabilidade antes da chegada\n(RF-C8);
+:Verificar viabilidade antes da chegada\n(RF-29);
 if (EIBT + MTTT > TOBT vigente?) then ([sim])
   :Emitir alerta de risco;
   |Coordenador de Turnaround|
-  :Tratar risco; ajustar referências ou\nprevisão e registrar ação\n(UC-A10, UC-D6, UC-D3);
+  :Tratar risco; ajustar referências ou\nprevisão e registrar ação\n(UC10, UC34, UC31);
 else ([não])
 endif
 |Operador de Solo/Rampa|
-:Registrar chegada real à posição\n(UC-A12);
+:Registrar chegada real à posição\n(UC12);
 |Motor de Eventos|
-:Gravar AIBT; colocar em Em solo;\npropagar tarefas para Pronta\n(UC-B8);
+:Gravar AIBT; colocar em Em solo;\npropagar tarefas para Pronta\n(UC21);
 note right
   Chegada registrada diretamente pelo operador.
-  Coordenador pode corrigir o horário (UC-A13),
+  Coordenador pode corrigir o horário (UC13),
   sem alterar o estado das tarefas.
 end note
 repeat
@@ -37,17 +37,17 @@ repeat
     ocorrem durante a execução, não após ela.
   end note
   |Autoridade de Liberação|
-  :Consultar tarefas obrigatórias\ne exceções (UC-D4);
+  :Consultar tarefas obrigatórias\ne exceções (UC32);
   if (Obrigatória pendente ou exceção aberta?) then ([sim])
     |Motor de Eventos|
     :Manter confirmação bloqueada;
     |Coordenador de Turnaround|
-    :Tratar pendências; encerrar exceção\nsomente com solução registrada\n(UC-D5);
+    :Tratar pendências; encerrar exceção\nsomente com solução registrada\n(UC33);
     |Motor de Eventos|
     :Restaurar estado conforme tarefas;\npropagar e recalcular;
   else ([não])
     |Autoridade de Liberação|
-    :Confirmar prontidão (UC-D4);
+    :Confirmar prontidão (UC32);
     |Motor de Eventos|
     if (Estado Pronto para liberação e sem nova pendência?) then ([sim])
       :Gravar ARDT e estado Liberado;
@@ -57,7 +57,7 @@ repeat
   endif
 repeat while (Turnaround ainda não Liberado?) is ([sim]) not ([não])
 |Operador de Solo/Rampa|
-:Após autorização externa de acionamento\ne push-back, registrar saída (UC-D9);
+:Após autorização externa de acionamento\ne push-back, registrar saída (UC37);
 note right
   Autorização do controle de tráfego aéreo
   recebida fora do sistema.

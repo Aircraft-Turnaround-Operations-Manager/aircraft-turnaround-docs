@@ -9,11 +9,11 @@ skinparam activityBackgroundColor #EEF4FA
 skinparam activityBorderColor #34536E
 |Operador de Solo/Rampa|
 start
-:Consultar tarefa da sua equipe\natribuída a si (UC-B1);
+:Consultar tarefa da sua equipe\natribuída a si (UC14);
 if (Marcar Não aplicável?) then ([sim])
-  :Solicitar marcação com justificativa\n(UC-B5);
+  :Solicitar marcação com justificativa\n(UC18);
 else ([não])
-  :Solicitar início (UC-B2);
+  :Solicitar início (UC15);
 endif
 |Motor de Eventos|
 if (Registro válido para atribuição, estado e modelo?) then ([não])
@@ -31,8 +31,8 @@ repeat
   |Operador de Solo/Rampa|
   :Executar tarefa;
   if (Necessário pausar?) then ([sim])
-    :Registrar pausa com justificativa\ne código do impedimento, se houver\n(UC-B4);
-    :Retomar quando possível\n(UC-B4);
+    :Registrar pausa com justificativa\ne código do impedimento, se houver\n(UC17);
+    :Retomar quando possível\n(UC17);
     note right
       Pausa: somente Em execução.
       Retomada: somente Pausada.
@@ -41,10 +41,10 @@ repeat
   else ([não])
   endif
   if (Tarefa possui pontos de QR Code?) then ([sim])
-    :Ler e confirmar pontos\ncom o celular (UC-B6);
+    :Ler e confirmar pontos\ncom o celular (UC19);
   else ([não])
   endif
-  :Solicitar conclusão (UC-B3);
+  :Solicitar conclusão (UC16);
   |Motor de Eventos|
   if (Em execução, atribuída e todos os pontos confirmados?) then ([sim])
     :Gravar Concluída, autor e horário;

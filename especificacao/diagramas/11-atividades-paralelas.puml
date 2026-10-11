@@ -19,41 +19,46 @@ end note
 if (Política permite abastecer com passageiros?) then ([sim])
   |Operador de Solo/Rampa|
   fork
-    :Desembarcar passageiros;
     fork
-      :Limpar cabine;
+      :Desembarcar passageiros;
+      fork
+        :Limpar cabine;
+      fork again
+        :Executar catering;
+      end fork
+      :Embarcar passageiros;
     fork again
-      :Executar catering;
+      :Descarregar bagagem e carga;
+      :Carregar bagagem e carga;
     end fork
-    :Embarcar passageiros;
+    :Preparar documentação de peso\ne balanceamento conforme modelo;
   fork again
     :Abastecer aeronave;
-  fork again
-    :Descarregar bagagem e carga;
-    :Carregar bagagem e carga;
   fork again
     :Executar serviços de rampa\ne inspeção previstos no modelo;
   end fork
 else ([não])
   |Operador de Solo/Rampa|
   fork
-    :Desembarcar passageiros;
     fork
-      :Limpar cabine;
+      :Desembarcar passageiros;
+      fork
+        :Limpar cabine;
+      fork again
+        :Executar catering;
+      fork again
+        :Abastecer aeronave;
+      end fork
+      :Embarcar passageiros;
     fork again
-      :Executar catering;
-    fork again
-      :Abastecer aeronave;
+      :Descarregar bagagem e carga;
+      :Carregar bagagem e carga;
     end fork
-    :Embarcar passageiros;
-  fork again
-    :Descarregar bagagem e carga;
-    :Carregar bagagem e carga;
+    :Preparar documentação de peso\ne balanceamento conforme modelo;
   fork again
     :Executar serviços de rampa\ne inspeção previstos no modelo;
   end fork
 endif
-:Preparar documentação de peso\ne balanceamento conforme modelo;
 :Fechar portas e retirar ponte/escada\nconforme modelo;
 |Motor de Eventos|
 :Propagar conclusão das obrigatórias;\nregistrar fim do atendimento;
