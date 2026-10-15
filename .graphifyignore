@@ -8,3 +8,7 @@ _kb-staging/
 # Texto de instruções para o projeto no claude.ai (meta, não domínio)
 claude/
 LICENSE
+# Saídas geradas (PDF final, PDF de conferência e cópias SVG dos diagramas em PNG): o conteúdo já está nos Markdown e nos PNG
+output/
+entregas/*.pdf
+*.svg
