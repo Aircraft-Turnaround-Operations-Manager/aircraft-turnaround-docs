@@ -20,7 +20,7 @@ for prefix,folder in paths.items():
    new=f'{prefix}-{serial}' if prefix in ('RF','RNF') else f'{prefix}{serial:02d}' if prefix=='UC' else f'US{serial:03d}'
    mapping[old]=new;rows.append((prefix,area.upper(),old,new))
 pattern=re.compile(r'\b(?:RNF|RF|US|UC)-[A-D]\d+\b')
-files=list(ESP.rglob('*.md'))+list(ESP.rglob('*.puml'))+list(ESP.rglob('*.bpmn'))
+files=list(ESP.rglob('*.md'))+list(ESP.rglob('*.puml'))+list(ESP.rglob('*.bpmn'))+list(ESP.rglob('*.drawio'))
 # Validação antes da primeira escrita.
 for p in files:
  unknown=set(pattern.findall(p.read_text(encoding='utf-8')))-mapping.keys()
