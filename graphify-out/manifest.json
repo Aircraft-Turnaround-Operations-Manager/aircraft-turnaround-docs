@@ -18,10 +18,10 @@
     "semantic_hash": "e6eea591a85e9ef51bfc9f54ac88794a"
   },
   "README.md": {
-    "mtime": 1791673868.4100816,
-    "seen": 1791674421.142648,
-    "ast_hash": "08247e962142606d3ccbc309dc61a6a8",
-    "semantic_hash": "08247e962142606d3ccbc309dc61a6a8"
+    "mtime": 1792620421.0452657,
+    "seen": 1792620609.046234,
+    "ast_hash": "cf6bbc777340b36ba990d2f6058faca1",
+    "semantic_hash": "cf6bbc777340b36ba990d2f6058faca1"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -108,10 +108,10 @@
     "semantic_hash": "342b52fd3aff37641e062b8fc532a0f3"
   },
   "entregas/ra1-tarefas.md": {
-    "mtime": 1791423400.2864566,
-    "seen": 1791423744.4360468,
-    "ast_hash": "756b4cef5e79e43d297096c8c368aa71",
-    "semantic_hash": "756b4cef5e79e43d297096c8c368aa71"
+    "mtime": 1792620421.0463426,
+    "seen": 1792620609.0462654,
+    "ast_hash": "eb7308bb76f28285a812b8ab3209b17f",
+    "semantic_hash": "eb7308bb76f28285a812b8ab3209b17f"
   },
   "especificacao/01-3-objetivos.md": {
     "mtime": 1791685444.7966416,
@@ -234,10 +234,10 @@
     "semantic_hash": "c66d9ed7dcc582dfe087f9bfe8f77f80"
   },
   "especificacao/09-diagrama-geral-de-casos-de-uso.md": {
-    "mtime": 1791685444.811084,
-    "seen": 1792030829.19871,
-    "ast_hash": "d0ca8bc60f203f58f74686d12b86ee38",
-    "semantic_hash": "d0ca8bc60f203f58f74686d12b86ee38"
+    "mtime": 1792620421.0474155,
+    "seen": 1792620609.046293,
+    "ast_hash": "b55434d98c3d91214baf84c6f8db0bf8",
+    "semantic_hash": "b55434d98c3d91214baf84c6f8db0bf8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/00-item.md": {
     "mtime": 1791685444.8120823,
@@ -444,8 +444,8 @@
     "semantic_hash": "28ca742f24ed334b67d491baa2bb8b6d"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1791685684.8121543,
-    "seen": 1792030829.1987383,
+    "mtime": 1792593098.1970913,
+    "seen": 1792620609.046301,
     "ast_hash": "727132fabec73d156215384f8dc694fd",
     "semantic_hash": "727132fabec73d156215384f8dc694fd"
   },
@@ -732,16 +732,16 @@
     "semantic_hash": "3a779fba8b4ead802fa68358f0ea4c3c"
   },
   "scripts/renumerar_ids.py": {
-    "mtime": 1791685444.9198046,
-    "seen": 1792030829.1985955,
-    "ast_hash": "70f8d542806461d82b7990b78b2aca29",
-    "semantic_hash": "70f8d542806461d82b7990b78b2aca29"
+    "mtime": 1792620421.0668147,
+    "seen": 1792620609.0462272,
+    "ast_hash": "96172123dda9ce3e200e0af002a720e8",
+    "semantic_hash": "96172123dda9ce3e200e0af002a720e8"
   },
   "scripts/verificar_revisao.py": {
-    "mtime": 1791685444.9198046,
-    "seen": 1792030829.1985977,
-    "ast_hash": "ca861e19cc6b1e0998eeef1a2ff3d4f2",
-    "semantic_hash": "ca861e19cc6b1e0998eeef1a2ff3d4f2"
+    "mtime": 1792620421.0668147,
+    "seen": 1792620609.0462282,
+    "ast_hash": "3c2541ebeab103b094a0983a0cc0339b",
+    "semantic_hash": "3c2541ebeab103b094a0983a0cc0339b"
   },
   "entregas/ra1-item-10-verificacao.md": {
     "mtime": 1791685444.7932558,
@@ -786,10 +786,10 @@
     "semantic_hash": "66b2b1e9a689a2a2415b1b499c21ba96"
   },
   "especificacao/diagramas/09-casos-de-uso.png": {
-    "mtime": 1791685444.8537526,
-    "seen": 1792030829.1989303,
-    "ast_hash": "7e38da6e394b44f4e65be6950c000176",
-    "semantic_hash": "7e38da6e394b44f4e65be6950c000176"
+    "mtime": 1792620421.0641892,
+    "seen": 1792620609.046384,
+    "ast_hash": "963cf5ade947a35562102a1dd7d7e7c8",
+    "semantic_hash": "963cf5ade947a35562102a1dd7d7e7c8"
   },
   "especificacao/diagramas/11-atividades-paralelas.png": {
     "mtime": 1791685444.856754,
@@ -814,5 +814,11 @@
     "seen": 1792030829.1989372,
     "ast_hash": "98c1463aedccf1f5448dbe43913e999b",
     "semantic_hash": "98c1463aedccf1f5448dbe43913e999b"
+  },
+  "scripts/exportar_drawio.py": {
+    "mtime": 1792620421.0658083,
+    "seen": 1792620609.0462127,
+    "ast_hash": "c1bda34f394bb5fe8e52a1026a29111a",
+    "semantic_hash": "c1bda34f394bb5fe8e52a1026a29111a"
   }
 }
