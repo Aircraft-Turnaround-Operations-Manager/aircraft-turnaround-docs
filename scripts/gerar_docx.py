@@ -36,6 +36,8 @@ def celulas(linha):
 
 def blocos(texto, base):
     """Devolve lista de blocos: ('h', nivel, txt) ('p', txt) ('li', nivel, txt) ('img', caminho) ('t', titulos, cabecalho, linhas)."""
+    # imagem relativa ao .md de origem, também dentro de tabelas e parágrafos
+    texto = re.sub(r'(!\[[^\]]*\]\()([^)]+)\)', lambda m: m.group(1) + str((base / m.group(2)).resolve()) + ')', texto)
     out, linhas, i = [], texto.split('\n'), 0
     while i < len(linhas):
         l = linhas[i]
@@ -64,6 +66,27 @@ def blocos(texto, base):
     return out
 
 
+def larguras(cabs, linhas, ncol, tam, larg_img):
+    """Largura das colunas pelo conteúdo, como a tabela automática do HTML: cada coluna recebe ao menos
+    a palavra mais longa (coluna de ID fica justa) e a sobra vai para quem tem mais texto."""
+    total = Cm(LARGURA_CM)
+    med = lambda n: Pt(n * tam * 0.6 + 12)  # ~0,6 em por caractere (negrito e maiúsculas) + margens da célula
+    mins, maxs = [Pt(20)] * ncol, [Pt(20)] * ncol
+    for l in cabs + linhas:
+        for k, txt in enumerate(l[:ncol]):
+            img = Cm(larg_img) if '![' in txt else 0
+            s = re.sub(r'!\[[^\]]*\]\([^)]+\)', '', txt)
+            s = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', s).replace('**', '').replace('`', '')
+            mins[k] = max([mins[k], img] + [med(len(p)) for p in s.split()])
+            maxs[k] = max([maxs[k], mins[k]] + [med(len(p.strip())) for p in re.split(r'<br\s*/?>', s)])
+    if sum(mins) >= total:
+        return [int(m * total / sum(mins)) for m in mins]
+    if sum(maxs) <= total:
+        return [int(m * total / sum(maxs)) for m in maxs]
+    sobra, folga = total - sum(mins), [M - m for M, m in zip(maxs, mins)]
+    return [int(m + sobra * f / sum(folga)) for m, f in zip(mins, folga)]
+
+
 # ---------------------------------------------------------------- escrita no docx
 class Montador:
     def __init__(self, doc):
@@ -87,7 +110,7 @@ class Montador:
             elif parte.startswith('`'):
                 r = par.add_run(parte[1:-1]); r.bold, r.italic = negrito or None, italico or None
                 if tam: r.font.size = Pt(tam)
-            elif parte.startswith('['):
+            elif re.fullmatch(r'\[[^\]]+\]\([^)]+\)', parte):
                 self.inline(par, re.match(r'\[([^\]]+)\]', parte).group(1), base, negrito, italico, tam, larg_img)
             elif parte.startswith('*') and parte.endswith('*') and len(parte) > 2:
                 self.inline(par, parte[1:-1], base, negrito, True, tam, larg_img)
@@ -121,6 +144,8 @@ class Montador:
             p = self.doc.add_paragraph(); r = p.add_run(txt); r.bold = True
         p.paragraph_format.keep_with_next = True
         p.paragraph_format.space_before = Pt(10)
+        if nivel == 2 and re.match(r'UC\d', txt):  # item 10: cada caso de uso começa em página nova
+            p.paragraph_format.page_break_before = True
         self._mover(p._p, ancora)
 
     def imagem(self, ancora, caminho):
@@ -161,8 +186,22 @@ class Montador:
             trPr = t.rows[-1]._tr.get_or_add_trPr(); h = OxmlElement('w:tblHeader'); h.set(qn('w:val'), 'true'); trPr.append(h)
         for l in linhas:
             c = t.add_row().cells
+            if len(l) == 1 and ncol > 1:  # linha de uma célula só (COMO/POSSO/PARA das estórias) ocupa a largura toda
+                self._cel(c[0].merge(c[-1]), l[0], base, tam=tam); continue
             for k in range(ncol):
                 self._cel(c[k], l[k] if k < len(l) else '', base, tam=tam, larg_img=11.0 if ncol <= 2 else 6.0)
+        if cab and cab[0] == 'Faz':  # item 2: o quadro Faz/Não faz não cabe com o É/Não é; vai inteiro para a página seguinte
+            p = self.doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE); self._mover(p._p, ancora)
+        if cab and (cab[0].startswith('Ações do ator') or cab[0] in ('É', 'Faz')):  # fluxo (diálogo em turnos) e quadro do item 2: metade para cada lado
+            ws = [int(Cm(LARGURA_CM) / ncol)] * ncol
+        else:
+            ws = larguras([cab] if cab else [], [l for l in linhas if len(l) > 1], ncol, tam, 11.0 if ncol <= 2 else 6.0)
+        t.autofit = False
+        for col, w in zip(t.columns, ws): col.width = w
+        for tr in t._tbl.tr_lst:
+            k = 0
+            for tc in tr.tc_lst:
+                tc.width = sum(ws[k:k + tc.grid_span]); k += tc.grid_span
         self._mover(t._tbl, ancora)
         self._mover(self.doc.add_paragraph()._p, ancora)
 
