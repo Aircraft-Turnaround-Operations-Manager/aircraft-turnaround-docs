@@ -6,3 +6,5 @@ graphify-out/cache/
 # Caminhos locais da máquina de quem gerou o grafo
 graphify-out/.graphify_python
 graphify-out/.graphify_root
+# Dependências do exportador de BPMN (npm install --prefix scripts)
+scripts/node_modules/
