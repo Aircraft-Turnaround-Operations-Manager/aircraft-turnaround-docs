@@ -1,0 +1,8 @@
+{
+  "name": "aircraft-turnaround-docs-scripts",
+  "private": true,
+  "description": "Dependência do exportador de BPMN (scripts/exportar_bpmn.mjs)",
+  "dependencies": {
+    "bpmn-js": "18.9.1"
+  }
+}
