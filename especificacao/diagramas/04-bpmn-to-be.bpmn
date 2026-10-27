@@ -53,7 +53,7 @@
     <intermediateCatchEvent id="IE_aibt" name="Aeronave em posição (AIBT)">
       <messageEventDefinition id="ED_IE_aibt" messageRef="Msg_aibt" />
     </intermediateCatchEvent>
-    <userTask id="T_calcar" name="Posicionar ponte ou escada e registrar o início do atendimento (ACGT)" />
+    <userTask id="T_calcar" name="Posicionar ponte ou escada e iniciar o atendimento (ACGT)" />
     <subProcess id="SP_solo" name="Executar as tarefas em solo">
       <startEvent id="S_solo" name="Atendimento iniciado" />
       <parallelGateway id="F1" name="" />
@@ -120,7 +120,7 @@
       <sequenceFlow id="F_S_solo_F1" sourceRef="S_solo" targetRef="F1" />
       <sequenceFlow id="F_J4_E_solo" sourceRef="J4" targetRef="E_solo" />
     </subProcess>
-    <userTask id="T_portas" name="Fechar portas, retirar a ponte e registrar o fim do atendimento (AEGT)" />
+    <userTask id="T_portas" name="Fechar portas e retirar a ponte (AEGT)" />
     <serviceTask id="T_verif" name="Verificar tarefas obrigatórias e exceções abertas (Pronto para liberação)" />
     <exclusiveGateway id="G_pend" name="Há tarefa obrigatória pendente ou exceção aberta?" />
     <userTask id="T_tratar" name="Tratar a pendência ou a exceção" />
