@@ -17,7 +17,7 @@
 ### 1.3 Fluxo de trabalho
 
 - **Formato:** todo o conteúdo é produzido em arquivos **Markdown (.md)** no repositório `aircraft-turnaround-docs`, e não diretamente no .docx do template.
-- **Diagramas:** escritos como código, com **Mermaid** ou **PlantUML**, o que funcionar melhor para cada diagrama. O arquivo-fonte (`.mmd` ou `.puml`) fica versionado junto com a imagem exportada. Exceção: o BPMN do item 4 é feito em BPMN 2.0 (`.bpmn`), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1). O diagrama de casos de uso do item 9 também é exceção: é feito no draw.io (`.drawio`), para controlar a posição de cada elemento.
+- **Diagramas:** cada diagrama tem a fonte editável versionada junto com a imagem exportada. O BPMN do item 4 é feito em BPMN 2.0 (`.bpmn`), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1). Os diagramas de casos de uso (item 9) e de atividades (item 11) são feitos no draw.io (`.drawio`), para controlar a posição de cada elemento; no RA1 eles foram entregues em PlantUML e refeitos no draw.io depois da entrega.
 - **Branches:** cada tarefa é feita em uma **branch própria**, e o trabalho entra na `main` por **pull request**. O PR aberto corresponde ao status **In review** no board.
 - **Consolidação:** quando todos os itens estiverem na `main`, os arquivos MD são consolidados em um único documento, na ordem e com os títulos do template, e exportados em **PDF**, que é o formato de envio no Canvas.
 
@@ -204,7 +204,7 @@ Referência: `entregas/ra1-criterios-de-aceite.md`
 - Bloqueia: #<n>, ...
 
 ## Definição de pronto
-- Trabalho feito em branch própria, em arquivo(s) MD do repositório (diagramas em Mermaid ou PlantUML, com fonte versionada).
+- Trabalho feito em branch própria, em arquivo(s) MD do repositório (diagramas com a fonte editável versionada).
 - Todos os critérios acima marcados, cada um com evidência (arquivo e seção, quantidade contada).
 - Abrir pull request para a `main` e mover o card para **In review**; outro integrante revisa. Só vai para **Done** após o merge.
 ```
