@@ -17,3 +17,5 @@ Referências de horários da tomada de decisão colaborativa em aeroportos (A-CD
 ## 11.4 Eventos, alertas e intervenções
 
 ![Diagrama de atividades — monitoramento e tratamento de desvios](diagramas/11-monitoramento.png)
+
+<!-- Fontes editáveis: especificacao/diagramas/11-atividades.drawio, 11-atividades-paralelas.drawio, 11-registro-tarefa.drawio e 11-monitoramento.drawio (draw.io). Imagens PNG e SVG geradas por `python scripts/exportar_drawio.py <arquivo.drawio>`; a geometria é conferida por `python scripts/verificar_drawio.py <arquivo.drawio>`. -->

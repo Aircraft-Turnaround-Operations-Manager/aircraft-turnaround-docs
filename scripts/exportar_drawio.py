@@ -45,7 +45,11 @@ def main(arq, escala='2'):
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print('exportado', saida)
     svg = arq.with_suffix('.svg').read_text(encoding='utf-8')
-    print('foreignObject no SVG:', svg.count('<foreignObject'), '| textos SVG:', svg.count('<text'))
+    # o draw.io grava cada cor como light-dark(claro, escuro); num tema escuro o diagrama sairia preto com linhas
+    # claras. Fica só a cor do tema claro, para o SVG ter a mesma aparência do PNG em qualquer tema.
+    svg = re.sub(r'light-dark\(((?:rgb\([^)]*\)|[^,()])+),\s*(?:rgb\([^)]*\)|[^,()])+\)', r'\1', svg)
+    arq.with_suffix('.svg').write_text(svg, encoding='utf-8')
+    print('foreignObject no SVG:', svg.count('<foreignObject'), '| textos SVG:', svg.count('<text'), '| cores light-dark:', svg.count('light-dark('))
 
 
 if __name__ == '__main__':
