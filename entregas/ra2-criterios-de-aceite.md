@@ -201,7 +201,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 Ajustes do RA1 (3.0) ── primeira tarefa; entra na main antes de todo o resto
       │
       ▼
-Decisões B1 a B3 (seção 6)
+Decisões B2 e B3 (seção 6)
       │
       └──► Item 12 (modelo de dados)
                  │
@@ -253,8 +253,8 @@ Respostas de rdsalvesPUC em 28/10. Cada decisão fechada vira ADR na tarefa corr
 
 | | Decisão | Situação |
 |---|---|---|
-| B1 | **Tipos sem SGBD nem linguagem específica.** A tarefa não pede um SGBD; o que ela pede são campos tipados (item 12) e atributos e métodos tipados (item 13). Proposta: item 12 com tipos SQL padrão (`INTEGER`, `VARCHAR(n)`, `DECIMAL(p,s)`, `BOOLEAN`, `TIMESTAMP WITH TIME ZONE` para os horários com data e fuso), como nos slides; item 13 com tipos UML neutros (`String`, `Integer`, `Boolean`, `DateTime`) e as classes e enumerações do próprio diagrama. | Proposta; confirmar |
-| B2 | **Arquitetura de implementação e convenção de nomes.** O item 13 declara a arquitetura (C13.4), e o item 14 mostra as mensagens entre as camadas dela (C14.3). Falta decidir as camadas, onde fica o Motor de Eventos e a convenção de nomes de classes, tabelas e campos. | Em aberto; conversa dedicada antes do item 13 |
+| B1 | **Tipos SQL padrão como referência.** O sistema usa microsserviços, e cada serviço pode ter um banco diferente; por isso a especificação não escolhe banco nem linguagem. Item 12 com tipos SQL padrão (`INTEGER`, `VARCHAR(n)`, `DECIMAL(p,s)`, `BOOLEAN`, `TIMESTAMP WITH TIME ZONE` para os horários com data e fuso), como nos slides; item 13 com tipos UML neutros (`String`, `Integer`, `Boolean`, `DateTime`) e as classes e enumerações do próprio diagrama. Cada integrante adapta os tipos ao banco e à linguagem do seu serviço no desenvolvimento. | Decidido |
+| B2 | **Arquitetura de microsserviços: divisão e convenção de nomes.** A arquitetura é de microsserviços (decidido em 28/10). O item 13 declara a arquitetura (C13.4), e o item 14 mostra as mensagens entre as camadas e os serviços (C14.3). Falta decidir quais são os serviços e o que cada um guarda (o que define como o item 12 se divide por serviço), as camadas dentro de cada serviço, onde fica o Motor de Eventos, como os serviços se comunicam e a convenção de nomes de classes, tabelas e campos. | Em aberto; conversa dedicada antes do item 12 |
 | B3 | **Ferramenta dos diagramas de sequência.** Testar primeiro Mermaid e PlantUML em um caso de uso e comparar o resultado no PDF; se ficarem ruins, usar o draw.io. | Decidido; teste antes do item 14 |
 | B4 | **Planilha do item 15 só no PDF**, sem arquivo `.xlsx` ou `.csv`. | Decidido |
 | B5 | **Matriz estendida:** o Apêndice A ganha as colunas dos itens 12 a 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste). Pede atualização da ADR-0012 e do script. | Decidido |
