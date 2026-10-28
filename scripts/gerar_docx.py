@@ -330,6 +330,8 @@ def main():
         elif 'NOME DO PRODUTO DE SOFTWARE' in t: trocar_texto(p, '- %s -' % PRODUTO.upper())
         elif t == '2025': trocar_texto(p, ANO)
     for s in doc.sections:
+        for p in (p for t in s.header.tables for r in t.rows for c in r.cells for p in c.paragraphs):  # ano do cabeçalho
+            if p.text.strip() == '2025': trocar_texto(p, ANO)
         for p in s.footer.paragraphs:
             for r in p.runs:
                 if 'Nome do Produto de Software' in r.text: r.text = r.text.replace('Nome do Produto de Software', PRODUTO)
