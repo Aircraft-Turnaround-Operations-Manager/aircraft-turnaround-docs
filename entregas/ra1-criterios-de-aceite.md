@@ -2,7 +2,7 @@
 
 > Definition of Done do documento de especificação que o grupo entrega na Avaliação do RA 1.
 > Este arquivo **não é** o documento de especificação. Ele define **o que** o documento precisa conter e **como verificar** que está pronto.
-> Os itens 12 a 15 (Avaliação do RA 2, entrega em 28/11) ficam em um documento separado, a ser criado depois.
+> Os itens 12 a 15 (Avaliação do RA 2, entrega em 28/11) estão em [`ra2-criterios-de-aceite.md`](ra2-criterios-de-aceite.md).
 
 ---
 
