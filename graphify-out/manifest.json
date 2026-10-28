@@ -792,16 +792,16 @@
     "semantic_hash": "963cf5ade947a35562102a1dd7d7e7c8"
   },
   "especificacao/diagramas/11-atividades-paralelas.png": {
-    "mtime": 1793145303.6216655,
-    "seen": 1793147721.0865345,
-    "ast_hash": "3c9a1325e090c06373dab92e8068dac1",
-    "semantic_hash": "3c9a1325e090c06373dab92e8068dac1"
+    "mtime": 1793149053.4513607,
+    "seen": 1793149255.7025893,
+    "ast_hash": "b0c7daea7116edb50d34ef54808a5871",
+    "semantic_hash": "b0c7daea7116edb50d34ef54808a5871"
   },
   "especificacao/diagramas/11-atividades.png": {
-    "mtime": 1793145303.6321824,
-    "seen": 1793147721.086536,
-    "ast_hash": "32ef19c4720656456e34b27b8a488eba",
-    "semantic_hash": "32ef19c4720656456e34b27b8a488eba"
+    "mtime": 1793149053.4604776,
+    "seen": 1793149255.7025902,
+    "ast_hash": "4352226ac85c159bb97338f59deda61f",
+    "semantic_hash": "4352226ac85c159bb97338f59deda61f"
   },
   "especificacao/diagramas/11-monitoramento.png": {
     "mtime": 1793145303.6421885,
@@ -876,10 +876,10 @@
     "semantic_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d"
   },
   "scripts/marcos_nos_diagramas.py": {
-    "mtime": 1793145303.6527016,
-    "seen": 1793147721.0862317,
-    "ast_hash": "874f1d8d27dc5635fce053263bb524d6",
-    "semantic_hash": "874f1d8d27dc5635fce053263bb524d6"
+    "mtime": 1793149053.4614825,
+    "seen": 1793149255.7024279,
+    "ast_hash": "15e57d064bea298a7b34767ebcf791b5",
+    "semantic_hash": "15e57d064bea298a7b34767ebcf791b5"
   },
   "scripts/medir_svg.mjs": {
     "mtime": 1793145303.6537075,
