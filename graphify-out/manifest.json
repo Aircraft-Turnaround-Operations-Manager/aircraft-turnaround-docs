@@ -1,9 +1,9 @@
 {
   "AGENTS.md": {
-    "mtime": 1791673868.4080832,
-    "seen": 1791674421.1426423,
-    "ast_hash": "183ab2550ca8aa12c295f72d4a93cd96",
-    "semantic_hash": "183ab2550ca8aa12c295f72d4a93cd96"
+    "mtime": 1793145303.5966203,
+    "seen": 1793147721.086249,
+    "ast_hash": "bfaead5d9cf7a14eff03b995429921f9",
+    "semantic_hash": "bfaead5d9cf7a14eff03b995429921f9"
   },
   "CLAUDE.md": {
     "mtime": 1790911621.9407463,
@@ -18,10 +18,10 @@
     "semantic_hash": "e6eea591a85e9ef51bfc9f54ac88794a"
   },
   "README.md": {
-    "mtime": 1792873582.468832,
-    "seen": 1792875200.8473065,
-    "ast_hash": "bb49ec0a5ad00615e7a6e5177ca71ac4",
-    "semantic_hash": "bb49ec0a5ad00615e7a6e5177ca71ac4"
+    "mtime": 1793145303.5986204,
+    "seen": 1793147721.0862558,
+    "ast_hash": "8932ef50783656e2cc19be60e542188f",
+    "semantic_hash": "8932ef50783656e2cc19be60e542188f"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -108,10 +108,10 @@
     "semantic_hash": "342b52fd3aff37641e062b8fc532a0f3"
   },
   "entregas/ra1-tarefas.md": {
-    "mtime": 1792620421.0463426,
-    "seen": 1792620609.0462654,
-    "ast_hash": "eb7308bb76f28285a812b8ab3209b17f",
-    "semantic_hash": "eb7308bb76f28285a812b8ab3209b17f"
+    "mtime": 1793145303.5996244,
+    "seen": 1793147721.08631,
+    "ast_hash": "8e18a443de8d53fe05c947041848aba0",
+    "semantic_hash": "8e18a443de8d53fe05c947041848aba0"
   },
   "especificacao/01-3-objetivos.md": {
     "mtime": 1791685444.7966416,
@@ -132,10 +132,10 @@
     "semantic_hash": "3b9b2e3166ac73e290bca9dc06969217"
   },
   "especificacao/04-mapeamento-de-negocios.md": {
-    "mtime": 1792873582.4908977,
-    "seen": 1792875200.8473423,
-    "ast_hash": "7c08551072f22eeb7c72dafa5bb8de92",
-    "semantic_hash": "7c08551072f22eeb7c72dafa5bb8de92"
+    "mtime": 1793145303.600621,
+    "seen": 1793147721.0863214,
+    "ast_hash": "71d35fe77cd74a8462ea15d3c0dadade",
+    "semantic_hash": "71d35fe77cd74a8462ea15d3c0dadade"
   },
   "especificacao/05-atores-usuarios.md": {
     "mtime": 1791685444.798764,
@@ -270,10 +270,10 @@
     "semantic_hash": "5d24e927990bee446da65202fee20dc5"
   },
   "especificacao/11-diagrama-de-atividades.md": {
-    "mtime": 1791685444.8461983,
-    "seen": 1792030829.1987364,
-    "ast_hash": "55b939182a3c755ba8d28f4c0e50925b",
-    "semantic_hash": "55b939182a3c755ba8d28f4c0e50925b"
+    "mtime": 1793145303.6016252,
+    "seen": 1793147721.0863714,
+    "ast_hash": "d4dd52f08c826d9b29ae707212ff8498",
+    "semantic_hash": "d4dd52f08c826d9b29ae707212ff8498"
   },
   "pesquisa/README.md": {
     "mtime": 1791673868.5137534,
@@ -420,10 +420,10 @@
     "semantic_hash": "335e7fe3eddff9b2829a0ad8eff957b0"
   },
   "especificacao/diagramas/04-bpmn-to-be.png": {
-    "mtime": 1792873582.5185833,
-    "seen": 1792875200.847454,
-    "ast_hash": "c695e845ceeba8c0703387086dc9439f",
-    "semantic_hash": "c695e845ceeba8c0703387086dc9439f"
+    "mtime": 1793145303.6156666,
+    "seen": 1793147721.086531,
+    "ast_hash": "1ad9379ca8248a239bd75807493a1a60",
+    "semantic_hash": "1ad9379ca8248a239bd75807493a1a60"
   },
   "docs/adr/0011-minimo-por-integrante-e-numeracao-provisoria.md": {
     "mtime": 1791250013.2338498,
@@ -792,34 +792,34 @@
     "semantic_hash": "963cf5ade947a35562102a1dd7d7e7c8"
   },
   "especificacao/diagramas/11-atividades-paralelas.png": {
-    "mtime": 1791685444.856754,
-    "seen": 1792030829.198932,
-    "ast_hash": "4256e65209a4538af0658e0d16988394",
-    "semantic_hash": "4256e65209a4538af0658e0d16988394"
+    "mtime": 1793145303.6216655,
+    "seen": 1793147721.0865345,
+    "ast_hash": "3c9a1325e090c06373dab92e8068dac1",
+    "semantic_hash": "3c9a1325e090c06373dab92e8068dac1"
   },
   "especificacao/diagramas/11-atividades.png": {
-    "mtime": 1791685444.859752,
-    "seen": 1792030829.1989336,
-    "ast_hash": "f6fa4a9130bf626c415013a179cb00d3",
-    "semantic_hash": "f6fa4a9130bf626c415013a179cb00d3"
+    "mtime": 1793145303.6321824,
+    "seen": 1793147721.086536,
+    "ast_hash": "32ef19c4720656456e34b27b8a488eba",
+    "semantic_hash": "32ef19c4720656456e34b27b8a488eba"
   },
   "especificacao/diagramas/11-monitoramento.png": {
-    "mtime": 1791685444.8627536,
-    "seen": 1792030829.1989355,
-    "ast_hash": "25b4342e27df0247100c7c4fc3828b45",
-    "semantic_hash": "25b4342e27df0247100c7c4fc3828b45"
+    "mtime": 1793145303.6421885,
+    "seen": 1793147721.0865378,
+    "ast_hash": "8200b9fb6de8031d32098dc5753f5b79",
+    "semantic_hash": "8200b9fb6de8031d32098dc5753f5b79"
   },
   "especificacao/diagramas/11-registro-tarefa.png": {
-    "mtime": 1791685444.8647528,
-    "seen": 1792030829.1989372,
-    "ast_hash": "98c1463aedccf1f5448dbe43913e999b",
-    "semantic_hash": "98c1463aedccf1f5448dbe43913e999b"
+    "mtime": 1793145303.6501973,
+    "seen": 1793147721.0865393,
+    "ast_hash": "929bfca5298c597fe692f727d310b1c6",
+    "semantic_hash": "929bfca5298c597fe692f727d310b1c6"
   },
   "scripts/exportar_drawio.py": {
-    "mtime": 1792620421.0658083,
-    "seen": 1792620609.0462127,
-    "ast_hash": "c1bda34f394bb5fe8e52a1026a29111a",
-    "semantic_hash": "c1bda34f394bb5fe8e52a1026a29111a"
+    "mtime": 1793145303.6527016,
+    "seen": 1793147721.0862179,
+    "ast_hash": "d9f27247db7c4847969859f2898dfdd6",
+    "semantic_hash": "d9f27247db7c4847969859f2898dfdd6"
   },
   "scripts/exportar_bpmn.mjs": {
     "mtime": 1792873582.5232255,
@@ -840,39 +840,57 @@
     "semantic_hash": "d91acbe480924d591831d5c61acb0dd5"
   },
   "especificacao/diagramas/04-bpmn-to-be-alerta.png": {
-    "mtime": 1792873582.4988096,
-    "seen": 1792875200.8474486,
+    "mtime": 1793141849.3647587,
+    "seen": 1793147721.086521,
     "ast_hash": "e3a5ed40957ba6c680a04a2a87c30043",
     "semantic_hash": "e3a5ed40957ba6c680a04a2a87c30043"
   },
   "especificacao/diagramas/04-bpmn-to-be-geral.png": {
-    "mtime": 1792873582.5074914,
-    "seen": 1792875200.8474495,
-    "ast_hash": "b6169331ed95f80d77f7b9b937ffac29",
-    "semantic_hash": "b6169331ed95f80d77f7b9b937ffac29"
+    "mtime": 1793145303.6096323,
+    "seen": 1793147721.0865226,
+    "ast_hash": "62ac7cd1ca3eed8b4ea2b77532d4feee",
+    "semantic_hash": "62ac7cd1ca3eed8b4ea2b77532d4feee"
   },
   "especificacao/diagramas/04-bpmn-to-be-monitoramento.png": {
-    "mtime": 1792873582.5074914,
-    "seen": 1792875200.8474507,
+    "mtime": 1793141849.3341994,
+    "seen": 1793147721.086524,
     "ast_hash": "b313878b0bd83a1ee425d0d43ab25681",
     "semantic_hash": "b313878b0bd83a1ee425d0d43ab25681"
   },
   "especificacao/diagramas/04-bpmn-to-be-previsao.png": {
-    "mtime": 1792873582.5074914,
-    "seen": 1792875200.8474514,
+    "mtime": 1793141860.0244179,
+    "seen": 1793147721.0865257,
     "ast_hash": "e96155ee6c940b09a9c6c1f7e030f461",
     "semantic_hash": "e96155ee6c940b09a9c6c1f7e030f461"
   },
   "especificacao/diagramas/04-bpmn-to-be-tarefas-em-solo.png": {
-    "mtime": 1792873582.5074914,
-    "seen": 1792875200.8474522,
+    "mtime": 1793141849.2710102,
+    "seen": 1793147721.0865276,
     "ast_hash": "699e9dd4b358e4d1b569aeefcbc60955",
     "semantic_hash": "699e9dd4b358e4d1b569aeefcbc60955"
   },
   "especificacao/diagramas/04-bpmn-to-be-tobt-15.png": {
-    "mtime": 1792873582.5074914,
-    "seen": 1792875200.8474529,
+    "mtime": 1793141860.0274186,
+    "seen": 1793147721.086529,
     "ast_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d",
     "semantic_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d"
+  },
+  "scripts/marcos_nos_diagramas.py": {
+    "mtime": 1793145303.6527016,
+    "seen": 1793147721.0862317,
+    "ast_hash": "874f1d8d27dc5635fce053263bb524d6",
+    "semantic_hash": "874f1d8d27dc5635fce053263bb524d6"
+  },
+  "scripts/medir_svg.mjs": {
+    "mtime": 1793145303.6537075,
+    "seen": 1793147721.086234,
+    "ast_hash": "6710e2c28c9f1aa0644d8f1577cacba3",
+    "semantic_hash": "6710e2c28c9f1aa0644d8f1577cacba3"
+  },
+  "scripts/verificar_drawio.py": {
+    "mtime": 1793145303.6537075,
+    "seen": 1793147721.086244,
+    "ast_hash": "b8f49df3ec633b36ca5c115b953d54a6",
+    "semantic_hash": "b8f49df3ec633b36ca5c115b953d54a6"
   }
 }
