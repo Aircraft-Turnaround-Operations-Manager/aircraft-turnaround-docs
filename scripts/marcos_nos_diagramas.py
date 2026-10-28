@@ -1,8 +1,8 @@
 """Apoio à checagem cruzada dos diagramas (AGENTS.md, regra 6): para cada marco do atendimento em solo, lista os RFs que o
 definem (com o ator) e cada passo de diagrama que o cita (com a partição ou lane em que está).
 
-Marca "conferir" quando a partição do passo não é o ator de nenhum RF que cita o marco. É um apoio à leitura: um passo do
-Operador que dispara o marco pode estar certo; o que decide é ler o RF e o UC.
+Situação de cada passo: vazio (a partição é ator de um RF do marco), "dispara" (o Operador faz o registro de que o Motor de
+Eventos deriva o marco, pelo RF), "grava" (o Motor de Eventos grava o que um ator registrou) ou "conferir" (ler o RF e o UC).
 Uso: python scripts/marcos_nos_diagramas.py
 """
 import html, re, xml.etree.ElementTree as ET
@@ -58,10 +58,22 @@ def main():
         for i, t, a in defs:
             k = t.find(m); print(f'- {i} ({a}): …{t[max(0, k - 160):k + len(m) + 10]}…')
         print('\n| Diagrama | Partição/lane | Passo | |\n|---|---|---|---|')
+        derivado = [i for i, t, a in defs if 'a partir dos registros dos operadores' in t]
         vistos = set()
         for arq, p, t in passos:
             if re.search(rf'\b{m}\b', t) and (arq, p, t) not in vistos:
-                vistos.add((arq, p, t)); print(f'| {arq} | {p or "—"} | {t} | {"" if not p or p in atores else "conferir"} |')
+                vistos.add((arq, p, t)); print(f'| {arq} | {p or "—"} | {t} | {situacao(p, t, atores, derivado)} |')
+
+
+def situacao(p, t, atores, derivado):
+    """'' quando a partição é ator de um RF do marco; 'dispara' quando o Operador faz o registro que o Motor de Eventos
+    transforma no marco (RF que define o marco 'a partir dos registros dos operadores'); 'grava' quando o Motor de
+    Eventos grava o que um ator registrou; 'conferir' nos demais casos e quando o Operador diz registrar um marco derivado."""
+    if not p or p in atores: return ''
+    if p == 'Operador de Solo/Rampa' and derivado:
+        return 'conferir' if re.search(r'\bregistr', t, re.I) else f'dispara ({", ".join(derivado)})'
+    if p == 'Motor de Eventos' and re.match(r'Gravar\b', t): return 'grava'
+    return 'conferir'
 
 
 if __name__ == '__main__':
