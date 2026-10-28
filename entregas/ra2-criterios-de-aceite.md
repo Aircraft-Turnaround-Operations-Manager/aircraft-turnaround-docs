@@ -10,12 +10,13 @@
 
 ### 0.1 Para quem monta o board (GitHub Projects)
 - Cada seção de 3.0 a 3.4 vira **uma ou mais tarefas** no board.
+- O ajuste do título ARO (seção 3.0) é a **primeira tarefa** do RA2, antes de qualquer item novo; ela e os itens 12 e 13 ficam com rdsalvesPUC.
 - Os itens 14 e 15 são divididos por área (A, B, C e D), seguindo os casos de uso e as estórias que cada integrante escreveu no RA1 (seção 4).
 - A ordem e os bloqueios entre tarefas estão na **seção 4**.
 - O corpo de cada tarefa copia os IDs dos critérios correspondentes (ex.: `C14.1` a `C14.8`), para que o checklist acompanhe a tarefa.
 
 ### 0.2 Para quem escreve um item
-- Antes de começar, leia a seção do item, o checklist dele e os pontos em aberto da seção 6 que o afetam.
+- Antes de começar, leia a seção do item, o checklist dele e as decisões da seção 6 que o afetam.
 - Um item só está pronto quando **todos** os critérios dele estão atendidos **e** a consistência da seção 5 foi conferida para ele.
 
 ### 0.3 Protocolo de execução e verificação (obrigatório para agentes de IA)
@@ -74,7 +75,7 @@ Todos os arquivos ficam na pasta local "01 Especificacao de Software" (OneDrive,
 | 14 | "um diagrama para cada caso de uso apresentado anteriormente" | "Sequência de interação entre as camadas, para cada caso de uso especificado"; legenda "Diagrama de Sequência do UC00n" | No mínimo 4 casos de uso (só na atividade formativa) |
 | 15 | "planilha de casos de teste, considerando os diferentes cenários previstos nos critérios de aceite das histórias de usuário" | Casos de teste projetados "a partir das especificações de caso de uso", na "PLANILHA DE CASOS DE TESTE" | No mínimo 4 casos de uso (só na atividade formativa) |
 
-O mínimo de 4 casos de uso do plano de ensino vale só para as atividades formativas em aula. A entrega somativa segue a tarefa e a rubrica: **um diagrama de sequência para cada um dos 37 casos de uso** e casos de teste para **todos** os critérios de aceite.
+A coluna do plano de ensino descreve a **atividade prática feita em aula** (avaliação formativa, sem nota no RA2), que pede diagramas e casos de teste de no mínimo 4 casos de uso. Esse mínimo **não vale** para a entrega do RA2, que segue a tarefa e a rubrica: **um diagrama de sequência para cada um dos 37 casos de uso** e casos de teste para **todos** os critérios de aceite.
 
 ---
 
@@ -86,7 +87,7 @@ O mínimo de 4 casos de uso do plano de ensino vale só para as atividades forma
 - [ ] **Y.4 — Nomes exatos.** Produto, atores e estados com os nomes do `CONTEXT.md` (seções 1 a 3) também nos diagramas, nas classes e na planilha; nomes de classes e tabelas podem seguir a convenção técnica (seção 6, B2), mas o texto do item diz a qual ator ou estado cada uma corresponde.
 - [ ] **Y.5 — Siglas (ADR-0008).** Em cada um dos itens 12 a 15, a primeira ocorrência de cada sigla vem com o nome em português, inclusive UML, SGBD, MVC, PK e FK.
 - [ ] **Y.6 — Diagramas legíveis na tela.** Cada diagrama dos itens 12 a 14 é legível no PDF ao ampliar, sem texto cortado, sobreposto ou cruzado por linhas; diagrama grande ganha visão geral mais vistas detalhadas. Os diagramas entram em SVG no documento (vetoriais), com a PNG de reserva.
-- [ ] **Y.7 — Fonte editável versionada.** Cada diagrama tem a fonte editável em `especificacao/diagramas/`, ao lado da imagem exportada, como os dos itens 4, 9 e 11; a planilha do item 15 também tem arquivo versionado (seção 6, B4).
+- [ ] **Y.7 — Fonte editável versionada.** Cada diagrama tem a fonte editável em `especificacao/diagramas/`, ao lado da imagem exportada, como os dos itens 4, 9 e 11. A planilha do item 15 entra só no PDF, como tabela gerada da fonte Markdown do item (seção 6, B4).
 - [ ] **Y.8 — Checagem cruzada dos diagramas (AGENTS.md, regra 6).** Todo passo, mensagem, sigla e marco dos diagramas novos bate com o RF e o UC que o definem (quem faz, o que é gravado e por quem). `python scripts/marcos_nos_diagramas.py` não deixa nenhuma linha "conferir".
 
 ---
@@ -108,6 +109,8 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 
 **Rubrica:** "Avalia se foram implementados os ajustes solicitados na correção do RA 1 (primeira parcial do documento)". Excede = **todos** os ajustes apontados implementados; Domínio = pelo menos a metade.
 
+**Ordem e responsável:** é a primeira tarefa do RA2 e entra na `main` antes de qualquer item novo, porque os itens 14 e 15 citam os títulos dos RFs. Responsável: rdsalvesPUC.
+
 **Ajustes apontados** (anotações no PDF da tentativa 1, de 10/10; a tentativa 2 não tem anotações):
 
 | # | Página (tentativa 1) | Anotação do professor | Situação em 28/10 |
@@ -121,7 +124,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 **Padrão ARO** (slides `ESSW_TE3_2`, p. 11): o título do requisito funcional usa **Ação-Resultado-Objeto**, por exemplo "Gerenciar cadastro do cliente" e "Solicitar entrega do pedido".
 
 - [ ] **C00.1** Cada um dos 44 RFs do item 6 tem um **título no padrão ARO** (ação + resultado + objeto), visível na tabela do item 6 no PDF.
-- [ ] **C00.2** O título de cada RF é o mesmo em todo lugar que o cita: título da estória (`USnnn – REQUISITO RF-n: <título>`, item 7), matriz de rastreabilidade (Apêndice A) e, quando o nome do caso de uso derivar do RF, item 9 e item 10. Conferido por script.
+- [ ] **C00.2** O título de cada RF é o mesmo em todo lugar que o cita: título da estória (`USnnn – REQUISITO RF-n: <título>`, item 7), matriz de rastreabilidade (Apêndice A) e, quando o nome do caso de uso derivar do RF, item 9 e item 10. Conferido por script. As estórias já têm título no formato verbo + objeto ("Abrir turnaround", "Concluir tarefa"); o ajuste parte desses títulos, e só o título que precisar mudar para entrar no padrão muda também na estória, no caso de uso, no diagrama do item 9 e na matriz. Os itens 4 e 11 não citam título de RF e não mudam.
 - [ ] **C00.3** No PDF final, toda tabela com uma coluna de texto muito mais longo que as outras dá a maior largura a essa coluna (itens 6, 7, 8 e 10, Apêndice A e a planilha do item 15).
 - [ ] **C00.4** No PDF final, todos os protótipos de tela do item 10 aparecem (42 imagens) e não há nenhum "[imagem não encontrada" no documento.
 - [ ] **C00.5** O PR dos ajustes lista cada anotação da tabela acima e a evidência de que foi atendida.
@@ -134,13 +137,14 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 
 - [ ] **C12.1** A notação é a UML de modelo lógico relacional dos slides: nome da tabela, região da PK, coluna PK/FK e demais campos; campos obrigatórios em negrito.
 - [ ] **C12.2** **Todas as entidades:** todo dado que um RF manda cadastrar, registrar, calcular e guardar ou consultar tem tabela e campo no modelo. O texto do item traz a tabela `Tabela | RFs atendidos`, e todo RF que guarda dado aparece nela (conferido por script).
-- [ ] **C12.3** **Atributos tipados:** todo campo tem o tipo do SGBD escolhido (seção 6, B1), com tamanho quando o tipo pede (`VARCHAR(n)`, `DECIMAL(p,s)`); horários com data e fuso usam o tipo de data e hora com fuso; nenhum campo sem tipo.
+- [ ] **C12.3** **Atributos tipados:** todo campo tem um tipo SQL padrão (seção 6, B1), com tamanho quando o tipo pede (`VARCHAR(n)`, `DECIMAL(p,s)`); horários com data e fuso usam o tipo de data e hora com fuso; nenhum campo sem tipo.
 - [ ] **C12.4** **Chaves:** toda tabela tem PK; todo relacionamento tem FK do lado certo (1:N → FK no lado N; 1:1 → FK no lado de participação parcial, passo 3).
 - [ ] **C12.5** **Cardinalidades:** todo relacionamento mostra a cardinalidade nas duas pontas, coerente com as regras dos RFs (ex.: um turnaround tem várias tarefas; uma tarefa tem um responsável).
 - [ ] **C12.6** **N:N e multivalorados:** relacionamento N:N vira tabela associativa com PK composta pelas duas FKs (passo 5); atributo multivalorado vira tabela própria (passo 6).
 - [ ] **C12.7** **Terceira forma normal:** sem grupos repetitivos, sem dependência parcial nem transitiva; valor calculado (atraso, projeção, caminho crítico) só é guardado quando o RF pede o registro histórico dele, e o texto diz qual RF.
 - [ ] **C12.8** **Coerente com o domínio e as decisões:** o modelo cobre, com os nomes do `CONTEXT.md`, turnarounds e seus horários do A-CDM (SIBT, SOBT, EIBT, AIBT, ACGT, ASBT, AEGT, ARDT, AOBT, TOBT planejado e vigente, MTTT); tarefas, modelos de tarefas, dependências e serviços sob demanda (ADR-0014); usuários, perfis e equipes (ADR-0010); pontos de confirmação por QR Code (ADR-0007); a permissão de abastecimento com passageiros por companhia (ADR-0005); a tabela de 72 códigos de atraso da ANAC (ADR-0006); alertas, exceções e a auditoria de autor e horário dos registros. Os estados de turnaround e de tarefa usam os valores do `CONTEXT.md`, seção 3.
 - [ ] **C12.9** O diagrama é legível na tela (Y.6) e tem fonte editável (Y.7).
+- [ ] **C12.10** **Dicionário de dados** (seção 6, B6) no Apêndice B: para cada tabela, cada campo com tipo, obrigatoriedade, chave (PK/FK), domínio ou valores permitidos e descrição; as mesmas tabelas e campos do diagrama (conferido por script).
 
 ### 3.2 Item 13 — Diagrama de Classes (1,0)
 
@@ -149,7 +153,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 **Rubrica, Excede:** "Diagrama completo e tecnicamente consistente, com classes bem nomeadas, atributos e métodos tipados, relacionamentos corretos e aderência ao modelo conceitual."
 
 - [ ] **C13.1** A notação é UML: classe com compartimentos de nome, atributos e métodos; visibilidade em todo membro; estáticos sublinhados.
-- [ ] **C13.2** **Atributos tipados:** todo atributo segue `nome: Tipo`, com os tipos da linguagem escolhida (seção 6, B1) ou de outra classe ou enumeração do diagrama.
+- [ ] **C13.2** **Atributos tipados:** todo atributo segue `nome: Tipo`, com tipos UML neutros (seção 6, B1) ou de outra classe ou enumeração do diagrama.
 - [ ] **C13.3** **Métodos em nível de implementação:** todo método segue `nome(parametro: Tipo): Retorno`, com parâmetros e retorno tipados (`void` quando não retorna nada).
 - [ ] **C13.4** **Nível técnico:** a arquitetura de implementação está declarada no texto do item (seção 6, B2), e o diagrama tem, além das classes de negócio, as classes técnicas dessa arquitetura (por exemplo, as de interface, controle, serviço e acesso a dados de cada função do sistema).
 - [ ] **C13.5** **Relacionamentos corretos:** cada relação usa o tipo certo (associação, dependência, herança, composição ou agregação), com multiplicidade nas associações; a referência entre classes é por tipo (`- turnaround: Turnaround`), e não só pelo identificador.
@@ -187,15 +191,17 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C15.5** **Passos:** cada caso de teste tem passos numerados, executáveis por quem não escreveu o caso.
 - [ ] **C15.6** **Resultado esperado observável:** mensagem exibida, estado resultante, registro gravado ou alerta emitido, coerente com o "ENTÃO" do critério de aceite e com o caso de uso.
 - [ ] **C15.7** **Consistência:** nenhum caso de teste contradiz o RF, a estória ou o caso de uso de origem, nem as decisões D1–D14.
-- [ ] **C15.8** A planilha é legível no PDF (colunas de texto longo priorizadas, cabeçalho repetido em cada página, agrupada por caso de uso) e tem arquivo versionado (Y.7).
+- [ ] **C15.8** A planilha é legível no PDF (colunas de texto longo priorizadas, cabeçalho repetido em cada página, agrupada por caso de uso) e é gerada da fonte Markdown do item 15 (Y.7).
 
 ---
 
 ## 4. Dependências e ordem de execução
 
 ```
-Ajustes do RA1 (3.0) ── em paralelo com tudo; precisa estar na main antes da consolidação
-Decisões B1 a B4 (seção 6)
+Ajustes do RA1 (3.0) ── primeira tarefa; entra na main antes de todo o resto
+      │
+      ▼
+Decisões B1 a B3 (seção 6)
       │
       └──► Item 12 (modelo de dados)
                  │
@@ -207,7 +213,7 @@ Itens 7 e 10 (RA1) ──► Item 15 (casos de teste) ── pode começar já; 
       └──► Consolidação: revisão cruzada (seção 5), matriz, PDF e envio
 ```
 
-- **Integração (um responsável cada, com revisão de todos):** itens 12 e 13, por serem um modelo único do sistema, como os itens 9 e 11 no RA1.
+- **Integração (rdsalvesPUC, com revisão de todos):** ajuste ARO e itens 12 e 13, por serem um modelo único do sistema, como os itens 9 e 11 no RA1.
 - **Por área:** itens 14 e 15. Cada integrante faz os diagramas de sequência dos casos de uso da sua área e os casos de teste das estórias e casos de uso da sua área, o que mantém a rastreabilidade RF → estória → caso de uso → sequência → teste na mesma pessoa.
 
 | Área | Casos de uso (item 14) | Estórias e critérios (item 15) |
@@ -237,18 +243,20 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.9** Os critérios gerais Y.1 a Y.8 estão atendidos, e a checagem do RA1 continua passando (`scripts/verificar_revisao.py`, `scripts/marcos_nos_diagramas.py`).
 - [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D14 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
 - [ ] **K.11** Não há issue aberta com o rótulo `pendencia-cruzada`: toda suposição de um item sobre outro foi resolvida com o ID do requisito ou com a decisão do grupo registrada.
-- [ ] **K.12** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois de todas as mudanças, com `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012; extensão para os itens 12 a 15 na seção 6, B5).
+- [ ] **K.12** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois de todas as mudanças, com `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012), já com as colunas dos itens 12 a 15 (seção 6, B5).
 
 ---
 
-## 6. Pontos em aberto
+## 6. Decisões do RA2
 
-Decisões do grupo antes de começar os itens 12 a 14; cada uma vira ADR quando fechada.
+Respostas de rdsalvesPUC em 28/10. Cada decisão fechada vira ADR na tarefa correspondente.
 
-- **B1. Sistema gerenciador de banco de dados (SGBD) e linguagem.** O tipo dos campos do item 12 (C12.3) depende do SGBD, e o tipo dos atributos e métodos do item 13 (C13.2, C13.3), da linguagem. Sugestão: PostgreSQL, que tem tipo de data e hora com fuso (`TIMESTAMPTZ`), e uma linguagem orientada a objetos com tipos estáticos.
-- **B2. Arquitetura de implementação e convenção de nomes.** O item 13 tem de declarar a arquitetura (C13.4), e o item 14 mostra as mensagens entre as camadas dela (C14.3). Os slides usam MVC (View, Controller, Model) mais o banco de dados. Falta decidir as camadas (por exemplo, View, Controller, Service, Repository e Model), onde fica o Motor de Eventos e a convenção de nomes de classes, tabelas e campos.
-- **B3. Ferramenta dos diagramas.** A convenção do repositório para UML é o draw.io, com fonte versionada (itens 9 e 11). Para 37 diagramas de sequência, uma fonte em texto (por exemplo, PlantUML ou Mermaid) pode ser mais rápida de escrever, revisar por diff e manter; o draw.io continua natural para os itens 12 e 13. Decidir antes do item 14.
-- **B4. Formato da planilha.** A planilha entra no PDF como tabela (o envio é um documento). Decidir se também vai um arquivo de planilha versionado (`.xlsx` ou `.csv`) na pasta `especificacao/`, gerado a partir da mesma fonte, e se ele é anexado no Canvas.
-- **B5. Matriz de rastreabilidade.** Decidir se o Apêndice A ganha as colunas novas (caso de uso → diagrama de sequência; critério de aceite → casos de teste; RF → tabelas), o que pede uma atualização da ADR-0012 e do script.
-- **B6. Dicionário de dados.** Os slides `ESSW_TE4` (p. 40 a 45) recomendam um dicionário de dados ao lado do modelo lógico; a rubrica não pede. Decidir se o item 12 terá o dicionário completo ou só a tabela `Tabela | RFs atendidos` do C12.2.
-- **B7. Divisão por integrante.** A tarefa do RA2 não tem regra de mínimo por integrante. A proposta da seção 4 segue as áreas do RA1; os itens 12 e 13 ficam com um responsável cada, a definir.
+| | Decisão | Situação |
+|---|---|---|
+| B1 | **Tipos sem SGBD nem linguagem específica.** A tarefa não pede um SGBD; o que ela pede são campos tipados (item 12) e atributos e métodos tipados (item 13). Proposta: item 12 com tipos SQL padrão (`INTEGER`, `VARCHAR(n)`, `DECIMAL(p,s)`, `BOOLEAN`, `TIMESTAMP WITH TIME ZONE` para os horários com data e fuso), como nos slides; item 13 com tipos UML neutros (`String`, `Integer`, `Boolean`, `DateTime`) e as classes e enumerações do próprio diagrama. | Proposta; confirmar |
+| B2 | **Arquitetura de implementação e convenção de nomes.** O item 13 declara a arquitetura (C13.4), e o item 14 mostra as mensagens entre as camadas dela (C14.3). Falta decidir as camadas, onde fica o Motor de Eventos e a convenção de nomes de classes, tabelas e campos. | Em aberto; conversa dedicada antes do item 13 |
+| B3 | **Ferramenta dos diagramas de sequência.** Testar primeiro Mermaid e PlantUML em um caso de uso e comparar o resultado no PDF; se ficarem ruins, usar o draw.io. | Decidido; teste antes do item 14 |
+| B4 | **Planilha do item 15 só no PDF**, sem arquivo `.xlsx` ou `.csv`. | Decidido |
+| B5 | **Matriz estendida:** o Apêndice A ganha as colunas dos itens 12 a 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste). Pede atualização da ADR-0012 e do script. | Decidido |
+| B6 | **Dicionário de dados como apêndice** (Apêndice B, C12.10). | Decidido |
+| B7 | **Divisão:** ajuste ARO e itens 12 e 13 com rdsalvesPUC; itens 14 e 15 por área (seção 4). | Decidido |
