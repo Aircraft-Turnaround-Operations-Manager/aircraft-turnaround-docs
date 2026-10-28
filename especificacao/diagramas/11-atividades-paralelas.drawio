@@ -279,7 +279,7 @@
         <mxCell id="fechar" value="Fechar portas e retirar ponte/escada&lt;br&gt;conforme modelo" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=13;fillColor=#f4f7fa;strokeColor=#2b3a4a;strokeWidth=1.3;" parent="1" vertex="1">
           <mxGeometry x="1130" y="1094" width="260" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="prop" value="Propagar conclusão das obrigatórias;&lt;br&gt;registrar fim do atendimento" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=13;fillColor=#f4f7fa;strokeColor=#2b3a4a;strokeWidth=1.3;" parent="1" vertex="1">
+        <mxCell id="prop" value="Propagar conclusão das obrigatórias;&lt;br&gt;registrar fim do atendimento (AEGT)" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=13;fillColor=#f4f7fa;strokeColor=#2b3a4a;strokeWidth=1.3;" parent="1" vertex="1">
           <mxGeometry x="2575" y="1184" width="270" height="64" as="geometry" />
         </mxCell>
         <mxCell id="fim" value="" style="ellipse;html=1;shape=endState;fillColor=#2b3a4a;strokeColor=#2b3a4a;aspect=fixed;" parent="1" vertex="1">
