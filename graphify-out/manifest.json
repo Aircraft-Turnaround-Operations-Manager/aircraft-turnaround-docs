@@ -720,10 +720,10 @@
     "semantic_hash": "d1bdc30147839910568ddd0881270404"
   },
   "scripts/gerar_docx.py": {
-    "mtime": 1792873582.5240116,
-    "seen": 1792875200.847285,
-    "ast_hash": "6a96674ad107459bdf9a9aa5b0c46208",
-    "semantic_hash": "6a96674ad107459bdf9a9aa5b0c46208"
+    "mtime": 1793223229.8612833,
+    "seen": 1793224573.0428636,
+    "ast_hash": "6ae43437686088f611f76dcceeb079f8",
+    "semantic_hash": "6ae43437686088f611f76dcceeb079f8"
   },
   "scripts/gerar_pdf_conferencia.py": {
     "mtime": 1791685444.9188032,
@@ -792,14 +792,14 @@
     "semantic_hash": "963cf5ade947a35562102a1dd7d7e7c8"
   },
   "especificacao/diagramas/11-atividades-paralelas.png": {
-    "mtime": 1793149053.4513607,
-    "seen": 1793149255.7025893,
+    "mtime": 1793149532.191979,
+    "seen": 1793224573.0430217,
     "ast_hash": "b0c7daea7116edb50d34ef54808a5871",
     "semantic_hash": "b0c7daea7116edb50d34ef54808a5871"
   },
   "especificacao/diagramas/11-atividades.png": {
-    "mtime": 1793149053.4604776,
-    "seen": 1793149255.7025902,
+    "mtime": 1793149532.2024977,
+    "seen": 1793224573.0430224,
     "ast_hash": "4352226ac85c159bb97338f59deda61f",
     "semantic_hash": "4352226ac85c159bb97338f59deda61f"
   },
@@ -876,8 +876,8 @@
     "semantic_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d"
   },
   "scripts/marcos_nos_diagramas.py": {
-    "mtime": 1793149053.4614825,
-    "seen": 1793149255.7024279,
+    "mtime": 1793149532.2226794,
+    "seen": 1793224573.0428684,
     "ast_hash": "15e57d064bea298a7b34767ebcf791b5",
     "semantic_hash": "15e57d064bea298a7b34767ebcf791b5"
   },
