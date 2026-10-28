@@ -2,6 +2,7 @@
 
 Uso: python gerar_docx.py TEMPLATE.docx PASTA_ESPECIFICACAO SAIDA.docx [--manter-instrucoes] [--manter-ra2]
 Precisa de python-docx. O template (ESSW - Especificacao de Projeto - Template.docx) não fica no repositório.
+Figura PNG com um .svg de mesmo nome ao lado entra em SVG (vetorial no Word 2016+ e no PDF), com a PNG de reserva.
 A declaração de uso de IA vem de especificacao/00-*.md (ou de --ia=ARQUIVO) e entra antes do item 1, sem número.
 Depois de gerar, abra o .docx no Word, atualize o sumário (F9) e exporte em PDF: o script não calcula páginas.
 """
@@ -9,7 +10,10 @@ import copy, io, re, struct, sys
 from pathlib import Path
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
-from docx.oxml import OxmlElement
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
+from docx.opc.packuri import PackURI
+from docx.opc.part import Part
+from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 from docx.table import Table
@@ -124,7 +128,22 @@ class Montador:
         d = open(caminho, 'rb').read(32)
         w, h = struct.unpack('>II', d[16:24]) if d[1:4] == b'PNG' else (1, 1)
         larg = min(larg_cm, alt_cm * w / h)
-        par.add_run().add_picture(str(caminho), width=Cm(larg))
+        forma = par.add_run().add_picture(str(caminho), width=Cm(larg))
+        svg = Path(caminho).with_suffix('.svg')
+        if svg.exists():  # o Word desenha o SVG (vetorial, nítido no zoom); a PNG fica de reserva para quem não lê SVG
+            self.svg(forma, svg)
+
+    def svg(self, forma, arq):
+        """Anexa o SVG à figura como no Word 2016+: a:blip da PNG ganha a extensão asvg:svgBlip apontando para o SVG."""
+        doc = self.doc.part
+        n = sum(1 for p in doc.package.iter_parts() if str(p.partname).endswith('.svg')) + 1
+        parte = Part(PackURI('/word/media/vetor%d.svg' % n), 'image/svg+xml', arq.read_bytes(), doc.package)
+        rid = doc.relate_to(parte, RT.IMAGE)
+        ext = OxmlElement('a:ext'); ext.set('uri', '{96DAC541-7B7A-43D3-8B79-37D633B846F1}')
+        ext.append(parse_xml('<asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" '
+                             'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="%s"/>' % rid))
+        lst = OxmlElement('a:extLst'); lst.append(ext)
+        forma._inline.xpath('.//a:blip')[0].append(lst)
 
     def paragrafo(self, ancora, txt, base=None, estilo=None, **kw):
         p = self.doc.add_paragraph(style=estilo if estilo in self.tem else None)
