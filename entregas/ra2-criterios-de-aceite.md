@@ -128,6 +128,8 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C00.3** No PDF final, toda tabela com uma coluna de texto muito mais longo que as outras dá a maior largura a essa coluna (itens 6, 7, 8 e 10, Apêndice A e a planilha do item 15).
 - [ ] **C00.4** No PDF final, todos os protótipos de tela do item 10 aparecem (42 imagens) e não há nenhum "[imagem não encontrada" no documento.
 - [ ] **C00.5** O PR dos ajustes lista cada anotação da tabela acima e a evidência de que foi atendida.
+- [ ] **C00.6** RF-12, RF-13, RF-44, US012, US013, US044, UC12, UC13 e UC37 estão nos arquivos da área B, sem mudar número nem conteúdo (ADR-0015).
+- [ ] **C00.7** No PDF, RFs, estórias e casos de uso seguem a ordem numérica, e a introdução do item 10 traz a nova divisão.
 
 ### 3.1 Item 12 — Modelo de Dados (1,0)
 
