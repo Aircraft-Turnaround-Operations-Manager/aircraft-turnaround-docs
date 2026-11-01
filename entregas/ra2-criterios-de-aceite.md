@@ -84,7 +84,7 @@ A coluna do plano de ensino descreve a **atividade prática feita em aula** (ava
 - [ ] **Y.1 — Documento completo.** O PDF tem os itens 1 a 15 na ordem e com os títulos do template, seguidos do Apêndice A e das referências. Os itens 12 a 15 entram no lugar das seções 12 a 15 do template, que hoje o `scripts/gerar_docx.py` remove (opção `--manter-ra2`).
 - [ ] **Y.2 — Itens 1 a 11 continuam prontos.** Todos os critérios do RA1 (`C01.1` a `C11.7`, `X.1` a `X.10` e `K.1` a `K.13`) continuam atendidos depois das mudanças do RA2. Se a modelagem dos itens 12 a 14 revelar lacuna ou contradição nos itens 1 a 11, corrige-se o item de origem (com PR próprio) em vez de contornar no modelo.
 - [ ] **Y.3 — Capa, cabeçalho e textos do template.** Ano **2026** na capa e no cabeçalho; nos itens 12 a 15, os textos em azul do template foram substituídos e os de orientação em laranja foram removidos.
-- [ ] **Y.4 — Nomes exatos.** Produto, atores e estados com os nomes do `CONTEXT.md` (seções 1 a 3) também nos diagramas, nas classes e na planilha; nomes de classes e tabelas podem seguir a convenção técnica (seção 6, B2), mas o texto do item diz a qual ator ou estado cada uma corresponde.
+- [ ] **Y.4 — Nomes exatos.** Produto, atores e estados com os nomes do `CONTEXT.md` (seções 1 a 3) também nos diagramas, nas classes e na planilha; nomes de classes e tabelas podem seguir a convenção técnica (seção 6, B8), mas o texto do item diz a qual ator ou estado cada uma corresponde.
 - [ ] **Y.5 — Siglas (ADR-0008).** Em cada um dos itens 12 a 15, a primeira ocorrência de cada sigla vem com o nome em português, inclusive UML, SGBD, MVC, PK e FK.
 - [ ] **Y.6 — Diagramas legíveis na tela.** Cada diagrama dos itens 12 a 14 é legível no PDF ao ampliar, sem texto cortado, sobreposto ou cruzado por linhas; diagrama grande ganha visão geral mais vistas detalhadas. Os diagramas entram em SVG no documento (vetoriais), com a PNG de reserva.
 - [ ] **Y.7 — Fonte editável versionada.** Cada diagrama tem a fonte editável em `especificacao/diagramas/`, ao lado da imagem exportada, como os dos itens 4, 9 e 11. A planilha do item 15 entra só no PDF, como tabela gerada da fonte Markdown do item (seção 6, B4).
@@ -160,7 +160,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C13.6** **Aderência ao modelo de dados:** toda tabela de negócio do item 12 tem classe correspondente (as tabelas associativas podem virar coleções), com os mesmos nomes de domínio e tipos compatíveis; diferenças intencionais são explicadas no texto.
 - [ ] **C13.7** Os estados do turnaround e da tarefa são enumerações com exatamente os valores do `CONTEXT.md`, seção 3; perfis de acesso também.
 - [ ] **C13.8** Todo método chamado nos diagramas de sequência (item 14) existe na classe que recebe a mensagem, com o mesmo nome e a mesma assinatura (conferido por script na seção 5, K.4).
-- [ ] **C13.9** Classes bem nomeadas: nomes no singular, sem abreviação obscura, seguindo uma só convenção (seção 6, B2).
+- [ ] **C13.9** Classes bem nomeadas: nomes no singular, sem abreviação obscura, seguindo uma só convenção (seção 6, B8).
 - [ ] **C13.10** O diagrama é legível na tela, com visão geral das classes de negócio e vistas técnicas por função do sistema (Y.6), e tem fonte editável (Y.7).
 
 ### 3.3 Item 14 — Diagramas de Sequência (1,0)
