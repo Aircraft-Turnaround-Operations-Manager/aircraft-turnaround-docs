@@ -50,7 +50,7 @@ relacionados: [adr-0004, adr-0012, adr-0013, adr-0014]
 5. Ao confirmar o plano (RF-5), a Execução em Solo recebe tarefas, dependências, pontos de QR Code, catálogo sob demanda e política de abastecimento. Uma nova confirmação substitui esses dados e é recusada depois do início das tarefas.
 6. Na liberação, Exceções e Liberação confere as exceções e pede a liberação; a Execução em Solo confere o estado e as tarefas e responde; o ARDT é gravado com a resposta positiva.
 7. O Motor de Eventos é um ator lógico: a propagação e os marcos (RF-20 e RF-21) ficam na Execução em Solo, e os cálculos e alertas, no Monitoramento.
-8. Área (A a D) é divisão de trabalho e de documento; serviço é divisão da implementação. RF-12, RF-13 e RF-44 continuam nos arquivos das suas áreas.
+8. Cada área corresponde a um serviço. RF-12, RF-13 e RF-44, com US012, US013, US044, UC12, UC13 e UC37, passam da área de origem para a área B, sem mudar de número.
 
 **Documento e implementação.** A especificação usa em todos os serviços a referência `Controller → Service → Repository`, com publicadores e consumidores de avisos. Cada integrante escolhe linguagem, framework e banco do seu serviço.
 
@@ -61,7 +61,7 @@ relacionados: [adr-0004, adr-0012, adr-0013, adr-0014]
 - O item 14 mostra avisos na mensageria e pedidos entre serviços.
 - A Execução em Solo fica com 11 RFs e passa a atender os pedidos dos demais serviços. Se ela cair, chegada, saída, exceção e liberação param. O limite é o do RNF-7 e do RNF-19: 99,5% ao mês.
 - Fica para o grupo o contrato comum: formato dos avisos e das APIs, token de login, horários com fuso, identificadores e produto de mensageria.
-- O RA1 não precisa de mudança de texto por esta decisão. Os pontos de atenção estão no PR que registrou esta ADR e nos critérios do RA2.
+- A área B passa a ter 11 RFs e 11 casos de uso, e faz os itens 14 e 15 desses casos. A troca de área nos arquivos do RA1 é uma tarefa do RA2; o conteúdo dos RFs, estórias e casos de uso não muda.
 
 ---
 
