@@ -136,14 +136,14 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 **Rubrica, Excede:** "Diagrama completo e coerente com o domínio, contendo todas as entidades, relacionamentos, cardinalidades e atributos corretamente tipados."
 
 - [ ] **C12.1** A notação é a UML de modelo lógico relacional dos slides: nome da tabela, região da PK, coluna PK/FK e demais campos; campos obrigatórios em negrito.
-- [ ] **C12.2** **Todas as entidades:** todo dado que um RF manda cadastrar, registrar, calcular e guardar ou consultar tem tabela e campo no modelo. O texto do item traz a tabela `Tabela | RFs atendidos`, e todo RF que guarda dado aparece nela (conferido por script).
+- [ ] **C12.2** **Todas as entidades:** todo dado que um RF manda cadastrar, registrar, calcular e guardar ou consultar tem tabela e campo no modelo. O texto do item traz a tabela `Serviço | Tabela | RFs atendidos`, e todo RF que guarda dado aparece nela (conferido por script).
 - [ ] **C12.3** **Atributos tipados:** todo campo tem um tipo SQL padrão (seção 6, B1), com tamanho quando o tipo pede (`VARCHAR(n)`, `DECIMAL(p,s)`); horários com data e fuso usam o tipo de data e hora com fuso; nenhum campo sem tipo.
-- [ ] **C12.4** **Chaves:** toda tabela tem PK; todo relacionamento tem FK do lado certo (1:N → FK no lado N; 1:1 → FK no lado de participação parcial, passo 3).
+- [ ] **C12.4** **Chaves:** toda tabela tem PK; todo relacionamento tem FK do lado certo (1:N → FK no lado N; 1:1 → FK no lado de participação parcial, passo 3). Entre serviços não há FK: a tabela guarda só o identificador, e o texto diz qual serviço é o dono do dado (ADR-0015).
 - [ ] **C12.5** **Cardinalidades:** todo relacionamento mostra a cardinalidade nas duas pontas, coerente com as regras dos RFs (ex.: um turnaround tem várias tarefas; uma tarefa tem um responsável).
 - [ ] **C12.6** **N:N e multivalorados:** relacionamento N:N vira tabela associativa com PK composta pelas duas FKs (passo 5); atributo multivalorado vira tabela própria (passo 6).
 - [ ] **C12.7** **Terceira forma normal:** sem grupos repetitivos, sem dependência parcial nem transitiva; valor calculado (atraso, projeção, caminho crítico) só é guardado quando o RF pede o registro histórico dele, e o texto diz qual RF.
 - [ ] **C12.8** **Coerente com o domínio e as decisões:** o modelo cobre, com os nomes do `CONTEXT.md`, turnarounds e seus horários do A-CDM (SIBT, SOBT, EIBT, AIBT, ACGT, ASBT, AEGT, ARDT, AOBT, TOBT planejado e vigente, MTTT); tarefas, modelos de tarefas, dependências e serviços sob demanda (ADR-0014); usuários, perfis e equipes (ADR-0010); pontos de confirmação por QR Code (ADR-0007); a permissão de abastecimento com passageiros por companhia (ADR-0005); a tabela de 72 códigos de atraso da ANAC (ADR-0006); alertas, exceções e a auditoria de autor e horário dos registros. Os estados de turnaround e de tarefa usam os valores do `CONTEXT.md`, seção 3.
-- [ ] **C12.9** O diagrama é legível na tela (Y.6) e tem fonte editável (Y.7).
+- [ ] **C12.9** Há um modelo lógico por serviço e uma visão geral (ADR-0015). Cada diagrama é legível na tela (Y.6) e tem fonte editável (Y.7).
 - [ ] **C12.10** **Dicionário de dados** (seção 6, B6) no Apêndice B: para cada tabela, cada campo com tipo, obrigatoriedade, chave (PK/FK), domínio ou valores permitidos e descrição; as mesmas tabelas e campos do diagrama (conferido por script).
 
 ### 3.2 Item 13 — Diagrama de Classes (1,0)
@@ -155,8 +155,8 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C13.1** A notação é UML: classe com compartimentos de nome, atributos e métodos; visibilidade em todo membro; estáticos sublinhados.
 - [ ] **C13.2** **Atributos tipados:** todo atributo segue `nome: Tipo`, com tipos UML neutros (seção 6, B1) ou de outra classe ou enumeração do diagrama.
 - [ ] **C13.3** **Métodos em nível de implementação:** todo método segue `nome(parametro: Tipo): Retorno`, com parâmetros e retorno tipados (`void` quando não retorna nada).
-- [ ] **C13.4** **Nível técnico:** a arquitetura de implementação está declarada no texto do item (seção 6, B2), e o diagrama tem, além das classes de negócio, as classes técnicas dessa arquitetura (por exemplo, as de interface, controle, serviço e acesso a dados de cada função do sistema).
-- [ ] **C13.5** **Relacionamentos corretos:** cada relação usa o tipo certo (associação, dependência, herança, composição ou agregação), com multiplicidade nas associações; a referência entre classes é por tipo (`- turnaround: Turnaround`), e não só pelo identificador.
+- [ ] **C13.4** **Nível técnico:** a arquitetura de implementação está declarada no texto do item (ADR-0015), e o diagrama tem, além das classes de negócio, as classes técnicas dessa arquitetura (por exemplo, as de interface, controle, serviço e acesso a dados de cada função do sistema).
+- [ ] **C13.5** **Relacionamentos corretos:** cada relação usa o tipo certo (associação, dependência, herança, composição ou agregação), com multiplicidade nas associações; a referência entre classes é por tipo (`- turnaround: Turnaround`), e não só pelo identificador. Entre serviços, a referência é por identificador, e o texto justifica isso (ADR-0015).
 - [ ] **C13.6** **Aderência ao modelo de dados:** toda tabela de negócio do item 12 tem classe correspondente (as tabelas associativas podem virar coleções), com os mesmos nomes de domínio e tipos compatíveis; diferenças intencionais são explicadas no texto.
 - [ ] **C13.7** Os estados do turnaround e da tarefa são enumerações com exatamente os valores do `CONTEXT.md`, seção 3; perfis de acesso também.
 - [ ] **C13.8** Todo método chamado nos diagramas de sequência (item 14) existe na classe que recebe a mensagem, com o mesmo nome e a mesma assinatura (conferido por script na seção 5, K.4).
@@ -171,7 +171,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 
 - [ ] **C14.1** **Um por caso de uso:** 37 diagramas, UC01 a UC37, cada um com a legenda "Diagrama de Sequência do UCnn – <nome do caso de uso>" e o mesmo nome do item 10 (contagem por script).
 - [ ] **C14.2** **Notação UML:** ator que inicia, linhas de vida, ativações, mensagens de chamada contínuas, retornos tracejados e fragmentos com condição de guarda.
-- [ ] **C14.3** **Camadas:** os participantes seguem a arquitetura do item 13 (interface, controle, serviço ou modelo, acesso a dados e banco de dados), com o estereótipo correspondente, e as mensagens descem e voltam pelas camadas, sem atalho da interface para o banco.
+- [ ] **C14.3** **Camadas:** os participantes seguem a arquitetura do item 13 (interface, controle, serviço ou modelo, acesso a dados e banco de dados), com o estereótipo correspondente, e as mensagens descem e voltam pelas camadas, sem atalho da interface para o banco. Entre serviços, o diagrama mostra o aviso na mensageria ou o pedido em chamada direta, conforme a ADR-0015, e nenhum serviço acessa o banco de outro.
 - [ ] **C14.4** **Completo:** o diagrama cobre o fluxo básico do caso de uso e, em fragmentos `alt`/`opt`, cada fluxo alternativo e cada fluxo de exceção do item 10 (37 básicos, 119 alternativos e 122 de exceção no RA1). Fluxo que não muda a interação (ex.: só volta a um passo) pode ser agrupado, e o texto diz quais foram agrupados.
 - [ ] **C14.5** **Mensagens específicas:** cada mensagem é um método com nome e argumentos (`registrarInicio(tarefaId, horario)`), nada genérico como `processar()` ou `executar()`; cada chamada ao banco cita a tabela do item 12.
 - [ ] **C14.6** **Coerente com o comportamento descrito:** a ordem das mensagens segue a ordem dos passos do caso de uso; as regras de negócio que o caso de uso verifica aparecem como mensagens ou condições de guarda; o que o RF manda gravar (autor, horário, valor anterior) aparece gravado.
@@ -190,7 +190,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C15.4** **Dados de entrada concretos:** valores de verdade (horários com data e fuso, identificadores, quantidades, códigos de atraso da ANAC), e não "dados válidos"; valores-limite onde a regra tem limite (ex.: TOBT + 5 min, 5 s, antecipação de 5 min; ADR-0001 e ADR-0003).
 - [ ] **C15.5** **Passos:** cada caso de teste tem passos numerados, executáveis por quem não escreveu o caso.
 - [ ] **C15.6** **Resultado esperado observável:** mensagem exibida, estado resultante, registro gravado ou alerta emitido, coerente com o "ENTÃO" do critério de aceite e com o caso de uso.
-- [ ] **C15.7** **Consistência:** nenhum caso de teste contradiz o RF, a estória ou o caso de uso de origem, nem as decisões D1–D14.
+- [ ] **C15.7** **Consistência:** nenhum caso de teste contradiz o RF, a estória ou o caso de uso de origem, nem as decisões D1–D15.
 - [ ] **C15.8** A planilha é legível no PDF (colunas de texto longo priorizadas, cabeçalho repetido em cada página, agrupada por caso de uso) e é gerada da fonte Markdown do item 15 (Y.7).
 
 ---
@@ -201,7 +201,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 Ajustes do RA1 (3.0) ── primeira tarefa; entra na main antes de todo o resto
       │
       ▼
-Decisões B2 e B3 (seção 6)
+Decisões B3 e B8 (seção 6)
       │
       └──► Item 12 (modelo de dados)
                  │
@@ -235,13 +235,13 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.1** Os mesmos atores (nomes idênticos) aparecem nos itens 4, 5, 6, 7, 9, 10 e 11 e nos diagramas de sequência (item 14).
 - [ ] **K.2** Todo caso de uso do item 10 tem **exatamente um** diagrama de sequência, e todo diagrama aponta para um caso de uso existente, com o mesmo nome.
 - [ ] **K.3** Toda tabela de negócio do item 12 tem classe no item 13 e é usada por pelo menos um RF; toda classe de negócio do item 13 tem tabela no item 12 ou o texto explica por que não tem.
-- [ ] **K.4** Toda mensagem dos diagramas de sequência existe como método na classe que a recebe (item 13), com a mesma assinatura; toda chamada ao banco cita uma tabela do item 12.
+- [ ] **K.4** Nenhum diagrama mostra um serviço gravando dado de outro, e toda decisão é tomada pelo dono do dado (ADR-0015). Toda mensagem dos diagramas de sequência existe como método na classe que a recebe (item 13), com a mesma assinatura; toda chamada ao banco cita uma tabela do item 12.
 - [ ] **K.5** Todo critério de aceite (item 7) é coberto por pelo menos um caso de teste (item 15), e todo fluxo de cada caso de uso (item 10) tem cenário de teste.
 - [ ] **K.6** Os estados (turnaround e tarefa) têm os mesmos valores no `CONTEXT.md`, no item 12 (domínio do campo), no item 13 (enumerações), no item 14 (condições de guarda) e no item 15 (resultados esperados).
 - [ ] **K.7** O título ARO de cada RF é idêntico nos itens 6 e 7 e no Apêndice A (C00.2).
 - [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 179 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
 - [ ] **K.9** Os critérios gerais Y.1 a Y.8 estão atendidos, e a checagem do RA1 continua passando (`scripts/verificar_revisao.py`, `scripts/marcos_nos_diagramas.py`).
-- [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D14 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
+- [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D15 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
 - [ ] **K.11** Não há issue aberta com o rótulo `pendencia-cruzada`: toda suposição de um item sobre outro foi resolvida com o ID do requisito ou com a decisão do grupo registrada.
 - [ ] **K.12** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois de todas as mudanças, com `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012), já com as colunas dos itens 12 a 15 (seção 6, B5).
 
@@ -254,9 +254,10 @@ Respostas de rdsalvesPUC em 28/10. Cada decisão fechada vira ADR na tarefa corr
 | | Decisão | Situação |
 |---|---|---|
 | B1 | **Tipos SQL padrão como referência.** O sistema usa microsserviços, e cada serviço pode ter um banco diferente; por isso a especificação não escolhe banco nem linguagem. Item 12 com tipos SQL padrão (`INTEGER`, `VARCHAR(n)`, `DECIMAL(p,s)`, `BOOLEAN`, `TIMESTAMP WITH TIME ZONE` para os horários com data e fuso), como nos slides; item 13 com tipos UML neutros (`String`, `Integer`, `Boolean`, `DateTime`) e as classes e enumerações do próprio diagrama. Cada integrante adapta os tipos ao banco e à linguagem do seu serviço no desenvolvimento. | Decidido |
-| B2 | **Arquitetura de microsserviços: divisão e convenção de nomes.** A arquitetura é de microsserviços (decidido em 28/10). O item 13 declara a arquitetura (C13.4), e o item 14 mostra as mensagens entre as camadas e os serviços (C14.3). Falta decidir quais são os serviços e o que cada um guarda (o que define como o item 12 se divide por serviço), as camadas dentro de cada serviço, onde fica o Motor de Eventos, como os serviços se comunicam e a convenção de nomes de classes, tabelas e campos. | Em aberto; conversa dedicada antes do item 12 |
+| B2 | **Quatro microsserviços (ADR-0015):** Cadastro e Planejamento, Execução em Solo, Monitoramento, Exceções e Liberação. A tarefa e o estado do turnaround ficam na Execução em Solo, e só o dono do dado decide. Avisos passam pela mensageria; pedidos com resposta usam chamada direta. Os documentos usam camadas de referência (`Controller → Service → Repository`), e cada integrante escolhe a tecnologia do seu serviço, em uma tarefa própria que não bloqueia os itens 12 a 15. | Decidido |
 | B3 | **Ferramenta dos diagramas de sequência.** Testar primeiro Mermaid e PlantUML em um caso de uso e comparar o resultado no PDF; se ficarem ruins, usar o draw.io. | Decidido; teste antes do item 14 |
 | B4 | **Planilha do item 15 só no PDF**, sem arquivo `.xlsx` ou `.csv`. | Decidido |
 | B5 | **Matriz estendida:** o Apêndice A ganha as colunas dos itens 12 a 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste). Pede atualização da ADR-0012 e do script. | Decidido |
 | B6 | **Dicionário de dados como apêndice** (Apêndice B, C12.10). | Decidido |
 | B7 | **Divisão:** ajuste ARO e itens 12 e 13 com rdsalvesPUC; itens 14 e 15 por área (seção 4). | Decidido |
+| B8 | **Contrato comum entre os serviços:** formato dos avisos e das APIs, token de login, horários com fuso, identificadores, produto de mensageria e convenção de nomes de classes, tabelas e campos. | Em aberto; decidir em grupo antes do item 13 |

@@ -4,7 +4,7 @@ titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
 atualizado: 2026-10-10
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014]
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015]
 ---
 # Contexto do projeto
 
@@ -75,6 +75,7 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D12 | **Matriz de rastreabilidade** como Apêndice A, gerada por script; cada RNF cita os RFs a que se aplica; sem tabelas "Base" nos arquivos de área | [0012](docs/adr/0012-matriz-de-rastreabilidade.md) |
 | D13 | Chegada à posição (AIBT) **registrada direto pelo Operador de Solo/Rampa**, sem confirmação; o Coordenador de Turnaround pode corrigir o valor | [0013](docs/adr/0013-chegada-registrada-pelo-operador.md) |
 | D14 | **Serviços sob demanda:** catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround com o turnaround em andamento; o atraso conta na meta de 80% | [0014](docs/adr/0014-servicos-sob-demanda.md) |
+| D15 | **Quatro microsserviços:** Cadastro e Planejamento, Execução em Solo, Monitoramento, Exceções e Liberação; tarefa e estado do turnaround na Execução em Solo; só o dono do dado decide | [0015](docs/adr/0015-divisao-em-microsservicos.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
