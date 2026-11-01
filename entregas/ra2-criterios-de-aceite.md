@@ -128,6 +128,9 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C00.3** No PDF final, toda tabela com uma coluna de texto muito mais longo que as outras dá a maior largura a essa coluna (itens 6, 7, 8 e 10, Apêndice A e a planilha do item 15).
 - [ ] **C00.4** No PDF final, todos os protótipos de tela do item 10 aparecem (42 imagens) e não há nenhum "[imagem não encontrada" no documento.
 - [ ] **C00.5** O PR dos ajustes lista cada anotação da tabela acima e a evidência de que foi atendida.
+- [ ] **C00.6** Junto com o ajuste ARO, porque mexem nos mesmos arquivos, RF-12, RF-13, RF-44, US012, US013, US044, UC12, UC13 e UC37 passam para os arquivos da área B, sem mudar número nem conteúdo (ADR-0015).
+- [ ] **C00.7** O gerador do documento ordena RFs, estórias e casos de uso por número, para que RF-44, US044 e UC37 não saiam da ordem numérica no PDF.
+- [ ] **C00.8** A introdução do item 10 é reescrita com as áreas e as contagens novas. O item 9 não muda por causa da troca de área, porque agrupa por função.
 
 ### 3.1 Item 12 — Modelo de Dados (1,0)
 
