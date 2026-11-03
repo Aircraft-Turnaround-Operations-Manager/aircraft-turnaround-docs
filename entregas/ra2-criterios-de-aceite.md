@@ -132,6 +132,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C00.7** O gerador do documento ordena RFs, estórias e casos de uso por número, para que RF-44, US044 e UC37 não saiam da ordem numérica no PDF.
 - [ ] **C00.8** A introdução do item 10 é reescrita com as áreas e as contagens novas. O item 9 não muda por causa da troca de área, porque agrupa por função.
 - [ ] **C00.9** Nenhum número de RF, estória ou caso de uso muda. Depois da troca de área, o PR comprova: (a) cada RF, estória e caso de uso tem o mesmo texto de antes, comparado por script, com exceção da mudança intencional da tarefa, como o título ARO; (b) as contagens continuam 44 RFs, 44 estórias, 179 critérios de aceite e 37 casos de uso (`scripts/verificar_revisao.py`); (c) todas as citações apontam para IDs existentes; (d) o PDF tem os 42 protótipos e os diagramas, com RFs, estórias e casos de uso em ordem numérica; (e) a matriz foi gerada de novo, sem lacunas.
+- [ ] **C00.10** A coluna SPRINT e a justificativa da priorização do item 6 são refeitas com os quatro serviços avançando em paralelo em todas as sprints (ADR-0015), em vez da sequência por área. A distribuição respeita as dependências entre RFs, e nenhum número de RF muda.
 
 ### 3.1 Item 12 — Modelo de Dados (1,0)
 
