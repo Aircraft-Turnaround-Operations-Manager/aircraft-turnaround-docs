@@ -84,7 +84,7 @@ A coluna do plano de ensino descreve a **atividade prática feita em aula** (ava
 - [ ] **Y.1 — Documento completo.** O PDF tem os itens 1 a 15 na ordem e com os títulos do template, seguidos do Apêndice A e das referências. Os itens 12 a 15 entram no lugar das seções 12 a 15 do template, que hoje o `scripts/gerar_docx.py` remove (opção `--manter-ra2`).
 - [ ] **Y.2 — Itens 1 a 11 continuam prontos.** Todos os critérios do RA1 (`C01.1` a `C11.7`, `X.1` a `X.10` e `K.1` a `K.13`) continuam atendidos depois das mudanças do RA2. Se a modelagem dos itens 12 a 14 revelar lacuna ou contradição nos itens 1 a 11, corrige-se o item de origem (com PR próprio) em vez de contornar no modelo.
 - [ ] **Y.3 — Capa, cabeçalho e textos do template.** Ano **2026** na capa e no cabeçalho; nos itens 12 a 15, os textos em azul do template foram substituídos e os de orientação em laranja foram removidos.
-- [ ] **Y.4 — Nomes exatos.** Produto, atores e estados com os nomes do `CONTEXT.md` (seções 1 a 3) também nos diagramas, nas classes e na planilha; nomes de classes e tabelas podem seguir a convenção técnica (seção 6, B8), mas o texto do item diz a qual ator ou estado cada uma corresponde.
+- [ ] **Y.4 — Nomes exatos.** Produto, atores e estados com os nomes do `CONTEXT.md` (seções 1 a 3) também nos diagramas, nas classes e na planilha; nomes de classes e tabelas podem seguir a convenção técnica (seção 6, B8; ADR-0016), mas o texto do item diz a qual ator ou estado cada uma corresponde.
 - [ ] **Y.5 — Siglas (ADR-0008).** Em cada um dos itens 12 a 15, a primeira ocorrência de cada sigla vem com o nome em português, inclusive UML, SGBD, MVC, PK e FK.
 - [ ] **Y.6 — Diagramas legíveis na tela.** Cada diagrama dos itens 12 a 14 é legível no PDF ao ampliar, sem texto cortado, sobreposto ou cruzado por linhas; diagrama grande ganha visão geral mais vistas detalhadas. Os diagramas entram em SVG no documento (vetoriais), com a PNG de reserva.
 - [ ] **Y.7 — Fonte editável versionada.** Cada diagrama tem a fonte editável em `especificacao/diagramas/`, ao lado da imagem exportada, como os dos itens 4, 9 e 11. A planilha do item 15 entra só no PDF, como tabela gerada da fonte Markdown do item (seção 6, B4).
@@ -165,7 +165,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C13.6** **Aderência ao modelo de dados:** toda tabela de negócio do item 12 tem classe correspondente (as tabelas associativas podem virar coleções), com os mesmos nomes de domínio e tipos compatíveis; diferenças intencionais são explicadas no texto.
 - [ ] **C13.7** Os estados do turnaround e da tarefa são enumerações com exatamente os valores do `CONTEXT.md`, seção 3; perfis de acesso também.
 - [ ] **C13.8** Todo método chamado nos diagramas de sequência (item 14) existe na classe que recebe a mensagem, com o mesmo nome e a mesma assinatura (conferido por script na seção 5, K.4).
-- [ ] **C13.9** Classes bem nomeadas: nomes no singular, sem abreviação obscura, seguindo uma só convenção (seção 6, B8).
+- [ ] **C13.9** Classes bem nomeadas: nomes no singular, sem abreviação obscura, seguindo uma só convenção (seção 6, B8; ADR-0016).
 - [ ] **C13.10** O diagrama é legível na tela, com visão geral das classes de negócio e vistas técnicas por função do sistema (Y.6), e tem fonte editável (Y.7).
 
 ### 3.3 Item 14 — Diagramas de Sequência (1,0)
@@ -195,7 +195,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C15.4** **Dados de entrada concretos:** valores de verdade (horários com data e fuso, identificadores, quantidades, códigos de atraso da ANAC), e não "dados válidos"; valores-limite onde a regra tem limite (ex.: TOBT + 5 min, 5 s, antecipação de 5 min; ADR-0001 e ADR-0003).
 - [ ] **C15.5** **Passos:** cada caso de teste tem passos numerados, executáveis por quem não escreveu o caso.
 - [ ] **C15.6** **Resultado esperado observável:** mensagem exibida, estado resultante, registro gravado ou alerta emitido, coerente com o "ENTÃO" do critério de aceite e com o caso de uso.
-- [ ] **C15.7** **Consistência:** nenhum caso de teste contradiz o RF, a estória ou o caso de uso de origem, nem as decisões D1–D15.
+- [ ] **C15.7** **Consistência:** nenhum caso de teste contradiz o RF, a estória ou o caso de uso de origem, nem as decisões D1–D16.
 - [ ] **C15.8** A planilha é legível no PDF (colunas de texto longo priorizadas, cabeçalho repetido em cada página, agrupada por caso de uso) e é gerada da fonte Markdown do item 15 (Y.7).
 
 ---
@@ -246,7 +246,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.7** O título ARO de cada RF é idêntico nos itens 6 e 7 e no Apêndice A (C00.2).
 - [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 179 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
 - [ ] **K.9** Os critérios gerais Y.1 a Y.8 estão atendidos, e a checagem do RA1 continua passando (`scripts/verificar_revisao.py`, `scripts/marcos_nos_diagramas.py`).
-- [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D15 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
+- [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D16 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
 - [ ] **K.11** Não há issue aberta com o rótulo `pendencia-cruzada`: toda suposição de um item sobre outro foi resolvida com o ID do requisito ou com a decisão do grupo registrada.
 - [ ] **K.12** A matriz de rastreabilidade (Apêndice A) foi gerada de novo depois de todas as mudanças, com `scripts/gerar_matriz_rastreabilidade.py`, e a seção "Lacunas encontradas" diz "Nenhuma." (ADR-0012), já com as colunas dos itens 12 a 15 (seção 6, B5).
 
@@ -265,4 +265,4 @@ Respostas de rdsalvesPUC em 28/10. Cada decisão fechada vira ADR na tarefa corr
 | B5 | **Matriz estendida:** o Apêndice A ganha as colunas dos itens 12 a 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste). Pede atualização da ADR-0012 e do script. | Decidido |
 | B6 | **Dicionário de dados como apêndice** (Apêndice B, C12.10). | Decidido |
 | B7 | **Divisão:** ajuste ARO e itens 12 e 13 com rdsalvesPUC; itens 14 e 15 por área (seção 4). | Decidido |
-| B8 | **Contrato comum entre os serviços:** formato dos avisos e das APIs, token de login, horários com fuso, identificadores, produto de mensageria e convenção de nomes de classes, tabelas e campos. | Em aberto; decidir em grupo antes do item 13 |
+| B8 | **Contrato comum entre os serviços (ADR-0016):** porta de entrada (Spring Cloud Gateway) que consulta o Cadastro a cada ação; login próprio no Cadastro; REST com JSON entre serviços e no site, com GraphQL só nos painéis e WebSocket para as atualizações; RabbitMQ com envelope comum dos avisos; horários em UTC; UUID versão 4; nomes em português, com tabelas e campos em snake_case singular e JSON em camelCase. Votado pelos quatro integrantes; vale como base do RA2 e pode ser revisto por uma ADR nova. | Decidido |
