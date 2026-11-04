@@ -21,7 +21,7 @@ Este repositório não tem código do sistema. Ele guarda três coisas:
 
 Antes de escrever qualquer parte da especificação, leia nesta ordem:
 
-1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D14, metas). A seção 9 dele diz o que ler para cada item.
+1. **[`CONTEXT.md`](CONTEXT.md)**: resumo do que já está decidido (produto, atores, estados, siglas, decisões D1 a D16, metas). A seção 9 dele diz o que ler para cada item.
 2. **A issue da sua tarefa** no board [Especificação de Software - 6p](https://github.com/orgs/Aircraft-Turnaround-Operations-Manager/projects/1). Cada issue tem os critérios de aceite e um comentário "Insumos da base de conhecimento" com os arquivos e as decisões que valem para ela.
 3. **Só os arquivos de pesquisa indicados** para o seu item. Não é preciso ler a pesquisa inteira.
 
@@ -39,7 +39,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
 ├── docs/
-│   ├── adr/                   decisões do projeto (D1 a D14), uma por arquivo
+│   ├── adr/                   decisões do projeto (D1 a D16), uma por arquivo
 │   ├── agents/                configuração das skills de IA (issues, rótulos, documentos de domínio)
 │   └── planos/                planos de execução já concluídos (histórico)
 ├── claude/                    texto das instruções do projeto TCC no claude.ai
@@ -90,7 +90,9 @@ O andamento de cada item está no board, e não neste arquivo.
 - [`ra1-tarefas.md`](entregas/ra1-tarefas.md): o plano do RA1. Divide os itens 1 a 11 em 30 tarefas, com responsáveis, dependências e o modelo de issue.
 - [`ra1-criterios-de-aceite.md`](entregas/ra1-criterios-de-aceite.md): a definição de pronto. Lista o que cada item precisa ter para valer a nota máxima da rubrica (`C01.1` … `C11.7`), as regras gerais do documento (`X.1` a `X.10`) e a revisão cruzada (`K.1` a `K.12`).
 
-Prazo do RA1: **10/10/2026, 23:59**, em PDF, no Canvas.
+- [`ra2-criterios-de-aceite.md`](entregas/ra2-criterios-de-aceite.md): a definição de pronto do RA2. Lista os ajustes pedidos na correção do RA1 (`C00.1` … `C00.5`), o que os itens 12 a 15 precisam ter para valer a nota máxima da rubrica (`C12.1` … `C15.8`), as regras gerais (`Y.1` a `Y.8`), a revisão cruzada (`K.1` a `K.12`) e as decisões em aberto (`B1` a `B7`).
+
+Prazo do RA1: **10/10/2026, 23:59**, em PDF, no Canvas. Prazo do RA2: **28/11/2026, 23:59**, também em PDF, no Canvas.
 
 ## Base de conhecimento
 
@@ -106,7 +108,7 @@ A especificação fala de um domínio técnico (operação de solo em aeroportos
 
 | Camada | Onde fica | Para que serve |
 |---|---|---|
-| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D14), uma decisão por arquivo, com contexto, opções e consequências. |
+| **Decisões** | [`docs/adr/`](docs/adr/README.md) | O que o grupo decidiu (D1 a D16), uma decisão por arquivo, com contexto, opções e consequências. |
 | **Pesquisa** | [`pesquisa/`](pesquisa/README.md) | O que o setor faz e o que os produtos similares oferecem, com fonte. |
 | **Resumo** | [`CONTEXT.md`](CONTEXT.md) | O essencial das duas camadas acima, em uma página. |
 
