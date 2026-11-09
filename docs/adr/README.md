@@ -28,7 +28,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0014](0014-servicos-sob-demanda.md) | D14 | Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround; o atraso conta na meta de 80% | 6, 7, 10 |
 | [0015](0015-divisao-em-microsservicos.md) | D15 | Quatro microsserviços, com a tarefa e o estado do turnaround na Execução em Solo; avisos pela mensageria e pedidos em chamada direta | 12, 13, 14 |
 | [0016](0016-contrato-entre-os-servicos.md) | D16 | Contrato comum entre os serviços, votado pelo grupo: REST, RabbitMQ, envelope dos avisos, UTC, UUID e nomes em português; base provisória do RA2 | 12, 13, 14, 15 |
-| [0018](0018-tecnologia-execucao-em-solo.md) | D18 | Tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18, seguindo o contrato da 0016 | 14 |
+| [0018](0018-tecnologia-execucao-em-solo.md) | D18 | Tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18, seguindo o contrato da 0016 | 12, 14 |
 
 ---
 
