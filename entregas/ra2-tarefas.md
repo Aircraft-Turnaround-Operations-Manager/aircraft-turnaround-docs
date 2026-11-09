@@ -12,7 +12,7 @@
 
 - **Ajustes do RA1 (C00.1 a C00.10) e itens 12 e 13:** Rodrigo Alves (`rdsalvesPUC`), por formarem um modelo único do sistema (decisão B7).
 - **Itens 14 e 15:** por área, cada integrante com os casos de uso e as estórias da sua área (seção 1.2).
-- **Escolha da tecnologia de cada serviço:** os quatro, cada um para o seu serviço (decisão B2).
+- **Escolha da tecnologia de cada serviço:** cada integrante para o seu serviço, numa sub-issue própria e numa ADR própria (decisão B2).
 - **Preparação, revisão final, consolidação e envio:** sem responsável. Quem puxar a tarefa se coloca como responsável ao começar.
 
 ### 1.2 Divisão por área (itens 14 e 15)
@@ -58,9 +58,9 @@ Já existem: `ra2`, `geral`, `por-integrante`, `area-a` … `area-d` e `pendenci
 
 Convenção de título: `[RA2][Item NN] <descrição>`. Para tarefas gerais, `[RA2][Geral] <descrição>`, e para os ajustes do RA1, `[RA2][Ajustes do RA1] <descrição>`.
 
-As tarefas T14 e T15 são **tarefas-mãe** com quatro **sub-issues** cada, uma por área.
+As tarefas T04, T14 e T15 são **tarefas-mãe** com quatro **sub-issues** cada, uma por área.
 
-Total: **19 issues**, sendo 11 principais e 8 sub-issues. A issue #136, fechada como "não planejada", é substituída por T00.
+Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada como "não planejada", é substituída por T00.
 
 ### Fase 0 — Ajustes do RA1 (Rodrigo)
 
@@ -90,11 +90,17 @@ Total: **19 issues**, sendo 11 principais e 8 sub-issues. A issue #136, fechada 
 - Critérios: Y.1 (estrutura); decisões B5 e B6
 - Bloqueia: T12, T14, T15
 
-**T04 · [RA2][Geral] Escolher a tecnologia de cada serviço**
-- Responsáveis: os quatro, cada um para o seu serviço · Rótulos: `ra2`, `geral`
-- Descrição: cada integrante escolhe a linguagem, o framework e o banco do seu serviço, seguindo o contrato da ADR-0016. A issue tem uma linha marcável por integrante, e o resultado é registrado numa ADR nova.
+**T04 · [RA2][Geral] Escolher a tecnologia de cada serviço (4 ADRs)** — tarefa-mãe
+- Responsável: quem puxar (conferência) · Rótulos: `ra2`, `geral`
+- Descrição: cada integrante escolhe a linguagem, o framework e o banco do seu serviço, seguindo o contrato da ADR-0016, e registra a escolha numa ADR própria, com o número reservado para não haver conflito entre PRs em paralelo. A tarefa-mãe fecha quando as quatro sub-issues fecharem e alguém conferir que as quatro escolhas respeitam a ADR-0016.
 - Critérios: decisão B2
 - Não bloqueia os itens 12 a 15. Os itens usam tipos SQL padrão e tipos UML neutros (decisão B1).
+- Sub-issues:
+  - **T04-A** · Cadastro e Planejamento · ADR-0017 · `eduardofabrii` · `area-a`
+  - **T04-B** · Execução em Solo · ADR-0018 · `Jcliz` · `area-b`
+  - **T04-C** · Monitoramento · ADR-0019 · `jvecodev` · `area-c`
+  - **T04-D** · Exceções e Liberação · ADR-0020 · `rdsalvesPUC` · `area-d`
+  - Rótulos de cada uma: `ra2`, `geral`, `por-integrante`, `area-x`
 
 ### Fase 2 — Modelagem (Rodrigo)
 
@@ -175,15 +181,15 @@ Siga o protocolo da seção 0.3 de `ra2-criterios-de-aceite.md`.
 1. Ler este arquivo e `ra2-criterios-de-aceite.md` por inteiro.
 2. Criar os rótulos da seção 2, ignorando os que já existirem.
 3. Criar as 11 issues principais na ordem da seção 3, com título, corpo no formato da seção 5, rótulos e responsáveis. Guardar o número de cada uma.
-4. Criar as 8 sub-issues (T14-A a T15-D) e vinculá-las como sub-issues das tarefas-mãe.
+4. Criar as 12 sub-issues (T04-A a T04-D, T14-A a T15-D) e vinculá-las como sub-issues das tarefas-mãe.
 5. Preencher "Bloqueada por" e "Bloqueia" nos corpos com os números reais e registrar também o relacionamento nativo de bloqueio do GitHub.
-6. Adicionar as 19 issues ao project 1 com Status **Todo**.
+6. Adicionar as 23 issues ao project 1 com Status **Todo**.
 7. **Verificar por comando:**
-   - 19 issues novas com o rótulo `ra2`;
-   - 19 itens novos no project, todos com Status Todo;
-   - 2 tarefas-mãe com 4 sub-issues cada;
+   - 23 issues novas com o rótulo `ra2`;
+   - 23 itens novos no project, todos com Status Todo;
+   - 3 tarefas-mãe com 4 sub-issues cada;
    - cada sub-issue com o responsável da tabela 1.2;
-   - T00, T01, T12 e T13 com `rdsalvesPUC`; T04 com os quatro; as demais principais sem responsável;
+   - T00, T01, T12 e T13 com `rdsalvesPUC`; as demais principais sem responsável;
    - nenhum `#<n>` pendente nos corpos.
 8. Relatório final em tabela: `Tarefa | nº da issue | responsável | status no project | verificado (sim/não)`.
 
