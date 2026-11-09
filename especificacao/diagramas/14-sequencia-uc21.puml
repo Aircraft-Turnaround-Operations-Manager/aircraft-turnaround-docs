@@ -21,7 +21,7 @@ end box
 == Passo 1: registro aceito ou mudança do plano ==
 motor -> lst : receberAviso(aviso: TarefaConcluida | TarefaMarcadaNaoAplicavel | TarefaIniciada |\nChegadaRegistrada | TarefasReplanejadas)
 activate lst
-ref over lst, db : B.2 – Descartar aviso repetido (aviso_processado)
+ref over lst, db : B.2 – Abrir a transação do aviso: travar o turnaround (FOR UPDATE)\ne descartar o aviso repetido (aviso_processado)
 note right of lst
   E1: registro recusado no envio (B.3) não gera aviso;
   nenhum estado muda.
@@ -36,7 +36,7 @@ activate svc
 opt aviso.tipo = TarefaConcluida (passo 1) ou TarefaMarcadaNaoAplicavel (A3: conta como terminada)
   svc -> tar : buscarSucessoras(aviso.dados.tarefaId)
   activate tar
-  tar -> db : SELECT dependencia_tarefa JOIN tarefa AS sucessora\nWHERE predecessora_id = :tarefaId
+  tar -> db : SELECT sucessora.* FROM dependencia_tarefa\nJOIN tarefa AS sucessora ON sucessora.id = dependencia_tarefa.sucessora_id\nWHERE dependencia_tarefa.predecessora_id = :tarefaId
   activate db
   db --> tar : sucessoras
   deactivate db
@@ -50,7 +50,7 @@ opt aviso.tipo = TarefaConcluida (passo 1) ou TarefaMarcadaNaoAplicavel (A3: con
   loop para cada sucessora (passo 3)
     svc -> tar : contarPredecessorasPendentes(sucessora.id)
     activate tar
-    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa JOIN tarefa AS predecessora\nWHERE sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
     activate db
     db --> tar : quantidade
     deactivate db
@@ -63,9 +63,9 @@ opt aviso.tipo = TarefaConcluida (passo 1) ou TarefaMarcadaNaoAplicavel (A3: con
     else pendentes = 0 (passo 4)
       svc -> tar : mudarEstado(sucessora, "Pronta", causaId = aviso.causaId)
       activate tar
-      tar -> db : transação:\nUPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
+      tar -> db : UPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
       activate db
-      db --> tar : COMMIT
+      db --> tar : ok
       deactivate db
       tar --> svc : sucessora "Pronta"
       deactivate tar
@@ -82,9 +82,9 @@ opt aviso.tipo = TarefaConcluida (passo 1) ou TarefaMarcadaNaoAplicavel (A3: con
   alt pendentes = 0 e turnaround.estado = "Operações em andamento" (A4)
     svc -> tur : mudarEstado(turnaroundId, "Pronto para liberação", causaId = aviso.causaId)
     activate tur
-    tur -> db : transação:\nUPDATE turnaround SET estado = 'Pronto para liberação'\nINSERT INTO historico_estado (turnaround_id, 'Operações em andamento' → 'Pronto para liberação', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
+    tur -> db : UPDATE turnaround SET estado = 'Pronto para liberação'\nINSERT INTO historico_estado (turnaround_id, 'Operações em andamento' → 'Pronto para liberação', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
     activate db
-    db --> tur : COMMIT
+    db --> tur : ok
     deactivate db
     tur --> svc : turnaround "Pronto para liberação"
     deactivate tur
@@ -98,9 +98,9 @@ note over lst, db : a parte 2 mostra os outros tipos de aviso (A1, A7 e A8) e o 
 newpage
 == Parte 2: outros tipos de aviso (A1, A7, A8) e passo 6 ==
 alt aviso.tipo = TarefaIniciada (A1)
-  svc -> tur : buscarParaAtualizar(aviso.turnaroundId)
+  svc -> tur : buscarPorId(aviso.turnaroundId)
   activate tur
-  tur -> db : SELECT turnaround WHERE id = :turnaroundId FOR UPDATE
+  tur -> db : SELECT * FROM turnaround WHERE id = :turnaroundId\n[linha já travada na abertura da transação do aviso (B.2)]
   activate db
   db --> tur : turnaround
   deactivate db
@@ -109,9 +109,9 @@ alt aviso.tipo = TarefaIniciada (A1)
   opt turnaround.estado = "Em solo" (primeiro início)
     svc -> tur : mudarEstado(turnaroundId, "Operações em andamento", causaId = aviso.causaId)
     activate tur
-    tur -> db : transação:\nUPDATE turnaround SET estado = 'Operações em andamento'\nINSERT INTO historico_estado (turnaround_id, 'Em solo' → 'Operações em andamento', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
+    tur -> db : UPDATE turnaround SET estado = 'Operações em andamento'\nINSERT INTO historico_estado (turnaround_id, 'Em solo' → 'Operações em andamento', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
     activate db
-    db --> tur : COMMIT
+    db --> tur : ok
     deactivate db
     tur --> svc : turnaround "Operações em andamento"
     deactivate tur
@@ -120,7 +120,7 @@ alt aviso.tipo = TarefaIniciada (A1)
 else aviso.tipo = ChegadaRegistrada (A7)
   svc -> tar : buscarSemPredecessora(aviso.turnaroundId)
   activate tar
-  tar -> db : SELECT tarefa WHERE turnaround_id = :turnaroundId AND estado = 'Aguardando'\nAND NOT EXISTS (SELECT 1 FROM dependencia_tarefa WHERE sucessora_id = tarefa.id)
+  tar -> db : SELECT * FROM tarefa WHERE turnaround_id = :turnaroundId AND estado = 'Aguardando'\nAND NOT EXISTS (SELECT 1 FROM dependencia_tarefa WHERE sucessora_id = tarefa.id)
   activate db
   db --> tar : tarefas sem predecessora
   deactivate db
@@ -129,9 +129,9 @@ else aviso.tipo = ChegadaRegistrada (A7)
   loop para cada tarefa sem predecessora
     svc -> tar : mudarEstado(tarefa, "Pronta", causaId = aviso.causaId)
     activate tar
-    tar -> db : transação:\nUPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
+    tar -> db : UPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
     activate db
-    db --> tar : COMMIT
+    db --> tar : ok
     deactivate db
     tar --> svc : tarefa "Pronta"
     deactivate tar
@@ -140,7 +140,7 @@ else aviso.tipo = ChegadaRegistrada (A7)
 else aviso.tipo = TarefasReplanejadas (A8; «include» pelo UC35)
   svc -> tar : buscarNaoIniciadasAfetadas(aviso.dados.tarefaIds)
   activate tar
-  tar -> db : SELECT tarefa WHERE id IN (:tarefaIds)\nAND estado IN ('Aguardando', 'Pronta')
+  tar -> db : SELECT * FROM tarefa WHERE id IN (:tarefaIds)\nAND estado IN ('Aguardando', 'Pronta')
   activate db
   db --> tar : tarefas afetadas
   deactivate db
@@ -149,7 +149,7 @@ else aviso.tipo = TarefasReplanejadas (A8; «include» pelo UC35)
   loop para cada tarefa afetada
     svc -> tar : contarPredecessorasPendentes(tarefa.id)
     activate tar
-    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa JOIN tarefa AS predecessora\nWHERE sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
     activate db
     db --> tar : quantidade
     deactivate db
@@ -162,10 +162,11 @@ else aviso.tipo = TarefasReplanejadas (A8; «include» pelo UC35)
     else estado já corresponde às predecessoras
       note over svc, tar : nenhuma mudança
     end
-    note over tar, db : mudarEstado grava, na mesma transação, tarefa.estado,\nhistorico_estado (estado anterior → novo, Motor de Eventos,\nhorario, causa_id = alteração do plano) e aviso_saida (A8.2)
+    note over tar, db : mudarEstado grava, na transação do aviso, tarefa.estado,\nhistorico_estado (estado anterior → novo, Motor de Eventos,\nhorario, causa_id = alteração do plano) e aviso_saida (A8.2)
   end
 end
 
+ref over lst, db : B.2 – COMMIT da transação do aviso e confirmação à fila
 == Passo 6: exibir em até 5 s ==
 opt alguma tarefa ou o turnaround mudou de estado
   ref over pub, mq : B.2 – Publicar os avisos EstadoTarefaAlterado e EstadoTurnaroundAlterado\n(o Monitoramento recalcula a projeção e atualiza o painel: UC24)

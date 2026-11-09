@@ -53,7 +53,7 @@ else confirmação (passo 5)
     activate svc
     svc -> rep : buscarParaAtualizar(tarefaId)
     activate rep
-    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
     activate db
     db --> rep : linha de tarefa e de turnaround
     deactivate db
@@ -61,7 +61,7 @@ else confirmação (passo 5)
     deactivate rep
     svc -> rep : listarPontosNaoConfirmados(tarefaId)
     activate rep
-    rep -> db : SELECT ponto_confirmacao\nWHERE tarefa_id = :tarefaId AND confirmado = false
+    rep -> db : SELECT * FROM ponto_confirmacao\nWHERE tarefa_id = :tarefaId AND confirmado = false
     activate db
     db --> rep : pontos a confirmar (vazio se a tarefa não tem pontos)
     deactivate db

@@ -20,7 +20,7 @@ activate pub
 loop enquanto houver aviso não enviado, na ordem de gravação
   pub -> rep : buscarNaoEnviados(limite)
   activate rep
-  rep -> db : SELECT aviso_saida WHERE enviado_em IS NULL\nORDER BY criado_em LIMIT :limite
+  rep -> db : SELECT * FROM aviso_saida WHERE enviado_em IS NULL\nORDER BY criado_em LIMIT :limite
   activate db
   db --> rep : avisos
   deactivate db
@@ -51,23 +51,34 @@ loop enquanto houver aviso não enviado, na ordem de gravação
 end
 deactivate pub
 
-== Consumo, com descarte do aviso repetido ==
+== Consumo, numa só transação, com descarte do aviso repetido ==
 mq ->> lst : entregar(aviso)
 activate lst
 note right of lst : o Motor de Eventos (UC20 e UC21)\nouve a fila "execucao-em-solo"
-lst -> rep : registrarProcessado(aviso.id)
+lst -> rep : abrirTratamento(aviso.id, aviso.turnaroundId)
 activate rep
-rep -> db : INSERT INTO aviso_processado (aviso_id, processado_em)\n[aviso_id é chave primária]
+rep -> db : BEGIN\nSELECT * FROM turnaround WHERE id = :turnaroundId FOR UPDATE\nINSERT INTO aviso_processado (aviso_id, processado_em)\n[aviso_id é chave primária]
 activate db
+note right of db : a trava da linha do turnaround atende um aviso\nde cada vez por turnaround (ADR-0015, regra 4)
 alt aviso_id já existe (entrega repetida)
-  db --> rep : violação de chave
+  db --> rep : violação de chave; ROLLBACK
   rep --> lst : jaProcessado = true
   lst --> mq : confirmar(aviso.id)\n[ignora o aviso repetido]
 else aviso novo
-  db --> rep : ok
+  db --> rep : ok [transação aberta]
   rep --> lst : jaProcessado = false
-  note over lst : segue o tratamento do caso de uso\n(UC20 – registrarMarcos, UC21 – propagar)
-  lst --> mq : confirmar(aviso.id)
+  note over lst, db : segue o tratamento do caso de uso dentro da mesma transação\n(UC20 – registrarMarcos e UC21 – propagar)
+  lst -> rep : concluirTratamento(aviso.id)
+  rep -> db : COMMIT
+  alt gravado
+    db --> rep : ok
+    rep --> lst : ok
+    lst --> mq : confirmar(aviso.id)\n[só depois do COMMIT]
+  else falha antes do COMMIT
+    db --> rep : ROLLBACK
+    rep --> lst : falha
+    lst --> mq : rejeitar(aviso.id)\n[o aviso volta à fila: nada foi gravado,\nnem a linha de aviso_processado (RNF-20)]
+  end
 end
 deactivate db
 deactivate rep

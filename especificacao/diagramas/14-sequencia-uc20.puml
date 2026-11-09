@@ -21,7 +21,7 @@ end box
 == Passo 1: registro aceito no servidor ==
 motor -> lst : receberAviso(aviso: TarefaIniciada | TarefaConcluida | TarefaMarcadaNaoAplicavel)
 activate lst
-ref over lst, db : B.2 – Descartar aviso repetido (aviso_processado)
+ref over lst, db : B.2 – Abrir a transação do aviso: travar o turnaround (FOR UPDATE)\ne descartar o aviso repetido (aviso_processado)
 note right of lst
   E1: registro feito sem conexão — aviso.ocorridoEm traz o
   horário da ação guardado no celular (RNF-8), e é esse o horário
@@ -35,7 +35,7 @@ activate svc
 alt aviso.tipo = TarefaIniciada (passo 1)
   svc -> tur : buscarMarcos(aviso.turnaroundId)
   activate tur
-  tur -> db : SELECT marco WHERE turnaround_id = :turnaroundId\nAND tipo IN ('ACGT', 'ASBT', 'AEGT')
+  tur -> db : SELECT * FROM marco WHERE turnaround_id = :turnaroundId\nAND tipo IN ('ACGT', 'ASBT', 'AEGT')
   activate db
   db --> tur : marcos já gravados
   deactivate db
@@ -44,9 +44,9 @@ alt aviso.tipo = TarefaIniciada (passo 1)
   alt turnaround sem ACGT (passos 2 e 3)
     svc -> tur : salvarMarco(turnaroundId, "ACGT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
     activate tur
-    tur -> db : transação:\nINSERT INTO marco (turnaround_id, tipo = 'ACGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'ACGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
     activate db
-    db --> tur : COMMIT
+    db --> tur : ok
     deactivate db
     tur --> svc : ACGT gravado
     deactivate tur
@@ -55,7 +55,7 @@ alt aviso.tipo = TarefaIniciada (passo 1)
   end
   svc -> tar : buscarPorId(aviso.dados.tarefaId)
   activate tar
-  tar -> db : SELECT tarefa WHERE id = :tarefaId
+  tar -> db : SELECT * FROM tarefa WHERE id = :tarefaId
   activate db
   db --> tar : tarefa (com a indicação de embarque)
   deactivate db
@@ -64,9 +64,9 @@ alt aviso.tipo = TarefaIniciada (passo 1)
   alt tarefa.embarque = true (A1)
     svc -> tur : salvarMarco(turnaroundId, "ASBT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
     activate tur
-    tur -> db : transação:\nINSERT INTO marco (turnaround_id, tipo = 'ASBT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'ASBT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
     activate db
-    db --> tur : COMMIT
+    db --> tur : ok
     deactivate db
     tur --> svc : ASBT gravado
     deactivate tur
@@ -85,9 +85,9 @@ else aviso.tipo = TarefaConcluida (A3, A5) ou TarefaMarcadaNaoAplicavel (A4, A5)
   alt pendentes = 0: última obrigatória concluída (A3) ou marcada "Não aplicável" (A4)
     svc -> tur : salvarMarco(turnaroundId, "AEGT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
     activate tur
-    tur -> db : transação:\nINSERT INTO marco (turnaround_id, tipo = 'AEGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'AEGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
     activate db
-    db --> tur : COMMIT
+    db --> tur : ok
     deactivate db
     tur --> svc : AEGT gravado
     deactivate tur
@@ -96,6 +96,7 @@ else aviso.tipo = TarefaConcluida (A3, A5) ou TarefaMarcadaNaoAplicavel (A4, A5)
   end
 end
 
+ref over lst, db : B.2 – COMMIT da transação do aviso e confirmação à fila
 opt algum marco gravado (passo 5; A1.2, A3.2, A4.2)
   ref over pub, mq : B.2 – Publicar o aviso MarcoRegistrado pela caixa de saída
   svc ->> ws : notificarMarco(turnaroundId, tipo, horario)

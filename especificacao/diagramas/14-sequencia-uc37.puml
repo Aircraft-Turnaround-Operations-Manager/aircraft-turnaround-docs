@@ -31,7 +31,7 @@ ctl -> svc : consultarTurnaround(turnaroundId)
 activate svc
 svc -> rep : buscarPorId(turnaroundId)
 activate rep
-rep -> db : SELECT turnaround WHERE id = :turnaroundId
+rep -> db : SELECT * FROM turnaround WHERE id = :turnaroundId
 activate db
 db --> rep : aeronave, posição, estado e cópias do TOBT vigente\ne da prontidão confirmada (horário e autor)
 deactivate db
@@ -67,7 +67,7 @@ else confirmação
     activate svc
     svc -> rep : buscarParaAtualizar(turnaroundId)
     activate rep
-    rep -> db : SELECT turnaround LEFT JOIN marco (tipo = 'AOBT')\nWHERE turnaround.id = :turnaroundId FOR UPDATE
+    rep -> db : SELECT * FROM turnaround\nLEFT JOIN marco ON marco.turnaround_id = turnaround.id AND marco.tipo = 'AOBT'\nWHERE turnaround.id = :turnaroundId FOR UPDATE OF turnaround
     activate db
     db --> rep : estado e AOBT (se houver)
     deactivate db
@@ -118,7 +118,7 @@ opt consulta do turnaround encerrado (A2)
   activate svc
   svc -> rep : buscarHistorico(turnaroundId)
   activate rep
-  rep -> db : SELECT tarefa, registro_tarefa, marco, historico_estado\nWHERE turnaround_id = :turnaroundId ORDER BY horario
+  rep -> db : SELECT * FROM tarefa WHERE turnaround_id = :turnaroundId\nSELECT * FROM registro_tarefa WHERE tarefa_id IN (:tarefas) ORDER BY horario_acao\nSELECT * FROM marco WHERE turnaround_id = :turnaroundId ORDER BY horario\nSELECT * FROM historico_estado WHERE turnaround_id = :turnaroundId ORDER BY horario
   activate db
   db --> rep : histórico de tarefas e marcos
   deactivate db

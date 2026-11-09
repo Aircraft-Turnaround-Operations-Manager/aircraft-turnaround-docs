@@ -31,7 +31,7 @@ ctl -> svc : consultarChegada(turnaroundId)
 activate svc
 svc -> rep : buscarPorId(turnaroundId)
 activate rep
-rep -> db : SELECT turnaround WHERE id = :turnaroundId
+rep -> db : SELECT * FROM turnaround WHERE id = :turnaroundId
 activate db
 db --> rep : aeronave, posição, voos e estado
 deactivate db
@@ -61,7 +61,7 @@ else registrar (passo 3)
   activate svc
   svc -> rep : buscarParaAtualizar(turnaroundId)
   activate rep
-  rep -> db : SELECT turnaround LEFT JOIN marco (tipo = 'AIBT')\nWHERE turnaround.id = :turnaroundId FOR UPDATE
+  rep -> db : SELECT * FROM turnaround\nLEFT JOIN marco ON marco.turnaround_id = turnaround.id AND marco.tipo = 'AIBT'\nWHERE turnaround.id = :turnaroundId FOR UPDATE OF turnaround
   activate db
   note right of db : o bloqueio da linha atende um pedido de cada vez\npor turnaround (ADR-0015, regra 4; RN2)
   db --> rep : turnaround, plano confirmado e AIBT já gravado (se houver)

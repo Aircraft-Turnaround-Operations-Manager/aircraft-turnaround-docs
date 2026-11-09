@@ -41,7 +41,7 @@ else confirmação
     activate svc
     svc -> rep : listarCodigosAtrasoVigentes()
     activate rep
-    rep -> db : SELECT codigo_atraso WHERE versao_tabela = vigente\nORDER BY categoria, sigla
+    rep -> db : SELECT * FROM codigo_atraso WHERE versao_tabela = :versaoVigente\nORDER BY categoria, sigla
     activate db
     db --> rep : 72 códigos em 12 categorias (ADR-0006; RNF-22)
     deactivate db
@@ -74,7 +74,7 @@ else confirmação
     activate svc
     svc -> rep : buscarParaAtualizar(tarefaId)
     activate rep
-    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
     activate db
     db --> rep : linha de tarefa e de turnaround
     deactivate db
@@ -143,7 +143,7 @@ else retomada
     activate svc
     svc -> rep : buscarParaAtualizar(tarefaId)
     activate rep
-    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
     activate db
     db --> rep : linha de tarefa e de turnaround
     deactivate db

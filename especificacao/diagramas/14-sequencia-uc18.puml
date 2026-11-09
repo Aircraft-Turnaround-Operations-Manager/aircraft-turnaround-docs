@@ -49,7 +49,7 @@ else confirmação (passo 5)
     activate svc
     svc -> rep : buscarParaAtualizar(tarefaId)
     activate rep
-    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
     activate db
     db --> rep : linha de tarefa (com permite_nao_aplicavel) e de turnaround
     deactivate db

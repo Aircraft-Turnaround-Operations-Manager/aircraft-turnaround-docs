@@ -32,7 +32,7 @@ ctl -> svc : consultarChegada(turnaroundId)
 activate svc
 svc -> rep : buscarChegadaComCorrecoes(turnaroundId)
 activate rep
-rep -> db : SELECT turnaround, marco (tipo = 'AIBT'), correcao_aibt\nWHERE turnaround_id = :turnaroundId ORDER BY corrigido_em
+rep -> db : SELECT * FROM turnaround\nJOIN marco ON marco.turnaround_id = turnaround.id AND marco.tipo = 'AIBT'\nLEFT JOIN correcao_aibt ON correcao_aibt.turnaround_id = turnaround.id\nWHERE turnaround.id = :turnaroundId ORDER BY correcao_aibt.corrigido_em
 activate db
 db --> rep : turnaround, AIBT atual e correções anteriores
 deactivate db
@@ -62,11 +62,11 @@ else salvar (passo 3)
   activate svc
   svc -> rep : buscarParaAtualizar(turnaroundId)
   activate rep
-  rep -> db : SELECT turnaround, marco (tipo = 'AIBT')\nWHERE turnaround.id = :turnaroundId FOR UPDATE
+  rep -> db : SELECT * FROM turnaround\nLEFT JOIN marco ON marco.turnaround_id = turnaround.id AND marco.tipo = 'AIBT'\nWHERE turnaround.id = :turnaroundId FOR UPDATE OF turnaround
   activate db
   db --> rep : estado e AIBT atual
   deactivate db
-  rep -> db : SELECT correcao_aibt WHERE requisicao_id = :requisicaoId
+  rep -> db : SELECT * FROM correcao_aibt WHERE requisicao_id = :requisicaoId
   activate db
   db --> rep : correção já gravada com essa requisição (ou nenhuma)
   deactivate db

@@ -29,7 +29,7 @@ ctl -> svc : listarPontos(tarefaId, operadorId)
 activate svc
 svc -> rep : listarPontos(tarefaId)
 activate rep
-rep -> db : SELECT ponto_confirmacao WHERE tarefa_id = :tarefaId\nORDER BY ordem
+rep -> db : SELECT * FROM ponto_confirmacao WHERE tarefa_id = :tarefaId\nORDER BY ordem
 activate db
 db --> rep : pontos (confirmado ou a confirmar)
 deactivate db
@@ -68,7 +68,7 @@ else câmera aberta
       activate svc
       svc -> rep : buscarPontoPorCodigo(tarefaId, codigoQr)
       activate rep
-      rep -> db : SELECT ponto_confirmacao JOIN tarefa JOIN turnaround\nWHERE ponto_confirmacao.codigo_qr = :codigoQr\nAND tarefa.turnaround_id = (turnaround da tarefa :tarefaId)\nFOR UPDATE
+      rep -> db : SELECT * FROM ponto_confirmacao\nJOIN tarefa ON tarefa.id = ponto_confirmacao.tarefa_id\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE ponto_confirmacao.codigo_qr = :codigoQr\nAND turnaround.id = (SELECT turnaround_id FROM tarefa WHERE id = :tarefaId)\nFOR UPDATE
       activate db
       db --> rep : ponto, com a tarefa dona e o seu estado (ou nenhum)
       deactivate db

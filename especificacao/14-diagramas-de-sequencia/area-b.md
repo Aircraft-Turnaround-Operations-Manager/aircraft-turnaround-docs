@@ -20,7 +20,7 @@ Siglas desta parte: horário real de chegada à posição (AIBT), início real d
 
 **Motor de Eventos.** O Motor de Eventos é um ator lógico (ADR-0015, regra 7). Na Execução em Solo, ele corresponde ao `MotorDeEventosListener`, que ouve a fila do serviço e executa os marcos (UC20) e a propagação (UC21) a cada aviso de registro aceito. Por isso os diagramas do UC20 e do UC21 começam no ator Motor de Eventos, e os casos de uso que os incluem (UC12, UC15, UC16 e UC18) terminam com um fragmento `ref` para eles.
 
-**Nomes e valores.** Classes, métodos, tabelas e avisos seguem a convenção da ADR-0016. Os horários trafegam em tempo universal coordenado (UTC), e os identificadores são identificadores únicos universais (UUID) versão 4. As condições de guarda e os valores gravados usam os nomes de estado do `CONTEXT.md`, seção 3, para que sejam os mesmos do item 10. Cada chamada ao banco cita a tabela que lê ou grava:
+**Nomes e valores.** Classes, métodos, tabelas e avisos seguem a convenção da ADR-0016. Os horários trafegam em tempo universal coordenado (UTC), e os identificadores são identificadores únicos universais (UUID) versão 4. As condições de guarda e os valores gravados usam os nomes de estado do `CONTEXT.md`, seção 3, para que sejam os mesmos do item 10. Antes da chegada à posição, o turnaround ainda não tem estado (UC22, RN1); por isso o histórico da chegada vai de "sem estado" para "Em solo". Cada chamada ao banco cita a tabela que lê ou grava. As consultas estão em SQL completo; nas gravações (`INSERT` e `UPDATE`), cada campo aparece com o valor gravado (`campo = valor`), de forma abreviada, para caber no diagrama.
 
 | Tabela | O que guarda | Diagramas |
 |---|---|---|
@@ -34,7 +34,7 @@ Siglas desta parte: horário real de chegada à posição (AIBT), início real d
 | `marco` | AIBT, ACGT, ASBT, AEGT e AOBT, com o horário, o autor ou o registro de origem | UC12, UC13, UC20, UC37 |
 | `correcao_aibt` | Valor anterior, valor novo, motivo, autor e horário de cada correção da chegada | UC13 |
 | `historico_estado` | Estado anterior e novo de cada mudança, com o autor, o horário e o registro que a causou (RF-21; RNF-2) | UC12, UC15 a UC18, UC21, UC37 |
-| `aviso_saida`, `aviso_processado` | Caixa de saída dos avisos e avisos já processados | B.2 e todos os que publicam aviso |
+| `aviso_saida`, `aviso_processado` | Caixa de saída dos avisos e avisos já processados. São tabelas técnicas do serviço, sem dado de negócio, e também entram no item 12 | B.2 e todos os que publicam ou consomem aviso |
 
 **Avisos publicados.** `ChegadaRegistrada` (UC12), `ChegadaCorrigida` (UC13), `TarefaIniciada` (UC15), `TarefaConcluida` (UC16), `TarefaPausada` e `TarefaRetomada` (UC17), `TarefaMarcadaNaoAplicavel` (UC18), `MarcoRegistrado` (UC20), `EstadoTarefaAlterado` e `EstadoTurnaroundAlterado` (UC21) e `SaidaRegistrada` (UC37). A leitura de QR Code (UC19) não muda estado e não gera aviso.
 
@@ -48,7 +48,7 @@ Três interações se repetem em quase todos os casos de uso. Para não repetir 
 
 ![Interação auxiliar B.2 – Publicar o aviso pela caixa de saída e descartar o aviso repetido](../diagramas/14-sequencia-b2-avisos.png)
 
-*Interação auxiliar B.2 – Publicar o aviso pela caixa de saída e descartar o aviso repetido.* O aviso é gravado na mesma transação do registro e publicado depois; se a entrega falha, ele fica na caixa de saída para nova tentativa, sem repetir o registro nem os efeitos (E5 do UC12 e do UC13). Quem consome guarda o identificador do aviso e ignora o repetido (ADR-0016).
+*Interação auxiliar B.2 – Publicar o aviso pela caixa de saída e descartar o aviso repetido.* O aviso é gravado na mesma transação do registro e publicado depois; se a entrega falha, ele fica na caixa de saída para nova tentativa, sem repetir o registro nem os efeitos (E5 do UC12 e do UC13). Quem consome guarda o identificador do aviso e ignora o repetido (ADR-0016). O consumo é uma só transação: ela trava a linha do turnaround, grava o identificador do aviso e as mudanças do UC20 e do UC21, e só depois do `COMMIT` o aviso é confirmado à fila. Se algo falha antes, nada fica gravado e o aviso volta à fila (RNF-20).
 
 ![Interação auxiliar B.3 – Enviar os registros pendentes do celular](../diagramas/14-sequencia-b3-registros-pendentes.png)
 
@@ -108,7 +108,7 @@ Três interações se repetem em quase todos os casos de uso. Para não repetir 
 
 ![Diagrama de Sequência do UC20 – Registrar os marcos do atendimento em solo](../diagramas/14-sequencia-uc20.png)
 
-*Diagrama de Sequência do UC20 – Registrar os marcos do atendimento em solo.* Cada marco é gravado com o horário da ação que vem no aviso (`ocorridoEm`) e com o registro de origem (RN4). Dois fluxos de exceção estão agrupados numa nota, porque não mudam a interação: no E1 (registro feito sem conexão), a sequência é a mesma, só que o horário da ação veio do celular; no E2 (registro recusado no servidor), não há aviso, e nada acontece.
+*Diagrama de Sequência do UC20 – Registrar os marcos do atendimento em solo.* Cada marco é gravado com o horário da ação que vem no aviso (`ocorridoEm`) e com o registro de origem (RN4). O aviso é tratado na transação aberta na B.2, com a linha do turnaround travada: dois inícios tratados ao mesmo tempo não gravam dois ACGT (ADR-0015, regra 4). Dois fluxos de exceção estão agrupados numa nota, porque não mudam a interação: no E1 (registro feito sem conexão), a sequência é a mesma, só que o horário da ação veio do celular; no E2 (registro recusado no servidor), não há aviso, e nada acontece.
 
 ## UC21 – Propagar o estado das tarefas e do turnaround
 
@@ -116,7 +116,7 @@ Três interações se repetem em quase todos os casos de uso. Para não repetir 
 
 ![Diagrama de Sequência do UC21 – Propagar o estado das tarefas e do turnaround (parte 2: primeiro início, chegada e replanejamento)](../diagramas/14-sequencia-uc21_001.png)
 
-*Diagrama de Sequência do UC21 – Propagar o estado das tarefas e do turnaround.* A parte 1 mostra o término de uma tarefa (fluxo básico, A2 a A6 e E3), e a parte 2 mostra o primeiro início (A1), a chegada (A7), o replanejamento do UC35 (A8) e a exibição em até 5 segundos (passo 6). As dependências do abastecimento chegam com o plano, conforme a política da companhia aérea (ADR-0005; ADR-0015, regra 5); por isso A5 e A6 mudam quais sucessoras a consulta devolve, e não as mensagens. O E1 e o E2 estão agrupados numa nota, como no UC20.
+*Diagrama de Sequência do UC21 – Propagar o estado das tarefas e do turnaround.* A parte 1 mostra o término de uma tarefa (fluxo básico, A2 a A6 e E3), e a parte 2 mostra o primeiro início (A1), a chegada (A7), o replanejamento do UC35 (A8) e a exibição em até 5 segundos (passo 6). As dependências do abastecimento chegam com o plano, conforme a política da companhia aérea (ADR-0005; ADR-0015, regra 5); por isso A5 e A6 mudam quais sucessoras a consulta devolve, e não as mensagens. O E1 e o E2 estão agrupados numa nota, como no UC20. Como no UC20, todas as mudanças de um aviso entram numa só transação, aberta na B.2 com a linha do turnaround travada.
 
 ## UC37 – Registrar a saída da posição e encerrar o turnaround
 

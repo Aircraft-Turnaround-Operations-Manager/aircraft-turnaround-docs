@@ -35,11 +35,11 @@ else com conexão
   activate svc
   svc -> rep : listarPorOperador(operadorId)
   activate rep
-  rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.operador_id = :operadorId\nAND turnaround.estado IS DISTINCT FROM 'Fora de bloco'\nORDER BY tarefa.inicio_planejado
+  rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.operador_id = :operadorId\nAND turnaround.estado IS DISTINCT FROM 'Fora de bloco'\nORDER BY tarefa.inicio_planejado
   activate db
   db --> rep : tarefas (aeronave, posição, estado, janela planejada)
   deactivate db
-  rep -> db : SELECT dependencia_tarefa JOIN tarefa AS predecessora\nWHERE sucessora_id IN (:tarefas)\nAND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+  rep -> db : SELECT * FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id IN (:tarefas)\nAND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
   activate db
   db --> rep : predecessoras não concluídas
   deactivate db
@@ -68,7 +68,7 @@ else com conexão
     activate svc
     svc -> rep : buscarDetalhe(tarefaId)
     activate rep
-    rep -> db : SELECT tarefa, ponto_confirmacao, dependencia_tarefa\nWHERE tarefa.id = :tarefaId
+    rep -> db : SELECT * FROM tarefa\nLEFT JOIN ponto_confirmacao ON ponto_confirmacao.tarefa_id = tarefa.id\nLEFT JOIN dependencia_tarefa ON dependencia_tarefa.sucessora_id = tarefa.id\nWHERE tarefa.id = :tarefaId
     activate db
     db --> rep : tarefa, pontos e predecessoras
     deactivate db
