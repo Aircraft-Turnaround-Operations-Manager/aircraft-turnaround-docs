@@ -2,7 +2,7 @@
 
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
-| UC22 | Acompanhar os turnarounds no painel | Coordenador de Turnaround | estendido por UC23 | RF-25, US025 |
+| UC22 | Acompanhar painel dos turnarounds | Coordenador de Turnaround | estendido por UC23 | RF-25, US025 |
 | UC23 | Consultar a linha do tempo do turnaround | Coordenador de Turnaround | «extend» UC22 | RF-26, US026 |
 | UC24 | Recalcular a projeção, o atraso e o caminho crítico | Motor de Eventos | «include» UC25 | RF-22, RF-23, RF-24, US022 a US024 |
 | UC25 | Emitir alertas de risco ao horário | Motor de Eventos | incluído por UC24 | RF-27 a RF-31, US027 a US031 |
@@ -10,11 +10,11 @@
 | UC27 | Registrar a checagem com as equipes em TOBT − 15 | Motor de Eventos, Coordenador de Turnaround | — | RF-32, RF-35, US032, US035 |
 | UC28 | Consultar os indicadores de aderência | Coordenador de Turnaround | — | RF-34, US034 |
 
-## UC22 – Acompanhar os turnarounds no painel
+## UC22 – Acompanhar painel dos turnarounds
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC22 – Acompanhar os turnarounds no painel |
+| **Nome do caso de uso** | UC22 – Acompanhar painel dos turnarounds |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround acompanha, em um painel no computador, todos os turnarounds que ainda não saíram da posição, com o estado, os horários-alvo de prontidão (TOBT) [2] planejado e vigente, a projeção de prontidão, a diferença em minutos e uma cor de risco, para atender primeiro os que estão mais longe do horário planejado. Pode ser estendido pelo UC23 (linha do tempo). Atende ao RF-25 e à US025. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |

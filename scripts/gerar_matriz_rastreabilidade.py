@@ -45,8 +45,8 @@ rfs, rnfs, us_de, ucs = {}, {}, {}, {}
 for a in AREAS:
     for ln in ler(ESP / "06-requisitos-funcionais" / f"area-{a}.md").splitlines():
         c = celulas(ln) if ln.startswith("| RF-") else []
-        if len(c) >= 4 and re.fullmatch(rf"RF-{ID}", c[0]) and c[1]:
-            rfs[c[0]] = {"ator": c[2], "obj": c[3] if len(c) > 3 else ""}
+        if len(c) >= 6 and re.fullmatch(rf"RF-{ID}", c[0]) and c[2]:  # # | TÍTULO | REQUISITO FUNCIONAL | ATOR | OBJETIVO | SPRINT
+            rfs[c[0]] = {"tit": c[1], "ator": c[3], "obj": c[4]}
     for ln in ler(ESP / "08-requisitos-nao-funcionais" / f"area-{a}.md").splitlines():
         c = celulas(ln) if ln.startswith("| RNF-") else []
         if len(c) >= 3 and re.fullmatch(rf"RNF-{ID}", c[0]) and c[1]:
@@ -70,12 +70,12 @@ for rnf, d in rnfs.items():
 
 j = lambda xs: ", ".join(sorted(xs, key=chave)) if xs else "—"
 out = []
-out.append("### A.1 Requisitos funcionais × objetivos, atores, estórias, casos de uso e RNFs\n")
-out.append("| RF | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |")
-out.append("|---|---|---|---|---|---|")
+out.append("### A.1 Requisitos funcionais × títulos, objetivos, atores, estórias, casos de uso e RNFs\n")
+out.append("| RF | Título | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |")
+out.append("|---|---|---|---|---|---|---|")
 for r in sorted(rfs, key=chave):
     d = rfs[r]
-    out.append(f"| {r} | {d['obj'] or '—'} | {d['ator']} | {j(us_de.get(r))} | {j(uc_de.get(r))} | {j(rnf_de.get(r))} |")
+    out.append(f"| {r} | {d['tit']} | {d['obj'] or '—'} | {d['ator']} | {j(us_de.get(r))} | {j(uc_de.get(r))} | {j(rnf_de.get(r))} |")
 out.append("\n### A.2 Objetivos × requisitos funcionais\n")
 out.append("| Objetivo | RFs que o atendem |")
 out.append("|---|---|")

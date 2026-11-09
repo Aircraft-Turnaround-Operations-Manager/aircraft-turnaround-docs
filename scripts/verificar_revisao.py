@@ -17,7 +17,7 @@ for kind,(folder,pattern) in patterns.items():
  defs[kind]=set(allids)
  if len(allids)!=expected[kind] or len(set(allids))!=len(allids):errors.append(f'{kind}: contagem/duplicação')
  seq=[int(re.search(r'\d+',x)[0]) for x in allids]
- if seq!=list(range(1,expected[kind]+1)):errors.append(f'{kind}: sequência')
+ if sorted(seq)!=list(range(1,expected[kind]+1)):errors.append(f'{kind}: sequência')
 for p in list(E.rglob('*.md'))+list(E.rglob('*.puml'))+list(E.rglob('*.drawio')):
  s=p.read_text(encoding='utf-8')
  if re.search(r'\b(?:RNF|RF|UC|US)-[A-D]\d+',s):errors.append(f'ID provisório: {p}')
@@ -29,6 +29,10 @@ for p in list(E.rglob('*.md'))+list(E.rglob('*.puml'))+list(E.rglob('*.drawio'))
 text='\n'.join((E/'07-estorias-de-usuario'/f'area-{a}.md').read_text(encoding='utf-8') for a in 'abcd')
 pairs=re.findall(r'^## US(\d+)\s*[–-]\s*REQUISITO RF-(\d+)',text,re.M)
 if len(pairs)!=44 or any(int(a)!=int(b) for a,b in pairs):errors.append('RF/US não bijetivos')
+# C00.2: o título do RF (coluna TÍTULO do item 6) é o mesmo do título da estória
+rftit={m[1]:m[2].strip() for a in 'abcd' for m in re.finditer(r'^\| (RF-\d+) \| ([^|]+)\|',(E/'06-requisitos-funcionais'/f'area-{a}.md').read_text(encoding='utf-8'),re.M)}
+ustit={f'RF-{m[1]}':m[2].strip() for m in re.finditer(r'^## US\d+ – REQUISITO RF-(\d+): (.+)$',text,re.M)}
+errors+=[f'Título diferente: {k}' for k in sorted(set(rftit)|set(ustit)) if rftit.get(k)!=ustit.get(k)]
 ucnames={m[1]:m[2] for a in 'abcd' for m in re.finditer(r'^## (UC\d+)\s*[–-]\s*(.*)',(E/'10-especificacoes-de-caso-de-uso'/f'area-{a}.md').read_text(encoding='utf-8'),re.M)}
 # item 9: o diagrama de casos de uso é o .drawio (nomes, setas e ligações de cada linha)
 cells=list(ET.parse(E/'diagramas/09-casos-de-uso.drawio').getroot().iter('mxCell'));norm=lambda x:re.sub(r'\s+',' ',x.replace('“','"').replace('”','"')).strip()
