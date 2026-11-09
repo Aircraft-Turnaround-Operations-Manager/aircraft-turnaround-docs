@@ -1,9 +1,9 @@
 {
   "AGENTS.md": {
-    "mtime": 1793145303.5966203,
-    "seen": 1793147721.086249,
-    "ast_hash": "bfaead5d9cf7a14eff03b995429921f9",
-    "semantic_hash": "bfaead5d9cf7a14eff03b995429921f9"
+    "mtime": 1793768983.2163806,
+    "seen": 1794208542.9593067,
+    "ast_hash": "e0fcc743dc2ac849398244a8ffd9e413",
+    "semantic_hash": "e0fcc743dc2ac849398244a8ffd9e413"
   },
   "CLAUDE.md": {
     "mtime": 1790911621.9407463,
@@ -12,16 +12,16 @@
     "semantic_hash": "5c24644a54eae7e0af3d7e1db45a1a58"
   },
   "CONTEXT.md": {
-    "mtime": 1791673868.4090836,
-    "seen": 1791674421.1426468,
-    "ast_hash": "e6eea591a85e9ef51bfc9f54ac88794a",
-    "semantic_hash": "e6eea591a85e9ef51bfc9f54ac88794a"
+    "mtime": 1793768983.2183821,
+    "seen": 1794208542.9593086,
+    "ast_hash": "f0479b31c1ffdfce13ac9edecd50dc3a",
+    "semantic_hash": "f0479b31c1ffdfce13ac9edecd50dc3a"
   },
   "README.md": {
-    "mtime": 1793145303.5986204,
-    "seen": 1793147721.0862558,
-    "ast_hash": "8932ef50783656e2cc19be60e542188f",
-    "semantic_hash": "8932ef50783656e2cc19be60e542188f"
+    "mtime": 1793768983.220381,
+    "seen": 1794208542.9593098,
+    "ast_hash": "e308a6a8e5bc351cd52a6241307acc1f",
+    "semantic_hash": "e308a6a8e5bc351cd52a6241307acc1f"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
     "mtime": 1790911621.9443774,
@@ -78,10 +78,10 @@
     "semantic_hash": "42e6008fc628f33c74be511ae8011e2c"
   },
   "docs/adr/README.md": {
-    "mtime": 1791673868.4165933,
-    "seen": 1791674421.1426663,
-    "ast_hash": "ac05956372e526866ed09d9996b4899b",
-    "semantic_hash": "ac05956372e526866ed09d9996b4899b"
+    "mtime": 1793768983.2249074,
+    "seen": 1794208542.9593136,
+    "ast_hash": "375f55cc2ff33d3580b8be01ba31e7fa",
+    "semantic_hash": "375f55cc2ff33d3580b8be01ba31e7fa"
   },
   "docs/agents/domain.md": {
     "mtime": 1790815972.2774098,
@@ -102,10 +102,10 @@
     "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
   },
   "entregas/ra1-criterios-de-aceite.md": {
-    "mtime": 1791673868.4175925,
-    "seen": 1791674421.1426702,
-    "ast_hash": "342b52fd3aff37641e062b8fc532a0f3",
-    "semantic_hash": "342b52fd3aff37641e062b8fc532a0f3"
+    "mtime": 1793768983.2259052,
+    "seen": 1794208542.9593153,
+    "ast_hash": "a3e088308d3219b3bf3f94c5e112dae9",
+    "semantic_hash": "a3e088308d3219b3bf3f94c5e112dae9"
   },
   "entregas/ra1-tarefas.md": {
     "mtime": 1793145303.5996244,
@@ -892,5 +892,29 @@
     "seen": 1793147721.086244,
     "ast_hash": "b8f49df3ec633b36ca5c115b953d54a6",
     "semantic_hash": "b8f49df3ec633b36ca5c115b953d54a6"
+  },
+  "docs/adr/0015-divisao-em-microsservicos.md": {
+    "mtime": 1793768983.2208886,
+    "seen": 1794208542.9593117,
+    "ast_hash": "67acd8d28092e14fd1179e0a76b4d74d",
+    "semantic_hash": "67acd8d28092e14fd1179e0a76b4d74d"
+  },
+  "docs/adr/0016-contrato-entre-os-servicos.md": {
+    "mtime": 1793768983.2239063,
+    "seen": 1794208542.9593127,
+    "ast_hash": "3c7e81b29b311de53ea3b8f318b485a1",
+    "semantic_hash": "3c7e81b29b311de53ea3b8f318b485a1"
+  },
+  "entregas/ra2-criterios-de-aceite.md": {
+    "mtime": 1793768983.227907,
+    "seen": 1794208542.9593167,
+    "ast_hash": "42c7c46388e9fa4a9bc57b062ec8e696",
+    "semantic_hash": "42c7c46388e9fa4a9bc57b062ec8e696"
+  },
+  "entregas/ra2-tarefas.md": {
+    "mtime": 1794208170.529474,
+    "seen": 1794208542.9593186,
+    "ast_hash": "e909598c4a170229e75bf279ec19275a",
+    "semantic_hash": "e909598c4a170229e75bf279ec19275a"
   }
 }
