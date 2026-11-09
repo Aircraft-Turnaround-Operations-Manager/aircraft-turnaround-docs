@@ -16,6 +16,8 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
 
+- Casos de teste da área B (item 15), em `especificacao/15-casos-de-teste/area-b.md`: 109 casos para os casos de uso UC12 a UC21 e UC37, com uma massa de teste comum (turnarounds, usuários, tarefas e pontos de QR Code). Todo critério de aceite das 11 estórias da área (47) e todo fluxo dos 11 casos de uso (92) têm pelo menos um caso. Os IDs CT-B001 a CT-B109 são provisórios, até a numeração única da tarefa-mãe ([#153](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/153)).
+
 ### Alterado
 
 - Os 44 RFs ganharam um título no padrão Ação-Resultado-Objeto (ARO), numa coluna nova (TÍTULO) do item 6. É a anotação 1 do professor na correção do RA1. 23 títulos mudaram e foram levados também para as estórias (item 7), para a matriz (Apêndice A) e para os 16 casos de uso que tinham o mesmo nome, nos itens 9 e 10. O RF-18 e o RF-41 ficaram com o título antigo, porque no ARO perderiam informação: o nome do estado "Não aplicável" e a condição dos 5 minutos ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
