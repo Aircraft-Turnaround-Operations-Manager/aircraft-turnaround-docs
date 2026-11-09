@@ -68,7 +68,7 @@
           <mxGeometry height="96" width="180" x="1442" y="493" as="geometry" />
         </mxCell>
         <mxCell id="uc16" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC16&lt;br&gt;Registrar conclusão&lt;br&gt;da tarefa" vertex="1">
-          <mxGeometry height="96" width="210" x="1532" y="635" as="geometry" />
+          <mxGeometry height="96" width="210" x="1530" y="672" as="geometry" />
         </mxCell>
         <mxCell id="uc17" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC17&lt;br&gt;Pausar e retomar&lt;br&gt;execução da tarefa" vertex="1">
           <mxGeometry height="96" width="210" x="1848" y="596.5" as="geometry" />
@@ -76,61 +76,61 @@
         <mxCell id="uc18" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC18&lt;br&gt;Marcar tarefa&lt;br&gt;como &amp;quot;Não aplicável&amp;quot;" vertex="1">
           <mxGeometry height="95" width="220" x="1647" y="478" as="geometry" />
         </mxCell>
-        <mxCell id="uc19" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC19&lt;br&gt;Confirmar a execução&lt;br&gt;da tarefa por QR Code" vertex="1">
+        <mxCell id="uc19" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC19&lt;br&gt;Confirmar execução&lt;br&gt;da tarefa por QR Code" vertex="1">
           <mxGeometry height="94" width="270" x="1196" y="194" as="geometry" />
         </mxCell>
-        <mxCell id="uc20" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC20&lt;br&gt;Registrar os marcos do&lt;br&gt;atendimento em solo" vertex="1">
+        <mxCell id="uc20" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC20&lt;br&gt;Registrar marcos do&lt;br&gt;atendimento em solo" vertex="1">
           <mxGeometry height="96" width="270" x="1784" y="733" as="geometry" />
         </mxCell>
-        <mxCell id="uc21" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC21&lt;br&gt;Propagar o estado das&lt;br&gt;tarefas e do turnaround" vertex="1">
+        <mxCell id="uc21" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC21&lt;br&gt;Propagar estado das&lt;br&gt;tarefas e do turnaround" vertex="1">
           <mxGeometry height="96" width="270" x="1217" y="739" as="geometry" />
         </mxCell>
         <mxCell id="uc22" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC22&lt;br&gt;Acompanhar painel&lt;br&gt;dos turnarounds" vertex="1">
           <mxGeometry height="96" width="250" x="1213" y="1006" as="geometry" />
         </mxCell>
-        <mxCell id="uc23" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC23&lt;br&gt;Consultar a linha do&lt;br&gt;tempo do turnaround" vertex="1">
+        <mxCell id="uc23" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC23&lt;br&gt;Consultar linha do&lt;br&gt;tempo do turnaround" vertex="1">
           <mxGeometry height="96" width="240" x="1498" y="1126" as="geometry" />
         </mxCell>
-        <mxCell id="uc24" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC24&lt;br&gt;Recalcular a projeção, o&lt;br&gt;atraso e o caminho crítico" vertex="1">
+        <mxCell id="uc24" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC24&lt;br&gt;Recalcular projeção,&lt;br&gt;atraso e caminho crítico" vertex="1">
           <mxGeometry height="96" width="290" x="1373" y="1308" as="geometry" />
         </mxCell>
         <mxCell id="uc25" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC25&lt;br&gt;Emitir alertas de&lt;br&gt;risco ao horário" vertex="1">
           <mxGeometry height="89" width="210" x="1246" y="1132" as="geometry" />
         </mxCell>
-        <mxCell id="uc26" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC26&lt;br&gt;Consultar a lista&lt;br&gt;de alertas abertos" vertex="1">
+        <mxCell id="uc26" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC26&lt;br&gt;Consultar lista&lt;br&gt;de alertas abertos" vertex="1">
           <mxGeometry height="92" width="220" x="1831" y="984" as="geometry" />
         </mxCell>
-        <mxCell id="uc27" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC27&lt;br&gt;Registrar a checagem com&lt;br&gt;as equipes em TOBT − 15" vertex="1">
+        <mxCell id="uc27" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC27&lt;br&gt;Registrar checagem com&lt;br&gt;as equipes em TOBT − 15" vertex="1">
           <mxGeometry height="96" width="310" x="1694" y="1306" as="geometry" />
         </mxCell>
-        <mxCell id="uc28" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC28&lt;br&gt;Consultar os&lt;br&gt;indicadores de aderência" vertex="1">
+        <mxCell id="uc28" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC28&lt;br&gt;Consultar&lt;br&gt;indicadores de aderência" vertex="1">
           <mxGeometry height="95" width="280" x="1499" y="974" as="geometry" />
         </mxCell>
-        <mxCell id="uc29" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC29&lt;br&gt;Abrir exceção" vertex="1">
-          <mxGeometry height="74" width="170" x="504" y="990" as="geometry" />
+        <mxCell id="uc29" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC29&lt;br&gt;Abrir exceção&lt;br&gt;do turnaround" vertex="1">
+          <mxGeometry height="96" width="190" x="494" y="979" as="geometry" />
         </mxCell>
         <mxCell id="uc30" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC30&lt;br&gt;Reatribuir tarefa" vertex="1">
           <mxGeometry height="74" width="190" x="524" y="1102" as="geometry" />
         </mxCell>
-        <mxCell id="uc31" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC31&lt;br&gt;Registrar a ação&lt;br&gt;tomada para o alerta" vertex="1">
+        <mxCell id="uc31" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC31&lt;br&gt;Registrar ação&lt;br&gt;tomada para o alerta" vertex="1">
           <mxGeometry height="96" width="240" x="808" y="996" as="geometry" />
         </mxCell>
-        <mxCell id="uc32" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC32&lt;br&gt;Confirmar a prontidão&lt;br&gt;e liberar a aeronave" vertex="1">
+        <mxCell id="uc32" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC32&lt;br&gt;Confirmar prontidão&lt;br&gt;e liberar aeronave" vertex="1">
           <mxGeometry height="95" width="240" x="366" y="1304" as="geometry" />
         </mxCell>
         <mxCell id="uc33" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC33&lt;br&gt;Encerrar exceção&lt;br&gt;do turnaround" vertex="1">
-          <mxGeometry height="96" width="190" x="361" y="844" as="geometry" />
+          <mxGeometry height="96" width="190" x="361" y="862" as="geometry" />
         </mxCell>
-        <mxCell id="uc34" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC34&lt;br&gt;Atualizar o TOBT" vertex="1">
+        <mxCell id="uc34" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC34&lt;br&gt;Atualizar TOBT" vertex="1">
           <mxGeometry height="74" width="200" x="726" y="1204" as="geometry" />
         </mxCell>
         <mxCell id="uc35" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC35&lt;br&gt;Replanejar tarefas&lt;br&gt;não iniciadas&lt;br&gt;do turnaround" vertex="1">
           <mxGeometry height="112" width="220" x="579" y="844.5" as="geometry" />
         </mxCell>
-        <mxCell id="uc36" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC36&lt;br&gt;Consultar os operadores&lt;br&gt;disponíveis da equipe" vertex="1">
+        <mxCell id="uc36" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC36&lt;br&gt;Consultar operadores&lt;br&gt;disponíveis da equipe" vertex="1">
           <mxGeometry height="94" width="290" x="659" y="1308" as="geometry" />
         </mxCell>
-        <mxCell id="uc37" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC37&lt;br&gt;Registrar a saída da posição&lt;br&gt;e encerrar o turnaround" vertex="1">
+        <mxCell id="uc37" parent="1" style="ellipse;whiteSpace=nowrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontSize=18;spacing=0;fontFamily=Arial;" value="UC37&lt;br&gt;Registrar saída da posição&lt;br&gt;e encerrar turnaround" vertex="1">
           <mxGeometry height="96" width="300" x="1750" y="184" as="geometry" />
         </mxCell>
         <mxCell id="ator_USU" parent="1" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;labelPosition=center;align=center;html=1;outlineConnect=0;fontSize=17;strokeWidth=1.6;fontStyle=2;fontFamily=Arial;" value="Usuário" vertex="1">

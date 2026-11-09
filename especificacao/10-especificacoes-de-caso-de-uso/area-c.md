@@ -3,12 +3,12 @@
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
 | UC22 | Acompanhar painel dos turnarounds | Coordenador de Turnaround | estendido por UC23 | RF-25, US025 |
-| UC23 | Consultar a linha do tempo do turnaround | Coordenador de Turnaround | «extend» UC22 | RF-26, US026 |
-| UC24 | Recalcular a projeção, o atraso e o caminho crítico | Motor de Eventos | «include» UC25 | RF-22, RF-23, RF-24, US022 a US024 |
+| UC23 | Consultar linha do tempo do turnaround | Coordenador de Turnaround | «extend» UC22 | RF-26, US026 |
+| UC24 | Recalcular projeção, atraso e caminho crítico | Motor de Eventos | «include» UC25 | RF-22, RF-23, RF-24, US022 a US024 |
 | UC25 | Emitir alertas de risco ao horário | Motor de Eventos | incluído por UC24 | RF-27 a RF-31, US027 a US031 |
-| UC26 | Consultar a lista de alertas abertos | Coordenador de Turnaround | registro da ação no UC31 | RF-33, US033 |
-| UC27 | Registrar a checagem com as equipes em TOBT − 15 | Motor de Eventos, Coordenador de Turnaround | — | RF-32, RF-35, US032, US035 |
-| UC28 | Consultar os indicadores de aderência | Coordenador de Turnaround | — | RF-34, US034 |
+| UC26 | Consultar lista de alertas abertos | Coordenador de Turnaround | registro da ação no UC31 | RF-33, US033 |
+| UC27 | Registrar checagem com as equipes em TOBT − 15 | Motor de Eventos, Coordenador de Turnaround | — | RF-32, RF-35, US032, US035 |
+| UC28 | Consultar indicadores de aderência | Coordenador de Turnaround | — | RF-34, US034 |
 
 ## UC22 – Acompanhar painel dos turnarounds
 
@@ -85,11 +85,11 @@
 |  | E2.1. O sistema leva o Coordenador de Turnaround à tela de autenticação. |
 |  | E2.2. Depois da autenticação, o caso de uso volta ao passo 2. |
 
-## UC23 – Consultar a linha do tempo do turnaround
+## UC23 – Consultar linha do tempo do turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC23 – Consultar a linha do tempo do turnaround |
+| **Nome do caso de uso** | UC23 – Consultar linha do tempo do turnaround |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround abre, a partir do painel, a linha do tempo de um turnaround, com as tarefas, os horários planejados e os reais ou projetados, os atrasos, o caminho crítico, as tarefas impactadas e os marcos já registrados, para entender onde está o atraso e quem é o responsável antes de decidir como agir. Estende o UC22. Atende ao RF-26 e à US026. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround foi aberto (UC03). |
@@ -154,11 +154,11 @@
 |  | E2.1. O sistema mantém a última linha do tempo recebida, com o aviso "Sem conexão" e o horário da última atualização. |
 |  | E2.2. Quando a conexão volta, o sistema recarrega a linha do tempo, e o caso de uso volta ao passo 5. |
 
-## UC24 – Recalcular a projeção, o atraso e o caminho crítico
+## UC24 – Recalcular projeção, atraso e caminho crítico
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC24 – Recalcular a projeção, o atraso e o caminho crítico |
+| **Nome do caso de uso** | UC24 – Recalcular projeção, atraso e caminho crítico |
 | **Ator(es)** | Motor de Eventos |
 | **Descrição** | A cada registro aceito, a cada alteração do plano e a cada minuto, o Motor de Eventos recalcula o fim projetado de cada tarefa obrigatória, a projeção de prontidão do turnaround, o atraso de cada tarefa, as tarefas impactadas e o caminho crítico, grava o resultado com a causa e compara a projeção com o TOBT planejado + 5 minutos e com o TOBT vigente. Inclui o UC25 (alertas). Atende aos RF-22, RF-23 e RF-24 e às US022, US023 e US024. |
 | **Pré-condições** | 1. O turnaround foi aberto e não está nos estados "Liberado" nem "Fora de bloco".<br>2. O modelo de tarefas do turnaround tem, para cada tarefa, a janela planejada (início e fim), a duração planejada, as predecessoras e a indicação de obrigatória (UC04, UC06 e UC08). |
@@ -322,11 +322,11 @@
 |  | E3.1. O alerta fica gravado e aberto, e o tempo decorrido conta a partir do horário de emissão. |
 |  | E3.2. O sistema exibe o alerta na lista e no painel quando a conexão volta. |
 
-## UC26 – Consultar a lista de alertas abertos
+## UC26 – Consultar lista de alertas abertos
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC26 – Consultar a lista de alertas abertos |
+| **Nome do caso de uso** | UC26 – Consultar lista de alertas abertos |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround consulta a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, os dados do gatilho, a tarefa, o horário de emissão, o tempo decorrido e a classificação, e a partir dela registra a ação tomada para cada alerta. O registro da ação é o UC31. Atende ao RF-33 e à US033. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |
@@ -387,11 +387,11 @@
 |---|---|
 |  | E2.1. O sistema mantém a última lista recebida, com o aviso "Sem conexão" e o horário da última atualização, e não permite registrar ação até a conexão voltar. |
 
-## UC27 – Registrar a checagem com as equipes em TOBT − 15
+## UC27 – Registrar checagem com as equipes em TOBT − 15
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC27 – Registrar a checagem com as equipes em TOBT − 15 |
+| **Nome do caso de uso** | UC27 – Registrar checagem com as equipes em TOBT − 15 |
 | **Ator(es)** | Motor de Eventos, Coordenador de Turnaround |
 | **Descrição** | Quinze minutos antes do TOBT vigente, o Motor de Eventos exibe ao Coordenador de Turnaround um aviso de checagem com as tarefas obrigatórias não concluídas e as equipes responsáveis. O coordenador confere o prazo com essas equipes e registra a checagem, o que encerra o aviso. Atende aos RF-32 e RF-35 e às US032 e US035. |
 | **Pré-condições** | 1. O turnaround foi aberto e ainda não está em "Pronto para liberação", "Liberado" nem "Fora de bloco".<br>2. Para registrar a checagem, o Coordenador de Turnaround está autenticado com o perfil de coordenador. |
@@ -456,11 +456,11 @@
 |---|---|---|
 |  |  | E3.1. O sistema recusa o registro, informa que o aviso já foi encerrado e mantém o autor e o horário do primeiro registro (RF-35; US035, critério 2). O caso de uso termina. |
 
-## UC28 – Consultar os indicadores de aderência
+## UC28 – Consultar indicadores de aderência
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC28 – Consultar os indicadores de aderência |
+| **Nome do caso de uso** | UC28 – Consultar indicadores de aderência |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround escolhe um período e consulta os indicadores de aderência dos turnarounds encerrados nele, com numerador e denominador, para acompanhar as metas do item 1 e as atualizações tardias do TOBT. Atende ao RF-34 e à US034. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |

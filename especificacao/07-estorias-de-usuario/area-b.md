@@ -107,7 +107,7 @@
 | 2 | **DADO QUE:** uma tarefa atribuída a mim já foi iniciada, ou o modelo de tarefas não permite marcá-la como "Não aplicável" <br> **QUANDO:** tento marcar a tarefa como "Não aplicável" <br> **ENTÃO:** o sistema recusa o registro, informa o motivo da recusa e a tarefa mantém o estado |
 | 3 | **DADO QUE:** uma tarefa atribuída a mim ainda não foi iniciada e o modelo de tarefas permite marcá-la como "Não aplicável" <br> **QUANDO:** tento marcar a tarefa como "Não aplicável" sem escrever a justificativa <br> **ENTÃO:** o sistema recusa o registro, pede a justificativa e a tarefa mantém o estado |
 
-## US019 – REQUISITO RF-19: Confirmar a execução da tarefa por QR Code
+## US019 – REQUISITO RF-19: Confirmar execução da tarefa por QR Code
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** ler com a câmera do celular os QR Codes fixados nos pontos da aeronave ligados a uma tarefa da minha equipe atribuída a mim, por exemplo as zonas, fileiras ou assentos da cabine na limpeza
@@ -122,7 +122,7 @@
 | 3 | **DADO QUE:** um QR Code não corresponde a nenhum ponto cadastrado no turnaround <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema informa que o QR Code não foi reconhecido e não grava nenhum registro |
 | 4 | **DADO QUE:** uma tarefa de limpeza atribuída a mim está no estado "Pronta" ou "Pausada" <br> **QUANDO:** leio o QR Code de uma zona dessa tarefa <br> **ENTÃO:** o sistema recusa a leitura, informa que a tarefa precisa estar em execução e não grava nenhum registro |
 
-## US020 – REQUISITO RF-20: Registrar os marcos do atendimento em solo
+## US020 – REQUISITO RF-20: Registrar marcos do atendimento em solo
 
 **COMO:** Motor de Eventos
 **POSSO:** registrar os horários dos marcos do atendimento em solo a partir dos registros feitos pelos operadores
@@ -138,7 +138,7 @@
 | 4 | **DADO QUE:** o ACGT do turnaround já foi gravado <br> **QUANDO:** o Operador de Solo/Rampa registra o início de outra tarefa que não é a de embarque <br> **ENTÃO:** o sistema mantém o ACGT gravado e não grava nenhum outro marco |
 | 5 | **DADO QUE:** todas as demais tarefas obrigatórias do turnaround estão nos estados "Concluída" ou "Não aplicável" e a última tarefa obrigatória pendente ainda não foi iniciada <br> **QUANDO:** o Operador de Solo/Rampa marca essa tarefa como "Não aplicável" <br> **ENTÃO:** o sistema grava o horário dessa marcação como AEGT no turnaround |
 
-## US021 – REQUISITO RF-21: Propagar o estado das tarefas e do turnaround
+## US021 – REQUISITO RF-21: Propagar estado das tarefas e do turnaround
 
 **COMO:** Motor de Eventos
 **POSSO:** propagar o estado das tarefas e do turnaround a cada registro feito pelos operadores
@@ -156,7 +156,7 @@
 | 6 | **DADO QUE:** o turnaround foi aberto e a tarefa de calçar a aeronave, que não tem predecessora, está no estado "Aguardando" <br> **QUANDO:** o turnaround entra no estado "Em solo", com o registro do horário real de chegada à posição (AIBT) [2] <br> **ENTÃO:** a tarefa de calçar a aeronave passa para o estado "Pronta" e o sistema grava o horário da mudança e o registro que a causou |
 | 7 | **DADO QUE:** o embarque está no estado "Pronta" <br> **QUANDO:** o Coordenador de Turnaround inclui no plano uma limpeza profunda de assento, ainda não iniciada, como predecessora do embarque <br> **ENTÃO:** o embarque volta para o estado "Aguardando" e o sistema grava o horário da mudança e a inclusão como causa |
 
-## US044 – REQUISITO RF-44: Registrar a saída da posição e encerrar o turnaround
+## US044 – REQUISITO RF-44: Registrar saída da posição e encerrar turnaround
 
 **COMO:** Operador de Solo/Rampa
 **POSSO:** registrar o horário real de saída da posição (AOBT) [2] de um turnaround no estado "Liberado", depois que a autorização de acionamento e push-back do controle de tráfego aéreo foi recebida fora do sistema
