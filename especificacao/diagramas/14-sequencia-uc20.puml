@@ -1,0 +1,109 @@
+@startuml 14-sequencia-uc20
+' Diagrama de Sequência do UC20 – Registrar os marcos do atendimento em solo (RF-20, US020).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc20.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de Eventos" as motor
+box "Execução em Solo"
+control "MotorDeEventosListener" as lst
+participant "MarcoService" as svc <<service>>
+participant "TarefaRepository" as tar <<repository>>
+participant "TurnaroundRepository" as tur <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+boundary "NotificadorWebSocket" as ws
+end box
+queue "RabbitMQ" as mq
+box "Site"
+boundary "TurnaroundView" as view
+end box
+
+== Passo 1: registro aceito no servidor ==
+motor -> lst : receberAviso(aviso: TarefaIniciada | TarefaConcluida | TarefaMarcadaNaoAplicavel)
+activate lst
+ref over lst, db : B.2 – Abrir a transação do aviso: travar o turnaround (FOR UPDATE)\ne descartar o aviso repetido (aviso_processado)
+note right of lst
+  E1: registro feito sem conexão — aviso.ocorridoEm traz o
+  horário da ação guardado no celular (RNF-8), e é esse o horário
+  gravado em cada marco (RN4), e não o de chegada ao servidor.
+  E2: registro recusado no envio (B.3) não gera aviso;
+  nenhum marco é gravado nem alterado.
+end note
+lst -> svc : registrarMarcos(aviso)
+activate svc
+
+alt aviso.tipo = TarefaIniciada (passo 1)
+  svc -> tur : buscarMarcos(aviso.turnaroundId)
+  activate tur
+  tur -> db : SELECT * FROM marco WHERE turnaround_id = :turnaroundId\nAND tipo IN ('ACGT', 'ASBT', 'AEGT')
+  activate db
+  db --> tur : marcos já gravados
+  deactivate db
+  tur --> svc : marcos
+  deactivate tur
+  alt turnaround sem ACGT (passos 2 e 3)
+    svc -> tur : salvarMarco(turnaroundId, "ACGT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
+    activate tur
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'ACGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    activate db
+    db --> tur : ok
+    deactivate db
+    tur --> svc : ACGT gravado
+    deactivate tur
+  else ACGT já gravado (A2)
+    note over svc, tur : mantém o ACGT gravado e segue para o passo 4
+  end
+  svc -> tar : buscarPorId(aviso.dados.tarefaId)
+  activate tar
+  tar -> db : SELECT * FROM tarefa WHERE id = :tarefaId
+  activate db
+  db --> tar : tarefa (com a indicação de embarque)
+  deactivate db
+  tar --> svc : tarefa
+  deactivate tar
+  alt tarefa.embarque = true (A1)
+    svc -> tur : salvarMarco(turnaroundId, "ASBT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
+    activate tur
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'ASBT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    activate db
+    db --> tur : ok
+    deactivate db
+    tur --> svc : ASBT gravado
+    deactivate tur
+  else não é a tarefa de embarque (passo 4)
+    note over svc, tur : nenhum outro marco (RN5)
+  end
+else aviso.tipo = TarefaConcluida (A3, A5) ou TarefaMarcadaNaoAplicavel (A4, A5)
+  svc -> tar : contarObrigatoriasPendentes(aviso.turnaroundId)
+  activate tar
+  tar -> db : SELECT COUNT(*) FROM tarefa\nWHERE turnaround_id = :turnaroundId AND obrigatoria = true\nAND estado NOT IN ('Concluída', 'Não aplicável')
+  activate db
+  db --> tar : quantidade
+  deactivate db
+  tar --> svc : pendentes
+  deactivate tar
+  alt pendentes = 0: última obrigatória concluída (A3) ou marcada "Não aplicável" (A4)
+    svc -> tur : salvarMarco(turnaroundId, "AEGT", horario = aviso.ocorridoEm, registroOrigemId = aviso.causaId, aviso = MarcoRegistrado)
+    activate tur
+    tur -> db : INSERT INTO marco (turnaround_id, tipo = 'AEGT', horario, registro_origem_id, autor = Motor de Eventos)\nINSERT INTO aviso_saida (MarcoRegistrado)
+    activate db
+    db --> tur : ok
+    deactivate db
+    tur --> svc : AEGT gravado
+    deactivate tur
+  else pendentes > 0 (A5)
+    note over svc, tur : nenhum marco é gravado
+  end
+end
+
+ref over lst, db : B.2 – COMMIT da transação do aviso e confirmação à fila
+opt algum marco gravado (passo 5; A1.2, A3.2, A4.2)
+  ref over pub, mq : B.2 – Publicar o aviso MarcoRegistrado pela caixa de saída
+  svc ->> ws : notificarMarco(turnaroundId, tipo, horario)
+  ws ->> view : marcoAtualizado(turnaroundId, tipo, horario)
+  note right of view : marcos do turnaround na tela,\nem até 5 s (RNF-11)
+end
+svc --> lst : marcos gravados
+deactivate svc
+deactivate lst
+@enduml

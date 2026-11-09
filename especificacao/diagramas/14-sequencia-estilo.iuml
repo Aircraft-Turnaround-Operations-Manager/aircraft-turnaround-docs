@@ -1,0 +1,18 @@
+' Estilo comum dos diagramas de sequência do item 14 (incluído por cada 14-sequencia-*.puml).
+skinparam style strictuml
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 230
+skinparam ParticipantPadding 6
+skinparam BoxPadding 8
+skinparam sequenceGroupBodyBackgroundColor transparent
+skinparam sequenceBoxBorderColor #9E9E9E
+skinparam sequenceBoxBackgroundColor #FAFAFA
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #BDBDBD
+skinparam sequenceReferenceBackgroundColor #F1F5FB
+skinparam sequenceDividerBackgroundColor #EEEEEE
+skinparam sequenceLifeLineBorderColor #616161

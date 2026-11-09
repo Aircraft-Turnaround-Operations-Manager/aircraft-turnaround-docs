@@ -1,0 +1,180 @@
+@startuml 14-sequencia-uc21
+' Diagrama de Sequência do UC21 – Propagar o estado das tarefas e do turnaround (RF-21, US021).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc21.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de Eventos" as motor
+box "Execução em Solo"
+control "MotorDeEventosListener" as lst
+participant "PropagacaoService" as svc <<service>>
+participant "TarefaRepository" as tar <<repository>>
+participant "TurnaroundRepository" as tur <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+boundary "NotificadorWebSocket" as ws
+end box
+queue "RabbitMQ" as mq
+box "Site"
+boundary "TarefaView" as view
+end box
+
+== Passo 1: registro aceito ou mudança do plano ==
+motor -> lst : receberAviso(aviso: TarefaConcluida | TarefaMarcadaNaoAplicavel | TarefaIniciada |\nChegadaRegistrada | TarefasReplanejadas)
+activate lst
+ref over lst, db : B.2 – Abrir a transação do aviso: travar o turnaround (FOR UPDATE)\ne descartar o aviso repetido (aviso_processado)
+note right of lst
+  E1: registro recusado no envio (B.3) não gera aviso;
+  nenhum estado muda.
+  E2: registro feito sem conexão que chega depois de outros:
+  a propagação é a mesma, aplicada quando o aviso chega;
+  historico_estado.causa_id aponta o registro, que guarda
+  o horário da ação (RNF-8).
+end note
+lst -> svc : propagar(aviso)
+activate svc
+
+opt aviso.tipo = TarefaConcluida (passo 1) ou TarefaMarcadaNaoAplicavel (A3: conta como terminada)
+  svc -> tar : buscarSucessoras(aviso.dados.tarefaId)
+  activate tar
+  tar -> db : SELECT sucessora.* FROM dependencia_tarefa\nJOIN tarefa AS sucessora ON sucessora.id = dependencia_tarefa.sucessora_id\nWHERE dependencia_tarefa.predecessora_id = :tarefaId
+  activate db
+  db --> tar : sucessoras
+  deactivate db
+  tar --> svc : sucessoras
+  deactivate tar
+  alt abastecimento com passageiros a bordo não permitido (A5; padrão, ADR-0005)
+    note over svc, db : o plano recebido na confirmação (ADR-0015, regra 5) tem as dependências\ndesembarque → abastecimento e abastecimento → embarque: o abastecimento\nestá entre as sucessoras do desembarque, e o embarque espera o abastecimento
+  else abastecimento com passageiros a bordo permitido (A6)
+    note over svc, db : o plano não tem essas duas dependências; o abastecimento\ncorre em paralelo ao fluxo de passageiros
+  end
+  loop para cada sucessora (passo 3)
+    svc -> tar : contarPredecessorasPendentes(sucessora.id)
+    activate tar
+    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+    activate db
+    db --> tar : quantidade
+    deactivate db
+    tar --> svc : pendentes
+    deactivate tar
+    alt sucessora.estado ≠ "Aguardando" (E3)
+      note over svc, tar : não muda essa sucessora e segue para a próxima
+    else pendentes > 0 (A2)
+      note over svc, tar : a sucessora continua "Aguardando"
+    else pendentes = 0 (passo 4)
+      svc -> tar : mudarEstado(sucessora, "Pronta", causaId = aviso.causaId)
+      activate tar
+      tar -> db : UPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
+      activate db
+      db --> tar : ok
+      deactivate db
+      tar --> svc : sucessora "Pronta"
+      deactivate tar
+    end
+  end
+  svc -> tar : contarObrigatoriasPendentes(aviso.turnaroundId)
+  activate tar
+  tar -> db : SELECT COUNT(*) FROM tarefa\nWHERE turnaround_id = :turnaroundId AND obrigatoria = true\nAND estado NOT IN ('Concluída', 'Não aplicável')
+  activate db
+  db --> tar : quantidade
+  deactivate db
+  tar --> svc : pendentes
+  deactivate tar
+  alt pendentes = 0 e turnaround.estado = "Operações em andamento" (A4)
+    svc -> tur : mudarEstado(turnaroundId, "Pronto para liberação", causaId = aviso.causaId)
+    activate tur
+    tur -> db : UPDATE turnaround SET estado = 'Pronto para liberação'\nINSERT INTO historico_estado (turnaround_id, 'Operações em andamento' → 'Pronto para liberação', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
+    activate db
+    db --> tur : ok
+    deactivate db
+    tur --> svc : turnaround "Pronto para liberação"
+    deactivate tur
+  else pendentes > 0 (passo 5)
+    note over svc, tur : o turnaround continua "Operações em andamento".\nCom o turnaround "Em exceção", só a propagação entre\nas tarefas é feita (RN9; UC29 e UC33)
+  end
+
+end
+note over lst, db : a parte 2 mostra os outros tipos de aviso (A1, A7 e A8) e o passo 6, que vale para todos
+
+newpage
+== Parte 2: outros tipos de aviso (A1, A7, A8) e passo 6 ==
+alt aviso.tipo = TarefaIniciada (A1)
+  svc -> tur : buscarPorId(aviso.turnaroundId)
+  activate tur
+  tur -> db : SELECT * FROM turnaround WHERE id = :turnaroundId\n[linha já travada na abertura da transação do aviso (B.2)]
+  activate db
+  db --> tur : turnaround
+  deactivate db
+  tur --> svc : turnaround
+  deactivate tur
+  opt turnaround.estado = "Em solo" (primeiro início)
+    svc -> tur : mudarEstado(turnaroundId, "Operações em andamento", causaId = aviso.causaId)
+    activate tur
+    tur -> db : UPDATE turnaround SET estado = 'Operações em andamento'\nINSERT INTO historico_estado (turnaround_id, 'Em solo' → 'Operações em andamento', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTurnaroundAlterado)
+    activate db
+    db --> tur : ok
+    deactivate db
+    tur --> svc : turnaround "Operações em andamento"
+    deactivate tur
+  end
+
+else aviso.tipo = ChegadaRegistrada (A7)
+  svc -> tar : buscarSemPredecessora(aviso.turnaroundId)
+  activate tar
+  tar -> db : SELECT * FROM tarefa WHERE turnaround_id = :turnaroundId AND estado = 'Aguardando'\nAND NOT EXISTS (SELECT 1 FROM dependencia_tarefa WHERE sucessora_id = tarefa.id)
+  activate db
+  db --> tar : tarefas sem predecessora
+  deactivate db
+  tar --> svc : tarefas
+  deactivate tar
+  loop para cada tarefa sem predecessora
+    svc -> tar : mudarEstado(tarefa, "Pronta", causaId = aviso.causaId)
+    activate tar
+    tar -> db : UPDATE tarefa SET estado = 'Pronta'\nINSERT INTO historico_estado (tarefa_id, 'Aguardando' → 'Pronta', autor = Motor de Eventos, horario, causa_id)\nINSERT INTO aviso_saida (EstadoTarefaAlterado)
+    activate db
+    db --> tar : ok
+    deactivate db
+    tar --> svc : tarefa "Pronta"
+    deactivate tar
+  end
+
+else aviso.tipo = TarefasReplanejadas (A8; «include» pelo UC35)
+  svc -> tar : buscarNaoIniciadasAfetadas(aviso.dados.tarefaIds)
+  activate tar
+  tar -> db : SELECT * FROM tarefa WHERE id IN (:tarefaIds)\nAND estado IN ('Aguardando', 'Pronta')
+  activate db
+  db --> tar : tarefas afetadas
+  deactivate db
+  tar --> svc : tarefas
+  deactivate tar
+  loop para cada tarefa afetada
+    svc -> tar : contarPredecessorasPendentes(tarefa.id)
+    activate tar
+    tar -> db : SELECT COUNT(*) FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id = :id AND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+    activate db
+    db --> tar : quantidade
+    deactivate db
+    tar --> svc : pendentes
+    deactivate tar
+    alt pendentes = 0 e tarefa.estado = "Aguardando"
+      svc -> tar : mudarEstado(tarefa, "Pronta", causaId = aviso.causaId)
+    else pendentes > 0 e tarefa.estado = "Pronta"
+      svc -> tar : mudarEstado(tarefa, "Aguardando", causaId = aviso.causaId)
+    else estado já corresponde às predecessoras
+      note over svc, tar : nenhuma mudança
+    end
+    note over tar, db : mudarEstado grava, na transação do aviso, tarefa.estado,\nhistorico_estado (estado anterior → novo, Motor de Eventos,\nhorario, causa_id = alteração do plano) e aviso_saida (A8.2)
+  end
+end
+
+ref over lst, db : B.2 – COMMIT da transação do aviso e confirmação à fila
+== Passo 6: exibir em até 5 s ==
+opt alguma tarefa ou o turnaround mudou de estado
+  ref over pub, mq : B.2 – Publicar os avisos EstadoTarefaAlterado e EstadoTurnaroundAlterado\n(o Monitoramento recalcula a projeção e atualiza o painel: UC24)
+  svc ->> ws : notificarMudancas(turnaroundId, mudancas)
+  ws ->> view : tarefaAtualizada(tarefaId, novoEstado) / turnaroundAtualizado(turnaroundId, novoEstado)
+  note right of view : lista de tarefas dos operadores\nresponsáveis (UC14), em até 5 s\n(RN8; RNF-11)
+end
+svc --> lst : propagação concluída
+deactivate svc
+deactivate lst
+@enduml

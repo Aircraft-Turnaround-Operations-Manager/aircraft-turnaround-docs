@@ -1,0 +1,88 @@
+@startuml 14-sequencia-b2-avisos
+' Interação auxiliar B.2 – Publicar o aviso pela caixa de saída e descartar o aviso repetido (ADR-0015 regra 2; ADR-0016 itens 4 e 5).
+' Referenciada (ref) pelos diagramas da área B que gravam um registro ou mudam um estado.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-b2-avisos.puml
+!include 14-sequencia-estilo.iuml
+
+box "Execução em Solo"
+participant "Service que gravou\n(TarefaService, TurnaroundService,\nMarcoService ou PropagacaoService)" as svc <<service>>
+participant "AvisoPublisher" as pub <<publisher>>
+participant "AvisoRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+control "MotorDeEventosListener" as lst
+end box
+queue "RabbitMQ" as mq
+participant "Monitoramento e\nExceções e Liberação" as outros <<serviço>>
+
+== Publicação (depois do COMMIT que gravou o registro e a linha de aviso_saida) ==
+svc ->> pub : publicarPendentes()
+activate pub
+loop enquanto houver aviso não enviado, na ordem de gravação
+  pub -> rep : buscarNaoEnviados(limite)
+  activate rep
+  rep -> db : SELECT * FROM aviso_saida WHERE enviado_em IS NULL\nORDER BY criado_em LIMIT :limite
+  activate db
+  db --> rep : avisos
+  deactivate db
+  rep --> pub : avisos
+  deactivate rep
+  pub -> mq : publicar(exchange = "execucao-em-solo", chave = aviso.tipo, envelope)
+  activate mq
+  note right of mq
+    envelope (ADR-0016): id, tipo, versao, ocorridoEm (UTC),
+    turnaroundId, autorId, origem = "execucao-em-solo",
+    causaId (registro que causou o aviso) e dados
+  end note
+  alt mensageria confirmou o recebimento
+    mq --> pub : confirmacao(aviso.id)
+    pub -> rep : marcarEnviado(aviso.id)
+    activate rep
+    rep -> db : UPDATE aviso_saida SET enviado_em = agora\nWHERE id = :avisoId
+    activate db
+    db --> rep : ok
+    deactivate db
+    rep --> pub : ok
+    deactivate rep
+  else falha na entrega (E5 do UC12 e do UC13)
+    mq --> pub : falha
+    note over pub, db : o aviso continua em aviso_saida e é publicado de novo\nno próximo ciclo, sem criar outro registro nem repetir efeitos
+  end
+  deactivate mq
+end
+deactivate pub
+
+== Consumo, numa só transação, com descarte do aviso repetido ==
+mq ->> lst : entregar(aviso)
+activate lst
+note right of lst : o Motor de Eventos (UC20 e UC21)\nouve a fila "execucao-em-solo"
+lst -> rep : abrirTratamento(aviso.id, aviso.turnaroundId)
+activate rep
+rep -> db : BEGIN\nSELECT * FROM turnaround WHERE id = :turnaroundId FOR UPDATE\nINSERT INTO aviso_processado (aviso_id, processado_em)\n[aviso_id é chave primária]
+activate db
+note right of db : a trava da linha do turnaround atende um aviso\nde cada vez por turnaround (ADR-0015, regra 4)
+alt aviso_id já existe (entrega repetida)
+  db --> rep : violação de chave; ROLLBACK
+  rep --> lst : jaProcessado = true
+  lst --> mq : confirmar(aviso.id)\n[ignora o aviso repetido]
+else aviso novo
+  db --> rep : ok [transação aberta]
+  rep --> lst : jaProcessado = false
+  note over lst, db : segue o tratamento do caso de uso dentro da mesma transação\n(UC20 – registrarMarcos e UC21 – propagar)
+  lst -> rep : concluirTratamento(aviso.id)
+  rep -> db : COMMIT
+  alt gravado
+    db --> rep : ok
+    rep --> lst : ok
+    lst --> mq : confirmar(aviso.id)\n[só depois do COMMIT]
+  else falha antes do COMMIT
+    db --> rep : ROLLBACK
+    rep --> lst : falha
+    lst --> mq : rejeitar(aviso.id)\n[o aviso volta à fila: nada foi gravado,\nnem a linha de aviso_processado (RNF-20)]
+  end
+end
+deactivate db
+deactivate rep
+deactivate lst
+mq ->> outros : entregar(aviso)
+note right of outros : cada serviço guarda os id já\nprocessados no próprio banco\ne ignora o repetido (ADR-0016)
+@enduml

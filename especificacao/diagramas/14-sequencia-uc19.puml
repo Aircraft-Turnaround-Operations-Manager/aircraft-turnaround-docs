@@ -1,0 +1,122 @@
+@startuml 14-sequencia-uc19
+' Diagrama de Sequência do UC19 – Confirmar a execução da tarefa por QR Code (RF-19, US019).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc19.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+end box
+
+== Passos 1 e 2: pontos da tarefa ==
+op -> view : abrirTarefa(tarefaId)
+activate view
+view -> gw : listarPontos(tarefaId)
+activate gw
+ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+gw -> ctl : listarPontos(tarefaId, usuarioId, perfil)
+activate ctl
+ctl -> svc : listarPontos(tarefaId, operadorId)
+activate svc
+svc -> rep : listarPontos(tarefaId)
+activate rep
+rep -> db : SELECT * FROM ponto_confirmacao WHERE tarefa_id = :tarefaId\nORDER BY ordem
+activate db
+db --> rep : pontos (confirmado ou a confirmar)
+deactivate db
+rep --> svc : pontos
+deactivate rep
+svc --> ctl : pontos
+deactivate svc
+ctl --> gw : pontos
+deactivate ctl
+gw --> view : pontos
+deactivate gw
+view --> op : exibirPontos(pontos, contagem, ex.: "0 de 6 zonas", acoes = ["Ler QR Code"])
+
+== Passos 3 e 4: câmera ==
+op -> view : selecionarLerQrCode(tarefaId)
+view -> view : abrirCamera()
+alt câmera indisponível ou sem permissão no navegador (E4)
+  view --> op : exibirAviso("a leitura precisa da câmera", comoPermitirAcesso)\n[nada é gravado]
+else câmera aberta
+  loop para cada ponto que falta (passos 5 a 8)
+    op -> view : apontarCamera()
+    view -> view : codigoQr = decodificarQrCode(imagem)\nhorarioAcao = agora(); requisicaoId = novoUuid()
+
+    alt sem conexão com a internet (E5)
+      view -> view : guardarPendente(leitura)
+      view --> op : exibirPonto("confirmado", "pendente de envio")
+      ref over view, db : B.3 – Enviar os registros pendentes do celular (E5.2 e E5.3; RNF-8)
+    else com conexão (passo 6)
+      view -> gw : confirmarPonto(tarefaId, codigoQr, horarioAcao, requisicaoId)
+      activate gw
+      ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+      gw -> ctl : confirmarPonto(tarefaId, codigoQr, horarioAcao, requisicaoId, usuarioId, perfil)
+      activate ctl
+      ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+      ctl -> svc : confirmarPonto(tarefaId, operadorId, codigoQr, horarioAcao, requisicaoId)
+      activate svc
+      svc -> rep : buscarPontoPorCodigo(tarefaId, codigoQr)
+      activate rep
+      rep -> db : SELECT * FROM ponto_confirmacao\nJOIN tarefa ON tarefa.id = ponto_confirmacao.tarefa_id\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE ponto_confirmacao.codigo_qr = :codigoQr\nAND turnaround.id = (SELECT turnaround_id FROM tarefa WHERE id = :tarefaId)\nFOR UPDATE
+      activate db
+      db --> rep : ponto, com a tarefa dona e o seu estado (ou nenhum)
+      deactivate db
+      rep --> svc : ponto
+      deactivate rep
+
+      alt nenhum ponto com esse código no turnaround (E2)
+        svc --> ctl : Recusa("QR Code não reconhecido")
+      else ponto.tarefa.operadorId ≠ operadorId (E1)
+        svc --> ctl : Recusa("o QR Code não pertence a uma tarefa atribuída a você")
+      else ponto.tarefa.estado ≠ "Em execução" (E3)
+        svc --> ctl : Recusa("a tarefa precisa estar em execução", ponto.tarefa.estado)
+      else ponto.confirmado = true (A2)
+        svc --> ctl : PontoJaConfirmado(ponto, primeiraLeitura)\n[não grava outra leitura]
+      else ponto válido (passo 7; A3 quando ponto.tarefaId ≠ tarefaId)
+        svc -> rep : salvarLeitura(ponto, leitura)
+        activate rep
+        rep -> db : transação:\nUPDATE ponto_confirmacao SET confirmado = true\nINSERT INTO leitura_qr_code (ponto_confirmacao_id, autor_id, horario_acao, recebido_em, requisicao_id)
+        activate db
+        db --> rep : COMMIT
+        deactivate db
+        rep --> svc : leitura gravada
+        deactivate rep
+        svc --> ctl : ponto confirmado, tarefaDoPonto, contagem
+      end
+      deactivate svc
+      ctl --> gw : resposta
+      deactivate ctl
+      gw --> view : resposta
+      deactivate gw
+
+      alt recusa (E1, E2, E3)
+        view --> op : exibirRecusa(motivo)\n[E1 e E2 voltam ao passo 5]
+      else ponto já confirmado (A2)
+        view --> op : exibirAviso("ponto já confirmado")\n[volta ao passo 5]
+      else ponto de outra tarefa dele em execução (A3)
+        view --> op : exibirAviso("leitura registrada na tarefa", tarefaDoPonto)\n[volta ao passo 5]
+      else ponto da tarefa aberta confirmado
+        view --> op : exibirPonto("confirmado", contagem, ex.: "1 de 6 zonas")
+      end
+    end
+    opt operador fecha a câmera antes do último ponto (A1)
+      view --> op : exibirPontos(pontosQueFaltam)\n[as leituras feitas continuam gravadas; ao voltar, o caso de uso segue do passo 2]
+    end
+  end
+  opt todos os pontos confirmados (passo 9)
+    view --> op : exibirAviso("Todos os pontos confirmados", acoes = ["Concluir"])\n[a conclusão é registrada no UC16]
+  end
+end
+deactivate view
+@enduml

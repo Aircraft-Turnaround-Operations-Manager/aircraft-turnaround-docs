@@ -1,0 +1,66 @@
+@startuml 14-sequencia-b3-registros-pendentes
+' Interação auxiliar B.3 – Enviar os registros pendentes do celular (RNF-8, RNF-5).
+' Referenciada (ref) pelos fluxos "Sem conexão com a internet" do UC15 (E3), UC16 (E6), UC17 (E4), UC18 (E4) e UC19 (E5).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-b3-registros-pendentes.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+entity "FilaLocal" as fila <<armazenamento do navegador>>
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+database "BancoExecucaoEmSolo" as db
+end box
+
+note over view, fila
+  Sem conexão, cada registro (início, conclusão, pausa, retomada,
+  "Não aplicável" ou leitura de QR Code) foi guardado com
+  guardarPendente(registro), com o horário da ação no celular
+  (precisão de minuto completo), por até 30 minutos (RNF-8).
+end note
+
+view -> view : conexaoRestabelecida()
+activate view
+view -> fila : listarPendentes()
+activate fila
+fila --> view : registros na ordem em que foram feitos
+deactivate fila
+
+opt sessão expirada por inatividade enquanto estava sem conexão (E3.4 do UC15, E6.3 do UC16, E4.3 do UC17 e do UC18, E5.3 do UC19)
+  view --> op : exibirAutenticacao()
+  ref over op, gw : UC01 – Autenticar acesso do usuário
+  view -> view : verificarMesmoOperador(usuarioId, registro.autorId)
+  note right of view : os registros continuam guardados e só são\nenviados depois que o mesmo operador se\nautentica; os 5 s contam dessa autenticação
+end
+
+loop para cada registro, na ordem em que foram feitos (até 5 s depois da volta da conexão ou da nova autenticação)
+  view -> gw : enviarRegistroPendente(registro.tipo, tarefaId, dados, horarioAcao, requisicaoId)
+  activate gw
+  ref over gw : B.1 – Verificar o acesso\n(permissões atuais)
+  gw -> ctl : enviarRegistroPendente(registro.tipo, tarefaId, dados, horarioAcao, requisicaoId, usuarioId, perfil)
+  activate ctl
+  ctl -> svc : registrarInicio | registrarConclusao | registrarPausa | registrarRetomada |\nmarcarNaoAplicavel | confirmarPonto (tarefaId, operadorId, dados, horarioAcao, requisicaoId)
+  activate svc
+  ref over svc, db : verificações e gravação do caso de uso de origem (UC15 a UC19), com\nhorario_acao = horário guardado no celular; requisicao_id já gravada devolve o registro existente
+  svc --> ctl : resultado
+  deactivate svc
+  ctl --> gw : resultado
+  deactivate ctl
+  gw --> view : resultado
+  deactivate gw
+  alt registro aceito ou já gravado com a mesma requisicaoId
+    view -> fila : remover(requisicaoId)
+    view --> op : retirarMarcaPendente(tarefaId)
+  else registro recusado por já não ser válido (ex.: tarefa reatribuída)
+    view -> fila : remover(requisicaoId)
+    view --> op : exibirRecusa(motivo, estadoAtual)\n[a tarefa volta ao estado do servidor; no UC19,\no ponto volta para "a confirmar"]
+  end
+end
+deactivate view
+@enduml

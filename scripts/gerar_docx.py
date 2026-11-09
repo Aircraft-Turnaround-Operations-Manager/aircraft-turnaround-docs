@@ -182,7 +182,7 @@ class Montador:
 
     def _sombra(self, cel, cor='D9D9D9'):
         shd = OxmlElement('w:shd'); shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), cor)
-        cel._tc.get_or_add_tcPr().append(shd)
+        getattr(cel, '_tc', cel).get_or_add_tcPr().append(shd)
 
     def _cel(self, cel, txt, base, negrito=False, tam=9, larg_img=11.0):
         cel.text = ''
@@ -198,11 +198,18 @@ class Montador:
             m = c[0].merge(c[-1]) if ncol > 1 else c[0]
             self._cel(m, tit, base, negrito=not PROD.match(tit), tam=tam + 1); self._sombra(m)
             if not PROD.match(tit): m.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-        if cab:
+        if cab and cab[:2] == ['#', 'TÍTULO']:  # item 6: ID e título sob "Requisito", como no slide 12 do professor
+            c1, c2 = t.add_row().cells, t.add_row().cells
+            self._cel(c1[0].merge(c1[1]), 'Requisito', base, negrito=True, tam=tam)
+            self._cel(c2[0], '#', base, negrito=True, tam=tam); self._cel(c2[1], 'TÍTULO', base, negrito=True, tam=tam)
+            for k in range(2, ncol): self._cel(c1[k].merge(c2[k]), cab[k], base, negrito=True, tam=tam)
+        elif cab:
             c = t.add_row().cells
             for k in range(ncol):
-                self._cel(c[k], cab[k] if k < len(cab) else '', base, negrito=True, tam=tam); self._sombra(c[k])
-            trPr = t.rows[-1]._tr.get_or_add_trPr(); h = OxmlElement('w:tblHeader'); h.set(qn('w:val'), 'true'); trPr.append(h)
+                self._cel(c[k], cab[k] if k < len(cab) else '', base, negrito=True, tam=tam)
+        for r in (t.rows[len(titulos):] if cab else []):
+            for tc in r._tr.tc_lst: self._sombra(tc)
+            trPr = r._tr.get_or_add_trPr(); h = OxmlElement('w:tblHeader'); h.set(qn('w:val'), 'true'); trPr.append(h)
         for l in linhas:
             c = t.add_row().cells
             if len(l) == 1 and ncol > 1:  # linha de uma célula só (COMO/POSSO/PARA das estórias) ocupa a largura toda
@@ -255,12 +262,27 @@ def fontes_unidas(bls):
     return resto
 
 
+def num(txt):
+    m = re.match(r'(?:RN?F-|US|UC)(\d+)\b', txt); return int(m.group(1)) if m else None
+
+
+def por_numero(bls, prefixo):
+    """Itens 7 e 10: as seções '## USnnn'/'## UCnn' de todas as áreas ficam em ordem numérica (a área não define a ordem)."""
+    i = next((k for k, b in enumerate(bls) if b[0] == 'h' and b[1] == 2 and b[2].startswith(prefixo)), len(bls))
+    secs = []
+    for b in bls[i:]:
+        if b[0] == 'h' and b[1] <= 2: secs.append([b])
+        else: secs[-1].append(b)
+    secs.sort(key=lambda s: num(s[0][2]) if s[0][1] == 2 and num(s[0][2]) is not None else 10 ** 6)
+    return bls[:i] + [b for s in secs for b in s]
+
+
 def tabela_unica(bls):
-    """Itens 6 e 8: as tabelas das áreas, de mesmo cabeçalho, viram uma tabela só."""
+    """Itens 6 e 8: as tabelas das áreas, de mesmo cabeçalho, viram uma tabela só, em ordem numérica."""
     out, alvo = [], None
     for b in bls:
         if b[0] == 't' and b[2] and alvo is not None and alvo[2] == b[2]:
-            alvo[3].extend(b[3])
+            alvo[3].extend(b[3]); alvo[3].sort(key=lambda l: num(l[0]) or 0)
         else:
             if b[0] == 't' and b[2] and alvo is None:
                 b = ('t', list(b[1]), b[2], list(b[3])); alvo = b
@@ -302,8 +324,8 @@ def carregar(pasta, padrao):
         bls += blocos(t, a.parent)
     n = padrao[:2]
     if n in ('06', '08'): bls = tabela_unica(bls)
-    if n == '07': bls = estorias(bls)
-    if n == '10': bls = fontes_unidas(bls)
+    if n == '07': bls = estorias(por_numero(bls, 'US'))
+    if n == '10': bls = fontes_unidas(por_numero(bls, 'UC'))
     return bls
 
 

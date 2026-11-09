@@ -5,54 +5,54 @@ A matriz cruza os requisitos funcionais (item 6) com os objetivos (item 1), os a
 As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabilidade.py` a partir dos arquivos de área. Não edite o trecho entre os marcadores: altere os requisitos, as estórias ou os casos de uso e rode o script de novo.
 
 <!-- matriz:inicio -->
-### A.1 Requisitos funcionais × objetivos, atores, estórias, casos de uso e RNFs
+### A.1 Requisitos funcionais × títulos, objetivos, atores, estórias, casos de uso e RNFs
 
-| RF | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |
-|---|---|---|---|---|---|
-| RF-1 | Obj. 2 | Usuário | US001 | UC01 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-10, RNF-19, RNF-20 |
-| RF-2 | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-3 | Obj. 1 e 2 | Coordenador de Turnaround | US003 | UC03 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-4 | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-5 | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-6 | Obj. 2 | Coordenador de Turnaround | US006 | UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-7 | Obj. 2 | Coordenador de Turnaround | US007 | UC07 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-8 | Obj. 1 e 2 | Coordenador de Turnaround | US008 | UC05, UC08 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-9 | Obj. 2 | Administrador do Sistema | US009 | UC09 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-10 | Obj. 1 e 3 | Coordenador de Turnaround | US010 | UC10 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-11 | Obj. 1 e 2 | Coordenador de Turnaround | US011 | UC05, UC11 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-12 | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-19, RNF-20 |
-| RF-13 | Obj. 1 e 2 | Coordenador de Turnaround | US013 | UC12, UC13 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
-| RF-14 | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-20 |
-| RF-15 | Obj. 1 e 2 | Operador de Solo/Rampa | US015 | UC15 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
-| RF-16 | Obj. 1 e 2 | Operador de Solo/Rampa | US016 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
-| RF-17 | Obj. 2 e 3 | Operador de Solo/Rampa | US017 | UC17 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20, RNF-22 |
-| RF-18 | Obj. 2 e 3 | Operador de Solo/Rampa | US018 | UC18 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
-| RF-19 | Obj. 2 | Operador de Solo/Rampa | US019 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
-| RF-20 | Obj. 1 | Motor de Eventos | US020 | UC18, UC20 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-19, RNF-20 |
-| RF-21 | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-19, RNF-20 |
-| RF-22 | Obj. 1 e 3 | Motor de Eventos | US022 | UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 |
-| RF-23 | Obj. 1 e 3 | Motor de Eventos | US023 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 |
-| RF-24 | Obj. 3 | Motor de Eventos | US024 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-16, RNF-17, RNF-19, RNF-20 |
-| RF-25 | Obj. 2 e 3 | Coordenador de Turnaround | US025 | UC22 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20, RNF-21 |
-| RF-26 | Obj. 1 e 2 | Coordenador de Turnaround | US026 | UC23 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20 |
-| RF-27 | Obj. 2 e 3 | Motor de Eventos | US027 | UC25, UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
-| RF-28 | Obj. 3 | Motor de Eventos | US028 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
-| RF-29 | Obj. 3 | Motor de Eventos | US029 | UC24, UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20 |
-| RF-30 | Obj. 3 | Motor de Eventos | US030 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
-| RF-31 | Obj. 3 | Motor de Eventos | US031 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
-| RF-32 | Obj. 2 | Motor de Eventos | US032 | UC27 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-19, RNF-20, RNF-21 |
-| RF-33 | Obj. 3 | Coordenador de Turnaround | US033 | UC22, UC25, UC26, UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20 |
-| RF-34 | Obj. 1 e 3 | Coordenador de Turnaround | US034 | UC28 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-14, RNF-18, RNF-19, RNF-20, RNF-21 |
-| RF-35 | Obj. 2 | Coordenador de Turnaround | US035 | UC27 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-18, RNF-19, RNF-20 |
-| RF-36 | Obj. 3 | Coordenador de Turnaround | US036 | UC29 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-22, RNF-24 |
-| RF-37 | Obj. 2 e 3 | Coordenador de Turnaround | US037 | UC30 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
-| RF-38 | Obj. 3 | Coordenador de Turnaround | US038 | UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-15, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 |
-| RF-39 | Obj. 3 | Autoridade de Liberação | US039 | UC32 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 |
-| RF-40 | Obj. 3 | Coordenador de Turnaround | US040 | UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 |
-| RF-41 | Obj. 1 | Coordenador de Turnaround | US041 | UC34 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 |
-| RF-42 | Obj. 1 e 3 | Coordenador de Turnaround | US042 | UC35 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
-| RF-43 | Obj. 2 | Coordenador de Turnaround | US043 | UC36 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
-| RF-44 | Obj. 3 | Operador de Solo/Rampa | US044 | UC37 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-9, RNF-19, RNF-20, RNF-23, RNF-24 |
+| RF | Título | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis |
+|---|---|---|---|---|---|---|
+| RF-1 | Autenticar acesso do usuário | Obj. 2 | Usuário | US001 | UC01 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-10, RNF-19, RNF-20 |
+| RF-2 | Gerenciar cadastro de usuários e perfis | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-3 | Abrir turnaround da aeronave | Obj. 1 e 2 | Coordenador de Turnaround | US003 | UC03 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-5 | Confirmar plano inicial do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-6 | Aplicar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US006 | UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-7 | Configurar pontos de confirmação das tarefas | Obj. 2 | Coordenador de Turnaround | US007 | UC07 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-8 | Definir dependências entre tarefas | Obj. 1 e 2 | Coordenador de Turnaround | US008 | UC05, UC08 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-9 | Gerenciar cadastro de equipes e especialidades | Obj. 2 | Administrador do Sistema | US009 | UC09 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-10 | Atualizar referências de previsão do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US010 | UC10 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-11 | Configurar política de abastecimento | Obj. 1 e 2 | Coordenador de Turnaround | US011 | UC05, UC11 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-12 | Registrar chegada da aeronave à posição | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-19, RNF-20 |
+| RF-13 | Corrigir horário de chegada à posição | Obj. 1 e 2 | Coordenador de Turnaround | US013 | UC12, UC13 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 |
+| RF-14 | Consultar lista de tarefas do operador | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-20 |
+| RF-15 | Registrar início da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US015 | UC15 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
+| RF-16 | Registrar conclusão da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US016 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
+| RF-17 | Pausar e retomar execução da tarefa | Obj. 2 e 3 | Operador de Solo/Rampa | US017 | UC17 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20, RNF-22 |
+| RF-18 | Marcar tarefa como "Não aplicável" | Obj. 2 e 3 | Operador de Solo/Rampa | US018 | UC18 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
+| RF-19 | Confirmar a execução da tarefa por QR Code | Obj. 2 | Operador de Solo/Rampa | US019 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 |
+| RF-20 | Registrar os marcos do atendimento em solo | Obj. 1 | Motor de Eventos | US020 | UC18, UC20 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-19, RNF-20 |
+| RF-21 | Propagar o estado das tarefas e do turnaround | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-19, RNF-20 |
+| RF-22 | Recalcular a projeção de prontidão | Obj. 1 e 3 | Motor de Eventos | US022 | UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 |
+| RF-23 | Calcular atraso e impacto das tarefas | Obj. 1 e 3 | Motor de Eventos | US023 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 |
+| RF-24 | Identificar caminho crítico do turnaround | Obj. 3 | Motor de Eventos | US024 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-16, RNF-17, RNF-19, RNF-20 |
+| RF-25 | Acompanhar painel dos turnarounds | Obj. 2 e 3 | Coordenador de Turnaround | US025 | UC22 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20, RNF-21 |
+| RF-26 | Consultar a linha do tempo do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US026 | UC23 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20 |
+| RF-27 | Emitir alerta de tarefa pronta não iniciada | Obj. 2 e 3 | Motor de Eventos | US027 | UC25, UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
+| RF-28 | Emitir alerta de projeção além de TOBT + 5 | Obj. 3 | Motor de Eventos | US028 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
+| RF-29 | Verificar a viabilidade do turnaround | Obj. 3 | Motor de Eventos | US029 | UC24, UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20 |
+| RF-30 | Emitir alerta de embarque não iniciado | Obj. 3 | Motor de Eventos | US030 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
+| RF-31 | Emitir alerta de prontidão não registrada | Obj. 3 | Motor de Eventos | US031 | UC25 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-15, RNF-19, RNF-20, RNF-21 |
+| RF-32 | Exibir o aviso de checagem em TOBT − 15 | Obj. 2 | Motor de Eventos | US032 | UC27 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-19, RNF-20, RNF-21 |
+| RF-33 | Consultar a lista de alertas abertos | Obj. 3 | Coordenador de Turnaround | US033 | UC22, UC25, UC26, UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-14, RNF-15, RNF-16, RNF-17, RNF-18, RNF-19, RNF-20 |
+| RF-34 | Consultar os indicadores de aderência | Obj. 1 e 3 | Coordenador de Turnaround | US034 | UC28 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-14, RNF-18, RNF-19, RNF-20, RNF-21 |
+| RF-35 | Registrar a checagem com as equipes | Obj. 2 | Coordenador de Turnaround | US035 | UC27 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-13, RNF-18, RNF-19, RNF-20 |
+| RF-36 | Abrir exceção do turnaround com código de atraso | Obj. 3 | Coordenador de Turnaround | US036 | UC29 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-22, RNF-24 |
+| RF-37 | Reatribuir tarefa a outro operador da mesma equipe | Obj. 2 e 3 | Coordenador de Turnaround | US037 | UC30 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
+| RF-38 | Registrar a ação tomada para cada alerta | Obj. 3 | Coordenador de Turnaround | US038 | UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-15, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 |
+| RF-39 | Confirmar a prontidão e liberar a aeronave | Obj. 3 | Autoridade de Liberação | US039 | UC32 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 |
+| RF-40 | Encerrar exceção do turnaround | Obj. 3 | Coordenador de Turnaround | US040 | UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 |
+| RF-41 | Atualizar o TOBT quando a projeção se afasta 5 minutos ou mais | Obj. 1 | Coordenador de Turnaround | US041 | UC34 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 |
+| RF-42 | Replanejar tarefas não iniciadas do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US042 | UC35 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
+| RF-43 | Consultar operadores disponíveis da equipe | Obj. 2 | Coordenador de Turnaround | US043 | UC36 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 |
+| RF-44 | Registrar a saída da posição e encerrar o turnaround | Obj. 3 | Operador de Solo/Rampa | US044 | UC37 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-9, RNF-19, RNF-20, RNF-23, RNF-24 |
 
 ### A.2 Objetivos × requisitos funcionais
 

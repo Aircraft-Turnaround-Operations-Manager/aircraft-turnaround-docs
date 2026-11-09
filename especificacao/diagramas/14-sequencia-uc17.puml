@@ -1,0 +1,181 @@
+@startuml 14-sequencia-uc17
+' Diagrama de Sequência do UC17 – Pausar e retomar execução da tarefa (RF-17, US017).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc17.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+end box
+queue "RabbitMQ" as mq
+
+== Pausa: passos 1 a 5 ==
+op -> view : abrirTarefa(tarefaId)
+activate view
+view --> op : exibirDetalhe(tarefa, acoes = ["Concluir", "Pausar"])
+op -> view : selecionarPausar(tarefaId)
+view --> op : exibirFormularioPausa(justificativa = "", haImpedimento = "Não")
+
+alt desistência da pausa (A2)
+  op -> view : cancelarFormulario()
+  view --> op : fecharFormulario()\n[a tarefa continua "Em execução"; nada é gravado]
+else confirmação
+  opt pausa com impedimento (A1)
+    op -> view : responderImpedimento("Sim")
+    view -> gw : listarCodigosAtraso()
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : listarCodigosAtraso(usuarioId, perfil)
+    activate ctl
+    ctl -> svc : listarCodigosAtraso()
+    activate svc
+    svc -> rep : listarCodigosAtrasoVigentes()
+    activate rep
+    rep -> db : SELECT * FROM codigo_atraso WHERE versao_tabela = :versaoVigente\nORDER BY categoria, sigla
+    activate db
+    db --> rep : 72 códigos em 12 categorias (ADR-0006; RNF-22)
+    deactivate db
+    rep --> svc : codigos
+    deactivate rep
+    svc --> ctl : codigos
+    deactivate svc
+    ctl --> gw : codigos
+    deactivate ctl
+    gw --> view : codigos
+    deactivate gw
+    view --> op : exibirCodigosAtraso(codigos agrupados por categoria, busca por sigla ou descrição)
+    op -> view : escolherCodigo(sigla)
+  end
+  op -> view : confirmarPausa(tarefaId, justificativa, haImpedimento, codigoAtraso)
+  view -> view : registro = novoRegistro(tarefaId, "pausa", justificativa, codigoAtraso,\nhorarioAcao = agora(), requisicaoId = novoUuid())
+
+  alt sem conexão com a internet (E4)
+    view -> view : guardarPendente(registro)
+    view --> op : exibirEstado("Pausada", "pendente de envio")
+    ref over view, mq : B.3 – Enviar os registros pendentes do celular (E4.2 e E4.3; RNF-8)
+  else com conexão (passo 6)
+    view -> gw : registrarPausa(tarefaId, justificativa, codigoAtraso, horarioAcao, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : registrarPausa(tarefaId, justificativa, codigoAtraso, horarioAcao, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : registrarPausa(tarefaId, operadorId, justificativa, codigoAtraso, horarioAcao, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(tarefaId)
+    activate rep
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    activate db
+    db --> rep : linha de tarefa e de turnaround
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+
+    alt turnaround.estado = "Fora de bloco" (RF-44; E3 do UC37)
+      svc --> ctl : Recusa("turnaround encerrado")
+    else tarefa.operadorId ≠ operadorId
+      svc --> ctl : Recusa("tarefa não está mais atribuída a você")
+    else tarefa.estado ≠ "Em execução" (E3)
+      svc --> ctl : Recusa("só uma tarefa Em execução pode ser pausada", tarefa.estado)
+    else justificativa vazia (E1)
+      svc --> ctl : Recusa("informe a justificativa")
+    else haImpedimento e codigoAtraso vazio (E2)
+      svc --> ctl : Recusa("informe o código do impedimento")
+    else pausa válida (passo 7)
+      svc -> rep : salvarPausa(tarefa, registro, aviso = TarefaPausada)
+      activate rep
+      rep -> db : transação:\nUPDATE tarefa SET estado = 'Pausada'\nINSERT INTO registro_tarefa (tarefa_id, tipo = 'pausa', justificativa, codigo_atraso, descricao_codigo, versao_tabela, autor_id, horario_acao, recebido_em, requisicao_id)\nINSERT INTO historico_estado (tarefa_id, 'Em execução' → 'Pausada', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (TarefaPausada)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : registro gravado
+      deactivate rep
+      svc --> ctl : tarefa ("Pausada", justificativa, codigoAtraso)
+    end
+    deactivate svc
+    ctl --> gw : resposta (tarefa ou recusa com o motivo)
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt recusa (E1, E2, E3)
+      view --> op : exibirRecusa(motivo, estadoAtual)\n[E1 volta ao passo 5; E2 volta ao passo A1.3]
+    else pausa gravada
+      view --> op : exibirEstado("Pausada", justificativa, codigoAtraso, acoes = ["Retomar"])
+      ref over pub, mq : B.2 – Publicar o aviso TarefaPausada pela caixa de saída\n(o Monitoramento mostra a justificativa e o código ao Coordenador de Turnaround: UC25 e UC31)
+    end
+  end
+end
+deactivate view
+
+newpage
+== Retomada: passos 8 a 11 ==
+activate view
+alt pausa sem retomada no momento (A3)
+  note over op, view : a tarefa continua "Pausada" na lista (UC14); o caso de uso\nrecomeça no passo 8 quando o operador retomar
+else retomada
+  op -> view : selecionarRetomar(tarefaId)
+  view --> op : pedirConfirmacaoRetomada(nomeTarefa)
+  op -> view : confirmarRetomada(tarefaId)
+  view -> view : registro = novoRegistro(tarefaId, "retomada",\nhorarioAcao = agora(), requisicaoId = novoUuid())
+  alt sem conexão com a internet (E4)
+    view -> view : guardarPendente(registro)
+    view --> op : exibirEstado("Em execução", "pendente de envio")
+    ref over view, mq : B.3 – Enviar os registros pendentes do celular (E4.2 e E4.3; RNF-8)
+  else com conexão (passo 11)
+    view -> gw : registrarRetomada(tarefaId, horarioAcao, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : registrarRetomada(tarefaId, horarioAcao, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : registrarRetomada(tarefaId, operadorId, horarioAcao, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(tarefaId)
+    activate rep
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    activate db
+    db --> rep : linha de tarefa e de turnaround
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+    alt turnaround "Fora de bloco" ou tarefa atribuída a outro operador
+      svc --> ctl : Recusa(motivo)
+    else tarefa.estado ≠ "Pausada" (E3)
+      svc --> ctl : Recusa("só uma tarefa Pausada pode ser retomada", tarefa.estado)
+    else tarefa "Pausada" e atribuída ao operador
+      svc -> rep : salvarRetomada(tarefa, registro, aviso = TarefaRetomada)
+      activate rep
+      rep -> db : transação:\nUPDATE tarefa SET estado = 'Em execução'\nINSERT INTO registro_tarefa (tarefa_id, tipo = 'retomada', autor_id, horario_acao, recebido_em, requisicao_id)\nINSERT INTO historico_estado (tarefa_id, 'Pausada' → 'Em execução', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (TarefaRetomada)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : registro gravado
+      deactivate rep
+      svc --> ctl : tarefa ("Em execução")
+    end
+    deactivate svc
+    ctl --> gw : resposta (tarefa ou recusa com o motivo)
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+    alt recusa (E3)
+      view --> op : exibirRecusa(motivo, estadoAtual)
+    else retomada gravada
+      view --> op : exibirEstado("Em execução")
+      ref over pub, mq : B.2 – Publicar o aviso TarefaRetomada pela caixa de saída
+    end
+  end
+end
+deactivate view
+@enduml

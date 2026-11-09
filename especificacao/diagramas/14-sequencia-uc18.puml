@@ -1,0 +1,104 @@
+@startuml 14-sequencia-uc18
+' Diagrama de Sequência do UC18 – Marcar tarefa como "Não aplicável" (RF-18, US018).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc18.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+boundary "NotificadorWebSocket" as ws
+end box
+queue "RabbitMQ" as mq
+
+== Passos 1 a 4: detalhe e formulário ==
+op -> view : abrirTarefa(tarefaId)
+activate view
+view --> op : exibirDetalhe(tarefa, acoes = ["Não aplicável", ...])\n[tarefa "Aguardando" ou "Pronta" e tarefa.permiteNaoAplicavel]
+op -> view : selecionarNaoAplicavel(tarefaId)
+view --> op : exibirFormularioNaoAplicavel(justificativa = "")
+
+alt desistência (A1)
+  op -> view : cancelarFormulario()
+  view --> op : fecharFormulario()\n[a tarefa mantém o estado; nada é gravado]
+else confirmação (passo 5)
+  op -> view : confirmarNaoAplicavel(tarefaId, justificativa)
+  view -> view : registro = novoRegistro(tarefaId, "não aplicável", justificativa,\nhorarioAcao = agora(), requisicaoId = novoUuid())
+
+  alt sem conexão com a internet (E4)
+    view -> view : guardarPendente(registro)
+    view --> op : exibirEstado("Não aplicável", "pendente de envio")
+    ref over view, mq : B.3 – Enviar os registros pendentes do celular (E4.2 e E4.3; RNF-8)
+  else com conexão (passo 6)
+    view -> gw : marcarNaoAplicavel(tarefaId, justificativa, horarioAcao, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : marcarNaoAplicavel(tarefaId, justificativa, horarioAcao, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : marcarNaoAplicavel(tarefaId, operadorId, justificativa, horarioAcao, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(tarefaId)
+    activate rep
+    rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    activate db
+    db --> rep : linha de tarefa (com permite_nao_aplicavel) e de turnaround
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+
+    alt turnaround.estado = "Fora de bloco" (RF-44; E3 do UC37)
+      svc --> ctl : Recusa("turnaround encerrado")
+    else tarefa.operadorId ≠ operadorId
+      svc --> ctl : Recusa("tarefa não está mais atribuída a você")
+    else justificativa vazia (E1)
+      svc --> ctl : Recusa("informe a justificativa")
+    else tarefa.estado não é "Aguardando" nem "Pronta" (E2)
+      svc --> ctl : Recusa("só uma tarefa ainda não iniciada pode ser marcada", tarefa.estado)
+    else tarefa.permiteNaoAplicavel = false (E3)
+      svc --> ctl : Recusa("o modelo de tarefas não permite marcar esta tarefa")
+    else marcação válida (passo 7)
+      svc -> rep : salvarNaoAplicavel(tarefa, registro, aviso = TarefaMarcadaNaoAplicavel)
+      activate rep
+      rep -> db : transação:\nUPDATE tarefa SET estado = 'Não aplicável'\nINSERT INTO registro_tarefa (tarefa_id, tipo = 'não aplicável', justificativa, autor_id, horario_acao, recebido_em, requisicao_id)\nINSERT INTO historico_estado (tarefa_id, estado anterior → 'Não aplicável', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (TarefaMarcadaNaoAplicavel)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : registro gravado
+      deactivate rep
+      svc --> ctl : tarefa ("Não aplicável", justificativa)
+    end
+    deactivate svc
+    ctl --> gw : resposta (tarefa ou recusa com o motivo)
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt recusa (E1, E2, E3)
+      view --> op : exibirRecusa(motivo, estadoAtual)\n[E1 volta ao passo 5]
+    else marcação gravada
+      view --> op : exibirEstado("Não aplicável", justificativa, acoes = [])
+      ref over pub, mq : B.2 – Publicar o aviso TarefaMarcadaNaoAplicavel pela caixa de saída
+      ref over db, mq : «include» UC20 – Registrar os marcos do atendimento em solo
+      ref over db, mq : «include» UC21 – Propagar o estado das tarefas e do turnaround
+      opt a tarefa era a única predecessora pendente de outra (A2)
+        note over db, mq : o Motor de Eventos muda a sucessora para "Pronta" (UC21), e ela\naparece na lista do operador responsável (UC14) pelo NotificadorWebSocket
+      end
+      opt última tarefa obrigatória pendente (A3)
+        ws -> view : turnaroundAtualizado(turnaroundId, "Pronto para liberação")
+        view --> op : exibirEstadoTurnaround("Pronto para liberação")\n[AEGT gravado no UC20 com o horário da marcação]
+      end
+    end
+  end
+end
+deactivate view
+@enduml

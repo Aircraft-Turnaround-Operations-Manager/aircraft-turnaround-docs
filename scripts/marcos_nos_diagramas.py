@@ -18,7 +18,7 @@ def rfs():
     for f in sorted((E / '06-requisitos-funcionais').glob('area-*.md')):
         for l in f.read_text(encoding='utf-8').splitlines():
             c = [x.strip() for x in l.strip().strip('|').split('|')]
-            if len(c) >= 3 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[1], c[2]))
+            if len(c) >= 6 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[2], c[3]))  # # | TÍTULO | REQUISITO | ATOR | ...
     return out
 
 
@@ -47,10 +47,22 @@ def passos_drawio(f):
         if txt: yield nome, txt
 
 
+def passos_puml(f):
+    """Diagrama de sequência (PlantUML): cada mensagem e cada ref, com o ator que inicia o diagrama como partição."""
+    ator = None
+    for l in f.read_text(encoding='utf-8').splitlines():
+        l = l.strip()
+        m = re.match(r'actor\s+"([^"]+)"', l)
+        if m and ator is None: ator = m.group(1)
+        m = re.match(r'(?:\S+\s+-+>>?\s+\S+|ref over [^:]+)\s*:\s*(.+)', l)
+        if m: yield ator, m.group(1).replace('\\n', ' ')
+
+
 def main():
     R = rfs(); passos = []
     for f in sorted((E / 'diagramas').glob('*.bpmn')): passos += [(f.name, p, t) for p, t in passos_bpmn(f)]
     for f in sorted((E / 'diagramas').glob('*.drawio')): passos += [(f.name, p, t) for p, t in passos_drawio(f)]
+    for f in sorted((E / 'diagramas').glob('*.puml')): passos += [(f.name, p, t) for p, t in passos_puml(f)]
     for m in MARCOS:
         print(f'\n## {m}\n')
         defs = [(i, t, a) for i, t, a in R if re.search(rf'\b{m}\b', t)]

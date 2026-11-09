@@ -1,0 +1,106 @@
+@startuml 14-sequencia-uc14
+' Diagrama de Sequência do UC14 – Consultar lista de tarefas do operador (RF-14, US014).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc14.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+boundary "NotificadorWebSocket" as ws
+end box
+
+== Passos 1 e 2: lista de tarefas ==
+op -> view : abrirListaDeTarefas()
+activate view
+alt sem conexão com a internet (E1)
+  view -> view : carregarUltimaLista()
+  view --> op : exibirLista(ultimaLista, horarioUltimaAtualizacao, aviso = "Sem conexão")\n[registros feitos a partir dela seguem o B.3 (RNF-8)]
+else com conexão
+  view -> gw : listarTarefasDoOperador()
+  activate gw
+  ref over gw : B.1 – Verificar o acesso\nna porta de entrada\n(E2: sessão expirada leva\nà autenticação, UC01)
+  gw -> ctl : listarTarefasDoOperador(usuarioId, perfil)
+  activate ctl
+  ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+  ctl -> svc : listarTarefasDoOperador(operadorId)
+  activate svc
+  svc -> rep : listarPorOperador(operadorId)
+  activate rep
+  rep -> db : SELECT * FROM tarefa\nJOIN turnaround ON turnaround.id = tarefa.turnaround_id\nWHERE tarefa.operador_id = :operadorId\nAND turnaround.estado IS DISTINCT FROM 'Fora de bloco'\nORDER BY tarefa.inicio_planejado
+  activate db
+  db --> rep : tarefas (aeronave, posição, estado, janela planejada)
+  deactivate db
+  rep -> db : SELECT * FROM dependencia_tarefa\nJOIN tarefa AS predecessora ON predecessora.id = dependencia_tarefa.predecessora_id\nWHERE dependencia_tarefa.sucessora_id IN (:tarefas)\nAND predecessora.estado NOT IN ('Concluída', 'Não aplicável')
+  activate db
+  db --> rep : predecessoras não concluídas
+  deactivate db
+  rep --> svc : tarefas com predecessoras pendentes
+  deactivate rep
+  svc --> ctl : lista
+  deactivate svc
+  ctl --> gw : lista
+  deactivate ctl
+  gw --> view : lista
+  deactivate gw
+  view -> view : guardarUltimaLista(lista, agora())
+  alt lista vazia (A3)
+    view --> op : exibirMensagem("Nenhuma tarefa atribuída a você")
+  else há tarefas
+    view --> op : exibirLista(tarefas ordenadas pelo início planejado)
+    view -> ws : assinarMudancas(operadorId)
+
+    op -> view : selecionarTarefa(tarefaId)
+    view -> gw : consultarTarefa(tarefaId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : consultarTarefa(tarefaId, usuarioId, perfil)
+    activate ctl
+    ctl -> svc : consultarTarefa(tarefaId, operadorId)
+    activate svc
+    svc -> rep : buscarDetalhe(tarefaId)
+    activate rep
+    rep -> db : SELECT * FROM tarefa\nLEFT JOIN ponto_confirmacao ON ponto_confirmacao.tarefa_id = tarefa.id\nLEFT JOIN dependencia_tarefa ON dependencia_tarefa.sucessora_id = tarefa.id\nWHERE tarefa.id = :tarefaId
+    activate db
+    db --> rep : tarefa, pontos e predecessoras
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+    alt tarefa.operadorId ≠ operadorId (E3)
+      svc --> ctl : Recusa("a tarefa não está mais atribuída a você")
+    else tarefa atribuída ao operador
+      svc -> svc : acoes = acoesPermitidas(tarefa.estado, tarefa.permiteNaoAplicavel, tarefa.temPontos)
+      svc --> ctl : detalhe(tarefa, acoes)
+    end
+    deactivate svc
+    ctl --> gw : resposta
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt tarefa reatribuída a outro operador (E3)
+      view --> op : exibirAviso("a tarefa não está mais atribuída a você")\n[retira a tarefa da lista e volta ao passo 2]
+    else tarefa.estado = "Pronta" (passo 4)
+      view --> op : exibirDetalhe(tarefa, acoes = ["Iniciar", "Não aplicável" se o modelo permitir])
+    else tarefa.estado = "Aguardando" (A1)
+      view --> op : exibirDetalhe(tarefa, predecessorasPendentes, "Iniciar" desabilitado)\n[volta ao passo 3 ou termina]
+    else tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" (A2)
+      view --> op : exibirDetalhe(tarefa, acoes do estado (RN3); nenhuma em "Concluída" e "Não aplicável")\n[volta ao passo 3 ou termina]
+    end
+
+    opt mudança de estado com a lista aberta (A4)
+      ws -> view : tarefaAtualizada(tarefaId, novoEstado)
+      view --> op : atualizarLista(tarefaId, novoEstado)\n[em até 5 s, sem recarregar a página (RNF-11)]
+    end
+  end
+end
+deactivate view
+@enduml

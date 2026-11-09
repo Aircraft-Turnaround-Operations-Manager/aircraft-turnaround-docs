@@ -1,0 +1,139 @@
+@startuml 14-sequencia-uc37
+' Diagrama de Sequência do UC37 – Registrar a saída da posição e encerrar o turnaround (RF-44, US044).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc37.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TurnaroundView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TurnaroundController" as ctl
+participant "TurnaroundService" as svc <<service>>
+participant "TurnaroundRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+end box
+queue "RabbitMQ" as mq
+
+== Passos 1 e 2: turnaround liberado ==
+op -> view : abrirTurnaround(turnaroundId)
+activate view
+view -> gw : consultarTurnaround(turnaroundId)
+activate gw
+ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+gw -> ctl : consultarTurnaround(turnaroundId, usuarioId, perfil)
+activate ctl
+ctl -> svc : consultarTurnaround(turnaroundId)
+activate svc
+svc -> rep : buscarPorId(turnaroundId)
+activate rep
+rep -> db : SELECT * FROM turnaround WHERE id = :turnaroundId
+activate db
+db --> rep : aeronave, posição, estado e cópias do TOBT vigente\ne da prontidão confirmada (horário e autor)
+deactivate db
+rep --> svc : turnaround
+deactivate rep
+svc --> ctl : turnaround
+deactivate svc
+ctl --> gw : turnaround
+deactivate ctl
+gw --> view : turnaround
+deactivate gw
+view --> op : exibirTurnaround(aeronave, posicao, "Liberado", tobt, ardt, liberadoPor,\nacoes = ["Registrar saída da posição"])
+
+== Passos 3 a 5: confirmação ==
+op -> view : selecionarRegistrarSaida(turnaroundId)
+view --> op : pedirConfirmacao(aeronave, posicao, horarioQueSeraGravado,\n"autorização de acionamento e push-back recebida do ATC")
+alt desistência (A1)
+  op -> view : cancelarConfirmacao()
+  view --> op : fecharConfirmacao()\n[o turnaround continua "Liberado"]
+else confirmação
+  op -> view : confirmarSaida(turnaroundId, autorizacaoRecebida = true)
+  view -> view : requisicaoId = novoUuid()
+  alt sem conexão com a internet (E4)
+    view --> op : exibirAviso("registro não enviado")\n[não grava o AOBT; a confirmação fica aberta para nova tentativa]
+  else com conexão (passo 6)
+    view -> gw : registrarSaida(turnaroundId, autorizacaoRecebida, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : registrarSaida(turnaroundId, autorizacaoRecebida, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : registrarSaida(turnaroundId, operadorId, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(turnaroundId)
+    activate rep
+    rep -> db : SELECT * FROM turnaround\nLEFT JOIN marco ON marco.turnaround_id = turnaround.id AND marco.tipo = 'AOBT'\nWHERE turnaround.id = :turnaroundId FOR UPDATE OF turnaround
+    activate db
+    db --> rep : estado e AOBT (se houver)
+    deactivate db
+    rep --> svc : turnaround
+    deactivate rep
+
+    alt turnaround.estado = "Fora de bloco" (E2)
+      svc --> ctl : SaidaJaRegistrada(aobt, autor)
+    else turnaround.estado ≠ "Liberado" (E1)
+      svc --> ctl : Recusa("o turnaround ainda não foi liberado", turnaround.estado)
+    else turnaround "Liberado" (passo 7)
+      svc -> rep : salvarSaida(turnaround, aobt = agora, operadorId, aviso = SaidaRegistrada)
+      activate rep
+      rep -> db : transação:\nINSERT INTO marco (turnaround_id, tipo = 'AOBT', horario = agora, autor_id, registrado_em = agora, requisicao_id)\nUPDATE turnaround SET estado = 'Fora de bloco'\nINSERT INTO historico_estado (turnaround_id, 'Liberado' → 'Fora de bloco', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (SaidaRegistrada)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : marco AOBT gravado
+      deactivate rep
+      svc --> ctl : turnaround ("Fora de bloco", aobt)
+    end
+    deactivate svc
+    ctl --> gw : resposta
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt saída já registrada (E2)
+      view --> op : exibirAviso("saída já registrada", aobt, autor)
+    else recusa (E1)
+      view --> op : exibirRecusa("o turnaround ainda não foi liberado")\n[o turnaround mantém o estado]
+    else saída gravada (passo 8)
+      view --> op : exibirTurnaround("Fora de bloco", aobt, acoes = [])
+      ref over pub, mq : B.2 – Publicar o aviso SaidaRegistrada pela caixa de saída
+    end
+  end
+end
+
+== Depois do passo 7 ==
+opt consulta do turnaround encerrado (A2)
+  op -> view : abrirTurnaround(turnaroundId)
+  view -> gw : consultarHistorico(turnaroundId)
+  activate gw
+  ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+  gw -> ctl : consultarHistorico(turnaroundId, usuarioId, perfil)
+  activate ctl
+  ctl -> svc : consultarHistorico(turnaroundId)
+  activate svc
+  svc -> rep : buscarHistorico(turnaroundId)
+  activate rep
+  rep -> db : SELECT * FROM tarefa WHERE turnaround_id = :turnaroundId\nSELECT * FROM registro_tarefa WHERE tarefa_id IN (:tarefas) ORDER BY horario_acao\nSELECT * FROM marco WHERE turnaround_id = :turnaroundId ORDER BY horario\nSELECT * FROM historico_estado WHERE turnaround_id = :turnaroundId ORDER BY horario
+  activate db
+  db --> rep : histórico de tarefas e marcos
+  deactivate db
+  rep --> svc : historico
+  deactivate rep
+  svc --> ctl : historico
+  deactivate svc
+  ctl --> gw : historico
+  deactivate ctl
+  gw --> view : historico
+  deactivate gw
+  view --> op : exibirHistorico(historico, acoes = [])\n[as decisões (exceções e liberação) vêm do serviço Exceções e Liberação]
+end
+opt registro de tarefa no turnaround "Fora de bloco" (E3)
+  ref over view, db : registro de início, pausa, conclusão, "Não aplicável" ou leitura (UC15 a UC19): o TarefaService\nrecusa com o motivo "turnaround encerrado" quando turnaround.estado = "Fora de bloco" (RF-44);\no histórico continua disponível para consulta
+end
+deactivate view
+@enduml

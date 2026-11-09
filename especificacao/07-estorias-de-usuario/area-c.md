@@ -14,7 +14,7 @@
 | 4 | **DADO QUE:** o turnaround está no estado "Liberado" ou "Fora de bloco" <br> **QUANDO:** chega o horário do recálculo de minuto <br> **ENTÃO:** o sistema não recalcula, e a última projeção gravada continua a mesma |
 | 5 | **DADO QUE:** a limpeza da cabine foi iniciada às 10:01, tem duração planejada de 20 minutos e continua "Em execução" às 10:25 <br> **QUANDO:** o sistema faz o recálculo de minuto às 10:25 <br> **ENTÃO:** o fim projetado da limpeza passa a 10:25, o horário atual, porque ele é maior que o início real somado à duração planejada (10:21) |
 
-## US023 – REQUISITO RF-23: Calcular o atraso das tarefas e marcar as impactadas
+## US023 – REQUISITO RF-23: Calcular atraso e impacto das tarefas
 
 **COMO:** Motor de Eventos
 **POSSO:** calcular, a cada recálculo da projeção, o atraso de início e de fim de cada tarefa e marcar como "impactada" a sucessora que o atraso empurra para além do fim planejado
@@ -29,7 +29,7 @@
 | 3 | **DADO QUE:** o carregamento de bagagem tem início planejado 10:00 e foi iniciado às 09:58 <br> **QUANDO:** o sistema recalcula a projeção <br> **ENTÃO:** o atraso de início do carregamento é gravado como sem atraso, porque o resultado é menor que zero |
 | 4 | **DADO QUE:** o catering tem início planejado 10:05, ainda não foi iniciado e o horário atual é 10:09:40 <br> **QUANDO:** o sistema faz o recálculo de minuto <br> **ENTÃO:** o atraso de início do catering é gravado como 4 minutos, contados em minutos completos [3] |
 
-## US024 – REQUISITO RF-24: Identificar o caminho crítico
+## US024 – REQUISITO RF-24: Identificar caminho crítico do turnaround
 
 **COMO:** Motor de Eventos
 **POSSO:** identificar, a cada recálculo da projeção, o caminho crítico do turnaround e gravar cada mudança dele
@@ -43,7 +43,7 @@
 | 2 | **DADO QUE:** às 10:15 o abastecimento está "Pausada" e o fim projetado dele (10:22) passa o da limpeza (10:21), ambos predecessores do embarque <br> **QUANDO:** o sistema faz o recálculo de minuto <br> **ENTÃO:** o novo caminho crítico passa a ser calçar → desembarque → abastecimento → embarque → loadsheet → fechar portas, e o sistema grava o caminho anterior, o novo, o horário 10:15 e o recálculo de minuto como causa |
 | 3 | **DADO QUE:** uma tarefa do caminho crítico ainda não foi iniciada <br> **QUANDO:** o Operador de Solo/Rampa a marca como "Não aplicável" <br> **ENTÃO:** o sistema recalcula o caminho crítico sem essa tarefa e grava a mudança com o registro de "Não aplicável" como causa |
 
-## US025 – REQUISITO RF-25: Acompanhar os turnarounds no painel
+## US025 – REQUISITO RF-25: Acompanhar painel dos turnarounds
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** acompanhar em um painel todos os turnarounds que ainda não saíram da posição, com o estado, o TOBT planejado e o vigente, a projeção de prontidão, a diferença em minutos, a quantidade de alertas abertos e uma cor de risco
@@ -73,7 +73,7 @@
 | 3 | **DADO QUE:** a água potável foi marcada como "Não aplicável" com a justificativa "tanque cheio" <br> **QUANDO:** abro a linha do tempo do turnaround <br> **ENTÃO:** a tarefa aparece como "Não aplicável", com a justificativa, e sem atraso calculado |
 | 4 | **DADO QUE:** o turnaround tem registrados só o horário real de chegada à posição (AIBT) [2], às 09:40, e o início real do atendimento em solo (ACGT), às 09:42 <br> **QUANDO:** abro a linha do tempo do turnaround <br> **ENTÃO:** a faixa de marcos mostra AIBT 09:40 e ACGT 09:42 e mostra sem horário o início real do embarque (ASBT), o fim real do atendimento em solo (AEGT), o horário real de prontidão (ARDT) e o horário real de saída da posição (AOBT) |
 
-## US027 – REQUISITO RF-27: Alertar tarefa pronta não iniciada
+## US027 – REQUISITO RF-27: Emitir alerta de tarefa pronta não iniciada
 
 **COMO:** Motor de Eventos
 **POSSO:** emitir um alerta ao Coordenador de Turnaround quando uma tarefa fica "Pronta" sem registro de início por mais de Y minutos, sendo Y um parâmetro configurável
@@ -87,7 +87,7 @@
 | 2 | **DADO QUE:** Y é 3 minutos e o catering ficou "Pronta" às 09:50, com início planejado 10:00 <br> **QUANDO:** às 10:02 o catering continua sem registro de início <br> **ENTÃO:** o sistema não emite alerta, porque a espera conta a partir do início planejado, mais tarde que a entrada em "Pronta", e é de 2 minutos |
 | 3 | **DADO QUE:** Y é 3 minutos e a limpeza da cabine está "Pronta" desde 09:59 <br> **QUANDO:** o Operador de Solo/Rampa registra o início às 10:01 <br> **ENTÃO:** o sistema não emite alerta para essa tarefa |
 
-## US028 – REQUISITO RF-28: Alertar projeção além de TOBT + 5
+## US028 – REQUISITO RF-28: Emitir alerta de projeção além de TOBT + 5
 
 **COMO:** Motor de Eventos
 **POSSO:** emitir um alerta de risco ao horário ao Coordenador de Turnaround quando um recálculo leva a projeção de prontidão para mais de 5 minutos depois do TOBT planejado
@@ -116,7 +116,7 @@
 | 2 | **DADO QUE:** um turnaround sem chegada registrada tem MTTT de 45 minutos e TOBT vigente 10:30 <br> **QUANDO:** o turnaround é aberto com EIBT 09:40 <br> **ENTÃO:** o sistema não emite alerta, porque 09:40 mais 45 minutos dá 10:25, antes do TOBT vigente |
 | 3 | **DADO QUE:** o AIBT do turnaround já foi registrado <br> **QUANDO:** o Coordenador de Turnaround atualiza o TOBT vigente do turnaround <br> **ENTÃO:** o sistema não faz a verificação de viabilidade nem emite alerta de viabilidade |
 
-## US030 – REQUISITO RF-30: Alertar embarque não iniciado
+## US030 – REQUISITO RF-30: Emitir alerta de embarque não iniciado
 
 **COMO:** Motor de Eventos
 **POSSO:** emitir um alerta de risco ao horário ao Coordenador de Turnaround quando o ASBT não foi registrado até X minutos antes do TOBT vigente, sendo X um parâmetro configurável
@@ -130,7 +130,7 @@
 | 2 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-MBC é 10:30 <br> **QUANDO:** o ASBT do PR-MBC é registrado às 10:08 <br> **ENTÃO:** o sistema não emite o alerta de embarque não iniciado para o PR-MBC |
 | 3 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-XMA passa de 10:30 para 10:40 antes das 10:10 <br> **QUANDO:** às 10:10 o ASBT ainda não foi registrado <br> **ENTÃO:** o sistema não emite alerta às 10:10 e passa a verificar o ASBT às 10:20 |
 
-## US031 – REQUISITO RF-31: Alertar prontidão não registrada
+## US031 – REQUISITO RF-31: Emitir alerta de prontidão não registrada
 
 **COMO:** Motor de Eventos
 **POSSO:** emitir um alerta de risco ao horário ao Coordenador de Turnaround quando o ARDT não foi registrado até 5 minutos depois do TOBT vigente
