@@ -1,4 +1,4 @@
-## US001 – REQUISITO RF-1: Autenticar-se
+## US001 – REQUISITO RF-1: Autenticar acesso do usuário
 
 **COMO:** Usuário, ator abstrato que representa os quatro perfis humanos
 
@@ -14,7 +14,7 @@
 | 2 | **DADO QUE:** estou na autenticação <br> **QUANDO:** informo credenciais inválidas ou uso cadastro desativado <br> **ENTÃO:** não é criada sessão e recebo a mensagem "Não foi possível autenticar. Verifique suas credenciais ou contate o administrador", sem revelar a causa específica |
 | 3 | **DADO QUE:** estou autenticado como Operador de Solo/Rampa <br> **QUANDO:** tento acessar diretamente a gestão de usuários <br> **ENTÃO:** o acesso é recusado sem retornar dados protegidos ou alterar registros (RNF-1) |
 
-## US002 – REQUISITO RF-2: Gerenciar usuários e perfis de acesso
+## US002 – REQUISITO RF-2: Gerenciar cadastro de usuários e perfis
 
 **COMO:** Administrador do Sistema
 
@@ -34,7 +34,7 @@
 | 6 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** escolho um perfil fora dos quatro previstos ou deixo um operador sem equipe ativa <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
 | 7 | **DADO QUE:** um Operador de Solo/Rampa tem tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado <br> **QUANDO:** tento desativá-lo <br> **ENTÃO:** o sistema recusa a desativação, lista as tarefas que precisam ser reatribuídas antes (RF-5 ou RF-37) e o usuário continua ativo |
 
-## US003 – REQUISITO RF-3: Abrir turnaround
+## US003 – REQUISITO RF-3: Abrir turnaround da aeronave
 
 **COMO:** Coordenador de Turnaround
 
@@ -69,7 +69,7 @@
 | 4 | **DADO QUE:** cadastro uma limpeza profunda como "sob demanda" com tipo, equipe e duração planejada <br> **QUANDO:** salvo o modelo <br> **ENTÃO:** o serviço fica no catálogo e não entra no plano até ser acionado pelo Coordenador de Turnaround (ADR-0014) [69][70][71] |
 | 5 | **DADO QUE:** estou criando um modelo para um serviço com embarque de passageiros <br> **QUANDO:** o modelo não tem nenhuma tarefa do tipo Embarque ou tem mais de uma <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
 
-## US005 – REQUISITO RF-5: Confirmar plano inicial
+## US005 – REQUISITO RF-5: Confirmar plano inicial do turnaround
 
 **COMO:** Coordenador de Turnaround
 
@@ -105,7 +105,7 @@
 | 4 | **DADO QUE:** o modelo possui serviço sob demanda com dependências e pontos <br> **QUANDO:** aplico o modelo <br> **ENTÃO:** o serviço e seus vínculos são copiados para o catálogo do turnaround, mas não entram no plano até acionamento pelo RF-5 ou RF-42 |
 | 5 | **DADO QUE:** já existe uma cópia, ainda sem plano confirmado ou tarefa iniciada <br> **QUANDO:** confirmo a substituição por outro modelo compatível <br> **ENTÃO:** a cópia anterior é substituída pelas tarefas regulares e pelo catálogo sob demanda do novo modelo, com identificadores próprios e auditoria, sem alterar nenhum dos modelos |
 
-## US007 – REQUISITO RF-7: Configurar pontos de confirmação
+## US007 – REQUISITO RF-7: Configurar pontos de confirmação das tarefas
 
 **COMO:** Coordenador de Turnaround
 
@@ -139,7 +139,7 @@
 | 3 | **DADO QUE:** estou editando dependências <br> **QUANDO:** crio um ciclo (A depende de B e B de A), uso tarefa inexistente ou de outro modelo ou turnaround <br> **ENTÃO:** o sistema indica o erro e não salva |
 | 4 | **DADO QUE:** alguma tarefa do turnaround começou <br> **QUANDO:** tento alterar dependências pelo plano inicial <br> **ENTÃO:** a alteração é recusada e deve ser tratada pelo replanejamento do RF-42 |
 
-## US009 – REQUISITO RF-9: Gerenciar equipes e especialidades
+## US009 – REQUISITO RF-9: Gerenciar cadastro de equipes e especialidades
 
 **COMO:** Administrador do Sistema
 
@@ -156,7 +156,7 @@
 | 3 | **DADO QUE:** uma equipe não tem usuários ativos vinculados nem tarefas pendentes em turnarounds não encerrados <br> **QUANDO:** confirmo sua desativação <br> **ENTÃO:** novos vínculos são impedidos e os anteriores permanecem consultáveis |
 | 4 | **DADO QUE:** faltam dados, há identificador duplicado ou a equipe tem vínculo que impede desativação <br> **QUANDO:** tento salvar ou desativar <br> **ENTÃO:** o motivo é informado e a equipe permanece inalterada |
 
-## US010 – REQUISITO RF-10: Atualizar referências de previsão
+## US010 – REQUISITO RF-10: Atualizar referências de previsão do turnaround
 
 **COMO:** Coordenador de Turnaround
 
@@ -188,43 +188,5 @@
 | 2 | **DADO QUE:** disponho da política autorizada da companhia <br> **QUANDO:** habilito a regra e confirmo <br> **ENTÃO:** a configuração é salva e auditada para novos turnarounds; permite paralelismo sem remover outras dependências |
 | 3 | **DADO QUE:** um turnaround já foi iniciado com a regra desabilitada <br> **QUANDO:** altero a configuração geral da companhia <br> **ENTÃO:** a cópia da regra e as dependências desse turnaround permanecem inalteradas |
 | 4 | **DADO QUE:** um plano tem permissão desabilitada e não respeita a sequência desembarque, abastecimento e embarque <br> **QUANDO:** tento confirmá-lo <br> **ENTÃO:** o sistema indica o conflito e não confirma o plano |
-
-## US012 – REQUISITO RF-12: Registrar chegada à posição
-
-**COMO:** Operador de Solo/Rampa com tarefa atribuída no turnaround
-
-**POSSO:** registrar o horário real de chegada à posição (AIBT) da aeronave [2][4]
-
-**PARA:** colocar o turnaround em "Em solo" e liberar as tarefas sem predecessora pelo RF-21 (ADR-0013)
-
-**Critérios de Aceite:**
-
-| # | |
-|---|---|
-| 1 | **DADO QUE:** tenho tarefa atribuída nesse turnaround, o plano inicial está confirmado e não há chegada registrada <br> **QUANDO:** registro o horário real com data e fuso, sem horário futuro <br> **ENTÃO:** o AIBT é gravado com auditoria, o turnaround entra em "Em solo" e dispara a propagação do RF-21, sem confirmação do Coordenador de Turnaround nem início automático das tarefas |
-| 2 | **DADO QUE:** já existe chegada registrada <br> **QUANDO:** tento registrar outra chegada, inclusive em requisições simultâneas <br> **ENTÃO:** o sistema recusa a duplicidade, mostra o registro existente e não sobrescreve o AIBT nem repete a propagação |
-| 3 | **DADO QUE:** o horário informado é futuro ou inválido <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
-| 4 | **DADO QUE:** a aeronave chegou às 14:07 e faço o registro às 14:10 <br> **QUANDO:** salvo a chegada <br> **ENTÃO:** o AIBT fica 14:07 e o horário do registro fica 14:10, com meu usuário e ambos os horários preservados como dados distintos |
-| 5 | **DADO QUE:** não tenho tarefa atribuída nesse turnaround <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
-| 6 | **DADO QUE:** o plano inicial do turnaround ainda não está confirmado <br> **QUANDO:** tento registrar a chegada <br> **ENTÃO:** o sistema informa o impedimento e não grava a chegada nem altera estados |
-
-## US013 – REQUISITO RF-13: Corrigir chegada à posição
-
-**COMO:** Coordenador de Turnaround
-
-**POSSO:** corrigir o AIBT registrado, informando o motivo
-
-**PARA:** manter o horário real correto e recalcular a projeção sem alterar os estados operacionais (ADR-0013)
-
-**Critérios de Aceite:**
-
-| # | |
-|---|---|
-| 1 | **DADO QUE:** há AIBT registrado e o turnaround não está "Liberado" nem "Fora de bloco" <br> **QUANDO:** salvo um horário corrigido válido, não futuro, com data, fuso e motivo <br> **ENTÃO:** o novo AIBT é gravado com valor anterior, motivo, autor e horário da correção; a projeção é recalculada pelo RF-22, sem mudar o estado do turnaround nem das tarefas |
-| 2 | **DADO QUE:** estou corrigindo a chegada <br> **QUANDO:** falta motivo ou o horário é inválido ou futuro <br> **ENTÃO:** o sistema informa o impedimento e preserva o AIBT e os estados |
-| 3 | **DADO QUE:** o turnaround está "Fora de bloco" ou ainda não há AIBT registrado <br> **QUANDO:** tento corrigir a chegada <br> **ENTÃO:** a alteração é recusada sem gravar correção nem disparar recálculo |
-| 4 | **DADO QUE:** estou autenticado como Operador de Solo/Rampa <br> **QUANDO:** tento corrigir o AIBT já registrado <br> **ENTÃO:** a alteração é recusada porque a correção exige Coordenador de Turnaround (RNF-1) |
-| 5 | **DADO QUE:** o AIBT registrado é 14:07 <br> **QUANDO:** às 14:20 corrijo para 14:05 com motivo <br> **ENTÃO:** o AIBT vigente fica 14:05; o valor anterior 14:07 e o horário da correção 14:20 continuam no histórico, sem substituir o horário real pelo da edição |
-| 6 | **DADO QUE:** há AIBT registrado e o turnaround está "Liberado" <br> **QUANDO:** o Coordenador de Turnaround salva uma correção válida, com data, fuso e motivo <br> **ENTÃO:** o novo AIBT e o histórico da correção são gravados; os estados são preservados e a projeção não é recalculada (ADR-0013) |
 
 Fontes citadas: [2], [3], [4], [7], [24], [26], [27], [69], [70] e [71], conforme `pesquisa/fontes.md`.

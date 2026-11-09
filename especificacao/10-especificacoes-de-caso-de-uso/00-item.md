@@ -2,7 +2,7 @@
 
 **PRODUTO:** Aircraft Turnaround Orchestration System
 
-Esta seção reúne 37 especificações de caso de uso: 13 de acesso e planejamento (área A), 8 de execução em solo (área B), 7 de monitoramento (área C) e 9 de exceções e liberação (área D). Os nomes, atores e relacionamentos correspondem ao diagrama geral do item 9. Cada especificação apresenta nome, atores, descrição, pré-condições, pós-condições, regras de negócio, protótipos de tela, fluxo básico, fluxos alternativos e fluxos de exceção.
+Esta seção reúne 37 especificações de caso de uso, apresentadas em ordem numérica: 11 de acesso e planejamento (área A), 11 de execução em solo (área B), 7 de monitoramento (área C) e 8 de exceções e liberação (área D). As áreas acompanham os quatro microsserviços da ADR-0015. Por isso, o registro da chegada à posição (UC12), a correção dela (UC13) e o registro da saída da posição (UC37) ficam na execução em solo, que é dona do estado do turnaround. Os nomes, atores e relacionamentos correspondem ao diagrama geral do item 9. Cada especificação apresenta nome, atores, descrição, pré-condições, pós-condições, regras de negócio, protótipos de tela, fluxo básico, fluxos alternativos e fluxos de exceção.
 
 Os 37 casos de uso cobrem os 44 requisitos funcionais e suas estórias; um caso de uso pode reunir requisitos relacionados. A relação entre esses artefatos está no Apêndice A — Matriz de rastreabilidade. Os identificadores seguem a numeração definitiva da ADR-0011; a correspondência por área está em `entregas/ra1-renumeracao.md`.
 
