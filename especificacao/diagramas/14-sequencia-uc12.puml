@@ -1,0 +1,122 @@
+@startuml 14-sequencia-uc12
+' Diagrama de Sequência do UC12 – Registrar chegada da aeronave à posição (RF-12, US012; ADR-0013).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc12.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TurnaroundView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TurnaroundController" as ctl
+participant "TurnaroundService" as svc <<service>>
+participant "TurnaroundRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+end box
+queue "RabbitMQ" as mq
+
+== Passos 1 e 2: dados da chegada ==
+op -> view : selecionarRegistrarChegada(turnaroundId)
+activate view
+view -> gw : consultarChegada(turnaroundId)
+activate gw
+ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+gw -> ctl : consultarChegada(turnaroundId, usuarioId, perfil)
+activate ctl
+ctl -> svc : consultarChegada(turnaroundId)
+activate svc
+svc -> rep : buscarPorId(turnaroundId)
+activate rep
+rep -> db : SELECT turnaround WHERE id = :turnaroundId
+activate db
+db --> rep : aeronave, posição, voos e estado
+deactivate db
+rep --> svc : turnaround
+deactivate rep
+svc --> ctl : turnaround
+deactivate svc
+ctl --> gw : turnaround
+deactivate ctl
+gw --> view : turnaround
+deactivate gw
+view --> op : exibirFormularioChegada(aeronave, posicao, voos, campo aibt com data e fuso)
+
+alt cancelar (A1)
+  op -> view : cancelar()
+  view --> op : fecharFormulario()\n[nada é gravado]
+else registrar (passo 3)
+  op -> view : registrarChegada(turnaroundId, aibt)
+  view -> view : requisicaoId = novoUuid()
+  view -> gw : registrarChegada(turnaroundId, aibt, requisicaoId)
+  activate gw
+  ref over gw : B.1 – Verificar o acesso\nna porta de entrada\n(acesso revogado: E3)
+  gw -> ctl : registrarChegada(turnaroundId, aibt, requisicaoId, usuarioId, perfil)
+  activate ctl
+  ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+  ctl -> svc : registrarChegada(turnaroundId, operadorId, aibt, requisicaoId)
+  activate svc
+  svc -> rep : buscarParaAtualizar(turnaroundId)
+  activate rep
+  rep -> db : SELECT turnaround LEFT JOIN marco (tipo = 'AIBT')\nWHERE turnaround.id = :turnaroundId FOR UPDATE
+  activate db
+  note right of db : o bloqueio da linha atende um pedido de cada vez\npor turnaround (ADR-0015, regra 4; RN2)
+  db --> rep : turnaround, plano confirmado e AIBT já gravado (se houver)
+  deactivate db
+  rep --> svc : turnaround
+  deactivate rep
+  svc -> rep : operadorTemTarefa(turnaroundId, operadorId)
+  activate rep
+  rep -> db : SELECT COUNT(*) FROM tarefa\nWHERE turnaround_id = :turnaroundId AND operador_id = :operadorId
+  activate db
+  db --> rep : quantidade
+  deactivate db
+  rep --> svc : temTarefa
+  deactivate rep
+
+  alt aibt vazio, inválido ou futuro (E1)
+    svc --> ctl : Recusa(campo = "aibt", "informe um horário válido e não futuro")
+  else turnaround já tem AIBT: outra requisição (E2) ou repetição da mesma requisicaoId (E4.2)
+    svc --> ctl : ChegadaJaRegistrada(aibt, autor, registradoEm)\n[não grava outro registro nem repete a propagação]
+  else temTarefa = false ou plano não confirmado (E3)
+    svc --> ctl : Recusa("sem tarefa neste turnaround ou plano não confirmado")
+  else chegada válida (passo 5)
+    svc -> rep : salvarChegada(turnaround, aibt, operadorId, requisicaoId, aviso = ChegadaRegistrada)
+    activate rep
+    rep -> db : transação:\nINSERT INTO marco (turnaround_id, tipo = 'AIBT', horario = :aibt, autor_id, registrado_em = agora, requisicao_id)\nUPDATE turnaround SET estado = 'Em solo'\nINSERT INTO historico_estado (turnaround_id, sem estado → 'Em solo', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (ChegadaRegistrada)
+    activate db
+    alt falha ao gravar (E4.1)
+      db --> rep : ROLLBACK
+      rep --> svc : FalhaAoGravar
+      svc --> ctl : Falha("registro não concluído")
+    else gravado
+      db --> rep : COMMIT
+      rep --> svc : marco AIBT gravado
+      svc --> ctl : chegada (aibt, registradoEm, estado = "Em solo")
+    end
+    deactivate db
+    deactivate rep
+  end
+  deactivate svc
+  ctl --> gw : resposta
+  deactivate ctl
+  gw --> view : resposta
+  deactivate gw
+
+  alt recusa (E1 volta ao passo 3; E3 termina sem alterar nada)
+    view --> op : exibirRecusa(motivo, campo)
+  else chegada já registrada (E2)
+    view --> op : exibirChegadaExistente(aibt, autor, registradoEm)
+  else falha ou resposta perdida (E4)
+    view --> op : exibirAviso("registro não confirmado; tente de novo")\n[a nova tentativa usa a mesma requisicaoId e recebe o registro existente]
+  else chegada gravada (passo 6)
+    view --> op : exibirChegada(aibt, registradoEm, estado = "Em solo")\n[horário real e horário do registro separados]
+    ref over pub, mq : B.2 – Publicar o aviso ChegadaRegistrada pela caixa de saída\n(E5: o aviso fica na caixa de saída para nova tentativa)
+    ref over db, mq : «include» UC21 – Propagar o estado das tarefas e do turnaround\n(fluxo A7: as tarefas sem predecessora passam para "Pronta")
+  end
+end
+deactivate view
+@enduml

@@ -1,0 +1,100 @@
+@startuml 14-sequencia-uc15
+' Diagrama de Sequência do UC15 – Registrar início da tarefa (RF-15, US015).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc15.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+boundary "NotificadorWebSocket" as ws
+end box
+queue "RabbitMQ" as mq
+
+== Passos 1 a 4: detalhe e confirmação ==
+op -> view : abrirTarefa(tarefaId)
+activate view
+view --> op : exibirDetalhe(tarefa, acoes = ["Iniciar"])
+op -> view : selecionarIniciar(tarefaId)
+view --> op : pedirConfirmacao(nomeTarefa, aeronave, posicao)
+
+alt desistência (A1)
+  op -> view : cancelarConfirmacao()
+  view --> op : fecharConfirmacao()\n[a tarefa continua "Pronta"; nada é gravado]
+else confirmação (passo 5)
+  op -> view : confirmarInicio(tarefaId)
+  view -> view : registro = novoRegistro(tarefaId, "início",\nhorarioAcao = agora(), requisicaoId = novoUuid())
+
+  alt sem conexão com a internet (E3)
+    view -> view : guardarPendente(registro)
+    view --> op : exibirEstado("Em execução", "pendente de envio")
+    ref over view, mq : B.3 – Enviar os registros pendentes do celular (E3.2 a E3.4; RNF-8)
+  else com conexão (passo 6)
+    view -> gw : registrarInicio(tarefaId, horarioAcao, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : registrarInicio(tarefaId, horarioAcao, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : registrarInicio(tarefaId, operadorId, horarioAcao, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(tarefaId)
+    activate rep
+    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    activate db
+    db --> rep : linha de tarefa e de turnaround
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+
+    alt turnaround.estado = "Fora de bloco" (RF-44; E3 do UC37)
+      svc --> ctl : Recusa("turnaround encerrado")
+    else tarefa.operadorId ≠ operadorId (E2)
+      svc --> ctl : Recusa("tarefa não está mais atribuída a você")
+    else tarefa.estado ≠ "Pronta" (E1)
+      svc --> ctl : Recusa("só uma tarefa Pronta pode ser iniciada", tarefa.estado)
+    else tarefa "Pronta" e atribuída ao operador (passo 7)
+      svc -> rep : salvarInicio(tarefa, registro, aviso = TarefaIniciada)
+      activate rep
+      rep -> db : transação:\nUPDATE tarefa SET estado = 'Em execução'\nINSERT INTO registro_tarefa (tarefa_id, tipo = 'início', autor_id, horario_acao, recebido_em, requisicao_id)\nINSERT INTO historico_estado (tarefa_id, 'Pronta' → 'Em execução', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (TarefaIniciada)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : registro gravado
+      deactivate rep
+      svc --> ctl : tarefa ("Em execução", horarioInicio)
+    end
+    deactivate svc
+    ctl --> gw : resposta (tarefa ou recusa com o motivo)
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt recusa (E1, E2 ou turnaround encerrado)
+      view --> op : exibirRecusa(motivo, estadoAtual)\n[E2: retira a tarefa da lista]
+    else início gravado
+      view --> op : exibirEstado("Em execução", horarioInicio)
+      ref over pub, mq : B.2 – Publicar o aviso TarefaIniciada pela caixa de saída
+      ref over db, mq : «include» UC20 – Registrar os marcos do atendimento em solo
+      ref over db, mq : «include» UC21 – Propagar o estado das tarefas e do turnaround
+      opt primeiro início do turnaround (A2)
+        ws -> view : turnaroundAtualizado(turnaroundId, "Operações em andamento")
+        view --> op : exibirEstadoTurnaround("Operações em andamento")\n[ACGT gravado no UC20]
+      end
+      opt tarefa de embarque (A3)
+        note over db, mq : o Motor de Eventos grava o ASBT no UC20 (fluxo A1 do UC20)
+      end
+    end
+  end
+end
+deactivate view
+@enduml

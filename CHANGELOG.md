@@ -16,6 +16,8 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
 
+- Item 14, área B: 11 diagramas de sequência em PlantUML, um por caso de uso da Execução em Solo (UC12 a UC21 e UC37), e três interações auxiliares citadas por `ref` (porta de entrada, avisos pela caixa de saída e envio dos registros feitos sem conexão). O `scripts/exportar_plantuml.py` gera a PNG e a SVG, e o `scripts/marcos_nos_diagramas.py` passou a ler os `.puml` na checagem cruzada dos marcos. As tabelas, as classes e os métodos usados ainda dependem dos itens 12 e 13 ([#149](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/149)).
+
 ### Alterado
 
 - Os 44 RFs ganharam um título no padrão Ação-Resultado-Objeto (ARO), numa coluna nova (TÍTULO) do item 6. É a anotação 1 do professor na correção do RA1. 23 títulos mudaram e foram levados também para as estórias (item 7), para a matriz (Apêndice A) e para os 16 casos de uso que tinham o mesmo nome, nos itens 9 e 10. O RF-18 e o RF-41 ficaram com o título antigo, porque no ARO perderiam informação: o nome do estado "Não aplicável" e a condição dos 5 minutos ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).

@@ -1,0 +1,118 @@
+@startuml 14-sequencia-uc16
+' Diagrama de Sequência do UC16 – Registrar conclusão da tarefa (RF-16, US016).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc16.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de Solo/Rampa" as op
+box "Site (celular do operador)"
+boundary "TarefaView" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Execução em Solo"
+control "TarefaController" as ctl
+participant "TarefaService" as svc <<service>>
+participant "TarefaRepository" as rep <<repository>>
+database "BancoExecucaoEmSolo" as db
+participant "AvisoPublisher" as pub <<publisher>>
+boundary "NotificadorWebSocket" as ws
+end box
+queue "RabbitMQ" as mq
+
+== Passos 1 a 4: detalhe e confirmação ==
+op -> view : abrirTarefa(tarefaId)
+activate view
+alt tarefa sem pontos de QR Code (passo 2)
+  view --> op : exibirDetalhe(tarefa, acoes = ["Concluir", "Pausar"])
+else tarefa com pontos de QR Code, todos confirmados (A2)
+  view --> op : exibirDetalhe(tarefa, pontosConfirmados = total,\nex.: "6 de 6 zonas confirmadas", acoes = ["Concluir", "Pausar"])
+end
+op -> view : selecionarConcluir(tarefaId)
+view --> op : pedirConfirmacao(nomeTarefa, aeronave, posicao)
+
+alt desistência (A1)
+  op -> view : cancelarConfirmacao()
+  view --> op : fecharConfirmacao()\n[a tarefa continua "Em execução"; nada é gravado]
+else confirmação (passo 5)
+  op -> view : confirmarConclusao(tarefaId)
+  view -> view : registro = novoRegistro(tarefaId, "conclusão",\nhorarioAcao = agora(), requisicaoId = novoUuid())
+
+  alt sem conexão com a internet (E6)
+    view -> view : guardarPendente(registro)
+    view --> op : exibirEstado("Concluída", "pendente de envio")
+    ref over view, mq : B.3 – Enviar os registros pendentes do celular (E6.2 e E6.3; RNF-8)
+  else com conexão (passo 6)
+    view -> gw : registrarConclusao(tarefaId, horarioAcao, requisicaoId)
+    activate gw
+    ref over gw : B.1 – Verificar o acesso\nna porta de entrada
+    gw -> ctl : registrarConclusao(tarefaId, horarioAcao, requisicaoId, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, "Operador de Solo/Rampa")
+    ctl -> svc : registrarConclusao(tarefaId, operadorId, horarioAcao, requisicaoId)
+    activate svc
+    svc -> rep : buscarParaAtualizar(tarefaId)
+    activate rep
+    rep -> db : SELECT tarefa JOIN turnaround\nWHERE tarefa.id = :tarefaId FOR UPDATE
+    activate db
+    db --> rep : linha de tarefa e de turnaround
+    deactivate db
+    rep --> svc : tarefa
+    deactivate rep
+    svc -> rep : listarPontosNaoConfirmados(tarefaId)
+    activate rep
+    rep -> db : SELECT ponto_confirmacao\nWHERE tarefa_id = :tarefaId AND confirmado = false
+    activate db
+    db --> rep : pontos a confirmar (vazio se a tarefa não tem pontos)
+    deactivate db
+    rep --> svc : pontosPendentes
+    deactivate rep
+
+    alt turnaround.estado = "Fora de bloco" (RF-44; E3 do UC37)
+      svc --> ctl : Recusa("turnaround encerrado")
+    else tarefa.operadorId ≠ operadorId (E5)
+      svc --> ctl : Recusa("tarefa não está mais atribuída a você")
+    else tarefa.estado = "Aguardando" ou "Pronta" (E1)
+      svc --> ctl : Recusa("a tarefa precisa ser iniciada antes", tarefa.estado)
+    else tarefa.estado = "Pausada" (E2)
+      svc --> ctl : Recusa("a tarefa precisa ser retomada antes (UC17)", tarefa.estado)
+    else tarefa.estado = "Concluída" ou "Não aplicável" (E3)
+      svc --> ctl : Recusa("a tarefa já está terminada", tarefa.estado)
+    else pontosPendentes não está vazio (E4)
+      svc --> ctl : Recusa("faltam pontos de QR Code", pontosPendentes)
+    else tarefa "Em execução", atribuída ao operador e sem ponto pendente (passo 7)
+      svc -> rep : salvarConclusao(tarefa, registro, aviso = TarefaConcluida)
+      activate rep
+      rep -> db : transação:\nUPDATE tarefa SET estado = 'Concluída'\nINSERT INTO registro_tarefa (tarefa_id, tipo = 'conclusão', autor_id, horario_acao, recebido_em, requisicao_id)\nINSERT INTO historico_estado (tarefa_id, 'Em execução' → 'Concluída', autor_id, horario, causa_id)\nINSERT INTO aviso_saida (TarefaConcluida)
+      activate db
+      db --> rep : COMMIT
+      deactivate db
+      rep --> svc : registro gravado
+      deactivate rep
+      svc --> ctl : tarefa ("Concluída", horarioConclusao)
+    end
+    deactivate svc
+    ctl --> gw : resposta (tarefa ou recusa com o motivo)
+    deactivate ctl
+    gw --> view : resposta
+    deactivate gw
+
+    alt recusa (E1 a E5 ou turnaround encerrado)
+      view --> op : exibirRecusa(motivo, estadoAtual)\n[E4: mostra os pontos que faltam; E5: retira a tarefa da lista]
+    else conclusão gravada
+      view --> op : exibirEstado("Concluída", horarioConclusao)
+      ref over pub, mq : B.2 – Publicar o aviso TarefaConcluida pela caixa de saída
+      ref over db, mq : «include» UC20 – Registrar os marcos do atendimento em solo
+      ref over db, mq : «include» UC21 – Propagar o estado das tarefas e do turnaround
+      opt a tarefa era a única predecessora pendente de outra (A3)
+        note over db, mq : o Motor de Eventos muda a sucessora para "Pronta" (UC21), e ela\naparece na lista do operador responsável (UC14) pelo NotificadorWebSocket
+      end
+      opt última tarefa obrigatória do turnaround (A4)
+        ws -> view : turnaroundAtualizado(turnaroundId, "Pronto para liberação")
+        view --> op : exibirEstadoTurnaround("Pronto para liberação")\n[AEGT gravado no UC20]
+      end
+    end
+  end
+end
+deactivate view
+@enduml

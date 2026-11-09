@@ -1,0 +1,46 @@
+@startuml 14-sequencia-b1-verificar-acesso
+' Interação auxiliar B.1 – Verificar o acesso na porta de entrada (ADR-0016, item 2; RNF-1, RNF-5).
+' Referenciada (ref) por todos os diagramas da área B em que uma tela chama a Execução em Solo.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-b1-verificar-acesso.puml
+!include 14-sequencia-estilo.iuml
+
+box "Site"
+boundary "View da ação\n(TarefaView, TurnaroundView\nou ChegadaView)" as view
+end box
+box "Porta de entrada"
+participant "PortaDeEntrada" as gw <<gateway>>
+end box
+box "Cadastro e Planejamento"
+control "UsuarioController" as cad
+end box
+box "Execução em Solo"
+control "Controller da ação\n(TarefaController ou\nTurnaroundController)" as ctl
+end box
+
+view -> gw : <método da ação>(argumentos, token)
+activate gw
+gw -> gw : usuarioId = validarToken(token)
+alt token inválido ou sessão expirada por inatividade (RNF-5)
+  gw --> view : NaoAutenticado()
+  note over view : a tela leva o usuário à autenticação\n(UC01 – Autenticar acesso do usuário); os registros\npendentes do celular continuam guardados (B.3)
+else token válido
+  gw -> cad : consultarSituacao(usuarioId)
+  activate cad
+  note right of cad : pedido com resposta em chamada direta\n(REST, ADR-0015 regra 3; ADR-0016)
+  cad --> gw : situacao(ativo, perfil)
+  deactivate cad
+  alt usuário desativado (RNF-1)
+    gw --> view : AcessoRevogado()
+    note over view : a ação é recusada sem alterar dados\nnem estados (ex.: E3 do UC12 e do UC13)
+  else usuário ativo
+    gw -> ctl : <método da ação>(argumentos, usuarioId, perfil)
+    activate ctl
+    ctl -> ctl : verificarPerfil(perfil, ator do RF)
+    note right of ctl : cada serviço confere se o perfil\npode fazer a ação (ADR-0016)
+    ctl --> gw : resposta
+    deactivate ctl
+    gw --> view : resposta
+  end
+end
+deactivate gw
+@enduml
