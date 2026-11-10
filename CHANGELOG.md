@@ -16,7 +16,7 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
 
-- Releases automáticas: ao enviar uma tag `vX.Y.Z`, o `.github/workflows/release.yml` cria a release do GitHub com a seção da versão neste arquivo e o PDF daquela entrega anexado. Antes, as tags e as releases dependiam de alguém lembrar de criá-las à mão, e as do RA1 nunca foram criadas. As tags `v1.0.0`, `v1.1.0` e `v1.1.1` foram criadas depois, nos commits que geraram os PDFs, e as releases delas vieram da mesma automação, rodada à mão (PRNUM).
+- Releases automáticas: ao enviar uma tag `vX.Y.Z`, o `.github/workflows/release.yml` cria a release do GitHub com a seção da versão neste arquivo e o PDF daquela entrega anexado. Antes, as tags e as releases dependiam de alguém lembrar de criá-las à mão, e as do RA1 nunca foram criadas. As tags `v1.0.0`, `v1.1.0` e `v1.1.1` foram criadas depois, nos commits que geraram os PDFs, e as releases delas vieram da mesma automação, rodada à mão ([#169](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/169)).
 
 ### Alterado
 
