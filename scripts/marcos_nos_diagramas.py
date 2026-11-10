@@ -18,7 +18,7 @@ def rfs():
     for f in sorted((E / '06-requisitos-funcionais').glob('area-*.md')):
         for l in f.read_text(encoding='utf-8').splitlines():
             c = [x.strip() for x in l.strip().strip('|').split('|')]
-            if len(c) >= 3 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[1], c[2]))
+            if len(c) >= 6 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[2], c[3]))  # # | TÍTULO | REQUISITO | ATOR | ...
     return out
 
 

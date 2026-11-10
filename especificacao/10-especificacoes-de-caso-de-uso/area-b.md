@@ -2,20 +2,144 @@
 
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
-| UC14 | Consultar as tarefas da equipe atribuídas ao operador | Operador de Solo/Rampa | — | RF-14, US014 |
-| UC15 | Iniciar tarefa | Operador de Solo/Rampa | «include» UC20 e UC21 | RF-15, US015 |
-| UC16 | Concluir tarefa | Operador de Solo/Rampa | «include» UC20 e UC21 | RF-16, US016 |
-| UC17 | Pausar e retomar tarefa | Operador de Solo/Rampa | — | RF-17, US017 |
+| UC12 | Registrar chegada da aeronave à posição | Operador de Solo/Rampa | «include» UC21 | RF-12, US012 |
+| UC13 | Corrigir horário de chegada à posição | Coordenador de Turnaround | — | RF-13, US013 |
+| UC14 | Consultar lista de tarefas do operador | Operador de Solo/Rampa | — | RF-14, US014 |
+| UC15 | Registrar início da tarefa | Operador de Solo/Rampa | «include» UC20 e UC21 | RF-15, US015 |
+| UC16 | Registrar conclusão da tarefa | Operador de Solo/Rampa | «include» UC20 e UC21 | RF-16, US016 |
+| UC17 | Pausar e retomar execução da tarefa | Operador de Solo/Rampa | — | RF-17, US017 |
 | UC18 | Marcar tarefa como "Não aplicável" | Operador de Solo/Rampa | «include» UC20 e UC21 | RF-18, US018 |
-| UC19 | Confirmar a execução da tarefa por QR Code | Operador de Solo/Rampa | — | RF-19, US019 |
-| UC20 | Registrar os marcos do atendimento em solo | Motor de Eventos | incluído por UC15, UC16 e UC18 | RF-20, US020 |
-| UC21 | Propagar o estado das tarefas e do turnaround | Motor de Eventos | incluído por UC12, UC15, UC16, UC18 e UC35 | RF-21, US021 |
+| UC19 | Confirmar execução da tarefa por QR Code | Operador de Solo/Rampa | — | RF-19, US019 |
+| UC20 | Registrar marcos do atendimento em solo | Motor de Eventos | incluído por UC15, UC16 e UC18 | RF-20, US020 |
+| UC21 | Propagar estado das tarefas e do turnaround | Motor de Eventos | incluído por UC12, UC15, UC16, UC18 e UC35 | RF-21, US021 |
+| UC37 | Registrar saída da posição e encerrar turnaround | Operador de Solo/Rampa | — | RF-44, US044 |
 
-## UC14 – Consultar as tarefas da equipe atribuídas ao operador
+## UC12 – Registrar chegada da aeronave à posição
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC14 – Consultar as tarefas da equipe atribuídas ao operador |
+| **Nome do caso de uso** | UC12 – Registrar chegada da aeronave à posição |
+| **Ator(es)** | Operador de Solo/Rampa |
+| **Descrição** | O operador registra diretamente a chegada observada, colocando o turnaround em "Em solo". Inclui o UC21 (propagação). Atende ao RF-12 e à US012. |
+| **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado e ativo, com tarefa atribuída no turnaround.<br>2. O turnaround está aberto, tem plano inicial confirmado e ainda não tem chegada registrada. |
+| **Pós-condições** | Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do UC21.<br>Recusa ou cancelamento: nenhum registro novo ou alteração dos dados e estados existentes. |
+| **Regras de negócio** | **RN1.** RF-12 exige horário real de chegada à posição (AIBT), com data e fuso, sem horário futuro [2][4]. O AIBT e o horário do registro são campos distintos.<br>**RN2.** O registro exige operador com tarefa atribuída nesse turnaround e plano inicial confirmado. A chegada só pode ser registrada uma vez, inclusive em requisições simultâneas.<br>**RN3.** O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara UC21, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).<br>**RN4.** Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação. |
+| **Protótipo(s) de tela** | Registro direto da chegada pelo operador no celular, com plano confirmado e horário real informado.<br>![UC12 – registrar chegada](prototipos/uc-a12-registrar-chegada.png) |
+
+### Fluxo básico
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| 1. O Operador de Solo/Rampa abre o turnaround associado a uma tarefa sua e seleciona Registrar chegada. |  |
+|  | 2. O sistema apresenta aeronave, posição, voos e campo de horário real com data e fuso. |
+| 3. O operador informa o horário observado e seleciona Registrar. |  |
+|  | 4. O sistema verifica autorização, vínculo com tarefa, plano confirmado, horário válido e não futuro e ausência de chegada registrada (**E1**, **E2**, **E3**). |
+|  | 5. O sistema grava o AIBT, o operador, o horário do registro e a auditoria e coloca o turnaround em "Em solo" (**E4**). |
+|  | 6. O sistema disponibiliza o evento para a propagação do UC21 e exibe o horário real e o do registro separadamente (**E5**). O caso de uso termina. |
+
+### Fluxo alternativo A1 – Cancelar (passo 3)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A1.1. O operador cancela sem gravar a chegada. |  |
+
+### Fluxo de exceção E1 – Horário inválido ou futuro (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E1.1. O sistema indica o campo e volta ao passo 3 sem gravar. |
+
+### Fluxo de exceção E2 – Chegada já registrada (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E2.1. O sistema apresenta o registro existente e não cria outro nem repete a propagação. |
+
+### Fluxo de exceção E3 – Sem vínculo, plano não confirmado ou acesso revogado (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E3.1. A ação é recusada sem alterar dados ou estados. |
+
+### Fluxo de exceção E4 – Falha ou resposta perdida (passo 5)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E4.1. O sistema não anuncia sucesso sem confirmação de gravação. |
+|  | E4.2. A nova tentativa consulta o registro existente para evitar duplicidade. |
+
+### Fluxo de exceção E5 – Falha na entrega do evento (passo 6)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E5.1. O evento permanece para nova tentativa, sem criar outro registro nem repetir seus efeitos. |
+
+## UC13 – Corrigir horário de chegada à posição
+
+| Campo | |
+|---|---|
+| **Nome do caso de uso** | UC13 – Corrigir horário de chegada à posição |
+| **Ator(es)** | Coordenador de Turnaround |
+| **Descrição** | O coordenador corrige o AIBT registrado com motivo e histórico, mantendo os estados operacionais. Atende ao RF-13 e à US013. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Existe AIBT registrado e o turnaround não está "Fora de bloco". |
+| **Pós-condições** | Sucesso: AIBT corrigido, valor anterior, motivo, autor e horário da correção preservados; recálculo da projeção solicitado ao UC24.<br>Cancelamento ou erro: AIBT e histórico anteriores preservados.<br>Em todos os casos, os estados do turnaround e das tarefas não são alterados pela correção. |
+| **Regras de negócio** | **RN1.** RF-13 permite corrigir o horário real de chegada à posição (AIBT), com data e fuso, enquanto o turnaround não estiver "Fora de bloco" (ADR-0013) [2][4].<br>**RN2.** A correção exige motivo escrito e horário válido, não futuro. O sistema guarda valor anterior, novo valor, motivo, autor e horário da correção (RNF-2).<br>**RN3.** Corrigir não confirma nem registra outra chegada e não altera estados: enquanto o turnaround não estiver "Liberado", dispara o recálculo da projeção de prontidão do UC24, sem repetir a propagação de entrada em "Em solo". Em "Liberado", o UC24 não recalcula, e a correção só fica no histórico.<br>**RN4.** O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados. |
+| **Protótipo(s) de tela** | Correção do AIBT pelo coordenador, com valor registrado, novo horário e motivo.<br>![UC13 – corrigir chegada](prototipos/uc-a13-corrigir-chegada.png) |
+
+### Fluxo básico
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| 1. O Coordenador de Turnaround abre a chegada registrada e seleciona Corrigir horário. |  |
+|  | 2. O sistema apresenta turnaround, AIBT atual e histórico de correções. |
+| 3. O coordenador informa o horário corrigido com data, fuso e motivo e seleciona Salvar correção. |  |
+|  | 4. O sistema verifica autorização, existência do AIBT, ausência do estado "Fora de bloco", motivo e horário válido e não futuro (**E1**, **E2**, **E3**). |
+|  | 5. O sistema grava o novo AIBT e a auditoria com valor anterior, novo valor, motivo, autor e horário da correção, sem mudar os estados (**E4**). |
+|  | 6. Se o turnaround não está "Liberado", o sistema disponibiliza o evento para o recálculo da projeção do UC24 (**E5**). |
+|  | 7. O sistema exibe o AIBT atualizado e o histórico com horários real e da correção separados. O caso de uso termina. |
+
+### Fluxo alternativo A1 – Cancelar (passo 3)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A1.1. O coordenador cancela e mantém o AIBT e o histórico anteriores. |  |
+
+### Fluxo de exceção E1 – Sem chegada ou encerramento durante a edição (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E1.1. O sistema informa o impedimento e não salva. |
+
+### Fluxo de exceção E2 – Motivo vazio ou horário inválido ou futuro (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E2.1. O sistema indica o campo e retorna ao passo 3 sem gravar. |
+
+### Fluxo de exceção E3 – Acesso revogado (passo 4)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E3.1. A ação é recusada sem alterar dados. |
+
+### Fluxo de exceção E4 – Falha ao salvar ou resposta perdida (passo 5)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E4.1. O sistema não anuncia sucesso sem confirmação de gravação. |
+|  | E4.2. A nova tentativa consulta a correção para evitar duplicidade. |
+
+### Fluxo de exceção E5 – Falha na entrega do evento (passo 6)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E5.1. O evento permanece para nova tentativa, sem repetir a correção nem seus efeitos. |
+
+## UC14 – Consultar lista de tarefas do operador
+
+| Campo | |
+|---|---|
+| **Nome do caso de uso** | UC14 – Consultar lista de tarefas do operador |
 | **Ator(es)** | Operador de Solo/Rampa |
 | **Descrição** | O Operador de Solo/Rampa consulta, no celular, a lista das tarefas da sua equipe atribuídas a ele nos turnarounds abertos e abre o detalhe de uma tarefa para saber o que deve executar, em qual aeronave e a partir de quando pode começar. Atende ao RF-14 e à US014. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. O cadastro do operador tem uma equipe ou especialidade, mantida pelo Administrador do Sistema (ADR-0010). |
@@ -89,11 +213,11 @@
 |  | E3.1. O sistema informa que a tarefa não está mais atribuída a ele e a retira da lista. |
 |  | E3.2. O caso de uso volta ao passo 2. |
 
-## UC15 – Iniciar tarefa
+## UC15 – Registrar início da tarefa
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC15 – Iniciar tarefa |
+| **Nome do caso de uso** | UC15 – Registrar início da tarefa |
 | **Ator(es)** | Operador de Solo/Rampa |
 | **Descrição** | O Operador de Solo/Rampa registra o início de uma tarefa da sua equipe atribuída a ele, no estado "Pronta". A tarefa passa para "Em execução" e o registro grava o autor e o horário. Inclui os casos de uso UC20 (marcos) e UC21 (propagação), que o Motor de Eventos executa a cada início aceito. Atende ao RF-15 e à US015. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador, está atribuída a ele e está no estado "Pronta". |
@@ -164,11 +288,11 @@
 |  | E3.3. Se o registro já não for válido no servidor no envio, por exemplo porque a tarefa foi reatribuída, o servidor o recusa sem alterar o estado da tarefa, e o sistema exibe no celular, em até 5 segundos depois que a conexão voltou, o aviso da recusa com o motivo e o estado atual da tarefa. |
 |  | E3.4. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos dos passos 2 e 3 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
 
-## UC16 – Concluir tarefa
+## UC16 – Registrar conclusão da tarefa
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC16 – Concluir tarefa |
+| **Nome do caso de uso** | UC16 – Registrar conclusão da tarefa |
 | **Ator(es)** | Operador de Solo/Rampa |
 | **Descrição** | O Operador de Solo/Rampa registra a conclusão de uma tarefa da sua equipe atribuída a ele, no estado "Em execução". Se a tarefa tiver pontos de confirmação por QR Code, a conclusão só é aceita com todos os pontos confirmados (UC19). A tarefa passa para "Concluída" e o registro grava o autor e o horário. Inclui os casos de uso UC20 (marcos) e UC21 (propagação). Atende ao RF-16 e à US016. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador, está atribuída a ele e está no estado "Em execução". |
@@ -273,11 +397,11 @@
 |  | E6.2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; o registro que já não for válido no servidor é recusado sem alterar o estado da tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou. |
 |  | E6.3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
 
-## UC17 – Pausar e retomar tarefa
+## UC17 – Pausar e retomar execução da tarefa
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC17 – Pausar e retomar tarefa |
+| **Nome do caso de uso** | UC17 – Pausar e retomar execução da tarefa |
 | **Ator(es)** | Operador de Solo/Rampa |
 | **Descrição** | O Operador de Solo/Rampa pausa uma tarefa da sua equipe atribuída a ele, no estado "Em execução", com justificativa escrita e, quando houver impedimento, com o código do motivo da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62]. Depois, retoma a tarefa, que volta para "Em execução". Pausar e retomar ficam no mesmo caso de uso porque um não existe sem o outro. Atende ao RF-17 e à US017. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador e está atribuída a ele; para pausar, está no estado "Em execução"; para retomar, no estado "Pausada". |
@@ -438,11 +562,11 @@
 |  | E4.2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; o registro que já não for válido no servidor é recusado sem alterar o estado da tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou. |
 |  | E4.3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
 
-## UC19 – Confirmar a execução da tarefa por QR Code
+## UC19 – Confirmar execução da tarefa por QR Code
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC19 – Confirmar a execução da tarefa por QR Code |
+| **Nome do caso de uso** | UC19 – Confirmar execução da tarefa por QR Code |
 | **Ator(es)** | Operador de Solo/Rampa |
 | **Descrição** | Durante a execução de uma tarefa da sua equipe atribuída a ele, o Operador de Solo/Rampa lê, com a câmera do celular, o QR Code fixado em cada ponto da aeronave ligado à tarefa, por exemplo cada zona, fileira ou assento da cabine na limpeza. Cada leitura confirma um ponto, com autor e horário. A conclusão da tarefa continua sendo registrada no UC16, que só a aceita com todos os pontos confirmados. Atende ao RF-19 e à US019. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador, está atribuída a ele, está no estado "Em execução" e tem pontos de confirmação por QR Code no modelo de tarefas do turnaround.<br>3. Os QR Codes estão fixados nos pontos correspondentes da aeronave. |
@@ -532,11 +656,11 @@
 |  | E5.2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; a leitura que já não for válida no servidor é recusada sem alterar a tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou, e o ponto volta para "a confirmar". |
 |  | E5.3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
 
-## UC20 – Registrar os marcos do atendimento em solo
+## UC20 – Registrar marcos do atendimento em solo
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC20 – Registrar os marcos do atendimento em solo |
+| **Nome do caso de uso** | UC20 – Registrar marcos do atendimento em solo |
 | **Ator(es)** | Motor de Eventos |
 | **Descrição** | A cada início, conclusão ou marcação de "Não aplicável" aceito, o Motor de Eventos grava no turnaround os marcos do atendimento em solo, a partir do horário do registro do operador, sem que ninguém precise digitá-los: o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) e o fim real do atendimento em solo (AEGT) [2][4]. É incluído pelos casos de uso UC15, UC16 e UC18. Atende ao RF-20 e à US020. |
 | **Pré-condições** | 1. Um registro de início (UC15), de conclusão (UC16) ou de "Não aplicável" (UC18) de tarefa chegou ao servidor.<br>2. O turnaround tem, no modelo de tarefas, a tarefa de embarque e as tarefas obrigatórias identificadas. |
@@ -614,11 +738,11 @@
 |---|---|
 | E2.1. O Motor de Eventos não grava nem altera nenhum marco. |  |
 
-## UC21 – Propagar o estado das tarefas e do turnaround
+## UC21 – Propagar estado das tarefas e do turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC21 – Propagar o estado das tarefas e do turnaround |
+| **Nome do caso de uso** | UC21 – Propagar estado das tarefas e do turnaround |
 | **Ator(es)** | Motor de Eventos |
 | **Descrição** | A cada registro aceito, o Motor de Eventos propaga o estado para as tarefas e para o turnaround: a entrada do turnaround em "Em solo" deixa "Pronta" cada tarefa sem predecessora; o primeiro início leva o turnaround de "Em solo" para "Operações em andamento"; a tarefa que termina ("Concluída" ou "Não aplicável") libera as sucessoras sem outra predecessora pendente, que passam de "Aguardando" para "Pronta"; e, quando todas as tarefas obrigatórias terminam, o turnaround passa para "Pronto para liberação". Também ajusta as tarefas não iniciadas quando o Coordenador de Turnaround inclui tarefa ou altera dependências no replanejamento (UC35). É incluído pelos casos de uso UC12, UC15, UC16, UC18 e UC35. Atende ao RF-21 e à US021. |
 | **Pré-condições** | 1. Um registro de início (UC15), de conclusão (UC16) ou de "Não aplicável" (UC18) chegou ao servidor, ou o turnaround entrou no estado "Em solo" com o registro do horário real de chegada à posição (AIBT) [2], ou o Coordenador de Turnaround incluiu tarefa ou alterou dependências no replanejamento (UC35).<br>2. O turnaround tem modelo de tarefas com as dependências entre as tarefas e as tarefas obrigatórias identificadas (UC04, UC06 e UC08). |
@@ -730,5 +854,76 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | E3.1. O Motor de Eventos não muda o estado dessa sucessora e segue para a próxima. |  |
+
+## UC37 – Registrar saída da posição e encerrar turnaround
+
+| Campo | |
+|---|---|
+| **Nome do caso de uso** | UC37 – Registrar saída da posição e encerrar turnaround |
+| **Ator(es)** | Operador de Solo/Rampa |
+| **Descrição** | Depois que a autorização de acionamento e de push-back foi recebida do ATC, fora do sistema, o Operador de Solo/Rampa registra, no celular, o horário real de saída da posição (AOBT) [2] de um turnaround no estado "Liberado". O turnaround passa para "Fora de bloco" e fica encerrado: não aceita novos registros de tarefas, e o histórico completo continua disponível para consulta. Atende ao RF-44 e à US044. |
+| **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. O turnaround está no estado "Liberado", com a prontidão confirmada pela Autoridade de Liberação (UC32).<br>3. A aeronave recebeu a autorização de acionamento e de push-back do ATC, fora do sistema. |
+| **Pós-condições** | **Sucesso:** o turnaround está no estado "Fora de bloco", com o AOBT, o usuário e o horário gravados, e o histórico de tarefas, marcos e decisões está disponível para consulta.<br>**Recusa:** o AOBT não é gravado e o turnaround mantém o estado. |
+| **Regras de negócio** | **RN1.** A saída só é registrada com o turnaround em "Liberado"; antes da confirmação da Autoridade de Liberação, o registro é recusado (RF-44; US044, critério 2).<br>**RN2.** O AOBT é o horário do registro, gravado com o usuário (RF-44). [Fato] É o marco de saída da posição (off-block) do A-CDM [2].<br>**RN3.** A autorização de acionamento e de push-back é do ATC e fica fora do sistema: o sistema não a emite nem a confere, e o operador registra a saída depois de recebê-la (RF-44).<br>**RN4.** Com o AOBT gravado, o turnaround passa para "Fora de bloco" e está encerrado: todo registro de tarefa desse turnaround é recusado (RF-44; US044, critério 3).<br>**RN5.** O histórico de tarefas, marcos e decisões do turnaround encerrado é mantido para consulta (RF-44).<br>**RN6.** O dado vem de quem está na posição, como o registro da chegada (ADR-0007, ADR-0013). |
+| **Protótipo(s) de tela** | Turnaround liberado no celular do operador, com o ARDT e quem liberou, e a confirmação do registro da saída da posição.<br>![UC37 – registrar a saída da posição](prototipos/uc-d9-registrar-saida-da-posicao.png) |
+
+### Fluxo básico
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| 1. O Operador de Solo/Rampa abre, no navegador do celular, um turnaround no estado "Liberado". |  |
+|  | 2. O sistema exibe o turnaround, com a aeronave, a posição, o estado "Liberado", o TOBT, o ARDT e quem confirmou a prontidão, e a opção "Registrar saída da posição". |
+| 3. O Operador de Solo/Rampa seleciona "Registrar saída da posição". |  |
+|  | 4. O sistema pede a confirmação, mostrando a aeronave, a posição, o horário que será gravado e a indicação de que a autorização de acionamento e de push-back foi recebida do ATC. |
+| 5. O Operador de Solo/Rampa marca que a autorização foi recebida e confirma. |  |
+|  | 6. O sistema verifica que o turnaround continua no estado "Liberado" (**E1**, **E2**, **E4**). |
+|  | 7. O sistema grava o AOBT com o horário do registro e o usuário e muda o turnaround para "Fora de bloco". |
+|  | 8. O sistema exibe o turnaround como "Fora de bloco", com o AOBT, sem nenhuma ação de registro. O caso de uso termina. |
+
+### Fluxo alternativo A1 – Desistência (passo 5)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A1.1. O Operador de Solo/Rampa cancela a confirmação. |  |
+|  | A1.2. O sistema fecha a confirmação sem gravar nada, e o turnaround continua "Liberado". |
+
+### Fluxo alternativo A2 – Consulta do turnaround encerrado (depois do passo 8)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A2.1. Um usuário abre o turnaround "Fora de bloco". |  |
+|  | A2.2. O sistema exibe o histórico de tarefas, marcos e decisões, sem nenhuma ação de registro. |
+
+### Fluxo de exceção E1 – Turnaround ainda não liberado (passo 6)
+
+*Condição:* o turnaround está em "Pronto para liberação" ou em um estado anterior, sem a confirmação da Autoridade de Liberação.
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E1.1. O sistema recusa o registro, informa que o turnaround ainda não foi liberado e não grava o AOBT. |
+|  | E1.2. O turnaround mantém o estado. |
+
+### Fluxo de exceção E2 – Saída já registrada (passo 6)
+
+*Condição:* outro operador registrou a saída antes, e o turnaround está "Fora de bloco".
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E2.1. O sistema informa que a saída já foi registrada, mostra o AOBT e quem registrou e não grava outro registro. |
+
+### Fluxo de exceção E3 – Registro de tarefa em turnaround encerrado (depois do passo 7)
+
+*Condição:* um Operador de Solo/Rampa tenta registrar início, pausa ou conclusão de uma tarefa do turnaround "Fora de bloco".
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E3.1. O sistema recusa o registro e informa que o turnaround está encerrado. |
+|  | E3.2. O histórico continua disponível para consulta. |
+
+### Fluxo de exceção E4 – Sem conexão com a internet (passo 6)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E4.1. O sistema informa que o registro não foi enviado, não grava o AOBT e mantém a confirmação aberta para nova tentativa. |
 
 Fontes citadas: [2], [3], [4], [22], [24], [27], [29], [45], [62], [63] e [64], conforme a numeração de `pesquisa/fontes.md`.

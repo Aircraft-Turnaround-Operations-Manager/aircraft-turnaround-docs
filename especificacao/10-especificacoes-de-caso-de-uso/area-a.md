@@ -2,25 +2,23 @@
 
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
-| UC01 | Autenticar-se | Usuário (ator abstrato) | — | RF-1, US001 |
-| UC02 | Gerenciar usuários e perfis de acesso | Administrador do Sistema | — | RF-2, US002 |
-| UC03 | Abrir turnaround | Coordenador de Turnaround | — | RF-3, US003 |
+| UC01 | Autenticar acesso do usuário | Usuário (ator abstrato) | — | RF-1, US001 |
+| UC02 | Gerenciar cadastro de usuários e perfis | Administrador do Sistema | — | RF-2, US002 |
+| UC03 | Abrir turnaround da aeronave | Coordenador de Turnaround | — | RF-3, US003 |
 | UC04 | Criar modelo de tarefas | Coordenador de Turnaround | estendido por UC07 e UC08 | RF-4, US004 |
-| UC05 | Confirmar plano inicial | Coordenador de Turnaround | estendido por UC08 | RF-5, US005 |
+| UC05 | Confirmar plano inicial do turnaround | Coordenador de Turnaround | estendido por UC08 | RF-5, US005 |
 | UC06 | Aplicar modelo de tarefas | Coordenador de Turnaround | — | RF-6, US006 |
-| UC07 | Configurar pontos de confirmação | Coordenador de Turnaround | «extend» UC04 | RF-7, US007 |
+| UC07 | Configurar pontos de confirmação das tarefas | Coordenador de Turnaround | «extend» UC04 | RF-7, US007 |
 | UC08 | Definir dependências entre tarefas | Coordenador de Turnaround | «extend» UC04 e UC05 | RF-8, US008 |
-| UC09 | Gerenciar equipes e especialidades | Administrador do Sistema | — | RF-9, US009 |
-| UC10 | Atualizar referências de previsão | Coordenador de Turnaround | — | RF-10, US010 |
+| UC09 | Gerenciar cadastro de equipes e especialidades | Administrador do Sistema | — | RF-9, US009 |
+| UC10 | Atualizar referências de previsão do turnaround | Coordenador de Turnaround | — | RF-10, US010 |
 | UC11 | Configurar política de abastecimento | Coordenador de Turnaround | — | RF-11, US011 |
-| UC12 | Registrar chegada à posição | Operador de Solo/Rampa | «include» UC21 | RF-12, US012 |
-| UC13 | Corrigir chegada à posição | Coordenador de Turnaround | — | RF-13, US013 |
 
-## UC01 – Autenticar-se
+## UC01 – Autenticar acesso do usuário
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC01 – Autenticar-se |
+| **Nome do caso de uso** | UC01 – Autenticar acesso do usuário |
 | **Ator(es)** | Usuário (abstrato), generalizando Operador de Solo/Rampa, Coordenador de Turnaround, Autoridade de Liberação e Administrador do Sistema (ADR-0010) |
 | **Descrição** | O usuário informa credenciais e acessa a visão correspondente ao perfil cadastrado. Atende ao RF-1 e à US001. |
 | **Pré-condições** | 1. Existe cadastro com identificador, credencial e um dos quatro perfis humanos.<br>2. A tela de autenticação está acessível. |
@@ -63,11 +61,11 @@
 |---|---|
 |  | E3.1. O sistema informa a falha e permite nova tentativa, sem apresentar o usuário como autenticado. |
 
-## UC02 – Gerenciar usuários e perfis de acesso
+## UC02 – Gerenciar cadastro de usuários e perfis
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC02 – Gerenciar usuários e perfis de acesso |
+| **Nome do caso de uso** | UC02 – Gerenciar cadastro de usuários e perfis |
 | **Ator(es)** | Administrador do Sistema |
 | **Descrição** | O administrador cadastra, altera e desativa usuários e define perfil e equipe. Atende ao RF-2 e à US002. |
 | **Pré-condições** | 1. O Administrador do Sistema está autenticado e ativo.<br>2. Há equipes ativas disponíveis quando o cadastro for de operador. |
@@ -135,11 +133,11 @@
 |  | E4.1. O usuário a desativar é Operador de Solo/Rampa com tarefa pendente em turnaround não encerrado. |
 |  | E4.2. O sistema recusa a desativação, lista as tarefas a reatribuir e o usuário continua ativo (RN3; US002, critério 7). |
 
-## UC03 – Abrir turnaround
+## UC03 – Abrir turnaround da aeronave
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC03 – Abrir turnaround |
+| **Nome do caso de uso** | UC03 – Abrir turnaround da aeronave |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador reúne voos existentes e suas referências em um cadastro para planejamento. Atende ao RF-3 e à US003. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há dados dos voos, companhia operadora, aeronave, posição e referências de tempo. |
@@ -246,11 +244,11 @@
 |---|---|
 |  | E2.1. Não é persistido modelo parcial nem apresentada confirmação de sucesso. |
 
-## UC05 – Confirmar plano inicial
+## UC05 – Confirmar plano inicial do turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC05 – Confirmar plano inicial |
+| **Nome do caso de uso** | UC05 – Confirmar plano inicial do turnaround |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador define responsáveis e horários e confirma o plano antes do início das tarefas. Pode ser estendido pelo UC08 (dependências). Atende ao RF-5 e à US005. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há modelo aplicado e nenhuma tarefa iniciada.<br>3. Há operadores ativos das equipes necessárias. |
@@ -376,11 +374,11 @@
 |---|---|
 |  | E3.1. A cópia anterior permanece, sem tarefas parcialmente copiadas. |
 
-## UC07 – Configurar pontos de confirmação
+## UC07 – Configurar pontos de confirmação das tarefas
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC07 – Configurar pontos de confirmação |
+| **Nome do caso de uso** | UC07 – Configurar pontos de confirmação das tarefas |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador define no modelo os pontos cuja confirmação será exigida na execução. Estende o UC04. Atende ao RF-7 e à US007. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Existe tarefa no modelo para configurar. |
@@ -484,11 +482,11 @@
 |---|---|
 |  | E3.1. O sistema recusa a alteração do plano inicial. |
 
-## UC09 – Gerenciar equipes e especialidades
+## UC09 – Gerenciar cadastro de equipes e especialidades
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC09 – Gerenciar equipes e especialidades |
+| **Nome do caso de uso** | UC09 – Gerenciar cadastro de equipes e especialidades |
 | **Ator(es)** | Administrador do Sistema |
 | **Descrição** | O administrador mantém equipes que serão vinculadas aos operadores e às tarefas. Atende ao RF-9 e à US009. |
 | **Pré-condições** | 1. O Administrador do Sistema está autenticado e ativo. |
@@ -544,11 +542,11 @@
 |---|---|
 |  | E3.1. Cadastro e auditoria não são confirmados parcialmente. |
 
-## UC10 – Atualizar referências de previsão
+## UC10 – Atualizar referências de previsão do turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC10 – Atualizar referências de previsão |
+| **Nome do caso de uso** | UC10 – Atualizar referências de previsão do turnaround |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador atualiza dados de chegada estimada e tempo mínimo até o registro da chegada real (RF-12). Atende ao RF-10 e à US010. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. O turnaround existe e não tem chegada registrada. |
@@ -651,126 +649,5 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 |  | E3.1. O sistema informa que a regra está fixa e recusa a alteração. |
-
-## UC12 – Registrar chegada à posição
-
-| Campo | |
-|---|---|
-| **Nome do caso de uso** | UC12 – Registrar chegada à posição |
-| **Ator(es)** | Operador de Solo/Rampa |
-| **Descrição** | O operador registra diretamente a chegada observada, colocando o turnaround em "Em solo". Inclui o UC21 (propagação). Atende ao RF-12 e à US012. |
-| **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado e ativo, com tarefa atribuída no turnaround.<br>2. O turnaround está aberto, tem plano inicial confirmado e ainda não tem chegada registrada. |
-| **Pós-condições** | Sucesso: AIBT registrado, com operador, horário do registro e auditoria; turnaround em "Em solo" e evento disponível para a propagação do UC21.<br>Recusa ou cancelamento: nenhum registro novo ou alteração dos dados e estados existentes. |
-| **Regras de negócio** | **RN1.** RF-12 exige horário real de chegada à posição (AIBT), com data e fuso, sem horário futuro [2][4]. O AIBT e o horário do registro são campos distintos.<br>**RN2.** O registro exige operador com tarefa atribuída nesse turnaround e plano inicial confirmado. A chegada só pode ser registrada uma vez, inclusive em requisições simultâneas.<br>**RN3.** O registro é direto, sem aprovação do coordenador: coloca o turnaround em "Em solo" e dispara UC21, que coloca as tarefas sem predecessora em "Pronta"; não inicia a execução (ADR-0013).<br>**RN4.** Corrigir uma chegada já registrada exige Coordenador de Turnaround, pelo RF-13. Repetir uma requisição não sobrescreve o AIBT nem duplica a propagação. |
-| **Protótipo(s) de tela** | Registro direto da chegada pelo operador no celular, com plano confirmado e horário real informado.<br>![UC12 – registrar chegada](prototipos/uc-a12-registrar-chegada.png) |
-
-### Fluxo básico
-
-| Ações do ator | Ações do sistema |
-|---|---|
-| 1. O Operador de Solo/Rampa abre o turnaround associado a uma tarefa sua e seleciona Registrar chegada. |  |
-|  | 2. O sistema apresenta aeronave, posição, voos e campo de horário real com data e fuso. |
-| 3. O operador informa o horário observado e seleciona Registrar. |  |
-|  | 4. O sistema verifica autorização, vínculo com tarefa, plano confirmado, horário válido e não futuro e ausência de chegada registrada (**E1**, **E2**, **E3**). |
-|  | 5. O sistema grava o AIBT, o operador, o horário do registro e a auditoria e coloca o turnaround em "Em solo" (**E4**). |
-|  | 6. O sistema disponibiliza o evento para a propagação do UC21 e exibe o horário real e o do registro separadamente (**E5**). O caso de uso termina. |
-
-### Fluxo alternativo A1 – Cancelar (passo 3)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-| A1.1. O operador cancela sem gravar a chegada. |  |
-
-### Fluxo de exceção E1 – Horário inválido ou futuro (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E1.1. O sistema indica o campo e volta ao passo 3 sem gravar. |
-
-### Fluxo de exceção E2 – Chegada já registrada (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E2.1. O sistema apresenta o registro existente e não cria outro nem repete a propagação. |
-
-### Fluxo de exceção E3 – Sem vínculo, plano não confirmado ou acesso revogado (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E3.1. A ação é recusada sem alterar dados ou estados. |
-
-### Fluxo de exceção E4 – Falha ou resposta perdida (passo 5)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E4.1. O sistema não anuncia sucesso sem confirmação de gravação. |
-|  | E4.2. A nova tentativa consulta o registro existente para evitar duplicidade. |
-
-### Fluxo de exceção E5 – Falha na entrega do evento (passo 6)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E5.1. O evento permanece para nova tentativa, sem criar outro registro nem repetir seus efeitos. |
-
-## UC13 – Corrigir chegada à posição
-
-| Campo | |
-|---|---|
-| **Nome do caso de uso** | UC13 – Corrigir chegada à posição |
-| **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador corrige o AIBT registrado com motivo e histórico, mantendo os estados operacionais. Atende ao RF-13 e à US013. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Existe AIBT registrado e o turnaround não está "Fora de bloco". |
-| **Pós-condições** | Sucesso: AIBT corrigido, valor anterior, motivo, autor e horário da correção preservados; recálculo da projeção solicitado ao UC24.<br>Cancelamento ou erro: AIBT e histórico anteriores preservados.<br>Em todos os casos, os estados do turnaround e das tarefas não são alterados pela correção. |
-| **Regras de negócio** | **RN1.** RF-13 permite corrigir o horário real de chegada à posição (AIBT), com data e fuso, enquanto o turnaround não estiver "Fora de bloco" (ADR-0013) [2][4].<br>**RN2.** A correção exige motivo escrito e horário válido, não futuro. O sistema guarda valor anterior, novo valor, motivo, autor e horário da correção (RNF-2).<br>**RN3.** Corrigir não confirma nem registra outra chegada e não altera estados: enquanto o turnaround não estiver "Liberado", dispara o recálculo da projeção de prontidão do UC24, sem repetir a propagação de entrada em "Em solo". Em "Liberado", o UC24 não recalcula, e a correção só fica no histórico.<br>**RN4.** O horário da correção não substitui o AIBT. O sistema confere as condições novamente ao salvar; repetir a mesma requisição não cria correção ou evento duplicados. |
-| **Protótipo(s) de tela** | Correção do AIBT pelo coordenador, com valor registrado, novo horário e motivo.<br>![UC13 – corrigir chegada](prototipos/uc-a13-corrigir-chegada.png) |
-
-### Fluxo básico
-
-| Ações do ator | Ações do sistema |
-|---|---|
-| 1. O Coordenador de Turnaround abre a chegada registrada e seleciona Corrigir horário. |  |
-|  | 2. O sistema apresenta turnaround, AIBT atual e histórico de correções. |
-| 3. O coordenador informa o horário corrigido com data, fuso e motivo e seleciona Salvar correção. |  |
-|  | 4. O sistema verifica autorização, existência do AIBT, ausência do estado "Fora de bloco", motivo e horário válido e não futuro (**E1**, **E2**, **E3**). |
-|  | 5. O sistema grava o novo AIBT e a auditoria com valor anterior, novo valor, motivo, autor e horário da correção, sem mudar os estados (**E4**). |
-|  | 6. Se o turnaround não está "Liberado", o sistema disponibiliza o evento para o recálculo da projeção do UC24 (**E5**). |
-|  | 7. O sistema exibe o AIBT atualizado e o histórico com horários real e da correção separados. O caso de uso termina. |
-
-### Fluxo alternativo A1 – Cancelar (passo 3)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-| A1.1. O coordenador cancela e mantém o AIBT e o histórico anteriores. |  |
-
-### Fluxo de exceção E1 – Sem chegada ou encerramento durante a edição (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E1.1. O sistema informa o impedimento e não salva. |
-
-### Fluxo de exceção E2 – Motivo vazio ou horário inválido ou futuro (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E2.1. O sistema indica o campo e retorna ao passo 3 sem gravar. |
-
-### Fluxo de exceção E3 – Acesso revogado (passo 4)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E3.1. A ação é recusada sem alterar dados. |
-
-### Fluxo de exceção E4 – Falha ao salvar ou resposta perdida (passo 5)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E4.1. O sistema não anuncia sucesso sem confirmação de gravação. |
-|  | E4.2. A nova tentativa consulta a correção para evitar duplicidade. |
-
-### Fluxo de exceção E5 – Falha na entrega do evento (passo 6)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E5.1. O evento permanece para nova tentativa, sem repetir a correção nem seus efeitos. |
 
 Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27], [45], [69], [70] e [71], conforme `pesquisa/fontes.md`.

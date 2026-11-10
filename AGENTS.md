@@ -12,6 +12,7 @@
 7. Arquivo novo de pesquisa segue o mesmo formato: cabeçalho YAML (`id`, `titulo`, `tipo`, `itens_template`, `areas`, `decisoes`, `fontes`, `relacionados`, `status`, `atualizado`) e seção "Ligações" com links Markdown relativos (os links viram ligações no grafo). Decisão nova segue o formato dos ADRs em `docs/adr/` (campos `decisao`, `status`, `data`, `decisor`, `itens_template`, `areas`, `fontes`, `relacionados`).
 8. Pendência entre áreas: se o texto que você escreve ou revisa supõe algo que outra área ainda não definiu (um RF, um dado do modelo de tarefas, um RNF), não pare e não invente o requisito da outra área. Registre a suposição como uma linha na issue `pendencia-cruzada` da área que precisa resolver, ou avise quem pediu a tarefa para que ela seja registrada (`entregas/ra1-tarefas.md`, seção 1.4).
 9. Siglas (ADR-0008): **toda** sigla vem com o nome em português na primeira ocorrência de cada item da especificação, no formato "nome em português (SIGLA)", inclusive A-CDM e as de órgãos e normas (ANAC, ISO/IEC). Vale também nas regras de negócio. Antes de entregar um texto, confira a primeira ocorrência de cada sigla do item contra o glossário do `CONTEXT.md` (seção 4).
+10. Histórico (`CHANGELOG.md`): todo PR que muda a especificação, um diagrama ou um script acrescenta uma linha em **[Não publicado]**, na categoria certa (Adicionado, Alterado, Removido ou Corrigido). A linha diz o que mudou e por quê e traz o link da issue ou do PR. O formato e a regra das versões estão no cabeçalho do arquivo.
 
 ## Agent skills
 
