@@ -6,7 +6,7 @@ Este arquivo registra as mudanças da especificação do Aircraft Turnaround Orc
 - **Versão secundária (MINOR):** uma nova tentativa da mesma entrega, enviada ao professor.
 - **Correção (PATCH):** um ajuste no documento já entregue, sem um novo envio.
 
-Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado.
+Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado. Ao enviar a tag para o GitHub, a automação `.github/workflows/release.yml` cria a release com as notas da versão e o PDF anexado.
 
 **Como registrar.** Todo PR que muda a especificação acrescenta uma linha em **[Não publicado]**, dentro da categoria certa. A linha diz o que mudou, o motivo e o link da issue ou do PR. Ao fechar uma entrega, a seção [Não publicado] vira a versão nova, com a data. Categorias: **Adicionado**, **Alterado**, **Removido**, **Corrigido**.
 
@@ -15,6 +15,8 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 ### Adicionado
 
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
+
+- Releases automáticas: ao enviar uma tag `vX.Y.Z`, o `.github/workflows/release.yml` cria a release do GitHub com a seção da versão neste arquivo e o PDF daquela entrega anexado. Antes, as tags e as releases dependiam de alguém lembrar de criá-las à mão, e as do RA1 nunca foram criadas. As tags `v1.0.0`, `v1.1.0` e `v1.1.1` foram criadas depois, nos commits que geraram os PDFs, e as releases delas vieram da mesma automação, rodada à mão (PRNUM).
 
 ### Alterado
 
