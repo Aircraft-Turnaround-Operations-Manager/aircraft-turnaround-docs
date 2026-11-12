@@ -22,6 +22,8 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 - Ferramenta dos diagramas de sequência (item 14): PlantUML, depois de desenhar o UC32 em Mermaid e em PlantUML e comparar o resultado no PDF (decisão B3). O Mermaid não tem os ícones e o fragmento `ref` da UML e, no PDF, perde a borda dos fragmentos `alt` e `opt`. Entram o estilo comum (`14-sequencia-estilo.iuml`), o exportador `scripts/exportar_plantuml.py`, os dois iguais aos do PR do item 14 da área B, e o UC32 como exemplo, a revisar depois do diagrama de classes ([#141](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/141)).
 
+- ADR-0019, tecnologia do serviço Monitoramento: Python 3.14, FastAPI e MongoDB 8.0, com o motivo de cada escolha e as opções descartadas (Java com Spring Boot e TypeScript com NestJS, ambos com PostgreSQL). A ADR mostra como o serviço segue o contrato da ADR-0016 e como os tipos SQL do item 12 viram tipos do MongoDB (decisão B1) ([#160](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/160)).
+
 ### Alterado
 
 - Os 44 RFs ganharam um título no padrão Ação-Resultado-Objeto (ARO), numa coluna nova (TÍTULO) do item 6. É a anotação 1 do professor na correção do RA1. 23 títulos mudaram e foram levados também para as estórias (item 7), para a matriz (Apêndice A) e para os 16 casos de uso que tinham o mesmo nome, nos itens 9 e 10. O RF-18 e o RF-41 ficaram com o título antigo, porque no ARO perderiam informação: o nome do estado "Não aplicável" e a condição dos 5 minutos ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
