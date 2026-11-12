@@ -6,7 +6,7 @@ decisao: D12
 status: aceita
 data: 2026-10-07
 decisor: Rodrigo Alves
-itens_template: [6, 7, 8, 10]
+itens_template: [6, 7, 8, 10, 12, 14, 15]
 areas: [A, B, C, D]
 fontes: []
 relacionados: [adr-0011]
@@ -43,6 +43,15 @@ relacionados: [adr-0011]
 - No T12, depois da renumeração (ADR-0011), o script é rodado de novo e a lista de lacunas tem de ficar vazia (critério K.13).
 - No T13, a consolidação inclui o Apêndice A.
 - RNF que não cite nenhum RF aparece como lacuna; o dono da área ajusta o texto.
+
+## Extensão no RA2 (decisão B5, 12/11/2026)
+
+A matriz ganha os itens 12, 14 e 15 (`entregas/ra2-criterios-de-aceite.md`, seção 6, B5; tarefa T03, issue #142):
+
+- **RF → tabelas:** coluna "Tabelas (item 12)" na A.1, lida da tabela `Serviço | Tabela | RFs atendidos` do item 12 (C12.2).
+- **Caso de uso → diagrama de sequência:** tabela A.4, lida das legendas "Diagrama de Sequência do UCnn – <nome>" do item 14 (C14.1). Um diagrama pode ter partes.
+- **Critério de aceite → casos de teste:** tabela A.5, lida da coluna "Estória e critério de aceite" da planilha do item 15, em que o critério é escrito como `USnnn-CAn` (n = linha do critério na estória do item 7) (C15.2).
+- **Lacunas** (A.6): tabela sem RF; caso de uso sem diagrama ou com nome diferente do item 10; critério de aceite sem caso de teste; caso de teste sem critério ou com critério inexistente. As lacunas de um item só entram na lista depois que ele tem conteúdo, para que a matriz possa ser gerada durante o trabalho; na entrega, a lista tem de dizer "Nenhuma." (K.12).
 
 ---
 
