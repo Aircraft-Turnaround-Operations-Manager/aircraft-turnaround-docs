@@ -1,0 +1,137 @@
+@startuml
+' UC32 – Confirmar prontidão e liberar aeronave (RF-39, US039; ADR-0015, regra 6; ADR-0016).
+' Exemplo da tarefa T02 (issue #141): revisar na T14-D depois do diagrama de classes (item 13).
+!include 14-sequencia-estilo.iuml
+
+actor "Autoridade de\nLiberação" as AL
+boundary "LiberacaoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Exceções e Liberação" #FAFAFA
+  control "LiberacaoController" as C
+  participant "LiberacaoService" as S <<service>>
+  participant "ExcecaoRepository" as RE <<repository>>
+  participant "LiberacaoRepository" as RL <<repository>>
+  database "BancoExcecoesLiberacao" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as TC
+end box
+
+== Passos 1 e 2: lista de liberações ==
+AL -> V : abrir lista de liberações
+activate V
+V -> G : GET /liberacoes
+activate G
+ref over G, C : Verificar acesso na porta de entrada\n(perfil Autoridade de Liberação; ADR-0016)
+G -> C : listarTurnarounds(companhiaId)
+activate C
+C -> S : listarTurnarounds(companhiaId)
+activate S
+S -> TC : consultarPendencias(companhiaId)
+activate TC
+TC --> S : turnarounds (estado, tarefas obrigatórias pendentes)
+deactivate TC
+S -> RE : contarAbertasPorTurnaround(turnaroundIds)
+activate RE
+RE -> DB : SELECT excecao WHERE situacao = 'aberta'
+RE --> S : exceções abertas por turnaround
+deactivate RE
+S --> C : lista ordenada ("Pronto para liberação" primeiro)
+deactivate S
+C --> G : 200 lista
+deactivate C
+G --> V : 200 lista
+deactivate G
+V --> AL : turnarounds, pendências e exceções (RN7)
+
+== Passos 3 e 4: condições da liberação ==
+AL -> V : selecionar turnaround
+V -> G : GET /liberacoes/{turnaroundId}
+activate G
+G -> C : consultarCondicoes(turnaroundId)
+activate C
+C -> S : consultarCondicoes(turnaroundId)
+activate S
+S -> TC : consultarTarefasObrigatorias(turnaroundId)
+activate TC
+TC --> S : estado, tarefas obrigatórias (estado e horário) e AEGT
+deactivate TC
+S -> RE : listarAbertas(turnaroundId)
+activate RE
+RE -> DB : SELECT excecao
+RE --> S : exceções abertas
+deactivate RE
+S --> C : condições
+deactivate S
+C --> G : 200 condições
+deactivate C
+G --> V : 200 condições
+deactivate G
+alt estado = "Pronto para liberação"
+  V --> AL : tarefas, ausência de exceção, AEGT e "Confirmar prontidão"
+else A1: estado = "Operações em andamento" ou "Em exceção"
+  V --> AL : tarefas pendentes e exceções abertas, sem "Confirmar prontidão"
+end
+
+opt A2: Autoridade de Liberação seleciona "Voltar"
+  V --> AL : volta à lista sem gravar nada
+end
+
+== Passos 5 a 8: confirmação ==
+AL -> V : "Confirmar prontidão"
+V -> G : POST /liberacoes/{turnaroundId}
+activate G
+G -> C : confirmarProntidao(turnaroundId, usuarioId)
+activate C
+C -> S : confirmarProntidao(turnaroundId, usuarioId, horarioConfirmacao)
+activate S
+S -> RE : existeAberta(turnaroundId)
+activate RE
+RE -> DB : SELECT excecao
+RE --> S : sim / não
+deactivate RE
+alt E1: exceção aberta
+  S --> C : recusa: exceção aberta
+  C --> G : 409 exceção aberta
+  G --> V : 409
+  V --> AL : informa a exceção; ARDT não gravado
+else sem exceção aberta
+  S -> TC : liberarTurnaround(turnaroundId, horarioConfirmacao, usuarioId)
+  activate TC
+  note right of TC : confere estado e tarefas e,\nse puder, grava "Liberado"\n(ADR-0015, regras 4 e 6)
+  alt E2: tarefa obrigatória pendente
+    TC --> S : 409 tarefas pendentes
+    S --> C : recusa: tarefas pendentes
+    C --> G : 409
+    G --> V : 409
+    V --> AL : lista as tarefas pendentes; ARDT não gravado
+  else E3: turnaround já "Liberado"
+    TC --> S : 409 já liberado
+    S -> RL : buscarPorTurnaround(turnaroundId)
+    activate RL
+    RL -> DB : SELECT liberacao
+    RL --> S : ARDT e autor
+    deactivate RL
+    S --> C : já liberado (ARDT, autor)
+    C --> G : 409
+    G --> V : 409
+    V --> AL : já "Liberado", com ARDT e quem confirmou
+  else liberado
+    TC --> S : 200 "Liberado"
+    deactivate TC
+    S -> RL : salvar(turnaroundId, ardt = horarioConfirmacao, usuarioId)
+    activate RL
+    RL -> DB : INSERT liberacao
+    RL --> S : ok
+    deactivate RL
+    S --> C : liberado (ARDT, autor)
+    deactivate S
+    C --> G : 200
+    deactivate C
+    G --> V : 200
+    deactivate G
+    V --> AL : turnaround "Liberado", ARDT e quem confirmou
+  end
+end
+deactivate V
+@enduml
