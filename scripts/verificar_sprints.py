@@ -19,8 +19,14 @@ DEP = {
     36: [5, 21], 37: [21, 43], 38: [33, 36, 37, 41, 42], 39: [21, 36, 40], 40: [21, 36], 41: [22],
     42: [4, 8, 11, 21], 43: [2, 9, 16, 21],
 }
-# Dependências desenvolvidas com dados simulados, justificadas no texto do item 6
-SIMULADO = {(2, 5), (2, 37), (9, 5)}  # recusa da desativação com tarefa pendente
+# Dependências desenvolvidas com dados simulados no formato do contrato combinado na sprint 2,
+# justificadas no texto do item 6 e mostradas no quadro de sprints do RA2
+SIMULADO = {
+    (2, 5), (2, 37), (9, 5),  # recusa da desativação com tarefa pendente
+    (12, 5), (14, 5), (15, 5), (18, 4), (18, 5), (19, 7), (21, 5), (21, 8), (36, 5),  # plano e modelo
+    (22, 5), (22, 13), (22, 17),  # projeção antes do plano, da correção da chegada e da pausa
+    (29, 10),  # viabilidade antes da atualização de EIBT e MTTT
+}
 SERVICO = {'a': 'Cadastro e Planejamento', 'b': 'Execução em Solo', 'c': 'Monitoramento', 'd': 'Exceções e Liberação'}
 
 sprint, servico = {}, {}
@@ -46,5 +52,6 @@ for s in range(1, 9):
     for n in sorted(k for k in sprint if sprint[k] == s): por.setdefault(servico[n], []).append(f'RF-{n}')
     print(f'Sprint {s}: ' + ('; '.join(f'{k}: {", ".join(v)}' for k, v in por.items()) or '(sem RF)'))
 print(f'{sum(len(v) for v in DEP.values())} dependências, {len(SIMULADO)} com dados simulados, {len(erros)} erros')
+for n, d in sorted(SIMULADO): print(f'  simulada: RF-{n} (sprint {sprint[n]}) usa o RF-{d} (sprint {sprint[d]})')
 for e in erros: print('ERRO:', e)
 sys.exit(1 if erros else 0)
