@@ -49,6 +49,6 @@ log=io.StringIO()
 with patch.object(Path,'write_text',save),contextlib.redirect_stdout(log):runpy.run_path(str(ROOT/'scripts/gerar_matriz_rastreabilidade.py'))
 matrix=E/'apendice-a-matriz-de-rastreabilidade.md'
 if capture[str(matrix)].replace('\r\n','\n')!=matrix.read_text(encoding='utf-8').replace('\r\n','\n'):errors.append('Matriz desatualizada')
-if '0 lacunas' not in log.getvalue():errors.append('Lacunas matriz')
+if not re.search(r'(?<!\d)0 lacunas',log.getvalue()):errors.append('Lacunas matriz')
 result={'contagens':expected,'por_area':areas,'matriz':log.getvalue().strip(),'erros':errors}
 print(json.dumps(result,ensure_ascii=False,indent=2));raise SystemExit(bool(errors))
