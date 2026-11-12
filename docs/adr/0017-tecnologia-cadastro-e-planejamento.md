@@ -63,7 +63,7 @@ relacionados: [adr-0015, adr-0016, adr-0003, adr-0005, adr-0010]
 - Os itens 13 e 14 da área A podem usar as camadas de referência da ADR-0015 (`Controller → Service → Repository`) sem tradução: são as mesmas do Spring.
 - No desenvolvimento, o serviço roda com PostgreSQL e RabbitMQ em Docker na máquina do integrante (ADR-0016, ponto 4). Os testes de integração usam o mesmo PostgreSQL em contêiner, para que as restrições de unicidade e os tipos `uuid` e `timestamptz` sejam testados como em produção.
 - Como a porta de entrada consulta o Cadastro a cada ação, o serviço não guarda sessão na memória e pode rodar com mais de uma instância atrás da porta de entrada, para cumprir os 99,5% do RNF-19. A verificação de saúde do Actuator serve à medição a cada 1 minuto.
-- A tabela de saída dos avisos e a tabela de avisos já processados são do próprio serviço e entram no modelo de dados do Cadastro e Planejamento no item 12, se o grupo quiser mostrá-las; elas não guardam dado de negócio.
+- A tabela de saída dos avisos e a tabela de avisos já processados são técnicas e do próprio serviço, mas os diagramas de sequência do item 14 gravam nelas. Por isso entram no modelo do Cadastro e Planejamento no item 12 como tabelas técnicas, como pedem também as ADRs da Execução em Solo e do Monitoramento; isso vai para a pendência do item 12 (`rdsalvesPUC`).
 - A escolha não muda nenhum RF, estória ou caso de uso, nem as ADRs 0015 e 0016. Se a implementação pedir outro banco ou framework, uma ADR nova substitui esta.
 
 ---
