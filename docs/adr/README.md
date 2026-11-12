@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-11-03
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, mapa-pesquisa]
+atualizado: 2026-11-12
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0019, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -28,6 +28,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0014](0014-servicos-sob-demanda.md) | D14 | Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround; o atraso conta na meta de 80% | 6, 7, 10 |
 | [0015](0015-divisao-em-microsservicos.md) | D15 | Quatro microsserviços, com a tarefa e o estado do turnaround na Execução em Solo; avisos pela mensageria e pedidos em chamada direta | 12, 13, 14 |
 | [0016](0016-contrato-entre-os-servicos.md) | D16 | Contrato comum entre os serviços, votado pelo grupo: REST, RabbitMQ, envelope dos avisos, UTC, UUID e nomes em português; base provisória do RA2 | 12, 13, 14, 15 |
+| [0019](0019-tecnologia-monitoramento.md) | D19 | Tecnologia do serviço Monitoramento: Python 3.14, FastAPI e MongoDB 8.0, com o contrato da ADR-0016 | 12, 14 |
 
 ---
 
