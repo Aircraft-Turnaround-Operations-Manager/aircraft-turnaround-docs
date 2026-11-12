@@ -229,58 +229,58 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US021-CA5 | — |
 | US021-CA6 | — |
 | US021-CA7 | — |
-| US022-CA1 | — |
-| US022-CA2 | — |
-| US022-CA3 | — |
-| US022-CA4 | — |
-| US022-CA5 | — |
-| US023-CA1 | — |
-| US023-CA2 | — |
-| US023-CA3 | — |
-| US023-CA4 | — |
-| US024-CA1 | — |
-| US024-CA2 | — |
-| US024-CA3 | — |
-| US025-CA1 | — |
-| US025-CA2 | — |
-| US025-CA3 | — |
-| US025-CA4 | — |
-| US026-CA1 | — |
-| US026-CA2 | — |
-| US026-CA3 | — |
-| US026-CA4 | — |
-| US027-CA1 | — |
-| US027-CA2 | — |
-| US027-CA3 | — |
-| US028-CA1 | — |
-| US028-CA2 | — |
-| US028-CA3 | — |
-| US028-CA4 | — |
-| US029-CA1 | — |
-| US029-CA2 | — |
-| US029-CA3 | — |
-| US030-CA1 | — |
-| US030-CA2 | — |
-| US030-CA3 | — |
-| US031-CA1 | — |
-| US031-CA2 | — |
-| US031-CA3 | — |
-| US032-CA1 | — |
-| US032-CA2 | — |
-| US032-CA3 | — |
-| US032-CA4 | — |
-| US033-CA1 | — |
-| US033-CA2 | — |
-| US033-CA3 | — |
-| US033-CA4 | — |
-| US034-CA1 | — |
-| US034-CA2 | — |
-| US034-CA3 | — |
-| US034-CA4 | — |
-| US034-CA5 | — |
-| US035-CA1 | — |
-| US035-CA2 | — |
-| US035-CA3 | — |
+| US022-CA1 | CT-C004, CT-C023, CT-C033, CT-C034, CT-C035, CT-C037, CT-C038 |
+| US022-CA2 | CT-C030 |
+| US022-CA3 | CT-C032 |
+| US022-CA4 | CT-C036 |
+| US022-CA5 | CT-C029 |
+| US023-CA1 | CT-C024 |
+| US023-CA2 | CT-C025 |
+| US023-CA3 | CT-C027 |
+| US023-CA4 | CT-C028 |
+| US024-CA1 | CT-C026 |
+| US024-CA2 | CT-C018, CT-C030, CT-C031 |
+| US024-CA3 | CT-C032 |
+| US025-CA1 | CT-C001, CT-C002, CT-C003, CT-C004, CT-C009, CT-C011 |
+| US025-CA2 | CT-C007, CT-C010 |
+| US025-CA3 | CT-C008 |
+| US025-CA4 | CT-C012 |
+| US026-CA1 | CT-C005, CT-C013, CT-C017, CT-C018, CT-C022 |
+| US026-CA2 | CT-C014, CT-C019 |
+| US026-CA3 | CT-C015 |
+| US026-CA4 | CT-C016, CT-C020, CT-C021 |
+| US027-CA1 | CT-C050, CT-C051, CT-C059 |
+| US027-CA2 | CT-C052 |
+| US027-CA3 | CT-C053 |
+| US028-CA1 | CT-C045 |
+| US028-CA2 | CT-C046 |
+| US028-CA3 | CT-C047, CT-C048 |
+| US028-CA4 | CT-C049 |
+| US029-CA1 | CT-C039, CT-C041, CT-C043, CT-C060 |
+| US029-CA2 | CT-C040, CT-C042 |
+| US029-CA3 | CT-C044 |
+| US030-CA1 | CT-C054 |
+| US030-CA2 | CT-C055 |
+| US030-CA3 | CT-C056 |
+| US031-CA1 | CT-C057 |
+| US031-CA2 | CT-C057 |
+| US031-CA3 | CT-C058 |
+| US032-CA1 | CT-C071, CT-C077 |
+| US032-CA2 | CT-C076 |
+| US032-CA3 | CT-C072 |
+| US032-CA4 | CT-C078 |
+| US033-CA1 | CT-C006, CT-C061, CT-C063, CT-C065, CT-C066, CT-C068, CT-C070 |
+| US033-CA2 | CT-C050, CT-C051, CT-C062 |
+| US033-CA3 | CT-C064, CT-C069 |
+| US033-CA4 | CT-C067 |
+| US034-CA1 | CT-C080, CT-C083, CT-C084, CT-C086, CT-C088 |
+| US034-CA2 | CT-C081 |
+| US034-CA3 | CT-C082 |
+| US034-CA4 | CT-C085 |
+| US034-CA5 | CT-C087 |
+| US035-CA1 | CT-C073, CT-C075 |
+| US035-CA2 | CT-C079 |
+| US035-CA3 | CT-C074 |
 | US036-CA1 | — |
 | US036-CA2 | — |
 | US036-CA3 | — |
@@ -319,5 +319,131 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.6 Lacunas encontradas
 
-- Nenhuma.
+- US001-CA1 sem caso de teste (item 15)
+- US001-CA2 sem caso de teste (item 15)
+- US001-CA3 sem caso de teste (item 15)
+- US002-CA1 sem caso de teste (item 15)
+- US002-CA2 sem caso de teste (item 15)
+- US002-CA3 sem caso de teste (item 15)
+- US002-CA4 sem caso de teste (item 15)
+- US002-CA5 sem caso de teste (item 15)
+- US002-CA6 sem caso de teste (item 15)
+- US002-CA7 sem caso de teste (item 15)
+- US003-CA1 sem caso de teste (item 15)
+- US003-CA2 sem caso de teste (item 15)
+- US003-CA3 sem caso de teste (item 15)
+- US003-CA4 sem caso de teste (item 15)
+- US004-CA1 sem caso de teste (item 15)
+- US004-CA2 sem caso de teste (item 15)
+- US004-CA3 sem caso de teste (item 15)
+- US004-CA4 sem caso de teste (item 15)
+- US004-CA5 sem caso de teste (item 15)
+- US005-CA1 sem caso de teste (item 15)
+- US005-CA2 sem caso de teste (item 15)
+- US005-CA3 sem caso de teste (item 15)
+- US005-CA4 sem caso de teste (item 15)
+- US005-CA5 sem caso de teste (item 15)
+- US006-CA1 sem caso de teste (item 15)
+- US006-CA2 sem caso de teste (item 15)
+- US006-CA3 sem caso de teste (item 15)
+- US006-CA4 sem caso de teste (item 15)
+- US006-CA5 sem caso de teste (item 15)
+- US007-CA1 sem caso de teste (item 15)
+- US007-CA2 sem caso de teste (item 15)
+- US007-CA3 sem caso de teste (item 15)
+- US007-CA4 sem caso de teste (item 15)
+- US008-CA1 sem caso de teste (item 15)
+- US008-CA2 sem caso de teste (item 15)
+- US008-CA3 sem caso de teste (item 15)
+- US008-CA4 sem caso de teste (item 15)
+- US009-CA1 sem caso de teste (item 15)
+- US009-CA2 sem caso de teste (item 15)
+- US009-CA3 sem caso de teste (item 15)
+- US009-CA4 sem caso de teste (item 15)
+- US010-CA1 sem caso de teste (item 15)
+- US010-CA2 sem caso de teste (item 15)
+- US010-CA3 sem caso de teste (item 15)
+- US011-CA1 sem caso de teste (item 15)
+- US011-CA2 sem caso de teste (item 15)
+- US011-CA3 sem caso de teste (item 15)
+- US011-CA4 sem caso de teste (item 15)
+- US012-CA1 sem caso de teste (item 15)
+- US012-CA2 sem caso de teste (item 15)
+- US012-CA3 sem caso de teste (item 15)
+- US012-CA4 sem caso de teste (item 15)
+- US012-CA5 sem caso de teste (item 15)
+- US012-CA6 sem caso de teste (item 15)
+- US013-CA1 sem caso de teste (item 15)
+- US013-CA2 sem caso de teste (item 15)
+- US013-CA3 sem caso de teste (item 15)
+- US013-CA4 sem caso de teste (item 15)
+- US013-CA5 sem caso de teste (item 15)
+- US013-CA6 sem caso de teste (item 15)
+- US014-CA1 sem caso de teste (item 15)
+- US014-CA2 sem caso de teste (item 15)
+- US014-CA3 sem caso de teste (item 15)
+- US015-CA1 sem caso de teste (item 15)
+- US015-CA2 sem caso de teste (item 15)
+- US016-CA1 sem caso de teste (item 15)
+- US016-CA2 sem caso de teste (item 15)
+- US016-CA3 sem caso de teste (item 15)
+- US017-CA1 sem caso de teste (item 15)
+- US017-CA2 sem caso de teste (item 15)
+- US017-CA3 sem caso de teste (item 15)
+- US017-CA4 sem caso de teste (item 15)
+- US017-CA5 sem caso de teste (item 15)
+- US018-CA1 sem caso de teste (item 15)
+- US018-CA2 sem caso de teste (item 15)
+- US018-CA3 sem caso de teste (item 15)
+- US019-CA1 sem caso de teste (item 15)
+- US019-CA2 sem caso de teste (item 15)
+- US019-CA3 sem caso de teste (item 15)
+- US019-CA4 sem caso de teste (item 15)
+- US020-CA1 sem caso de teste (item 15)
+- US020-CA2 sem caso de teste (item 15)
+- US020-CA3 sem caso de teste (item 15)
+- US020-CA4 sem caso de teste (item 15)
+- US020-CA5 sem caso de teste (item 15)
+- US021-CA1 sem caso de teste (item 15)
+- US021-CA2 sem caso de teste (item 15)
+- US021-CA3 sem caso de teste (item 15)
+- US021-CA4 sem caso de teste (item 15)
+- US021-CA5 sem caso de teste (item 15)
+- US021-CA6 sem caso de teste (item 15)
+- US021-CA7 sem caso de teste (item 15)
+- US044-CA1 sem caso de teste (item 15)
+- US044-CA2 sem caso de teste (item 15)
+- US044-CA3 sem caso de teste (item 15)
+- US036-CA1 sem caso de teste (item 15)
+- US036-CA2 sem caso de teste (item 15)
+- US036-CA3 sem caso de teste (item 15)
+- US037-CA1 sem caso de teste (item 15)
+- US037-CA2 sem caso de teste (item 15)
+- US037-CA3 sem caso de teste (item 15)
+- US037-CA4 sem caso de teste (item 15)
+- US038-CA1 sem caso de teste (item 15)
+- US038-CA2 sem caso de teste (item 15)
+- US038-CA3 sem caso de teste (item 15)
+- US039-CA1 sem caso de teste (item 15)
+- US039-CA2 sem caso de teste (item 15)
+- US039-CA3 sem caso de teste (item 15)
+- US039-CA4 sem caso de teste (item 15)
+- US040-CA1 sem caso de teste (item 15)
+- US040-CA2 sem caso de teste (item 15)
+- US040-CA3 sem caso de teste (item 15)
+- US040-CA4 sem caso de teste (item 15)
+- US040-CA5 sem caso de teste (item 15)
+- US041-CA1 sem caso de teste (item 15)
+- US041-CA2 sem caso de teste (item 15)
+- US041-CA3 sem caso de teste (item 15)
+- US041-CA4 sem caso de teste (item 15)
+- US042-CA1 sem caso de teste (item 15)
+- US042-CA2 sem caso de teste (item 15)
+- US042-CA3 sem caso de teste (item 15)
+- US042-CA4 sem caso de teste (item 15)
+- US042-CA5 sem caso de teste (item 15)
+- US042-CA6 sem caso de teste (item 15)
+- US043-CA1 sem caso de teste (item 15)
+- US043-CA2 sem caso de teste (item 15)
+- US043-CA3 sem caso de teste (item 15)
 <!-- matriz:fim -->
