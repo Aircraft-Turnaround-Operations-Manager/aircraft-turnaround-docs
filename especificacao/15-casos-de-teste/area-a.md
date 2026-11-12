@@ -8,19 +8,19 @@ Os horários são informados e exibidos na tela no horário de Brasília, Tempo 
 
 **Usuários** (senha de todos: `Turn@2026!`):
 
-| Identificador de acesso | Perfil | Equipe | Situação |
-|---|---|---|---|
-| adm.costa | Administrador do Sistema | — | ativo |
-| adm.rocha | Administrador do Sistema | — | ativo |
-| coord.lima | Coordenador de Turnaround | — | ativo |
-| lib.martins | Autoridade de Liberação | — | ativo |
-| op.reis | Operador de Solo/Rampa | PAX | ativo |
-| op.souza | Operador de Solo/Rampa | LIMP | ativo |
-| op.lopes | Operador de Solo/Rampa | LIMP | ativo |
-| op.campos | Operador de Solo/Rampa | CAT | ativo |
-| op.dias | Operador de Solo/Rampa | CAT | ativo |
-| op.alves | Operador de Solo/Rampa | ABST | ativo |
-| op.antigo | Operador de Solo/Rampa | LIMP | desativado em 01/11/2026 |
+| Identificador de acesso | Identificador (UUID) | Perfil | Equipe | Situação |
+|---|---|---|---|---|
+| adm.costa | `a0a8f9e7-6436-4963-819c-728cfa477ce7` | Administrador do Sistema | — | ativo |
+| adm.rocha | `333edd37-f8bb-40a8-a1c4-090d256c25aa` | Administrador do Sistema | — | ativo |
+| coord.lima | `046d6394-9fea-4962-9620-04b1cc628e5c` | Coordenador de Turnaround | — | ativo |
+| lib.martins | `1d84d0da-a051-4b0d-9f90-783fe744f054` | Autoridade de Liberação | — | ativo |
+| op.reis | `7db7cec7-c285-46e5-9877-a33006a05b35` | Operador de Solo/Rampa | PAX | ativo |
+| op.souza | `75251062-dcba-406d-adec-b2579a4e70cf` | Operador de Solo/Rampa | LIMP | ativo |
+| op.lopes | `3c546778-fa11-4b17-a7d3-bbf53efb2b02` | Operador de Solo/Rampa | LIMP | ativo |
+| op.campos | `ad8772f3-4b69-4280-924b-28c7b919fb59` | Operador de Solo/Rampa | CAT | ativo |
+| op.dias | `9baf2eed-0852-4450-9c26-e8368bccb082` | Operador de Solo/Rampa | CAT | ativo |
+| op.alves | `c3fcf585-c08b-4326-98c0-9ad74da89c6b` | Operador de Solo/Rampa | ABST | ativo |
+| op.antigo | `43f9b33d-5365-478a-b59b-f9d552c55a7b` | Operador de Solo/Rampa | LIMP | desativado em 01/11/2026 |
 
 **Equipes:** PAX (Embarque e desembarque), LIMP (Limpeza), CAT (Catering), ABST (Abastecimento) e RAMPA (Rampa), ativas; CATX (Catering internacional), ativa e sem usuários; DEGEL (Degelo), desativada.
 
@@ -38,12 +38,12 @@ Os horários são informados e exibidos na tela no horário de Brasília, Tempo 
 
 **Turnarounds** (horários em UTC−03:00):
 
-| Turnaround | Voos e companhia | Aeronave e posição | SIBT / EIBT / SOBT / TOBT planejado e vigente / MTTT | Situação |
-|---|---|---|---|---|
-| TA-1 | AS1201 / AS1202, Aérea Sul | A320 PR-ASA, posição 12 | 28/11/2026 14:00 / 14:05 / 14:55 / 14:50 / 45 min | MOD-A320-PAX aplicado; plano P-1 confirmado; nenhuma tarefa iniciada; sem AIBT |
-| TA-2 | AS1301 / AS1302, Aérea Sul | A320 PR-ASB, posição 14 | 29/11/2026 09:00 / 09:00 / 09:55 / 09:50 / 45 min | Sem modelo aplicado |
-| TA-3 | AS1401 / AS1402, Aérea Sul | A320 PR-ASC, posição 15 | 29/11/2026 10:00 / 10:00 / 10:55 / 10:50 / 45 min | MOD-A320-PAX aplicado; plano confirmado; AIBT 10:02; T1 Desembarque "Em execução" desde 10:06 |
-| TA-4 | AN2001 / AN2002, Aérea Norte | A320 PR-ANA, posição 20 | 30/11/2026 08:00 / 08:00 / 08:55 / 08:50 / 45 min | MOD-A320-INT aplicado; sem plano confirmado |
+| Turnaround | Identificador (UUID) | Voos e companhia | Aeronave e posição | SIBT / EIBT / SOBT / TOBT planejado e vigente / MTTT | Situação |
+|---|---|---|---|---|---|
+| TA-1 | `830a6c97-ea05-4254-b701-8384ef7ea214` | AS1201 / AS1202, Aérea Sul | A320 PR-ASA, posição 12 | 28/11/2026 14:00 / 14:05 / 14:55 / 14:50 / 45 min | MOD-A320-PAX aplicado; plano P-1 confirmado; nenhuma tarefa iniciada; sem AIBT |
+| TA-2 | `08a01227-6f9c-4227-a190-940cae1eb860` | AS1301 / AS1302, Aérea Sul | A320 PR-ASB, posição 14 | 29/11/2026 09:00 / 09:00 / 09:55 / 09:50 / 45 min | Sem modelo aplicado |
+| TA-3 | `fd9448f0-ef20-4f7c-9964-0157d230b76e` | AS1401 / AS1402, Aérea Sul | A320 PR-ASC, posição 15 | 29/11/2026 10:00 / 10:00 / 10:55 / 10:50 / 45 min | MOD-A320-PAX aplicado; plano confirmado; AIBT 10:02; T1 Desembarque "Em execução" desde 10:06 |
+| TA-4 | `c2920d89-1f78-4477-9c4b-8f3916c6ff48` | AN2001 / AN2002, Aérea Norte | A320 PR-ANA, posição 20 | 30/11/2026 08:00 / 08:00 / 08:55 / 08:50 / 45 min | MOD-A320-INT aplicado; sem plano confirmado |
 
 **Plano P-1 do TA-1** (28/11/2026, UTC−03:00): T1 Desembarque, op.reis, 14:05–14:13; T2 Limpeza de cabine, op.souza, 14:13–14:28; T3 Catering, op.campos, 14:10–14:25; T4 Abastecimento, op.alves, 14:13–14:28; T5 Embarque, op.reis, 14:28–14:45. S1 Limpeza profunda fica no catálogo.
 
@@ -76,7 +76,7 @@ Os horários são informados e exibidos na tela no horário de Brasília, Tempo 
 | CT-A018 | UC02 | A1.1–A1.4 / E1.1–E1.2 | US002-CA6 | Alterar operador para equipe desativada e depois sem equipe | adm.costa autenticado; op.lopes ativo na LIMP | Usuário: op.lopes<br>Equipe, 1ª tentativa: DEGEL (desativada)<br>Equipe, 2ª tentativa: (vazia) | 1. Abrir op.lopes e trocar a equipe para DEGEL.<br>2. Selecionar Salvar usuário.<br>3. Limpar a equipe e salvar de novo.<br>4. Reabrir op.lopes. | Passos 2 e 3: campo Equipe indicado como inválido e nada gravado. Passo 4: op.lopes continua na LIMP. |
 | CT-A019 | UC02 | A2.1–A2.2 | US002-CA3 | Desativar usuário com sessão aberta | adm.costa autenticado; lib.martins autenticado em outro navegador | Usuário: lib.martins<br>Ação: Desativar e confirmar | 1. Como adm.costa, selecionar lib.martins e Desativar.<br>2. Confirmar.<br>3. No navegador de lib.martins, abrir a tela de liberações.<br>4. Sair e tentar entrar como lib.martins.<br>5. Consultar a auditoria de lib.martins. | Passo 2: lib.martins aparece como desativado. Passo 3: ação recusada, mesmo com a sessão aberta. Passo 4: mensagem genérica do US001-CA2. Passo 5: histórico anterior preservado e registro da desativação com autor e horário. |
 | CT-A020 | UC02 | A2.1–A2.2 / E4.1–E4.2 | US002-CA7 | Recusar desativação de operador com tarefa pendente | adm.costa autenticado; op.souza responsável pela T2 Limpeza de cabine do TA-1, em "Aguardando" | Usuário: op.souza<br>Ação: Desativar e confirmar | 1. Selecionar op.souza e Desativar.<br>2. Confirmar.<br>3. Reabrir op.souza. | Desativação recusada; a mensagem lista "TA-1 – T2 Limpeza de cabine" como tarefa a reatribuir (UC05 ou UC30); op.souza continua ativo; nenhuma auditoria de desativação. |
-| CT-A021 | UC02 | A2.1–A2.2 (limite do E4) | US002-CA3, US002-CA7 | Desativar operador cujas tarefas estão só em "Concluída" e "Não aplicável" | adm.costa autenticado; op.dias com uma tarefa "Concluída" e outra "Não aplicável" no TA-3 e nenhuma outra | Usuário: op.dias<br>Ação: Desativar e confirmar | 1. Selecionar op.dias e Desativar.<br>2. Confirmar.<br>3. Consultar as tarefas do TA-3. | op.dias desativado; as duas tarefas continuam com op.dias como responsável no histórico. |
+| CT-A021 | UC02 | A2.1–A2.2 (limite do E4) | US002-CA3, US002-CA7 | Desativar operador cujas tarefas estão só em "Concluída" e "Não aplicável" | adm.costa autenticado; op.dias responsável só por duas tarefas: a T3 Catering do TA-3, marcada "Não aplicável" (a tarefa permite), e a T3 Catering do turnaround AS1101 / AS1102 de 27/11/2026, "Concluída" e já "Fora de bloco" | Usuário: op.dias<br>Ação: Desativar e confirmar | 1. Selecionar op.dias e Desativar.<br>2. Confirmar.<br>3. Consultar as duas tarefas. | op.dias desativado; as duas tarefas continuam com op.dias como responsável no histórico. |
 | CT-A022 | UC02 | A2.1 / A3.1 | US002-CA3 | Cancelar a confirmação da desativação | adm.costa autenticado; op.lopes ativo | Usuário: op.lopes<br>Ação: Desativar e Cancelar | 1. Selecionar op.lopes e Desativar.<br>2. Na confirmação, selecionar Cancelar.<br>3. Reabrir op.lopes. | Volta à lista sem gravar; op.lopes continua ativo; nenhuma auditoria nova. |
 | CT-A023 | UC02 | A1.1 / E2.1 | US002-CA3 | Administrador desativado no meio da edição | adm.costa e adm.rocha autenticados em navegadores diferentes | Edição de adm.rocha: nome de op.lopes para "Rafael Lopes"<br>Ação de adm.costa: desativar adm.rocha | 1. adm.rocha abre op.lopes e altera o nome.<br>2. adm.costa desativa adm.rocha.<br>3. adm.rocha seleciona Salvar usuário.<br>4. Reabrir op.lopes. | Passo 3 recusado; op.lopes mantém o nome anterior; nenhuma auditoria em nome de adm.rocha. |
 | CT-A024 | UC02 | FP1–FP6 / E3.1 | US002-CA1 | Falha do banco ao salvar o cadastro | adm.costa autenticado | Nome: Júlia Reis<br>Identificador: op.jreis<br>Senha inicial: Inicio#5555<br>Perfil: Operador de Solo/Rampa<br>Equipe: PAX | 1. Parar o banco do serviço no ambiente de teste.<br>2. Preencher e selecionar Salvar usuário.<br>3. Religar o banco e selecionar Salvar usuário de novo.<br>4. Buscar op.jreis. | Passo 2: mensagem de falha; nenhum usuário nem auditoria gravados. Passo 4: op.jreis criado uma única vez, ativo, com auditoria. |
