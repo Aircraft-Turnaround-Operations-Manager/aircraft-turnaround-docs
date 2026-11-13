@@ -14,6 +14,7 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 ### Adicionado
 
+- Blueprint do turnaround por serviço (`pesquisa/topicos/service-blueprint.md`): a revisão momento a momento que encontrou os cinco conflitos e levou à ADR-0015 existia só como página publicada, fora do repositório e do grafo. Agora fica versionada, com link na seção Ligações da ADR-0015 e no mapa da pesquisa, e mostra como aplicar as regras da ADR a casos que o blueprint não desenhou, como o RF-38 ([#184](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/184)).
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
 - ADR-0018, com a tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18. A ADR traz o motivo de cada escolha e mostra como o serviço segue o contrato da ADR-0016 (porta de entrada, REST, RabbitMQ com o envelope dos avisos, UTC, UUID e nomes em português). O índice das ADRs ganhou a linha D18 ([#159](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/159)).
 

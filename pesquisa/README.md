@@ -7,7 +7,7 @@ itens_template: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 areas: [A, B, C, D]
 decisoes: [D1, D2, D3, D4, D5, D6, D7, D8, D9]
 fontes: [1, 2, 4, 5, 7, 8, 9, 10, 11, 12, 15, 26, 27, 62]
-relacionados: [a-cdm, marcos-e-horarios, tolerancias-e-indicadores, previsibilidade-vs-velocidade, atividades-e-dependencias, caminho-critico, papeis-e-atores, codigos-de-atraso, referencias-iata, servicos-sob-demanda, similares, assaia, inform-groundstar, adb-safegate, veovo, sita, matriz-comparativa, lacunas-e-diferencial, metricas-item-1, impacto-por-item, insumos-rfs, insumos-rnfs, fontes]
+relacionados: [a-cdm, marcos-e-horarios, tolerancias-e-indicadores, previsibilidade-vs-velocidade, atividades-e-dependencias, caminho-critico, papeis-e-atores, codigos-de-atraso, referencias-iata, servicos-sob-demanda, service-blueprint, similares, assaia, inform-groundstar, adb-safegate, veovo, sita, matriz-comparativa, lacunas-e-diferencial, metricas-item-1, impacto-por-item, insumos-rfs, insumos-rnfs, fontes]
 status: vigente
 atualizado: 2026-10-10
 ---
@@ -77,6 +77,7 @@ As decisões D8 (siglas) e D9 (nome do coordenador) valem para **todos** os iten
 | [Códigos de atraso (P1.8)](topicos/codigos-de-atraso.md) | 2.8 | 2, 6, 7, 10 | B, D | D6 |
 | [Referências da IATA sobre ground handling (P1.9)](topicos/referencias-iata.md) | 2.9 | 3, 8 | — | D6 |
 | [Serviços sob demanda no turnaround](topicos/servicos-sob-demanda.md) | nova (10/10/2026) | 4, 6, 7, 10 | A, D | D1, D2, D3, D6, D7, D14 |
+| [Blueprint do turnaround por serviço](topicos/service-blueprint.md) | nova (30/10/2026) | 12, 13, 14 | A, B, C, D | D13, D14, D15, D16 |
 | [Similares de mercado — seleção (seção 3.1)](similares/README.md) | 3.1 | 3 | — | — |
 | [Ficha — Assaia (ApronAI e TurnaroundControl)](similares/assaia.md) | 3.2 | 3 | — | D7 |
 | [Ficha — INFORM GroundStar](similares/inform-groundstar.md) | 3.2 | 3 | — | — |
