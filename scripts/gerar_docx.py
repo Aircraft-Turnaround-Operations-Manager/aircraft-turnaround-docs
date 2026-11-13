@@ -4,6 +4,8 @@ Uso: python gerar_docx.py TEMPLATE.docx PASTA_ESPECIFICACAO SAIDA.docx [--manter
 Precisa de python-docx. O template (ESSW - Especificacao de Projeto - Template.docx) não fica no repositório.
 Figura PNG com um .svg de mesmo nome ao lado entra em SVG (vetorial no Word 2016+ e no PDF), com a PNG de reserva.
 A declaração de uso de IA vem de especificacao/00-*.md (ou de --ia=ARQUIVO) e entra antes do item 1, sem número.
+Item sem arquivo em especificacao/ sai do documento; com --manter-ra2, os itens 12 a 15 sem arquivo ficam com o texto do template.
+Depois do item 15 vêm os apêndices (apendice-*.md, em ordem: A matriz, B dicionário de dados) e as referências.
 Depois de gerar, abra o .docx no Word, atualize o sumário (F9) e exporte em PDF: o script não calcula páginas.
 """
 import copy, io, re, struct, sys
@@ -23,7 +25,8 @@ PRODUTO = 'Aircraft Turnaround Orchestration System'
 AUTORES = ['EDUARDO FABRI', 'JOÃO PEDRO CARDOSO DE LIZ', 'JOÃO VITOR CORREA OLIVEIRA', 'RODRIGO ALVES']
 ANO = '2026'
 LARGURA_CM, ALTURA_MAX_CM = 18.0, 22.0
-ITENS = ['01-*.md', '02-*.md', '03-*.md', '04-*.md', '05-*.md', '06-*', '07-*', '08-*', '09-*.md', '10-*', '11-*.md']
+ITENS = ['01-*.md', '02-*.md', '03-*.md', '04-*.md', '05-*.md', '06-*', '07-*', '08-*', '09-*.md', '10-*', '11-*.md',
+         '12-*.md', '13-*.md', '14-*', '15-*']
 INLINE = re.compile(r'(!\[[^\]]*\]\([^)]+\)|\*\*.+?\*\*|\*[^*\s](?:[^*]*[^*\s])?\*|`[^`]+`|\[[^\]]+\]\([^)]+\)|<br\s*/?>)')
 PROD = re.compile(r'^\*\*(NOME DO PRODUTO|PRODUTO):\*\*')
 
@@ -267,14 +270,20 @@ def num(txt):
 
 
 def por_numero(bls, prefixo):
-    """Itens 7 e 10: as seções '## USnnn'/'## UCnn' de todas as áreas ficam em ordem numérica (a área não define a ordem)."""
+    """Itens 7, 10, 14 e 15: as seções '## USnnn'/'## UCnn' de todas as áreas ficam em ordem numérica (a área não define
+    a ordem). Uma seção sem número (ex.: convenções de uma área) fica antes da seção numerada que a segue no arquivo."""
     i = next((k for k, b in enumerate(bls) if b[0] == 'h' and b[1] == 2 and b[2].startswith(prefixo)), len(bls))
     secs = []
     for b in bls[i:]:
         if b[0] == 'h' and b[1] <= 2: secs.append([b])
         else: secs[-1].append(b)
-    secs.sort(key=lambda s: num(s[0][2]) if s[0][1] == 2 and num(s[0][2]) is not None else 10 ** 6)
-    return bls[:i] + [b for s in secs for b in s]
+    chaves, prox = [], 10 ** 6
+    for s in reversed(secs):
+        n = num(s[0][2]) if s[0][1] == 2 else None
+        prox = n if n is not None else prox
+        chaves.append(n if n is not None else prox - 0.5)
+    ordem = sorted(zip(reversed(chaves), range(len(secs))))
+    return bls[:i] + [b for _, k in ordem for b in secs[k]]
 
 
 def tabela_unica(bls):
@@ -325,7 +334,7 @@ def carregar(pasta, padrao):
     n = padrao[:2]
     if n in ('06', '08'): bls = tabela_unica(bls)
     if n == '07': bls = estorias(por_numero(bls, 'US'))
-    if n == '10': bls = fontes_unidas(por_numero(bls, 'UC'))
+    if n in ('10', '14', '15'): bls = fontes_unidas(por_numero(bls, 'UC'))
     return bls
 
 
@@ -382,8 +391,8 @@ def main():
         e = cab.getnext()
         while e is not None and e is not fim:
             meio.append(e); e = e.getnext()
-        if k >= 11:  # itens 12 a 16 são do RA2
-            if not manter_ra2:
+        if k >= len(ITENS) or not list(pasta.glob(ITENS[k])):  # item ainda sem arquivo
+            if not (manter_ra2 and k >= 11):
                 for x in meio + [cab]: corpo.remove(x)
             continue
         pb = next((x for x in reversed(meio) if eh_pb(x)), None)
@@ -400,8 +409,9 @@ def main():
     ant = ancora.getprevious()
     if ant is None or not eh_pb(ant):
         p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE); ancora.addprevious(p._p)
-    ap = pasta / 'apendice-a-matriz-de-rastreabilidade.md'
-    if ap.exists():
+    for k, ap in enumerate(sorted(pasta.glob('apendice-*.md'))):  # A matriz, B dicionário de dados
+        if k:
+            p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE); ancora.addprevious(p._p)
         m.escrever(ancora, blocos(ler(ap), pasta), pasta, tam=7, h1=True, sem_num=True)
     fontes = pasta.parent / 'pesquisa' / 'fontes.md'
     if fontes.exists() and m.citadas:

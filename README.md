@@ -34,7 +34,7 @@ Antes de escrever qualquer parte da especificação, leia nesta ordem:
 ├── AGENTS.md                  regras para assistentes de IA (Codex, Copilot, Cursor e outros)
 ├── CLAUDE.md                  faz o Claude Code carregar o AGENTS.md e o CONTEXT.md
 │
-├── especificacao/             a entrega: itens 1 a 11 do template da disciplina e o Apêndice A
+├── especificacao/             a entrega: itens 1 a 15 do template da disciplina e os Apêndices A e B
 ├── entregas/                  plano de tarefas e critérios de aceite de cada entrega
 │
 ├── pesquisa/                  pesquisa do setor e de produtos similares, dividida por tema
@@ -69,17 +69,23 @@ especificacao/
 │   ├── 00-item.md + area-a.md … area-d.md
 │   └── prototipos/                  imagens dos protótipos de tela (uc-<área><n>-<tela>.png)
 ├── 11-diagrama-de-atividades.md
-├── apendice-a-matriz-de-rastreabilidade.md   gerado por script (ADR-0012)
+├── 12-modelo-de-dados.md
+├── 13-diagrama-de-classes.md
+├── 14-diagramas-de-sequencia/       00-item.md + area-a.md … area-d.md
+├── 15-casos-de-teste/               00-item.md + area-a.md … area-d.md
+├── apendice-a-matriz-de-rastreabilidade.md   gerado por script (ADR-0012 e ADR-0021)
+├── apendice-b-dicionario-de-dados.md         dicionário de dados do item 12
 └── diagramas/                       fonte e imagem exportada de cada diagrama
 ```
 
-- **Matriz de rastreabilidade (ADR-0012):** o documento tem o Apêndice A, gerado por `python scripts/gerar_matriz_rastreabilidade.py` a partir dos arquivos de área. Para o cruzamento funcionar, cada estória traz o RF no título, cada caso de uso cita os RFs que atende e cada RNF cita os RFs a que se aplica (por ID, faixa "RF-B1 a RF-B6" ou "todos os RFs"). Os arquivos de área não têm tabela "Base": a relação entre os artefatos fica só na matriz.
-- **Itens por integrante (6, 7, 8 e 10):** cada área edita **apenas o seu `area-x.md`**, assim não há conflito de merge. O `00-item.md` é da tarefa-mãe, que consolida.
+- **Matriz de rastreabilidade (ADR-0012, estendida pela ADR-0021):** o documento tem o Apêndice A, gerado por `python scripts/gerar_matriz_rastreabilidade.py` a partir dos arquivos de área. Para o cruzamento funcionar, cada estória traz o RF no título, cada caso de uso cita os RFs que atende e cada RNF cita os RFs a que se aplica (por ID, faixa "RF-B1 a RF-B6" ou "todos os RFs"). Os arquivos de área não têm tabela "Base": a relação entre os artefatos fica só na matriz. No RA2, a matriz também lê a tabela "Serviço | Tabela | RFs atendidos" do item 12, as legendas "Diagrama de Sequência do UCnn" do item 14 e os critérios de aceite (USnnn-CAn) citados na planilha do item 15; o formato está no comentário do `00-item.md` de cada item.
+- **Itens por integrante (6, 7, 8, 10, 14 e 15):** cada área edita **apenas o seu `area-x.md`**, assim não há conflito de merge. O `00-item.md` é da tarefa-mãe, que consolida.
 - **Tabelas dos itens 6 e 8:** cada `area-x.md` tem a tabela com o mesmo cabeçalho. Na consolidação, as 4 tabelas viram uma só. No item 6, a tabela do template ganha a coluna **OBJETIVO** (objetivo do item 1 que o RF atende), e a coluna **SPRINT** fica vazia até a consolidação: o grupo divide em sprints depois que todas as áreas definirem os RFs e os RNFs.
 - **Quantidade e numeração (ADR-0011):** cada área faz **no mínimo 4** RFs, estórias, RNFs e especificações de caso de uso, **sem máximo**. Durante a escrita, os IDs são provisórios por área: RF-A1, RF-A2…, US-A1 (mesmo número do RF), RNF-A1…, UC-A1…. No início da revisão cruzada (T12), um script renumera tudo em sequência (RF-1…RF-n, US001…, RNF-1…, UC01…), na ordem A, B, C, D, e registra a correspondência em `entregas/ra1-renumeracao.md`.
 - **Diagramas:** cada diagrama tem a fonte editável versionada ao lado das imagens exportadas (PNG e SVG), em `especificacao/diagramas/`, com o mesmo nome base.
   - **BPMN do item 4:** BPMN 2.0 (`.bpmn`, editável no bpmn.io ou no Camunda Modeler), porque Mermaid e PlantUML não têm notação BPMN (critério C04.1). `04-bpmn-to-be.bpmn` tem o processo principal e uma vista por subprocesso; `04-bpmn-to-be-geral.bpmn` tem o mesmo modelo na visão geral. As imagens são geradas por `node scripts/exportar_bpmn.mjs` (depois de `npm install --prefix scripts`) e a geometria é conferida por `python scripts/verificar_bpmn.py`.
   - **Casos de uso (item 9) e atividades (item 11):** draw.io (`.drawio`, editável no aplicativo ou em app.diagrams.net), com a posição de cada elemento definida à mão, porque o posicionamento automático do PlantUML deixava linhas cruzando e rótulos sobrepostos. O PNG e o SVG são gerados por `python scripts/exportar_drawio.py`. O item 9 é conferido contra as tabelas do item 10 por `python scripts/verificar_revisao.py`; a geometria do item 11 é conferida por `python scripts/verificar_drawio.py`.
+  - **Sequência (item 14):** PlantUML (`.puml`), escolhido na tarefa T02 ([#141](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/141), decisão B3). O mesmo caso de uso (UC32) foi desenhado em Mermaid e em PlantUML e comparado no PDF. O PlantUML tem a notação que os critérios C14.2, C14.3 e C14.7 pedem: ícones de ator, interface, controle e banco de dados, estereótipos, fragmento `ref` e fragmentos `alt` e `opt` com borda; no PDF, os dois saem em vetor. O Mermaid não desenha os ícones nem o `ref`, parte nomes longos no meio da palavra, trata o ponto e vírgula como fim de comando, sai cerca de 65% mais alto e, no PDF, perde a borda dos fragmentos, que ficam com a condição de guarda cortada pelas linhas de vida. O draw.io não foi preciso. Cada diagrama começa com `!include 14-sequencia-estilo.iuml` (estilo comum); as imagens são geradas por `python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-ucnn.puml`, que precisa de Java e do `plantuml.jar` (variável `PLANTUML_JAR`; testado com a versão 1.2024.3, a da extensão PlantUML do VS Code). Exemplo: [`14-sequencia-uc32.puml`](especificacao/diagramas/14-sequencia-uc32.puml). Ao ampliar, confira se uma condição de guarda longa não cruza a linha de vida do ator (Y.6).
 - **Comentários `<!-- ... -->`** nos arquivos ainda não preenchidos são orientações para quem escreve. Apague-os quando o item estiver pronto.
 - **Nome do produto:** sempre "Aircraft Turnaround Orchestration System", exatamente assim.
 

@@ -9,11 +9,11 @@ decisor: Rodrigo Alves
 itens_template: [6, 7, 8, 10]
 areas: [A, B, C, D]
 fontes: []
-relacionados: [adr-0011]
+relacionados: [adr-0011, adr-0021]
 ---
 # ADR-0012 — Matriz de rastreabilidade como apêndice gerado; sem tabelas de base nos arquivos de área
 
-- **Status:** aceita · **Data:** 07/10/2026 · **Decisor:** Rodrigo Alves
+- **Status:** aceita, complementada por [ADR-0021](0021-matriz-de-rastreabilidade-estendida.md) (matriz estendida aos itens 12, 14 e 15 no RA2) · **Data:** 07/10/2026 · **Decisor:** Rodrigo Alves
 
 ## Contexto
 
@@ -50,5 +50,5 @@ relacionados: [adr-0011]
 
 - **Itens da especificação:** [Item 6](../../especificacao/06-requisitos-funcionais/00-item.md), [Item 7](../../especificacao/07-estorias-de-usuario/00-item.md), [Item 8](../../especificacao/08-requisitos-nao-funcionais/00-item.md), [Item 10](../../especificacao/10-especificacoes-de-caso-de-uso/00-item.md), [Apêndice A](../../especificacao/apendice-a-matriz-de-rastreabilidade.md)
 - **Plano e critérios:** [ra1-tarefas](../../entregas/ra1-tarefas.md), [ra1-criterios-de-aceite](../../entregas/ra1-criterios-de-aceite.md)
-- **Outras decisões:** [D11](0011-minimo-por-integrante-e-numeracao-provisoria.md)
+- **Outras decisões:** [D11](0011-minimo-por-integrante-e-numeracao-provisoria.md), [D21](0021-matriz-de-rastreabilidade-estendida.md) (complementa esta)
 - **Índice das decisões:** [README.md](README.md) · **Contexto geral:** [CONTEXT.md](../../CONTEXT.md)

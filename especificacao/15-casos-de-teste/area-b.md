@@ -1,0 +1,1 @@
+<!-- Área B, serviço Execução em Solo (ADR-0015): casos de teste dos casos de uso UC12 a UC21 e UC37 e das estórias US012 a US021 e US044, 47 critérios de aceite (issue #153). Formato em 00-item.md. -->

@@ -2,20 +2,20 @@
 
 | UC | Nome | Ator | Relacionamentos | RF e estória |
 |---|---|---|---|---|
-| UC29 | Abrir exceção | Coordenador de Turnaround | «extend» UC31 | RF-36, US036 |
+| UC29 | Abrir exceção do turnaround | Coordenador de Turnaround | «extend» UC31 | RF-36, US036 |
 | UC30 | Reatribuir tarefa | Coordenador de Turnaround | «include» UC36; «extend» UC31 | RF-37, US037 |
-| UC31 | Registrar a ação tomada para o alerta | Coordenador de Turnaround | aberto a partir do UC26; estendido por UC29, UC30, UC34 e UC35 | RF-38, US038 |
-| UC32 | Confirmar a prontidão e liberar a aeronave | Autoridade de Liberação | — | RF-39, US039 |
+| UC31 | Registrar ação tomada para o alerta | Coordenador de Turnaround | aberto a partir do UC26; estendido por UC29, UC30, UC34 e UC35 | RF-38, US038 |
+| UC32 | Confirmar prontidão e liberar aeronave | Autoridade de Liberação | — | RF-39, US039 |
 | UC33 | Encerrar exceção do turnaround | Coordenador de Turnaround | — | RF-40, US040 |
-| UC34 | Atualizar o TOBT | Motor de Eventos, Coordenador de Turnaround | «extend» UC31 | RF-41, US041 |
+| UC34 | Atualizar TOBT | Motor de Eventos, Coordenador de Turnaround | «extend» UC31 | RF-41, US041 |
 | UC35 | Replanejar tarefas não iniciadas do turnaround | Coordenador de Turnaround | «include» UC21; «extend» UC31 | RF-42, US042 |
-| UC36 | Consultar os operadores disponíveis da equipe | Coordenador de Turnaround | incluído por UC30 | RF-43, US043 |
+| UC36 | Consultar operadores disponíveis da equipe | Coordenador de Turnaround | incluído por UC30 | RF-43, US043 |
 
-## UC29 – Abrir exceção
+## UC29 – Abrir exceção do turnaround
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC29 – Abrir exceção |
+| **Nome do caso de uso** | UC29 – Abrir exceção do turnaround |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround abre uma exceção em um turnaround, informando a tarefa afetada, a causa pelo código da tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] e uma descrição. O turnaround passa para o estado "Em exceção" e não pode ser liberado enquanto a exceção não for encerrada (UC33). Pode ser executado a partir do registro da ação de um alerta (UC31). Atende ao RF-36 e à US036. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está no estado "Em solo", "Operações em andamento", "Pronto para liberação" ou "Em exceção". |
@@ -171,11 +171,11 @@
 |  | E5.1. Quando a conexão volta e o registro chega ao servidor, o sistema o recusa, e a tarefa não muda de estado. |
 |  | E5.2. O operador original recebe o aviso da recusa com o motivo (RNF-8). |
 
-## UC31 – Registrar a ação tomada para o alerta
+## UC31 – Registrar ação tomada para o alerta
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC31 – Registrar a ação tomada para o alerta |
+| **Nome do caso de uso** | UC31 – Registrar ação tomada para o alerta |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O Coordenador de Turnaround registra, para um alerta aberto, a ação que tomou: reatribuir tarefa, replanejar, atualizar a previsão ou abrir exceção. O registro grava o autor e o horário e encerra o alerta, de modo que todo alerta tenha uma resposta e que se possa medir o tempo entre o alerta e a ação. É aberto a partir da lista de alertas (UC26). É estendido pelos casos de uso UC29, UC30, UC34 e UC35, que executam a ação escolhida. Atende ao RF-38 e à US038. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. Há um alerta aberto, emitido pelo Motor de Eventos (UC25). |
@@ -259,11 +259,11 @@
 |---|---|
 |  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados e não grava outro registro no alerta. |
 
-## UC32 – Confirmar a prontidão e liberar a aeronave
+## UC32 – Confirmar prontidão e liberar aeronave
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC32 – Confirmar a prontidão e liberar a aeronave |
+| **Nome do caso de uso** | UC32 – Confirmar prontidão e liberar aeronave |
 | **Ator(es)** | Autoridade de Liberação |
 | **Descrição** | A Autoridade de Liberação consulta as condições de um turnaround no estado "Pronto para liberação" e confirma a prontidão da aeronave. O sistema grava o horário real de prontidão (ARDT) [2] e a decisão, com o autor e o horário, e o turnaround passa para "Liberado". A confirmação é recusada enquanto houver tarefa obrigatória pendente ou exceção aberta. Atende ao RF-39 e à US039. |
 | **Pré-condições** | 1. A Autoridade de Liberação está autenticada com o perfil de autoridade de liberação.<br>2. O turnaround é de uma aeronave da companhia aérea que ela representa (ADR-0004). |
@@ -387,11 +387,11 @@
 |---|---|
 |  | E2.1. O sistema informa que a exceção já foi encerrada, mostra a solução, o usuário e o horário gravados e não grava outro registro. |
 
-## UC34 – Atualizar o TOBT
+## UC34 – Atualizar TOBT
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC34 – Atualizar o TOBT |
+| **Nome do caso de uso** | UC34 – Atualizar TOBT |
 | **Ator(es)** | Motor de Eventos, Coordenador de Turnaround |
 | **Descrição** | Quando a projeção de prontidão se afasta 5 minutos ou mais do TOBT vigente, para mais ou para menos, o Motor de Eventos solicita ao Coordenador de Turnaround a atualização do TOBT. O Coordenador de Turnaround informa o novo valor, e o sistema grava o valor anterior, o novo, o autor e o horário. Assim a previsão de prontidão continua confiável para quem depende dela. Pode ser executado a partir do registro da ação de um alerta (UC31). Atende ao RF-41 e à US041. |
 | **Pré-condições** | 1. O turnaround está aberto e ainda não está "Liberado", com TOBT planejado e TOBT vigente.<br>2. O Motor de Eventos recalculou a projeção de prontidão (UC24).<br>3. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |
@@ -594,11 +594,11 @@
 |  | E7.1. O sistema recusa a alteração ou inclusão, identifica a referência inválida e preserva o plano sem gravar a mudança (RF-42). |
 |  | E7.2. O caso de uso volta ao formulário para corrigir as referências. |
 
-## UC36 – Consultar os operadores disponíveis da equipe
+## UC36 – Consultar operadores disponíveis da equipe
 
 | Campo | |
 |---|---|
-| **Nome do caso de uso** | UC36 – Consultar os operadores disponíveis da equipe |
+| **Nome do caso de uso** | UC36 – Consultar operadores disponíveis da equipe |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | Ao reatribuir uma tarefa, o Coordenador de Turnaround consulta a lista dos operadores da mesma equipe da tarefa que estão disponíveis, ordenada pelo tempo desde a última tarefa concluída por cada um, para escolher rapidamente quem recebe a tarefa. É incluído pelo caso de uso UC30. Atende ao RF-43 e à US043. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador e iniciou a reatribuição de uma tarefa (UC30).<br>2. A tarefa tem uma equipe ou especialidade, e os operadores têm a equipe no cadastro, mantido pelo Administrador do Sistema (ADR-0010). |

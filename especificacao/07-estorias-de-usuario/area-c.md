@@ -1,4 +1,4 @@
-## US022 – REQUISITO RF-22: Recalcular a projeção de prontidão
+## US022 – REQUISITO RF-22: Recalcular projeção de prontidão
 
 **COMO:** Motor de Eventos
 **POSSO:** recalcular a projeção de prontidão do turnaround a cada registro de tarefa, a cada alteração do plano, a cada atualização do horário-alvo de prontidão (TOBT) [2] vigente, a cada correção da chegada à posição e a cada minuto
@@ -58,7 +58,7 @@
 | 3 | **DADO QUE:** o PR-GTA está no painel <br> **QUANDO:** o turnaround do PR-GTA passa para o estado "Fora de bloco" <br> **ENTÃO:** o PR-GTA sai do painel, sem que eu recarregue a página |
 | 4 | **DADO QUE:** um turnaround foi aberto e a aeronave ainda não chegou à posição <br> **QUANDO:** abro o painel <br> **ENTÃO:** o turnaround aparece na lista com o horário estimado de chegada à posição (EIBT) no lugar do estado |
 
-## US026 – REQUISITO RF-26: Consultar a linha do tempo do turnaround
+## US026 – REQUISITO RF-26: Consultar linha do tempo do turnaround
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** abrir, a partir do painel, a linha do tempo de um turnaround, com as tarefas, os horários planejados e os reais ou projetados, os atrasos, o caminho crítico, as tarefas impactadas e os marcos já registrados
@@ -102,7 +102,7 @@
 | 3 | **DADO QUE:** o Coordenador de Turnaround registrou a ação do alerta anterior do PR-XMA (RF-38) e depois a projeção voltou para 10:35 <br> **QUANDO:** um novo recálculo leva a projeção para 10:37 <br> **ENTÃO:** o sistema emite um novo alerta crítico com a projeção 10:37 e o desvio de 7 minutos |
 | 4 | **DADO QUE:** o PR-GTA tem TOBT planejado 10:45 <br> **QUANDO:** o recálculo leva a projeção para 10:50 <br> **ENTÃO:** o sistema não emite alerta, porque a projeção está até 5 minutos depois do TOBT planejado |
 
-## US029 – REQUISITO RF-29: Verificar a viabilidade do turnaround
+## US029 – REQUISITO RF-29: Verificar viabilidade do turnaround
 
 **COMO:** Motor de Eventos
 **POSSO:** verificar, antes da chegada da aeronave à posição, se o EIBT somado ao tempo mínimo de turnaround (MTTT) fica depois do TOBT vigente
@@ -144,7 +144,7 @@
 | 2 | **DADO QUE:** o TOBT vigente do PR-XMA é 10:30 <br> **QUANDO:** às 10:35:59 o ARDT ainda não foi registrado <br> **ENTÃO:** o sistema ainda não emite o alerta, porque os minutos são contados completos [3] |
 | 3 | **DADO QUE:** o TOBT vigente do PR-XMA é 10:30 <br> **QUANDO:** a Autoridade de Liberação registra o ARDT às 10:33 <br> **ENTÃO:** o sistema não emite o alerta de prontidão não registrada para o PR-XMA |
 
-## US032 – REQUISITO RF-32: Exibir o aviso de checagem em TOBT − 15
+## US032 – REQUISITO RF-32: Exibir aviso de checagem em TOBT − 15
 
 **COMO:** Motor de Eventos
 **POSSO:** exibir ao Coordenador de Turnaround, 15 minutos antes do TOBT vigente, um aviso de checagem com as tarefas obrigatórias não concluídas e as equipes responsáveis
@@ -159,7 +159,7 @@
 | 3 | **DADO QUE:** o aviso de checagem do PR-YRB foi exibido <br> **QUANDO:** o Coordenador de Turnaround consulta a lista de alertas e o painel <br> **ENTÃO:** o aviso não aparece na lista de alertas e não muda a cor do PR-YRB no painel |
 | 4 | **DADO QUE:** o TOBT vigente do PR-YRB passa de 11:00 para 11:10 antes das 10:45 <br> **QUANDO:** o relógio chega a 10:45 <br> **ENTÃO:** o sistema não exibe o aviso às 10:45 e o exibe às 10:55 |
 
-## US033 – REQUISITO RF-33: Consultar a lista de alertas abertos
+## US033 – REQUISITO RF-33: Consultar lista de alertas abertos
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** consultar a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, a tarefa, o horário de emissão, o tempo decorrido e a classificação
@@ -174,7 +174,7 @@
 | 3 | **DADO QUE:** o alerta mais antigo da lista está aberto <br> **QUANDO:** registro a ação tomada para ele (RF-38) <br> **ENTÃO:** o alerta sai da lista e os demais continuam |
 | 4 | **DADO QUE:** não há alerta aberto em nenhum turnaround <br> **QUANDO:** abro a lista de alertas <br> **ENTÃO:** o sistema exibe a mensagem "Nenhum alerta aberto" |
 
-## US034 – REQUISITO RF-34: Consultar os indicadores de aderência
+## US034 – REQUISITO RF-34: Consultar indicadores de aderência
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** consultar, para um período escolhido, os indicadores de aderência dos turnarounds encerrados nele, cada um com numerador e denominador
@@ -190,7 +190,7 @@
 | 4 | **DADO QUE:** nenhum turnaround chegou a "Fora de bloco" entre 08/10/2026 e 09/10/2026 <br> **QUANDO:** consulto os indicadores desse período <br> **ENTÃO:** o sistema informa que não há turnarounds encerrados no período e não exibe percentuais |
 | 5 | **DADO QUE:** informei a data de início 07/10/2026 e a data de fim 01/10/2026 <br> **QUANDO:** peço os indicadores <br> **ENTÃO:** o sistema recusa o período, informa que a data de fim deve ser igual ou posterior à de início e não calcula os indicadores |
 
-## US035 – REQUISITO RF-35: Registrar a checagem com as equipes
+## US035 – REQUISITO RF-35: Registrar checagem com as equipes
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** registrar que fiz a checagem com as equipes de um aviso de TOBT − 15 aberto

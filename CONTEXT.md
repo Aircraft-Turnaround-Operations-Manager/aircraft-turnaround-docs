@@ -4,7 +4,7 @@ titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
 atualizado: 2026-10-10
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016]
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0021, adr-0022]
 ---
 # Contexto do projeto
 
@@ -77,6 +77,8 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D14 | **Serviços sob demanda:** catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround com o turnaround em andamento; o atraso conta na meta de 80% | [0014](docs/adr/0014-servicos-sob-demanda.md) |
 | D15 | **Quatro microsserviços:** Cadastro e Planejamento, Execução em Solo, Monitoramento, Exceções e Liberação; tarefa e estado do turnaround na Execução em Solo; só o dono do dado decide | [0015](docs/adr/0015-divisao-em-microsservicos.md) |
 | D16 | **Contrato entre os serviços** (votação do grupo, provisório): porta de entrada que consulta o Cadastro a cada ação; REST entre serviços; RabbitMQ com envelope comum dos avisos; horários em UTC; UUID; nomes em português | [0016](docs/adr/0016-contrato-entre-os-servicos.md) |
+| D21 | **Matriz estendida** aos itens 12, 14 e 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste); complementa a D12 | [0021](docs/adr/0021-matriz-de-rastreabilidade-estendida.md) |
+| D22 | **Casos de teste com ID provisório por área** (CT-A001…) e renumeração única (CT-001…) por script na consolidação; complementa a D11 | [0022](docs/adr/0022-ids-provisorios-dos-casos-de-teste.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
