@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-11-03
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, mapa-pesquisa]
+atualizado: 2026-11-13
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0021, adr-0022, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -22,12 +22,14 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0008](0008-siglas-a-cdm-com-nome-em-portugues.md) | D8 | Siglas do A-CDM com nome em português; vale para toda sigla, inclusive órgãos e normas | todos |
 | [0009](0009-nome-coordenador-de-turnaround.md) | D9 | Nome único: Coordenador de Turnaround | todos |
 | [0010](0010-administrador-usuario-e-equipe-do-operador.md) | D10 | Administrador do Sistema como ator; ator abstrato Usuário; equipe do operador como dado (complementa a 0004) | 5, 6, 7, 9, 10 |
-| [0011](0011-minimo-por-integrante-e-numeracao-provisoria.md) | D11 | Mínimo de 4 por integrante, sem máximo; numeração provisória por área e renumeração única no T12 | 6, 7, 8, 9, 10 |
-| [0012](0012-matriz-de-rastreabilidade.md) | D12 | Matriz de rastreabilidade como apêndice gerado por script; sem tabelas "Base" nos arquivos de área | 6, 7, 8, 10 |
+| [0011](0011-minimo-por-integrante-e-numeracao-provisoria.md) | D11 | Mínimo de 4 por integrante, sem máximo; numeração provisória por área e renumeração única no T12 (complementada pela 0022) | 6, 7, 8, 9, 10 |
+| [0012](0012-matriz-de-rastreabilidade.md) | D12 | Matriz de rastreabilidade como apêndice gerado por script; sem tabelas "Base" nos arquivos de área (complementada pela 0021) | 6, 7, 8, 10 |
 | [0013](0013-chegada-registrada-pelo-operador.md) | D13 | Chegada à posição (AIBT) registrada direto pelo operador, sem confirmação; o Coordenador de Turnaround pode corrigir | 6, 7, 10 |
 | [0014](0014-servicos-sob-demanda.md) | D14 | Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround; o atraso conta na meta de 80% | 6, 7, 10 |
 | [0015](0015-divisao-em-microsservicos.md) | D15 | Quatro microsserviços, com a tarefa e o estado do turnaround na Execução em Solo; avisos pela mensageria e pedidos em chamada direta | 12, 13, 14 |
 | [0016](0016-contrato-entre-os-servicos.md) | D16 | Contrato comum entre os serviços, votado pelo grupo: REST, RabbitMQ, envelope dos avisos, UTC, UUID e nomes em português; base provisória do RA2 | 12, 13, 14, 15 |
+| [0021](0021-matriz-de-rastreabilidade-estendida.md) | D21 | Matriz de rastreabilidade estendida aos itens 12, 14 e 15: RF → tabelas, caso de uso → diagrama de sequência, critério de aceite → casos de teste (complementa a 0012) | 12, 14, 15 |
+| [0022](0022-ids-provisorios-dos-casos-de-teste.md) | D22 | Casos de teste com ID provisório por área (CT-A001…) e renumeração única (CT-001…) na consolidação (complementa a 0011) | 15 |
 
 ---
 
