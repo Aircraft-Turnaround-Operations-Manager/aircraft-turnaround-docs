@@ -67,6 +67,7 @@ relacionados: [adr-0004, adr-0012, adr-0013, adr-0014]
 
 ## Ligações
 
+- **Material de construção:** [Blueprint do turnaround por serviço](../../pesquisa/topicos/service-blueprint.md), a revisão momento a momento citada no Contexto ([versão interativa](https://claude.ai/artifact/8sGNer92aRqri469tj5i7V))
 - **Contexto geral:** [CONTEXT.md](../../CONTEXT.md)
 - **Critérios do RA2:** [entregas/ra2-criterios-de-aceite.md](../../entregas/ra2-criterios-de-aceite.md)
 - **Matriz de rastreabilidade:** [ADR-0012](0012-matriz-de-rastreabilidade.md)
