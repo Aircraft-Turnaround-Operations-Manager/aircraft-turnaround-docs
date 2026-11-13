@@ -15,6 +15,7 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 ### Adicionado
 
 - Este `CHANGELOG.md` e a regra 10 do `AGENTS.md`: a partir do RA2, cada PR registra aqui o que mudou e por quê, para que quem ler a especificação pronta consiga reconstruir o caminho até ela ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
+- ADR-0018, com a tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18. A ADR traz o motivo de cada escolha e mostra como o serviço segue o contrato da ADR-0016 (porta de entrada, REST, RabbitMQ com o envelope dos avisos, UTC, UUID e nomes em português). O índice das ADRs ganhou a linha D18 ([#159](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/159)).
 
 - Releases automáticas: ao enviar uma tag `vX.Y.Z`, o `.github/workflows/release.yml` cria a release do GitHub com a seção da versão neste arquivo e o PDF daquela entrega anexado. Antes, as tags e as releases dependiam de alguém lembrar de criá-las à mão, e as do RA1 nunca foram criadas. As tags `v1.0.0`, `v1.1.0` e `v1.1.1` foram criadas depois, nos commits que geraram os PDFs, e as releases delas vieram da mesma automação, rodada à mão ([#169](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/169)).
 

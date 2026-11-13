@@ -4,7 +4,7 @@ titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
 atualizado: 2026-11-13
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0020, adr-0021, adr-0022, mapa-pesquisa]
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0018, adr-0020, adr-0021, adr-0022, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -28,6 +28,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0014](0014-servicos-sob-demanda.md) | D14 | Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround; o atraso conta na meta de 80% | 6, 7, 10 |
 | [0015](0015-divisao-em-microsservicos.md) | D15 | Quatro microsserviços, com a tarefa e o estado do turnaround na Execução em Solo; avisos pela mensageria e pedidos em chamada direta | 12, 13, 14 |
 | [0016](0016-contrato-entre-os-servicos.md) | D16 | Contrato comum entre os serviços, votado pelo grupo: REST, RabbitMQ, envelope dos avisos, UTC, UUID e nomes em português; base provisória do RA2 | 12, 13, 14, 15 |
+| [0018](0018-tecnologia-execucao-em-solo.md) | D18 | Tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18, seguindo o contrato da 0016 | 12, 14 |
 | [0020](0020-tecnologia-excecoes-e-liberacao.md) | D20 | Tecnologia do serviço Exceções e Liberação: C# com .NET 10, ASP.NET Core 10 e PostgreSQL 18, seguindo o contrato da 0016 | 12, 14 |
 | [0021](0021-matriz-de-rastreabilidade-estendida.md) | D21 | Matriz de rastreabilidade estendida aos itens 12, 14 e 15: RF → tabelas, caso de uso → diagrama de sequência, critério de aceite → casos de teste (complementa a 0012) | 12, 14, 15 |
 | [0022](0022-ids-provisorios-dos-casos-de-teste.md) | D22 | Casos de teste com ID provisório por área (CT-A001…) e renumeração única (CT-001…) na consolidação (complementa a 0011) | 15 |
