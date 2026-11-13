@@ -1,6 +1,6 @@
 # APÊNDICE A — MATRIZ DE RASTREABILIDADE
 
-A matriz cruza os requisitos funcionais (item 6) com os objetivos (item 1), os atores (item 5), as estórias de usuário (item 7), os casos de uso (itens 9 e 10) e os requisitos não funcionais (item 8). Ela mostra que todo requisito funcional atende a um objetivo e tem estória e caso de uso, e que todo requisito não funcional se aplica a requisitos funcionais definidos (ADR-0012). Ela também liga cada requisito funcional às tabelas do modelo de dados (item 12), cada caso de uso aos seus diagramas de sequência (item 14) e cada critério de aceite das estórias aos casos de teste que o verificam (item 15).
+A matriz cruza os requisitos funcionais (item 6) com os objetivos (item 1), os atores (item 5), as estórias de usuário (item 7), os casos de uso (itens 9 e 10) e os requisitos não funcionais (item 8). Ela mostra que todo requisito funcional atende a um objetivo e tem estória e caso de uso, e que todo requisito não funcional se aplica a requisitos funcionais definidos (ADR-0012). Ela também liga cada requisito funcional às tabelas do modelo de dados (item 12), cada caso de uso aos seus diagramas de sequência (item 14) e cada critério de aceite das estórias aos casos de teste que o verificam (item 15) (ADR-0021).
 
 As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabilidade.py` a partir dos arquivos de área. Não edite o trecho entre os marcadores: altere os requisitos, as estórias, os casos de uso, o modelo de dados, os diagramas de sequência ou os casos de teste e rode o script de novo.
 

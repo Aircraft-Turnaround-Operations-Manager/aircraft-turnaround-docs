@@ -1,7 +1,7 @@
-"""Gera a matriz de rastreabilidade (ADR-0012) a partir dos arquivos de área.
+"""Gera a matriz de rastreabilidade (ADR-0012 e ADR-0021) a partir dos arquivos de área.
 
 Uso, na raiz do repositório:  python scripts/gerar_matriz_rastreabilidade.py
-Lê os itens 6, 7, 8 e 10 (area-a.md … area-d.md) e, no RA2 (decisão B5), a tabela
+Lê os itens 6, 7, 8 e 10 (area-a.md … area-d.md) e, no RA2 (decisão B5, ADR-0021), a tabela
 "Serviço | Tabela | RFs atendidos" do item 12, as legendas "Diagrama de Sequência do UCnn" do
 item 14 e a coluna "Estória e critério de aceite" (USnnn-CAn) da planilha do item 15. Reescreve o
 trecho entre os marcadores de especificacao/apendice-a-matriz-de-rastreabilidade.md.
