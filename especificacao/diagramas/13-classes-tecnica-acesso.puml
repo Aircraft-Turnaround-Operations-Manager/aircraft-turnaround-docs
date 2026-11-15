@@ -23,6 +23,11 @@ restore cadastro.EquipeRepository
 restore cadastro.ExecucaoEmSoloCliente
 restore cadastro.TarefaResumo
 restore cadastro.OperadorAtivo
+restore cadastro.UsuarioResumo
+restore cadastro.NomeUsuario
+restore cadastro.TokenAcesso
+restore cadastro.RotinaAnonimizacaoUsuarios
+restore cadastro.CompanhiaController
 restore execucao.TarefaController
 restore execucao.CadastroCliente
 restore execucao.OperadorAtivo

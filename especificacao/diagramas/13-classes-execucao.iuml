@@ -200,6 +200,7 @@ namespace execucao {
     - matricula: String
     - posicao: String
     - permiteComPassageiros: Boolean
+    - politicaVersao: Integer [0..1]
     - tarefas: List<TarefaPlanejada>
   }
 

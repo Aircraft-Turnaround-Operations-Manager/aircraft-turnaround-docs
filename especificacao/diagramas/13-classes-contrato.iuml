@@ -45,8 +45,8 @@ namespace contrato {
   class Acesso <<dto>> {
     - usuarioId: UUID
     - perfil: Perfil
-    - equipeId: UUID
-    - companhiaId: UUID
+    - equipeId: UUID [0..1]
+    - companhiaId: UUID [0..1]
     + permite(perfilExigido: Perfil): Boolean
   }
 
@@ -65,12 +65,14 @@ namespace contrato {
 
   class PortaDeEntrada <<gateway>> {
     - rotas: List<String>
-    + encaminhar(sessaoId: UUID, rota: String, corpo: String): String
-    - verificarAcesso(sessaoId: UUID): Acesso
+    + encaminhar(sessaoId: UUID, rota: String, corpo: String, acaoDoUsuario: Boolean): String
+    + entrar(identificadorAcesso: String, senha: String): String
+    - verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso
   }
 
   contrato.PortaDeEntrada ..> contrato.Acesso
   contrato.PortaDeEntrada ..> cadastro.AcessoController
+  contrato.PortaDeEntrada ..> cadastro.AutenticacaoController
 }
 
 namespace comum {

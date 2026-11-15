@@ -1,6 +1,10 @@
 ' Item 13 (T13, issue #145) — serviço Cadastro e Planejamento (ADR-0015): classes de negócio das 15 tabelas do
 ' Apêndice B.1 e classes técnicas dos casos de uso UC01 a UC11. Fonte única; as vistas 13-classes-*.puml incluem este
 ' arquivo. Dentro do serviço, a referência é pelo tipo; para outro serviço, pelo identificador (UUID), sem classe.
+' Plano confirmado: toda mudança (aplicar modelo, responsáveis, dependências) trava o plano (buscarComTrava) e reenvia o
+' plano à Execução em Solo (receberPlano) antes de gravar; a Execução em Solo recusa depois do primeiro início (ADR-0015,
+' regra 5) e, na recusa ou na falha, nada é gravado. A entrada pela classe de negócio ignora identificador, autor,
+' horários e senhaHash, que o servidor define.
 
 namespace cadastro {
 
@@ -118,7 +122,7 @@ namespace cadastro {
     - criadoEm: DateTime
     - aobt: DateTime [0..1]
     + atualizarPrevisao(eibt: DateTime, mtttMin: Integer): void
-    + registrarAobt(aobt: DateTime): void
+    + aplicarAobt(aobt: DateTime): void
   }
 
   class Plano <<entity>> {
@@ -194,51 +198,64 @@ namespace cadastro {
   }
 
   class UsuarioView <<boundary>> {
+    + abrirLista(): void
+    + abrirUsuario(usuarioId: UUID): void
     + salvarUsuario(dados: Usuario, senhaInicial: String): void
     + desativarUsuario(usuarioId: UUID): void
   }
 
   class EquipeView <<boundary>> {
+    + abrirLista(): void
     + salvarEquipe(dados: Equipe): void
     + desativarEquipe(equipeId: UUID): void
   }
 
   class TurnaroundView <<boundary>> {
+    + novoTurnaround(): void
+    + abrirPrevisao(turnaroundId: UUID): void
     + abrirTurnaround(dados: Turnaround): void
     + salvarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
   }
 
   class ModeloTarefaView <<boundary>> {
+    + abrirModelos(): void
+    + abrirTarefa(modeloId: UUID, tarefaModeloId: UUID): void
     + salvarModelo(dados: ModeloTarefa): void
-    + salvarPontos(tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>): void
-    + salvarDependencias(tarefaModeloId: UUID, predecessoraIds: List<UUID>): void
+    + salvarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>): void
+    + salvarDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>): void
   }
 
   class PlanoView <<boundary>> {
+    + abrirPlanejamento(turnaroundId: UUID): void
+    + abrirAplicarModelo(turnaroundId: UUID): void
+    + selecionarModelo(modeloId: UUID): void
     + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean): void
-    + salvarDependencias(tarefaPlanoId: UUID, predecessoraIds: List<UUID>): void
+    + salvarDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>): void
     + confirmarPlano(turnaroundId: UUID, tarefas: List<TarefaPlano>): void
   }
 
   class PoliticaAbastecimentoView <<boundary>> {
+    + abrir(companhiaId: UUID): void
     + confirmarPolitica(companhiaId: UUID, permiteComPassageiros: Boolean): void
   }
 
   ' ---------- controle (REST, chamado pela porta de entrada ou por outro serviço) ----------
 
   class AcessoController <<control>> {
-    + verificarAcesso(sessaoId: UUID): Acesso
+    + verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso
   }
 
   class AutenticacaoController <<control>> {
-    + autenticar(identificadorAcesso: String, senha: String): Sessao
+    + autenticar(identificadorAcesso: String, senha: String): TokenAcesso
   }
 
   class UsuarioController <<control>> {
-    + listar(acesso: Acesso): List<Usuario>
-    + criar(dados: Usuario, senhaInicial: String, acesso: Acesso): Usuario
-    + alterar(usuarioId: UUID, dados: Usuario, acesso: Acesso): Usuario
+    + listar(acesso: Acesso): List<UsuarioResumo>
+    + consultar(usuarioId: UUID, acesso: Acesso): UsuarioResumo
+    + criar(dados: Usuario, senhaInicial: String, acesso: Acesso): UsuarioResumo
+    + alterar(usuarioId: UUID, dados: Usuario, acesso: Acesso): UsuarioResumo
     + desativar(usuarioId: UUID, acesso: Acesso): void
+    + listarNomes(usuarioIds: List<UUID>, acesso: Acesso): List<NomeUsuario>
   }
 
   class EquipeController <<control>> {
@@ -264,15 +281,16 @@ namespace cadastro {
     + listar(acesso: Acesso): List<ModeloTarefa>
     + listarCompativeis(turnaroundId: UUID, acesso: Acesso): List<ModeloTarefa>
     + criar(dados: ModeloTarefa, acesso: Acesso): ModeloTarefa
-    + configurarPontos(tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, acesso: Acesso): TarefaModelo
-    + definirDependencias(tarefaModeloId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaModelo
+    + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, acesso: Acesso): TarefaModelo
+    + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaModelo
   }
 
   class PlanoController <<control>> {
     + consultar(turnaroundId: UUID, acesso: Acesso): Plano
     + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean, acesso: Acesso): Plano
-    + definirDependencias(tarefaPlanoId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaPlano
+    + definirDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaPlano
     + confirmar(turnaroundId: UUID, tarefas: List<TarefaPlano>, acesso: Acesso): Plano
+    + listarOperadoresAtivos(equipeId: UUID, acesso: Acesso): List<OperadorAtivo>
   }
 
   class PoliticaAbastecimentoController <<control>> {
@@ -283,30 +301,39 @@ namespace cadastro {
 
   ' ---------- serviço (regras de negócio) ----------
 
+  ' verificarAcesso encerra a sessão vencida; só a ação do usuário a renova (RNF-5).
   class AutenticacaoService <<service>> {
     - usuarios: UsuarioRepository
     - falhas: FalhaLoginRepository
     - sessoes: SessaoRepository
-    + autenticar(identificadorAcesso: String, senha: String, momento: DateTime): Sessao
-    + verificarAcesso(sessaoId: UUID, momento: DateTime): Acesso
+    - auditoria: AuditoriaService
+    - inatividadeMin: Integer
+    + autenticar(identificadorAcesso: String, senha: String, momento: DateTime): TokenAcesso
+    + verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean, momento: DateTime): Acesso
     - registrarFalha(usuario: Usuario, momento: DateTime): void
+    - emitirToken(sessao: Sessao): TokenAcesso
   }
 
   class UsuarioService <<service>> {
     - usuarios: UsuarioRepository
     - equipes: EquipeRepository
+    - companhias: CompanhiaRepository
+    - planos: PlanoRepository
     - execucao: ExecucaoEmSoloCliente
     - auditoria: AuditoriaService
-    + listar(): List<Usuario>
-    + criar(dados: Usuario, senhaInicial: String, autorId: UUID): Usuario
-    + alterar(usuarioId: UUID, dados: Usuario, autorId: UUID): Usuario
+    + listar(): List<UsuarioResumo>
+    + consultar(usuarioId: UUID): UsuarioResumo
+    + criar(dados: Usuario, senhaInicial: String, autorId: UUID): UsuarioResumo
+    + alterar(usuarioId: UUID, dados: Usuario, autorId: UUID): UsuarioResumo
     + desativar(usuarioId: UUID, autorId: UUID): void
+    + listarNomes(usuarioIds: List<UUID>): List<NomeUsuario>
     + anonimizarVencidos(momento: DateTime): void
   }
 
   class EquipeService <<service>> {
     - equipes: EquipeRepository
     - usuarios: UsuarioRepository
+    - planos: PlanoRepository
     - execucao: ExecucaoEmSoloCliente
     - auditoria: AuditoriaService
     + listar(): List<Equipe>
@@ -326,7 +353,7 @@ namespace cadastro {
     + consultar(turnaroundId: UUID): Turnaround
     + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date): Turnaround
     + atualizarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer, autorId: UUID): Turnaround
-    + registrarAobt(turnaroundId: UUID, aobt: DateTime): void
+    + aplicarAobt(turnaroundId: UUID, aobt: DateTime): void
   }
 
   class ModeloTarefaService <<service>> {
@@ -337,8 +364,9 @@ namespace cadastro {
     + listar(): List<ModeloTarefa>
     + listarCompativeis(turnaroundId: UUID): List<ModeloTarefa>
     + criar(dados: ModeloTarefa, autorId: UUID): ModeloTarefa
-    + configurarPontos(tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, autorId: UUID): TarefaModelo
-    + definirDependencias(tarefaModeloId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaModelo
+    + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, autorId: UUID): TarefaModelo
+    + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaModelo
+    - conferirDependencias(modelo: ModeloTarefa): void
   }
 
   class PlanoService <<service>> {
@@ -352,10 +380,13 @@ namespace cadastro {
     - auditoria: AuditoriaService
     + consultar(turnaroundId: UUID): Plano
     + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean, autorId: UUID): Plano
-    + definirDependencias(tarefaPlanoId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaPlano
+    + definirDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaPlano
     + confirmar(turnaroundId: UUID, tarefas: List<TarefaPlano>, autorId: UUID): Plano
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
     - conferirDependencias(plano: Plano): void
     - conferirPolitica(plano: Plano): void
+    - conferirEquipesAtivas(modelo: ModeloTarefa): void
+    - enviarPlano(plano: Plano): void
   }
 
   class PoliticaAbastecimentoService <<service>> {
@@ -410,7 +441,6 @@ namespace cadastro {
 
   interface ModeloTarefaRepository <<repository>> {
     + buscarPorId(id: UUID): ModeloTarefa
-    + buscarTarefa(tarefaModeloId: UUID): TarefaModelo
     + listar(): List<ModeloTarefa>
     + listarCompativeis(tipoAeronave: String, tipoServico: String): List<ModeloTarefa>
     + salvar(modelo: ModeloTarefa): void
@@ -418,7 +448,9 @@ namespace cadastro {
 
   interface PlanoRepository <<repository>> {
     + buscarPorTurnaround(turnaroundId: UUID): Plano
-    + buscarTarefa(tarefaPlanoId: UUID): TarefaPlano
+    + buscarComTrava(turnaroundId: UUID): Plano
+    + listarTarefasNaoConfirmadasDaEquipe(equipeId: UUID): List<TarefaPlano>
+    + listarTarefasNaoConfirmadasDoResponsavel(usuarioId: UUID): List<TarefaPlano>
     + salvar(plano: Plano): void
     + excluir(plano: Plano): void
   }
@@ -464,6 +496,7 @@ namespace cadastro {
     - matricula: String
     - posicao: String
     - permiteComPassageiros: Boolean
+    - politicaVersao: Integer [0..1]
     - tarefas: List<TarefaPlanejada>
   }
 
@@ -495,6 +528,36 @@ namespace cadastro {
     - nome: String
   }
 
+  ' Resposta de cadastro sem senha, hash nem token (RNF-3).
+  class UsuarioResumo <<dto>> {
+    - usuarioId: UUID
+    - identificadorAcesso: String
+    - nome: String
+    - perfil: Perfil
+    - equipeId: UUID [0..1]
+    - companhiaId: UUID [0..1]
+    - ativo: Boolean
+  }
+
+  ' Nome de pessoa para as telas de todos os serviços, que guardam só o identificador (item 12, seção 12.2).
+  class NomeUsuario <<dto>> {
+    - usuarioId: UUID
+    - nome: String
+  }
+
+  ' Resposta do login: referência da sessão levada no token (ADR-0016, ponto 2; formato na #178).
+  class TokenAcesso <<dto>> {
+    - sessaoId: UUID
+    - perfil: Perfil
+    - nome: String
+  }
+
+  ' Anonimiza, uma vez por dia, os dados pessoais vencidos do cadastro (RNF-6).
+  class RotinaAnonimizacaoUsuarios <<scheduler>> {
+    - usuarios: UsuarioService
+    + executarDiariamente(): void
+  }
+
   class ConsumidorAvisosCadastro <<consumer>> {
     - turnarounds: TurnaroundService
     # tratar(envelope: EnvelopeAviso): void
@@ -504,6 +567,12 @@ namespace cadastro {
 
   cadastro.AutenticacaoView ..> cadastro.AutenticacaoController
   cadastro.UsuarioView ..> cadastro.UsuarioController
+  cadastro.UsuarioView ..> cadastro.EquipeController
+  cadastro.UsuarioView ..> cadastro.CompanhiaController
+  cadastro.ModeloTarefaView ..> cadastro.EquipeController
+  cadastro.PlanoView ..> cadastro.ModeloTarefaController
+  cadastro.PlanoView ..> cadastro.PoliticaAbastecimentoController
+  cadastro.PoliticaAbastecimentoView ..> cadastro.CompanhiaController
   cadastro.EquipeView ..> cadastro.EquipeController
   cadastro.TurnaroundView ..> cadastro.TurnaroundController
   cadastro.TurnaroundView ..> cadastro.CompanhiaController
@@ -524,11 +593,18 @@ namespace cadastro {
   cadastro.AutenticacaoService --> cadastro.UsuarioRepository
   cadastro.AutenticacaoService --> cadastro.FalhaLoginRepository
   cadastro.AutenticacaoService --> cadastro.SessaoRepository
+  cadastro.AutenticacaoService ..> cadastro.TokenAcesso
   cadastro.UsuarioService --> cadastro.UsuarioRepository
   cadastro.UsuarioService --> cadastro.EquipeRepository
+  cadastro.UsuarioService --> cadastro.CompanhiaRepository
+  cadastro.UsuarioService --> cadastro.PlanoRepository
+  cadastro.UsuarioService ..> cadastro.UsuarioResumo
+  cadastro.UsuarioService ..> cadastro.NomeUsuario
+  cadastro.RotinaAnonimizacaoUsuarios --> cadastro.UsuarioService
   cadastro.UsuarioService --> cadastro.ExecucaoEmSoloCliente
   cadastro.EquipeService --> cadastro.EquipeRepository
   cadastro.EquipeService --> cadastro.UsuarioRepository
+  cadastro.EquipeService --> cadastro.PlanoRepository
   cadastro.EquipeService --> cadastro.ExecucaoEmSoloCliente
   cadastro.TurnaroundService --> cadastro.TurnaroundRepository
   cadastro.TurnaroundService --> cadastro.CompanhiaRepository
@@ -550,11 +626,16 @@ namespace cadastro {
   cadastro.PlanoConfirmado "1" *-- "*" cadastro.TarefaPlanejada : tarefas
   cadastro.TarefaPlanejada "1" *-- "*" cadastro.PontoPlanejado : pontos
   cadastro.PlanoService ..> cadastro.PlanoConfirmado
+  cadastro.PlanoService ..> cadastro.OperadorAtivo
   cadastro.EquipeService ..> cadastro.OperadorAtivo
   cadastro.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
   cadastro.ExecucaoEmSoloCliente ..> execucao.ChegadaController
   cadastro.ExecucaoEmSoloCliente ..> execucao.TarefaController
+  execucao.SaidaPosicaoView ..> cadastro.UsuarioController
+  excecoes.ExcecaoView ..> cadastro.UsuarioController
+  monitoramento.PainelView ..> cadastro.UsuarioController
   comum.ConsumidorAvisos <|-- cadastro.ConsumidorAvisosCadastro
+  cadastro.AutenticacaoService --> comum.AuditoriaService
   cadastro.UsuarioService --> comum.AuditoriaService
   cadastro.EquipeService --> comum.AuditoriaService
   cadastro.TurnaroundService --> comum.AuditoriaService

@@ -14,6 +14,7 @@ Parada em 15/11/2026, 05:20, com 77% do limite de 5 horas. Tudo está na branch 
 
 - Passos 1 e 2 feitos: correções da EX e da EL aplicadas; script em 0 problema; vistas regeradas.
 - Script ganhou: `[0..1]` contra a coluna Obrigatório do Apêndice B (achou 42 no Cadastro e no Monitoramento, já corrigidos); dependência entre serviços só de tela e de cliente para controle (passo 5 feito); contrato cliente × controle; «dto» espelho igual dos dois lados.
+- Conferência do Cadastro (scratchpad `conferencia-cadastro.md`: 2 graves, 14 médios, 12 leves) aplicada: RotinaAnonimizacaoUsuarios; plano confirmado reenviado por receberPlano antes de gravar; telas com abrir; UsuarioResumo, NomeUsuario, TokenAcesso; verificarAcesso com acaoDoUsuario; AutenticacaoService com auditoria; métodos do plano e do modelo pelo id do todo; PlanoRepository.buscarComTrava e tarefas não confirmadas; politicaVersao no PlanoConfirmado; Acesso [0..1]; aplicarAobt. Fora do item: #178 (comentário), #192 (UC04, UC05), #205 (versão da política).
 - Siglas do texto passadas (TOBT, DTO, UC, AIBT, QR Code na primeira ocorrência).
 - Decisões novas: gravação pelo todo da composição (Execução em Solo sem MarcoRepository e sem os repositórios de histórico; as partes só consultam); `EncerramentoExcecao` «dto» (UC33 passo 7 mostra o estado de retorno); `PlanoConfirmado`, `TarefaPlanejada` e `PontoPlanejado` também no Cadastro, e o cliente chama `receberPlano`; `AuditoriaService.existeCausa` responde o `consultarPedido`.
 

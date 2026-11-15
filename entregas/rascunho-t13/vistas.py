@@ -37,13 +37,14 @@ tec('tecnica-acesso', 'Autenticação, usuários e equipes', [
   'cadastro.AutenticacaoService', 'cadastro.UsuarioService', 'cadastro.EquipeService',
   'cadastro.UsuarioRepository', 'cadastro.FalhaLoginRepository', 'cadastro.SessaoRepository', 'cadastro.EquipeRepository',
   'cadastro.ExecucaoEmSoloCliente', 'cadastro.TarefaResumo', 'cadastro.OperadorAtivo',
+  'cadastro.UsuarioResumo', 'cadastro.NomeUsuario', 'cadastro.TokenAcesso', 'cadastro.RotinaAnonimizacaoUsuarios', 'cadastro.CompanhiaController',
   'execucao.TarefaController', 'execucao.CadastroCliente', 'execucao.OperadorAtivo'])
 tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
   'cadastro.TurnaroundView', 'cadastro.ModeloTarefaView', 'cadastro.PlanoView', 'cadastro.PoliticaAbastecimentoView',
   'cadastro.TurnaroundController', 'cadastro.CompanhiaController', 'cadastro.ModeloTarefaController', 'cadastro.PlanoController', 'cadastro.PoliticaAbastecimentoController',
   'cadastro.TurnaroundService', 'cadastro.ModeloTarefaService', 'cadastro.PlanoService', 'cadastro.PoliticaAbastecimentoService',
   'cadastro.TurnaroundRepository', 'cadastro.CompanhiaRepository', 'cadastro.ModeloTarefaRepository', 'cadastro.PlanoRepository', 'cadastro.PoliticaAbastecimentoRepository',
-  'cadastro.ExecucaoEmSoloCliente', 'cadastro.PlanoConfirmado', 'cadastro.TarefaPlanejada', 'cadastro.PontoPlanejado',
+  'cadastro.ConsumidorAvisosCadastro', 'comum.PublicadorAvisos', 'cadastro.ExecucaoEmSoloCliente', 'cadastro.PlanoConfirmado', 'cadastro.TarefaPlanejada', 'cadastro.PontoPlanejado',
   'execucao.TurnaroundController', 'execucao.ChegadaController', 'execucao.TurnaroundService', 'execucao.PlanoConfirmado',
   'execucao.TarefaPlanejada', 'execucao.PontoPlanejado'])
 tec('tecnica-execucao', 'Execução das tarefas no solo', [
