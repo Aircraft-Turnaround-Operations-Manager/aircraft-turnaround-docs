@@ -25,7 +25,7 @@ As áreas do RA1 passaram a corresponder aos quatro serviços (ADR-0015). Depois
 | **B** | Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 47 critérios | João Pedro Cardoso de Liz (`Jcliz`) |
 | **C** | Monitoramento | 7 (UC22 a UC28) | 14 estórias, 52 critérios | João Vitor Correa Oliveira (`jvecodev`) |
 | **D** | Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios | Rodrigo Alves (`rdsalvesPUC`) |
-| **Total** | | **37** | **44 estórias, 179 critérios** | |
+| **Total** | | **37** | **44 estórias, 180 critérios** | |
 
 A divisão por área serve só para dividir o trabalho. Diagramas e textos agrupam por função do sistema.
 
@@ -131,7 +131,7 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
   - Rótulos de cada uma: `ra2`, `item-14`, `por-integrante`, `area-x`
   - Critérios de cada sub-issue: C14.2 a C14.8 para todos os casos de uso da área
 
-**T15 · [RA2][Item 15] Casos de teste (179 critérios de aceite)** — tarefa-mãe
+**T15 · [RA2][Item 15] Casos de teste (180 critérios de aceite)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra2`, `item-15`
 - Descrição: começar pela conferência cruzada do item. Depois, juntar as planilhas das áreas, numerar os casos de teste de forma única (CT-nnn) e conferir por script a cobertura dos critérios e dos fluxos.
 - Critérios: C15.1 a C15.8
