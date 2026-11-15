@@ -2,7 +2,8 @@
 
 Uso, na raiz do repositório:  python scripts/gerar_matriz_rastreabilidade.py
 Lê os itens 6, 7, 8 e 10 (area-a.md … area-d.md) e, no RA2 (decisão B5, ADR-0021), a tabela
-"Serviço | Tabela | RFs atendidos" do item 12, as legendas "Diagrama de Sequência do UCnn" do
+"Serviço | Tabela | RFs atendidos" do item 12 (chave: serviço e tabela, porque o mesmo nome
+existe em mais de um serviço), as legendas "Diagrama de Sequência do UCnn" do
 item 14 e a coluna "Estória e critério de aceite" (USnnn-CAn) da planilha do item 15. Reescreve o
 trecho entre os marcadores de especificacao/apendice-a-matriz-de-rastreabilidade.md.
 As lacunas de um item do RA2 só entram na lista depois que o item tem conteúdo.
@@ -83,7 +84,7 @@ for ln in ler(ESP / "12-modelo-de-dados.md").splitlines():  # | Serviço | Tabel
     elif not c:
         em_tab = False
     elif em_tab and len(c) >= 3 and not re.fullmatch(r":?-+:?", c[0]):
-        tabs[c[1].strip("`")] = refs(c[2])
+        tabs[f'{c[1].strip("`")} ({c[0]})'] = refs(c[2])
 
 uc_de, rnf_de, tab_de, ct_de = {}, {}, {}, {}
 for uc, rr in ucs.items():
@@ -140,6 +141,7 @@ lac += [f"{u} sem RF correspondente" for r, us in us_de.items() if r not in rfs 
 n_ra1 = len(lac)
 if tabs:  # item 12 começado
     lac += [f"Tabela {t} sem RF (item 12)" for t, rr in sorted(tabs.items()) if not rr & set(rfs)]
+    lac += [f"{r} sem tabela (item 12)" for r in sorted(rfs, key=chave) if r not in tab_de]
 if seq:  # item 14 começado
     lac += [f"{u} sem diagrama de sequência (item 14)" for u in sorted(ucs, key=chave) if u not in seq]
     lac += [f"{u}: nome no diagrama de sequência diferente do item 10" for u, dd in sorted(seq.items()) if any(n != nome_uc.get(u) for n, _ in dd)]
