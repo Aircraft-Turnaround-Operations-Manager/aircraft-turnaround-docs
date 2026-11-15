@@ -75,6 +75,7 @@ especificacao/
 ├── 15-casos-de-teste/               00-item.md + area-a.md … area-d.md
 ├── apendice-a-matriz-de-rastreabilidade.md   gerado por script (ADR-0012 e ADR-0021)
 ├── apendice-b-dicionario-de-dados.md         dicionário de dados do item 12
+├── apendice-c-blueprint-do-turnaround.md     blueprint do turnaround por serviço (ADR-0015)
 └── diagramas/                       fonte e imagem exportada de cada diagrama
 ```
 
