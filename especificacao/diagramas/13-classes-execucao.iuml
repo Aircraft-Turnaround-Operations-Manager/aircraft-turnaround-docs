@@ -502,6 +502,7 @@ namespace execucao {
     + buscarComTrava(id: UUID): Turnaround
     + buscarPorTarefa(tarefaId: UUID): Turnaround
     + listarPorIds(ids: List<UUID>): List<Turnaround>
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
     + salvar(turnaround: Turnaround): void
   }
 
@@ -547,6 +548,11 @@ namespace execucao {
     + notificarTarefa(operadorId: UUID, tarefa: TarefaDoOperador): void
     + notificarReatribuicao(operadorAnteriorId: UUID, operadorNovoId: UUID, tarefa: TarefaDoOperador): void
     + notificarRecusa(operadorId: UUID, requisicaoId: UUID, motivo: String): void
+  }
+
+  class RotinaAnonimizacaoExecucao <<scheduler>> {
+    - turnarounds: TurnaroundRepository
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
   }
 
   class ConsumidorAvisosExecucao <<consumer>> {
@@ -623,6 +629,8 @@ namespace execucao {
   execucao.CadastroCliente ..> cadastro.EquipeController
 
   comum.ConsumidorAvisos <|-- execucao.ConsumidorAvisosExecucao
+  comum.RotinaAnonimizacao <|-- execucao.RotinaAnonimizacaoExecucao
+  execucao.RotinaAnonimizacaoExecucao --> execucao.TurnaroundRepository
   execucao.ChegadaService --> comum.AuditoriaService
   execucao.ChegadaService --> comum.PublicadorAvisos
   execucao.TarefaService --> comum.AuditoriaService

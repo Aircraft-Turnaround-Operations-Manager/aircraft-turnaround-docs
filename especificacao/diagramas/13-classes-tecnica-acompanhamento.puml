@@ -1,6 +1,7 @@
 @startuml
 ' Item 13 — Painel, linha do tempo, alertas, checagem e indicadores. Vista gerada a partir das fontes 13-classes-*.iuml.
 !include 13-classes-estilo.iuml
+restore excecoes
 restore monitoramento
 restore monitoramento.PainelView
 restore monitoramento.LinhaDoTempoView
@@ -21,4 +22,11 @@ restore monitoramento.LinhaDoTempo
 restore monitoramento.IndicadoresAderencia
 restore monitoramento.Indicador
 restore monitoramento.PainelNotificador
+restore monitoramento.TurnaroundMonitoradoRepository
+restore monitoramento.ProjecaoRepository
+restore monitoramento.CaminhoCriticoRepository
+restore monitoramento.AlertaRepository
+restore monitoramento.AvisoChecagemRepository
+restore monitoramento.AtualizacaoTobtMonitoradaRepository
+restore excecoes.RegistroAcaoAlertaView
 @enduml

@@ -131,7 +131,7 @@ namespace comum {
   interface RegistroAuditoriaRepository <<repository>> {
     + salvar(registro: RegistroAuditoria): void
     + listarPorTurnaround(turnaroundId: UUID): List<RegistroAuditoria>
-    + listarParaAnonimizar(limite: DateTime): List<RegistroAuditoria>
+    + listarParaAnonimizar(limite: DateTime, turnaroundIds: List<UUID>): List<RegistroAuditoria>
     + existeCausa(causaId: UUID): Boolean
   }
 
@@ -150,13 +150,15 @@ namespace comum {
     + registrar(objeto: String, objetoId: String, acao: AcaoAuditoria, autorId: UUID, causaId: UUID, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
     + registrarAutomatico(objeto: String, objetoId: String, acao: AcaoAuditoria, causaId: UUID, gatilho: String, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
     + existeCausa(causaId: UUID): Boolean
-    + anonimizarVencidos(momento: DateTime): void
+    + anonimizarVencidos(momento: DateTime, turnaroundsVencidos: List<UUID>): void
   }
 
-  ' Roda uma vez por dia em cada serviço e anonimiza a trilha vencida pelo prazo do RNF-6.
-  class RotinaAnonimizacao <<scheduler>> {
+  ' Roda uma vez por dia em cada serviço e anonimiza a trilha vencida pelo prazo do RNF-6: 90 dias depois do AOBT do
+  ' turnaround (cada serviço lista os seus pela cópia local) ou, sem turnaround, 90 dias depois do registro.
+  abstract class RotinaAnonimizacao <<scheduler>> {
     - auditoria: AuditoriaService
     + executarDiariamente(): void
+    # {abstract} listarTurnaroundsVencidos(limite: DateTime): List<UUID>
   }
 
   class PublicadorAvisos <<publisher>> {

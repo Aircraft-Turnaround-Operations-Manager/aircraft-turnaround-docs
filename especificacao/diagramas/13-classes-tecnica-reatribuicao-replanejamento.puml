@@ -20,7 +20,7 @@ restore excecoes.OperadorAtivo
 restore excecoes.TarefaResumo
 restore excecoes.TurnaroundReferenciaRepository
 restore excecoes.AcaoAlertaService
-restore monitoramento.PainelResolver
+restore monitoramento.LinhaDoTempoView
 restore execucao.AtribuicaoController
 restore execucao.ReplanejamentoController
 restore execucao.AtribuicaoService

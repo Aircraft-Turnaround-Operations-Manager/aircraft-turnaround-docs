@@ -31,6 +31,10 @@ restore cadastro.ConsumidorAvisosCadastro
 restore execucao.ConsumidorAvisosExecucao
 restore monitoramento.ConsumidorAvisosMonitoramento
 restore excecoes.ConsumidorAvisosExcecoes
+restore cadastro.RotinaAnonimizacaoCadastro
+restore execucao.RotinaAnonimizacaoExecucao
+restore monitoramento.RotinaAnonimizacaoMonitoramento
+restore excecoes.RotinaAnonimizacaoExcecoes
 restore excecoes.TurnaroundReferenciaService
 restore excecoes.PedidoService
 restore excecoes.PedidoPendente

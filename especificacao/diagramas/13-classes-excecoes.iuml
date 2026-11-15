@@ -420,6 +420,7 @@ namespace excecoes {
     + buscarPorId(turnaroundId: UUID): TurnaroundReferencia
     + buscarComTrava(turnaroundId: UUID): TurnaroundReferencia
     + listarPorCompanhia(companhiaId: UUID): List<TurnaroundReferencia>
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
     + salvar(turnaround: TurnaroundReferencia): void
   }
 
@@ -520,6 +521,11 @@ namespace excecoes {
     # tratar(envelope: EnvelopeAviso): void
   }
 
+  class RotinaAnonimizacaoExcecoes <<scheduler>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
+  }
+
   class RetomadaPedidos <<scheduler>> {
     - pedidos: PedidoService
     + executarAoIniciar(): void
@@ -594,12 +600,14 @@ namespace excecoes {
 
   monitoramento.AlertasView ..> excecoes.RegistroAcaoAlertaView
   excecoes.RegistroAcaoAlertaView ..> monitoramento.AlertaController
-  excecoes.ReplanejamentoView ..> monitoramento.PainelResolver
+  excecoes.ReplanejamentoView ..> monitoramento.LinhaDoTempoView
   excecoes.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
   excecoes.ExecucaoEmSoloCliente ..> execucao.AtribuicaoController
   excecoes.ExecucaoEmSoloCliente ..> execucao.ReplanejamentoController
 
   comum.ConsumidorAvisos <|-- excecoes.ConsumidorAvisosExcecoes
+  comum.RotinaAnonimizacao <|-- excecoes.RotinaAnonimizacaoExcecoes
+  excecoes.RotinaAnonimizacaoExcecoes --> excecoes.TurnaroundReferenciaRepository
   excecoes.ExcecaoService --> comum.AuditoriaService
   excecoes.ExcecaoService --> comum.PublicadorAvisos
   excecoes.ReatribuicaoService --> comum.AuditoriaService

@@ -2,6 +2,9 @@
 ' classes técnicas dos casos de uso UC22 a UC28. O Motor de Eventos daqui é o RecalculoService (UC24), o AlertaService
 ' (UC25) e o AvisoChecagemService (UC27), acionados por aviso ou pelo AgendadorMinuto. Os painéis (UC22 e UC23) são
 ' consultados por GraphQL e atualizados por WebSocket (ADR-0016, ponto 3); as demais telas usam REST.
+' Gravação pelo todo: TurnaroundMonitoradoRepository.salvar grava a cópia das tarefas; o recálculo e a aplicação de
+' um aviso travam a linha do turnaround (buscarComTrava). Toda mudança que o coordenador vê (recálculo, alerta,
+' cópia de estado, marco ou previsão, aviso de checagem) monta a linha de novo e a envia pelo PainelNotificador.
 
 namespace monitoramento {
 
@@ -27,6 +30,15 @@ namespace monitoramento {
     Atualização do TOBT
     Recálculo de minuto
     Volta após falha
+  }
+
+  enum MarcoMonitorado <<enumeration>> {
+    AIBT
+    ACGT
+    ASBT
+    AEGT
+    ARDT
+    AOBT
   }
 
   enum CorRisco <<enumeration>> {
@@ -60,9 +72,10 @@ namespace monitoramento {
     - antecedenciaChecagemMin: Integer
     - prazoAcaoCriticaMin: Integer
     - tarefas: List<TarefaMonitorada>
+    ' as cinco tolerâncias e prazos acima vêm da configuração do serviço (RNF-21) em aplicarTurnaroundAberto
     + estaEmCalculo(): Boolean
     + tarefasObrigatorias(): List<TarefaMonitorada>
-    + registrarMarco(tipo: String, horario: DateTime): void
+    + registrarMarco(tipo: MarcoMonitorado, horario: DateTime): void
     + mudarEstado(estado: EstadoTurnaround, momento: DateTime): void
     + corDoRisco(projecao: Projecao, alertaCriticoAberto: Boolean): CorRisco
   }
@@ -216,16 +229,20 @@ namespace monitoramento {
     - eibt: DateTime
     - tobtPlanejado: DateTime
     - tobtVigente: DateTime
-    - projecaoProntidao: DateTime
-    - diferencaMin: Integer
-    - cor: CorRisco
+    - projecaoProntidao: DateTime [0..1]
+    - desvioPlanejadoMin: Integer [0..1]
+    - desvioVigenteMin: Integer [0..1]
+    - cor: CorRisco [0..1]
     - alertasAbertos: Integer
   }
 
+  ' Sem projeção (antes da confirmação do plano), a linha não tem projeção, desvio nem cor.
   class Painel <<dto>> {
     - verdes: Integer
     - amarelos: Integer
     - vermelhos: Integer
+    - alertasAbertos: Integer
+    - alertasCriticos: Integer
     - linhas: List<LinhaPainel>
   }
 
@@ -240,7 +257,7 @@ namespace monitoramento {
     - nome: String
     - numerador: Integer
     - denominador: Integer
-    - percentual: Real
+    - percentual: Real [0..1]
     - metaPercentual: Integer [0..1]
   }
 
@@ -256,21 +273,29 @@ namespace monitoramento {
   class PainelView <<boundary>> {
     + abrirPainel(): void
     + atualizarLinha(linha: LinhaPainel): void
+    + retirarLinha(turnaroundId: UUID): void
+    + exibirAvisoAlerta(alerta: Alerta): void
   }
 
   class LinhaDoTempoView <<boundary>> {
     + abrirLinhaDoTempo(turnaroundId: UUID): void
     + buscarTurnaround(texto: String): void
     + abrirCaminhoCritico(turnaroundId: UUID): void
+    + abrirHistoricoAlertas(turnaroundId: UUID): void
+    + atualizar(turnaroundId: UUID): void
   }
 
   class AlertasView <<boundary>> {
     + abrirAlertas(): void
     + registrarAcao(alertaId: UUID): void
     + incluirAlerta(alerta: Alerta): void
+    + retirarAlerta(alertaId: UUID): void
   }
 
   class AvisoChecagemView <<boundary>> {
+    + abrirAvisos(): void
+    + exibirAviso(aviso: AvisoChecagem, pendentes: List<ProjecaoTarefa>): void
+    + retirarAviso(avisoId: UUID): void
     + registrarChecagem(avisoId: UUID): void
     + lembrarDepois(avisoId: UUID): void
   }
@@ -290,10 +315,12 @@ namespace monitoramento {
 
   class AlertaController <<control>> {
     + listarAbertos(acesso: Acesso): List<Alerta>
+    + listarDoTurnaround(turnaroundId: UUID, acesso: Acesso): List<Alerta>
     + consultar(alertaId: UUID, acesso: Acesso): Alerta
   }
 
   class AvisoChecagemController <<control>> {
+    + listarAbertos(acesso: Acesso): List<AvisoChecagem>
     + registrarChecagem(avisoId: UUID, acesso: Acesso): AvisoChecagem
   }
 
@@ -324,30 +351,36 @@ namespace monitoramento {
     - painel: PainelService
     - notificador: PainelNotificador
     + recalcular(turnaroundId: UUID, causa: CausaRecalculo, causaId: UUID, momento: DateTime): Projecao
-    + recalcularAbertos(momento: DateTime): void
+    + recalcularAbertos(momento: DateTime, causa: CausaRecalculo): void
     - projetarTarefas(turnaround: TurnaroundMonitorado, momento: DateTime): List<ProjecaoTarefa>
     - identificarCaminhoCritico(turnaround: TurnaroundMonitorado, projecao: Projecao): CaminhoCritico
   }
 
+  ' Depois de emitir ou encerrar um alerta, monta a linha do painel e a envia (RF-25). O aviso de ação sobre um alerta
+  ' desconhecido, já encerrado ou de outro turnaround é descartado e registrado no log (RNF-24).
   class AlertaService <<service>> {
     - alertas: AlertaRepository
     - turnarounds: TurnaroundMonitoradoRepository
     - caminhos: CaminhoCriticoRepository
+    - painel: PainelService
     - notificador: PainelNotificador
-    + verificarGatilhos(turnaround: TurnaroundMonitorado, projecao: Projecao, momento: DateTime): List<Alerta>
+    + verificarGatilhos(turnaround: TurnaroundMonitorado, projecao: Projecao, anterior: Projecao, momento: DateTime): List<Alerta>
     + verificarViabilidade(turnaroundId: UUID, momento: DateTime): Alerta
     + verificarHorarios(momento: DateTime): void
     + listarAbertos(): List<Alerta>
+    + listarDoTurnaround(turnaroundId: UUID): List<Alerta>
     + consultar(alertaId: UUID): Alerta
-    + encerrarPorAcao(alertaId: UUID, acaoId: UUID, tipoAcao: TipoAcaoAlerta, autorId: UUID, registradaEm: DateTime): void
+    + encerrarPorAcao(turnaroundId: UUID, alertaId: UUID, acaoId: UUID, tipoAcao: TipoAcaoAlerta, autorId: UUID, registradaEm: DateTime): void
     - classificarCritico(alerta: Alerta, caminho: CaminhoCritico): Boolean
   }
 
   class AvisoChecagemService <<service>> {
     - avisos: AvisoChecagemRepository
     - turnarounds: TurnaroundMonitoradoRepository
+    - projecoes: ProjecaoRepository
     - notificador: PainelNotificador
     + emitirDevidos(momento: DateTime): void
+    + listarAbertos(): List<AvisoChecagem>
     + registrarChecagem(avisoId: UUID, autorId: UUID): AvisoChecagem
   }
 
@@ -358,33 +391,47 @@ namespace monitoramento {
     + calcular(inicio: Date, fim: Date): IndicadoresAderencia
   }
 
+  ' Ordem dos avisos: aplicarPlano não sobrescreve a tarefa que já recebeu aviso da Execução em Solo (versaoOrigem > 0),
+  ' e aplicarTarefa de tarefa desconhecida cria a cópia com o que o aviso traz (item 12, seção 12.4).
   class CopiaService <<service>> {
     - turnarounds: TurnaroundMonitoradoRepository
     - tarefas: TarefaMonitoradaRepository
     - atualizacoes: AtualizacaoTobtMonitoradaRepository
     - recalculo: RecalculoService
     - alertas: AlertaService
+    - painel: PainelService
+    - notificador: PainelNotificador
     + aplicarTurnaroundAberto(turnaround: TurnaroundMonitorado): void
     + aplicarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
     + aplicarPlano(turnaroundId: UUID, tarefas: List<TarefaMonitorada>): void
     + aplicarTarefa(tarefa: TarefaMonitorada, versao: Integer, causa: CausaRecalculo, causaId: UUID): void
-    + aplicarMarco(turnaroundId: UUID, tipo: String, horario: DateTime, causaId: UUID): void
+    + aplicarResponsavel(tarefaId: UUID, responsavelId: UUID, versao: Integer): void
+    + aplicarMarco(turnaroundId: UUID, tipo: MarcoMonitorado, horario: DateTime, causaId: UUID): void
     + aplicarEstado(turnaroundId: UUID, estado: EstadoTurnaround, momento: DateTime): void
     + aplicarTobtVigente(atualizacao: AtualizacaoTobtMonitorada): void
   }
 
+  ' Roda em intervalo menor que 5 s: confere os gatilhos por horário a cada execução e recalcula na virada do minuto (RF-22).
   class AgendadorMinuto <<scheduler>> {
     - recalculo: RecalculoService
     - alertas: AlertaService
     - checagens: AvisoChecagemService
     + executar(momento: DateTime): void
+    + executarAoIniciar(): void
+  }
+
+  class RotinaAnonimizacaoMonitoramento <<scheduler>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
   }
 
   ' ---------- acesso a dados ----------
 
   interface TurnaroundMonitoradoRepository <<repository>> {
     + buscarPorId(turnaroundId: UUID): TurnaroundMonitorado
+    + buscarComTrava(turnaroundId: UUID): TurnaroundMonitorado
     + listarAbertos(): List<TurnaroundMonitorado>
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
     + listarEncerradosNoPeriodo(inicio: Date, fim: Date): List<TurnaroundMonitorado>
     + buscarPorTexto(texto: String): List<TurnaroundMonitorado>
     + salvar(turnaround: TurnaroundMonitorado): void
@@ -393,7 +440,6 @@ namespace monitoramento {
   interface TarefaMonitoradaRepository <<repository>> {
     + buscarPorId(tarefaId: UUID): TarefaMonitorada
     + listarPorTurnaround(turnaroundId: UUID): List<TarefaMonitorada>
-    + salvar(tarefa: TarefaMonitorada): void
   }
 
   interface ProjecaoRepository <<repository>> {
@@ -410,6 +456,7 @@ namespace monitoramento {
   interface AlertaRepository <<repository>> {
     + buscarPorId(id: UUID): Alerta
     + listarAbertos(): List<Alerta>
+    + listarPorTurnaround(turnaroundId: UUID): List<Alerta>
     + buscarAberto(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
     + buscarUltimo(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
     + listarCriticosDosTurnarounds(turnaroundIds: List<UUID>): List<Alerta>
@@ -419,6 +466,7 @@ namespace monitoramento {
   interface AvisoChecagemRepository <<repository>> {
     + buscarPorId(id: UUID): AvisoChecagem
     + buscarPorTurnaround(turnaroundId: UUID): AvisoChecagem
+    + listarAbertos(): List<AvisoChecagem>
     + salvar(aviso: AvisoChecagem): void
   }
 
@@ -432,8 +480,11 @@ namespace monitoramento {
   class PainelNotificador <<websocket>> {
     + notificarLinha(linha: LinhaPainel): void
     + notificarAlerta(alerta: Alerta): void
-    + notificarAvisoChecagem(aviso: AvisoChecagem): void
+    + notificarAlertaEncerrado(alertaId: UUID): void
+    + notificarAvisoChecagem(aviso: AvisoChecagem, pendentes: List<ProjecaoTarefa>): void
+    + notificarAvisoChecagemEncerrado(avisoId: UUID): void
     + notificarLinhaDoTempo(turnaroundId: UUID): void
+    + retirarLinha(turnaroundId: UUID): void
   }
 
   class ConsumidorAvisosMonitoramento <<consumer>> {
@@ -449,6 +500,14 @@ namespace monitoramento {
   monitoramento.AlertasView ..> monitoramento.AlertaController
   monitoramento.AvisoChecagemView ..> monitoramento.AvisoChecagemController
   monitoramento.IndicadoresView ..> monitoramento.IndicadorController
+  monitoramento.PainelView ..> monitoramento.LinhaDoTempoView
+  monitoramento.PainelView ..> monitoramento.AlertasView
+  monitoramento.AlertasView ..> monitoramento.LinhaDoTempoView
+  monitoramento.LinhaDoTempoView ..> monitoramento.AlertaController
+  monitoramento.PainelNotificador ..> monitoramento.PainelView
+  monitoramento.PainelNotificador ..> monitoramento.LinhaDoTempoView
+  monitoramento.PainelNotificador ..> monitoramento.AlertasView
+  monitoramento.PainelNotificador ..> monitoramento.AvisoChecagemView
 
   monitoramento.PainelResolver ..> monitoramento.PainelService
   monitoramento.AlertaController ..> monitoramento.AlertaService
@@ -470,8 +529,10 @@ namespace monitoramento {
   monitoramento.AlertaService --> monitoramento.TurnaroundMonitoradoRepository
   monitoramento.AlertaService --> monitoramento.CaminhoCriticoRepository
   monitoramento.AlertaService --> monitoramento.PainelNotificador
+  monitoramento.AlertaService --> monitoramento.PainelService
   monitoramento.AvisoChecagemService --> monitoramento.AvisoChecagemRepository
   monitoramento.AvisoChecagemService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.AvisoChecagemService --> monitoramento.ProjecaoRepository
   monitoramento.AvisoChecagemService --> monitoramento.PainelNotificador
   monitoramento.IndicadorService --> monitoramento.TurnaroundMonitoradoRepository
   monitoramento.IndicadorService --> monitoramento.AlertaRepository
@@ -481,6 +542,9 @@ namespace monitoramento {
   monitoramento.CopiaService --> monitoramento.AtualizacaoTobtMonitoradaRepository
   monitoramento.CopiaService --> monitoramento.RecalculoService
   monitoramento.CopiaService --> monitoramento.AlertaService
+  monitoramento.CopiaService --> monitoramento.PainelService
+  monitoramento.CopiaService --> monitoramento.PainelNotificador
+  monitoramento.RotinaAnonimizacaoMonitoramento --> monitoramento.TurnaroundMonitoradoRepository
   monitoramento.AgendadorMinuto --> monitoramento.RecalculoService
   monitoramento.AgendadorMinuto --> monitoramento.AlertaService
   monitoramento.AgendadorMinuto --> monitoramento.AvisoChecagemService
@@ -491,11 +555,24 @@ namespace monitoramento {
   monitoramento.IndicadorService ..> monitoramento.IndicadoresAderencia
   monitoramento.IndicadoresAderencia "1" *-- "4" monitoramento.Indicador : indicadores
   monitoramento.Painel "1" *-- "*" monitoramento.LinhaPainel : linhas
+  monitoramento.LinhaDoTempo "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.Projecao : projecao
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.CaminhoCritico : caminho
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.AvisoChecagem : avisoChecagem
+  monitoramento.IndicadoresAderencia "*" --> "*" monitoramento.TurnaroundMonitorado : turnarounds
+
+  ' ---------- ligações com outros serviços (nome das pessoas e das equipes) ----------
+
+  monitoramento.LinhaDoTempoView ..> cadastro.UsuarioController
+  monitoramento.LinhaDoTempoView ..> cadastro.EquipeController
+  monitoramento.AlertasView ..> cadastro.UsuarioController
+  monitoramento.AlertasView ..> cadastro.EquipeController
+  monitoramento.AvisoChecagemView ..> cadastro.UsuarioController
 
   comum.ConsumidorAvisos <|-- monitoramento.ConsumidorAvisosMonitoramento
+  comum.RotinaAnonimizacao <|-- monitoramento.RotinaAnonimizacaoMonitoramento
   monitoramento.RecalculoService --> comum.AuditoriaService
   monitoramento.RecalculoService --> comum.PublicadorAvisos
   monitoramento.AlertaService --> comum.AuditoriaService
-  monitoramento.AlertaService --> comum.PublicadorAvisos
   monitoramento.AvisoChecagemService --> comum.AuditoriaService
 }

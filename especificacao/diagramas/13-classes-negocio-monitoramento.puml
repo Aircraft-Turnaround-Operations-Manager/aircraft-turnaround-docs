@@ -4,6 +4,7 @@
 restore monitoramento
 restore monitoramento.TipoAlerta
 restore monitoramento.CausaRecalculo
+restore monitoramento.MarcoMonitorado
 restore monitoramento.CorRisco
 restore monitoramento.TurnaroundMonitorado
 restore monitoramento.TarefaMonitorada

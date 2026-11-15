@@ -24,6 +24,7 @@ VISTAS = {
   'negocio-excecoes': ('Classes de negócio — Exceções e Liberação', [k for k in de('excecoes', 'entity', 'enumeration') if 'Pedido' not in k], None, ''),
   'contrato': ('Contrato entre os serviços e infraestrutura comum', [k for k in classes if k.split('.')[0] in ('contrato', 'comum')] +
                ['cadastro.ConsumidorAvisosCadastro', 'execucao.ConsumidorAvisosExecucao', 'monitoramento.ConsumidorAvisosMonitoramento', 'excecoes.ConsumidorAvisosExcecoes',
+                'cadastro.RotinaAnonimizacaoCadastro', 'execucao.RotinaAnonimizacaoExecucao', 'monitoramento.RotinaAnonimizacaoMonitoramento', 'excecoes.RotinaAnonimizacaoExcecoes',
                 'excecoes.TurnaroundReferenciaService', 'excecoes.PedidoService', 'excecoes.PedidoPendente', 'excecoes.PedidoPendenteRepository',
                 'excecoes.RetomadaPedidos', 'excecoes.TipoPedido', 'excecoes.SituacaoPedido'], None, ''),
 }
@@ -37,7 +38,7 @@ tec('tecnica-acesso', 'Autenticação, usuários e equipes', [
   'cadastro.AutenticacaoService', 'cadastro.UsuarioService', 'cadastro.EquipeService',
   'cadastro.UsuarioRepository', 'cadastro.FalhaLoginRepository', 'cadastro.SessaoRepository', 'cadastro.EquipeRepository',
   'cadastro.ExecucaoEmSoloCliente', 'cadastro.TarefaResumo', 'cadastro.OperadorAtivo',
-  'cadastro.UsuarioResumo', 'cadastro.NomeUsuario', 'cadastro.TokenAcesso', 'cadastro.RotinaAnonimizacaoUsuarios', 'cadastro.CompanhiaController',
+  'cadastro.UsuarioResumo', 'cadastro.NomeUsuario', 'cadastro.TokenAcesso', 'cadastro.RotinaAnonimizacaoCadastro', 'cadastro.CompanhiaController',
   'execucao.TarefaController', 'execucao.CadastroCliente', 'execucao.OperadorAtivo'])
 tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
   'cadastro.TurnaroundView', 'cadastro.ModeloTarefaView', 'cadastro.PlanoView', 'cadastro.PoliticaAbastecimentoView',
@@ -62,13 +63,15 @@ tec('tecnica-motor-de-eventos', 'Motor de Eventos: marcos, propagação, recálc
   'monitoramento.RecalculoService', 'monitoramento.AlertaService', 'monitoramento.AvisoChecagemService',
   'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.TarefaMonitoradaRepository', 'monitoramento.ProjecaoRepository',
   'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
-  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'monitoramento.PainelNotificador'])
+  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'monitoramento.PainelNotificador', 'monitoramento.PainelService'])
 tec('tecnica-acompanhamento', 'Painel, linha do tempo, alertas, checagem e indicadores', [
   'monitoramento.PainelView', 'monitoramento.LinhaDoTempoView', 'monitoramento.AlertasView', 'monitoramento.AvisoChecagemView', 'monitoramento.IndicadoresView',
   'monitoramento.PainelResolver', 'monitoramento.AlertaController', 'monitoramento.AvisoChecagemController', 'monitoramento.IndicadorController',
   'monitoramento.PainelService', 'monitoramento.AlertaService', 'monitoramento.AvisoChecagemService', 'monitoramento.IndicadorService',
   'monitoramento.Painel', 'monitoramento.LinhaPainel', 'monitoramento.LinhaDoTempo', 'monitoramento.IndicadoresAderencia', 'monitoramento.Indicador',
-  'monitoramento.PainelNotificador'])
+  'monitoramento.PainelNotificador', 'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.ProjecaoRepository',
+  'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
+  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView'])
 tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o alerta', [
   'excecoes.ExcecaoView', 'excecoes.RegistroAcaoAlertaView', 'excecoes.AtualizacaoTobtView',
   'excecoes.ExcecaoController', 'excecoes.AtualizacaoTobtController', 'excecoes.CoordenadorNotificador',
@@ -84,7 +87,7 @@ tec('tecnica-reatribuicao-replanejamento', 'Reatribuição e replanejamento', [
   'excecoes.ReatribuicaoService', 'excecoes.ReplanejamentoService', 'excecoes.PedidoService',
   'excecoes.ReatribuicaoRepository', 'excecoes.ReplanejamentoRepository', 'excecoes.ExecucaoEmSoloCliente',
   'excecoes.OperadorDisponivel', 'excecoes.OperadorAtivo', 'excecoes.TarefaResumo', 'excecoes.TurnaroundReferenciaRepository',
-  'excecoes.AcaoAlertaService', 'monitoramento.PainelResolver',
+  'excecoes.AcaoAlertaService', 'monitoramento.LinhaDoTempoView',
   'execucao.AtribuicaoController', 'execucao.ReplanejamentoController', 'execucao.AtribuicaoService', 'execucao.ReplanejamentoService',
   'execucao.CadastroCliente', 'execucao.OperadorDisponivel', 'execucao.OperadorAtivo', 'execucao.TarefaResumo',
   'cadastro.EquipeController'])

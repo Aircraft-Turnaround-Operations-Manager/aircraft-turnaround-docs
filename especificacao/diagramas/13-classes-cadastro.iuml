@@ -436,6 +436,7 @@ namespace cadastro {
   interface TurnaroundRepository <<repository>> {
     + buscarPorId(id: UUID): Turnaround
     + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date): Turnaround
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
     + salvar(turnaround: Turnaround): void
   }
 
@@ -552,10 +553,12 @@ namespace cadastro {
     - nome: String
   }
 
-  ' Anonimiza, uma vez por dia, os dados pessoais vencidos do cadastro (RNF-6).
-  class RotinaAnonimizacaoUsuarios <<scheduler>> {
+  ' Além da trilha, anonimiza os dados pessoais vencidos do cadastro (RNF-6).
+  class RotinaAnonimizacaoCadastro <<scheduler>> {
     - usuarios: UsuarioService
+    - turnarounds: TurnaroundRepository
     + executarDiariamente(): void
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
   }
 
   class ConsumidorAvisosCadastro <<consumer>> {
@@ -600,7 +603,8 @@ namespace cadastro {
   cadastro.UsuarioService --> cadastro.PlanoRepository
   cadastro.UsuarioService ..> cadastro.UsuarioResumo
   cadastro.UsuarioService ..> cadastro.NomeUsuario
-  cadastro.RotinaAnonimizacaoUsuarios --> cadastro.UsuarioService
+  cadastro.RotinaAnonimizacaoCadastro --> cadastro.UsuarioService
+  cadastro.RotinaAnonimizacaoCadastro --> cadastro.TurnaroundRepository
   cadastro.UsuarioService --> cadastro.ExecucaoEmSoloCliente
   cadastro.EquipeService --> cadastro.EquipeRepository
   cadastro.EquipeService --> cadastro.UsuarioRepository
@@ -635,6 +639,7 @@ namespace cadastro {
   excecoes.ExcecaoView ..> cadastro.UsuarioController
   monitoramento.PainelView ..> cadastro.UsuarioController
   comum.ConsumidorAvisos <|-- cadastro.ConsumidorAvisosCadastro
+  comum.RotinaAnonimizacao <|-- cadastro.RotinaAnonimizacaoCadastro
   cadastro.AutenticacaoService --> comum.AuditoriaService
   cadastro.UsuarioService --> comum.AuditoriaService
   cadastro.EquipeService --> comum.AuditoriaService

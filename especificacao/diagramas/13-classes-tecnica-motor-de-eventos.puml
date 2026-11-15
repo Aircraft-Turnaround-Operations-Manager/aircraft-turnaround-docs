@@ -28,4 +28,5 @@ restore monitoramento.AlertaRepository
 restore monitoramento.AvisoChecagemRepository
 restore monitoramento.AtualizacaoTobtMonitoradaRepository
 restore monitoramento.PainelNotificador
+restore monitoramento.PainelService
 @enduml
