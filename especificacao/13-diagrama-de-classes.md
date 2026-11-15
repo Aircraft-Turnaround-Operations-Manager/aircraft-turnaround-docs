@@ -147,9 +147,13 @@ UC32 e UC37. O Exceções e Liberação confere as exceções e pede a liberaç�
 
 ## 13.6 Contrato entre os serviços e infraestrutura comum
 
-O pacote `contrato` tem o que os quatro serviços combinaram (ADR-0016): o identificador `UUID`, as enumerações de estado e de perfil, o tipo da ação sobre o alerta, o `Acesso` que a porta de entrada passa a cada ação e o `EnvelopeAviso`. O pacote `comum` mostra uma vez a infraestrutura que cada serviço tem no seu código: a trilha de auditoria (RNF-2), a tabela de avisos a publicar, a de avisos processados, o publicador e o consumidor de avisos. Cada serviço tem o seu consumidor, que herda de `ConsumidorAvisos`, e a sua rotina de anonimização, que herda de `RotinaAnonimizacao`: ela lista, pela cópia local, os turnarounds com AOBT há mais de 90 dias, e o `AuditoriaService` anonimiza a trilha deles e a dos registros sem turnaround vencidos (RNF-6). O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20).
+O pacote `contrato` tem o que os quatro serviços combinaram (ADR-0016): o identificador `UUID`, as enumerações de estado e de perfil, o tipo da ação sobre o alerta, o `Acesso` que a porta de entrada passa a cada ação e o `EnvelopeAviso`. O pacote `comum` mostra uma vez a infraestrutura que cada serviço tem no seu código: a trilha de auditoria (RNF-2), a tabela de avisos a publicar, a de avisos processados, o publicador e o consumidor de avisos. Cada serviço tem o seu consumidor, que herda de `ConsumidorAvisos`, e a sua rotina de anonimização, que herda de `RotinaAnonimizacao`: ela lista, pela cópia local, os turnarounds com AOBT há mais de 90 dias, e o `AuditoriaService` anonimiza a trilha deles e a dos registros sem turnaround vencidos (RNF-6).
 
 ![Diagrama de classes — contrato e infraestrutura comum](diagramas/13-classes-contrato.png)
+
+O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20). Quando o serviço volta, a `RetomadaPedidos` aciona o `PedidoService`, que consulta a Execução em Solo (`consultarPedido`) para cada pedido pendente e conclui ou desfaz o registro conforme a resposta.
+
+![Diagrama de classes — pedidos pendentes à Execução em Solo](diagramas/13-classes-pedidos-pendentes.png)
 
 ## 13.7 Conferência
 

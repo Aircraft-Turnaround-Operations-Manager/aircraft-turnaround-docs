@@ -34,8 +34,10 @@ VISTAS = {
   'contrato': ('Contrato entre os serviços e infraestrutura comum', [k for k in classes if k.split('.')[0] in ('contrato', 'comum')] +
                ['cadastro.ConsumidorAvisosCadastro', 'execucao.ConsumidorAvisosExecucao', 'monitoramento.ConsumidorAvisosMonitoramento', 'excecoes.ConsumidorAvisosExcecoes',
                 'cadastro.RotinaAnonimizacaoCadastro', 'execucao.RotinaAnonimizacaoExecucao', 'monitoramento.RotinaAnonimizacaoMonitoramento', 'excecoes.RotinaAnonimizacaoExcecoes',
-                'excecoes.TurnaroundReferenciaService', 'excecoes.PedidoService', 'excecoes.PedidoPendente', 'excecoes.PedidoPendenteRepository',
-                'excecoes.RetomadaPedidos', 'excecoes.TipoPedido', 'excecoes.SituacaoPedido'], None, ''),
+               ], None, ''),
+  'pedidos-pendentes': ('Pedidos pendentes do Exceções e Liberação à Execução em Solo',
+               ['excecoes.RetomadaPedidos', 'excecoes.PedidoService', 'excecoes.PedidoPendenteRepository', 'excecoes.PedidoPendente',
+                'excecoes.TipoPedido', 'excecoes.SituacaoPedido'], None, ''),
 }
 def tec(nome, titulo, lista):
     VISTAS[nome] = (titulo, lista, 'entidades', '')
@@ -132,10 +134,7 @@ disp('tecnica-acompanhamento', empilhar=[
   ('monitoramento.AlertaRepository', 'excecoes.RegistroAcaoAlertaView')])
 disp('tecnica-excecoes', 'left to right direction')
 disp('tecnica-reatribuicao-replanejamento', 'left to right direction')
-disp('contrato', empilhar=[
-  ('cadastro.ConsumidorAvisosCadastro', 'cadastro.RotinaAnonimizacaoCadastro'), ('execucao.ConsumidorAvisosExecucao', 'execucao.RotinaAnonimizacaoExecucao'),
-  ('monitoramento.ConsumidorAvisosMonitoramento', 'monitoramento.RotinaAnonimizacaoMonitoramento'),
-  ('excecoes.ConsumidorAvisosExcecoes', 'excecoes.RotinaAnonimizacaoExcecoes')])
+disp('contrato', 'left to right direction')
 disp('negocio-execucao', 'left to right direction', 'ortho')
 disp('negocio-monitoramento', 'left to right direction')
 
