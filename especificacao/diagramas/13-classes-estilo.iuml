@@ -33,4 +33,5 @@ skinparam class {
 !include 13-classes-execucao.iuml
 !include 13-classes-monitoramento.iuml
 !include 13-classes-excecoes.iuml
+!include 13-classes-ligacoes.iuml
 remove *

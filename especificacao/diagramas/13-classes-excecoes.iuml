@@ -245,7 +245,7 @@ namespace excecoes {
   ' ---------- interface ----------
 
   class ExcecaoView <<boundary>> {
-    + abrirFormulario(turnaroundId: UUID, alertaId: UUID): void
+    + abrirFormulario(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + buscarCodigo(texto: String): void
     + confirmarAbertura(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String): void
     + selecionarExcecao(excecaoId: UUID): void
@@ -253,7 +253,7 @@ namespace excecoes {
   }
 
   class ReatribuicaoView <<boundary>> {
-    + abrir(turnaroundId: UUID, alertaId: UUID): void
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + escolherTarefa(tarefaId: UUID): void
     + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String): void
   }
@@ -270,14 +270,14 @@ namespace excecoes {
   }
 
   class AtualizacaoTobtView <<boundary>> {
-    + abrirSolicitacao(turnaroundId: UUID, alertaId: UUID): void
+    + abrirSolicitacao(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + exibirSolicitacao(solicitacao: SolicitacaoAtualizacaoTobt): void
     + retirarSolicitacao(solicitacaoId: UUID): void
-    + atualizarTobt(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID): void
+    + atualizarTobt(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1]): void
   }
 
   class ReplanejamentoView <<boundary>> {
-    + abrirReplanejamento(turnaroundId: UUID, alertaId: UUID): void
+    + abrirReplanejamento(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime): void
     + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>): void
     + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String): void
@@ -290,14 +290,14 @@ namespace excecoes {
     + listarAbertas(turnaroundId: UUID, acesso: Acesso): List<Excecao>
     + listarTarefas(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
     + consultarCodigos(acesso: Acesso): TabelaCodigoAtraso
-    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID, acesso: Acesso): Excecao
+    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], acesso: Acesso): Excecao
     + encerrar(excecaoId: UUID, solucao: String, acesso: Acesso): EncerramentoExcecao
   }
 
   class ReatribuicaoController <<control>> {
     + consultarTarefa(tarefaId: UUID, acesso: Acesso): TarefaResumo
     + listarOperadoresDisponiveis(tarefaId: UUID, acesso: Acesso): List<OperadorDisponivel>
-    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID, acesso: Acesso): Reatribuicao
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID [0..1], acesso: Acesso): Reatribuicao
   }
 
   class LiberacaoController <<control>> {
@@ -309,16 +309,16 @@ namespace excecoes {
   class AtualizacaoTobtController <<control>> {
     + consultarTobt(turnaroundId: UUID, acesso: Acesso): TurnaroundReferencia
     + consultarSolicitacao(turnaroundId: UUID, acesso: Acesso): SolicitacaoAtualizacaoTobt
-    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID, alertaId: UUID, acesso: Acesso): AtualizacaoTobt
+    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1], alertaId: UUID [0..1], acesso: Acesso): AtualizacaoTobt
   }
 
   class ReplanejamentoController <<control>> {
     + listarNaoIniciadas(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
     + listarCatalogoSobDemanda(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
     + listarOperadoresAtivos(equipeId: UUID, acesso: Acesso): List<OperadorAtivo>
-    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID, acesso: Acesso): Replanejamento
-    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID, acesso: Acesso): Replanejamento
-    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID, acesso: Acesso): Replanejamento
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
   }
 
   ' ---------- serviço ----------
@@ -334,7 +334,7 @@ namespace excecoes {
     + listarAbertas(turnaroundId: UUID): List<Excecao>
     + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
     + consultarCodigos(): TabelaCodigoAtraso
-    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID, autorId: UUID): Excecao
+    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], autorId: UUID): Excecao
     + encerrar(excecaoId: UUID, solucao: String, autorId: UUID): EncerramentoExcecao
   }
 
@@ -346,14 +346,15 @@ namespace excecoes {
     - acoesAlerta: AcaoAlertaService
     + consultarTarefa(tarefaId: UUID): TarefaResumo
     + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
-    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID, autorId: UUID): Reatribuicao
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID [0..1], autorId: UUID): Reatribuicao
   }
 
-  ' Chamado pelos outros serviços deste pacote, na transação da ação: confere que o alerta ainda não tem ação e grava a AcaoAlerta.
+  ' Chamado pelos outros serviços deste pacote, na transação da ação: confere que o alerta ainda não tem ação e grava a
+' AcaoAlerta já montada por quem chama, com o registro tipado (excecao, reatribuicao, replanejamento ou atualizacaoTobt).
   class AcaoAlertaService <<service>> {
     - acoes: AcaoAlertaRepository
     + conferirSemAcao(alertaId: UUID): void
-    + registrar(alertaId: UUID, turnaround: TurnaroundReferencia, tipoAcao: TipoAcaoAlerta, registroId: UUID, autorId: UUID, momento: DateTime): AcaoAlerta
+    + registrar(acao: AcaoAlerta): void
   }
 
   class LiberacaoService <<service>> {
@@ -379,7 +380,7 @@ namespace excecoes {
     + avaliarProjecao(turnaroundId: UUID, projecaoProntidao: DateTime, calculadaEm: DateTime): void
     + consultarTobt(turnaroundId: UUID): TurnaroundReferencia
     + consultarSolicitacao(turnaroundId: UUID): SolicitacaoAtualizacaoTobt
-    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID, alertaId: UUID, autorId: UUID): AtualizacaoTobt
+    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1], alertaId: UUID [0..1], autorId: UUID): AtualizacaoTobt
     + encerrarPorLiberacao(turnaroundId: UUID): void
   }
 
@@ -392,9 +393,9 @@ namespace excecoes {
     + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
     + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
     + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
-    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID, autorId: UUID): Replanejamento
-    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID, autorId: UUID): Replanejamento
-    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID, autorId: UUID): Replanejamento
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID [0..1], autorId: UUID): Replanejamento
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID [0..1], autorId: UUID): Replanejamento
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID [0..1], autorId: UUID): Replanejamento
   }
 
   class PedidoService <<service>> {
@@ -596,14 +597,6 @@ namespace excecoes {
   excecoes.ExecucaoEmSoloCliente ..> excecoes.OperadorAtivo
   excecoes.ExecucaoEmSoloCliente ..> excecoes.TarefaResumo
 
-  ' ---------- ligações com outros serviços (tela do mesmo site; cliente para o controle que atende o pedido) ----------
-
-  monitoramento.AlertasView ..> excecoes.RegistroAcaoAlertaView
-  excecoes.RegistroAcaoAlertaView ..> monitoramento.AlertaController
-  excecoes.ReplanejamentoView ..> monitoramento.LinhaDoTempoView
-  excecoes.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
-  excecoes.ExecucaoEmSoloCliente ..> execucao.AtribuicaoController
-  excecoes.ExecucaoEmSoloCliente ..> execucao.ReplanejamentoController
 
   comum.ConsumidorAvisos <|-- excecoes.ConsumidorAvisosExcecoes
   comum.RotinaAnonimizacao <|-- excecoes.RotinaAnonimizacaoExcecoes

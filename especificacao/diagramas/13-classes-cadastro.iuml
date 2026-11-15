@@ -632,12 +632,6 @@ namespace cadastro {
   cadastro.PlanoService ..> cadastro.PlanoConfirmado
   cadastro.PlanoService ..> cadastro.OperadorAtivo
   cadastro.EquipeService ..> cadastro.OperadorAtivo
-  cadastro.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
-  cadastro.ExecucaoEmSoloCliente ..> execucao.ChegadaController
-  cadastro.ExecucaoEmSoloCliente ..> execucao.TarefaController
-  execucao.SaidaPosicaoView ..> cadastro.UsuarioController
-  excecoes.ExcecaoView ..> cadastro.UsuarioController
-  monitoramento.PainelView ..> cadastro.UsuarioController
   comum.ConsumidorAvisos <|-- cadastro.ConsumidorAvisosCadastro
   comum.RotinaAnonimizacao <|-- cadastro.RotinaAnonimizacaoCadastro
   cadastro.AutenticacaoService --> comum.AuditoriaService

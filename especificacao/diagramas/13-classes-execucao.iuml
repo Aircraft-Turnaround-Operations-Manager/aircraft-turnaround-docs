@@ -624,9 +624,6 @@ namespace execucao {
   execucao.TarefaService ..> execucao.TarefaResumo
   execucao.ReplanejamentoService ..> execucao.TarefaResumo
 
-  ' ---------- ligações com outros serviços (cliente para o controle que atende o pedido) ----------
-
-  execucao.CadastroCliente ..> cadastro.EquipeController
 
   comum.ConsumidorAvisos <|-- execucao.ConsumidorAvisosExecucao
   comum.RotinaAnonimizacao <|-- execucao.RotinaAnonimizacaoExecucao

@@ -2,7 +2,8 @@
 ' Fonte única das classes deste pacote; as vistas 13-classes-*.puml incluem este arquivo.
 ' Convenções (seção 13.2 do item): «entity» classe de negócio (tabela do item 12); «dto» dado de entrada ou saída sem tabela;
 ' «enumeration» domínio fechado, com os valores exatos do CONTEXT.md e do Apêndice B; «dataType» tipo simples.
-' Tipos UML neutros (decisão B1): String, Integer, Boolean, Date, DateTime, UUID e List<T>; void quando não há retorno.
+' Tipos UML neutros (decisão B1): String, Integer, Real, Boolean, Date, DateTime, UUID e List<T>; void quando não há retorno.
+' [0..1] marca o atributo e o parâmetro opcionais.
 
 namespace contrato {
 
@@ -55,10 +56,10 @@ namespace contrato {
     - tipo: String
     - versao: Integer
     - ocorridoEm: DateTime
-    - turnaroundId: UUID
-    - autorId: UUID
+    - turnaroundId: UUID [0..1]
+    - autorId: UUID [0..1]
     - origem: String
-    - causaId: UUID
+    - causaId: UUID [0..1]
     - dados: String
     + {static} novo(tipo: String, turnaroundId: UUID, autorId: UUID, causaId: UUID, dados: String): EnvelopeAviso
   }
@@ -71,8 +72,6 @@ namespace contrato {
   }
 
   contrato.PortaDeEntrada ..> contrato.Acesso
-  contrato.PortaDeEntrada ..> cadastro.AcessoController
-  contrato.PortaDeEntrada ..> cadastro.AutenticacaoController
 }
 
 namespace comum {

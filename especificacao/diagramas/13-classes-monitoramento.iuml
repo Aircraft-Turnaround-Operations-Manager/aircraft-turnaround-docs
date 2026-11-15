@@ -404,8 +404,8 @@ namespace monitoramento {
     + aplicarTurnaroundAberto(turnaround: TurnaroundMonitorado): void
     + aplicarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
     + aplicarPlano(turnaroundId: UUID, tarefas: List<TarefaMonitorada>): void
-    + aplicarTarefa(tarefa: TarefaMonitorada, versao: Integer, causa: CausaRecalculo, causaId: UUID): void
-    + aplicarResponsavel(tarefaId: UUID, responsavelId: UUID, versao: Integer): void
+    + aplicarTarefa(turnaroundId: UUID, tarefa: TarefaMonitorada, versao: Integer, causa: CausaRecalculo, causaId: UUID): void
+    + aplicarResponsavel(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, versao: Integer): void
     + aplicarMarco(turnaroundId: UUID, tipo: MarcoMonitorado, horario: DateTime, causaId: UUID): void
     + aplicarEstado(turnaroundId: UUID, estado: EstadoTurnaround, momento: DateTime): void
     + aplicarTobtVigente(atualizacao: AtualizacaoTobtMonitorada): void
@@ -561,13 +561,6 @@ namespace monitoramento {
   monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.AvisoChecagem : avisoChecagem
   monitoramento.IndicadoresAderencia "*" --> "*" monitoramento.TurnaroundMonitorado : turnarounds
 
-  ' ---------- ligações com outros serviços (nome das pessoas e das equipes) ----------
-
-  monitoramento.LinhaDoTempoView ..> cadastro.UsuarioController
-  monitoramento.LinhaDoTempoView ..> cadastro.EquipeController
-  monitoramento.AlertasView ..> cadastro.UsuarioController
-  monitoramento.AlertasView ..> cadastro.EquipeController
-  monitoramento.AvisoChecagemView ..> cadastro.UsuarioController
 
   comum.ConsumidorAvisos <|-- monitoramento.ConsumidorAvisosMonitoramento
   comum.RotinaAnonimizacao <|-- monitoramento.RotinaAnonimizacaoMonitoramento
