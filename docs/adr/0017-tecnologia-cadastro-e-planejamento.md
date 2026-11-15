@@ -9,7 +9,7 @@ decisor: Eduardo Fabri
 itens_template: [12, 13, 14]
 areas: [A]
 fontes: []
-relacionados: [adr-0015, adr-0016, adr-0003, adr-0005, adr-0010]
+relacionados: [adr-0015, adr-0016, adr-0018, adr-0020, adr-0003, adr-0005, adr-0010]
 ---
 # ADR-0017 — Tecnologia do serviço Cadastro e Planejamento: Java 21, Spring Boot e PostgreSQL
 
@@ -55,6 +55,15 @@ relacionados: [adr-0015, adr-0016, adr-0003, adr-0005, adr-0010]
 | 7. Identificadores | UUID versão 4 gerado pelo próprio serviço para usuários, equipes, modelos, tarefas do modelo, pontos de QR Code, turnarounds e planos; coluna do tipo `uuid`. O identificador recebido de outro serviço é guardado sem alteração e sem chave estrangeira (ADR-0015). |
 | 8. Nomes | Classes em PascalCase no singular (`Usuario`, `ModeloTarefa`, `EquipeController`); métodos e atributos em camelCase; tabelas e campos em snake_case no singular (`usuario`, `equipe_id`), versionados nas migrações do Flyway; JSON em camelCase (`turnaroundId`). Tudo em português, sem acento no código. |
 
+**Interfaces do Cadastro com a porta de entrada e com os outros serviços.** A porta de entrada e o Cadastro são da área A (ADR-0016, ponto 2), por isso as amarrações que os outros serviços supõem ficam decididas aqui ([pendência #178](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/178)):
+
+1. **Identidade passada aos serviços: token interno assinado.** A cada ação, a porta de entrada confere o token de login, consulta o Cadastro e só então gera um token interno: um token JSON assinado (JWT), com validade de 60 s, assinado com a chave privada da porta de entrada. Ele leva o identificador do usuário, o perfil, a equipe (Operador de Solo/Rampa), a companhia (Autoridade de Liberação), o identificador da sessão e se a chamada é ação do usuário. Cada serviço confere a assinatura com a chave pública da porta de entrada e a validade, e recusa a chamada sem token válido. Cabeçalhos simples foram descartados: bastaria um serviço exposto na rede para alguém se passar por outro perfil.
+2. **Ação do usuário × consulta automática (RNF-5).** O site marca as consultas automáticas (painel, recarga de lista) ao chamar a porta de entrada. Nelas, a porta de entrada não renova a sessão e põe "não é ação do usuário" no token interno; as demais chamadas renovam a sessão.
+3. **Consultas que o Cadastro oferece.** À porta de entrada, a situação, o perfil, a equipe e a companhia do usuário. À Execução em Solo, os operadores ativos de uma equipe, com identificador e nome, consultados na hora da reatribuição, da inclusão de tarefa e da lista de disponíveis (RF-37, RF-42 e RF-43), sem cópia na Execução em Solo (ADR-0015, regra 1). Aos quatro perfis, pela porta de entrada, o nome dos usuários e das equipes, para exibir nas telas (RNF-1).
+4. **Consultas que o Cadastro faz à Execução em Solo.** Antes de desativar um operador ou uma equipe ou de trocar a equipe de um operador (RF-2 e RF-9), as tarefas pendentes nos planos já entregues; as dos planos ainda não confirmados o Cadastro confere no próprio banco. Antes de gravar o EIBT e o MTTT (RF-10; UC10, RN3), se a chegada já foi registrada. Se a Execução em Solo não responder, a ação é recusada como falha técnica (ADR-0016, ponto 3), e nada é gravado.
+5. **Confirmação do plano (RF-5; RNF-20).** O Cadastro grava o plano como "confirmação pendente", com uma chave de idempotência, e só então o envia à Execução em Solo. Com a resposta positiva, marca o plano como confirmado; com a recusa (por exemplo, tarefa já iniciada), volta ao plano anterior. Se cair depois do envio, a retomada reenvia o mesmo pedido com a mesma chave, e a Execução em Solo responde o mesmo resultado, como o pedido pendente da ADR-0020. Enquanto a confirmação está pendente, o plano não pode ser editado.
+6. **Prazo dos dados pessoais (RNF-6).** O Cadastro não conhece sozinho todos os turnarounds de um usuário, porque a reatribuição e os registros ficam na Execução em Solo. O prazo é calculado com o aviso de encerramento do turnaround (Fora de bloco), que a Execução em Solo publica com o horário real de saída da posição (AOBT) e os usuários que tiveram tarefa ou registro nele. O Cadastro grava esses vínculos e anonimiza cada usuário na data mais tardia entre 90 dias depois da desativação e 90 dias depois do AOBT de cada turnaround vinculado. O conteúdo desse aviso é da Execução em Solo e fica como pendência da área B.
+
 **Tipos do item 12 no PostgreSQL.** O item 12 continua com tipos SQL padrão (decisão B1). No desenvolvimento, `VARCHAR(n)` fica igual, `TIMESTAMP WITH TIME ZONE` vira `timestamptz`, `BOOLEAN` e `INTEGER` ficam iguais e os identificadores viram `uuid`.
 
 ## Consequências
@@ -64,6 +73,7 @@ relacionados: [adr-0015, adr-0016, adr-0003, adr-0005, adr-0010]
 - No desenvolvimento, o serviço roda com PostgreSQL e RabbitMQ em Docker na máquina do integrante (ADR-0016, ponto 4). Os testes de integração usam o mesmo PostgreSQL em contêiner, para que as restrições de unicidade e os tipos `uuid` e `timestamptz` sejam testados como em produção.
 - Como a porta de entrada consulta o Cadastro a cada ação, o serviço não guarda sessão na memória e pode rodar com mais de uma instância atrás da porta de entrada, para cumprir os 99,5% do RNF-19. A verificação de saúde do Actuator serve à medição a cada 1 minuto.
 - A tabela de saída dos avisos e a tabela de avisos já processados são técnicas e do próprio serviço, mas os diagramas de sequência do item 14 gravam nelas. Por isso entram no modelo do Cadastro e Planejamento no item 12 como tabelas técnicas, como pedem também as ADRs da Execução em Solo e do Monitoramento; isso vai para a pendência do item 12 (`rdsalvesPUC`).
+- A ADR-0018 (Execução em Solo) usa Java 25, e esta usa Java 21. A diferença fica aceita: as duas são versões de suporte longo, a porta de entrada também fica em Java 21, e o contrato entre os serviços não depende da versão.
 - A escolha não muda nenhum RF, estória ou caso de uso, nem as ADRs 0015 e 0016. Se a implementação pedir outro banco ou framework, uma ADR nova substitui esta.
 
 ---
@@ -72,6 +82,7 @@ relacionados: [adr-0015, adr-0016, adr-0003, adr-0005, adr-0010]
 
 - **Divisão em microsserviços:** [ADR-0015](0015-divisao-em-microsservicos.md)
 - **Contrato entre os serviços:** [ADR-0016](0016-contrato-entre-os-servicos.md)
+- **Outros serviços:** [ADR-0018](0018-tecnologia-execucao-em-solo.md) (Execução em Solo), [ADR-0020](0020-tecnologia-excecoes-e-liberacao.md) (Exceções e Liberação, pedido pendente)
 - **Regras usadas na escolha:** [ADR-0003](0003-atualizar-previsao-na-antecipacao.md) (TOBT planejado), [ADR-0005](0005-abastecimento-com-passageiros-configuravel.md) (política de abastecimento), [ADR-0010](0010-administrador-usuario-e-equipe-do-operador.md) (usuários, perfis e equipes)
 - **Requisitos do serviço:** [Item 6 — área A](../../especificacao/06-requisitos-funcionais/area-a.md), [Item 8 — área A](../../especificacao/08-requisitos-nao-funcionais/area-a.md)
 - **Critérios do RA2:** [entregas/ra2-criterios-de-aceite.md](../../entregas/ra2-criterios-de-aceite.md) (decisões B1 e B2)

@@ -36,6 +36,8 @@ Cada versão entregue tem uma tag Git `vX.Y.Z` no commit que gerou o PDF enviado
 
 - ADR-0017: tecnologia do serviço Cadastro e Planejamento (Java 21, Spring Boot 4 e PostgreSQL 16), com o motivo de cada escolha e como o serviço cumpre o contrato da ADR-0016. É a primeira das quatro ADRs de tecnologia (decisão B2); escolher na mesma pilha da porta de entrada simplifica a emissão e a conferência do token de login ([#158](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/158)).
 
+- ADR-0017, interfaces do Cadastro e da porta de entrada pedidas na pendência #178: token interno assinado de 60 s com usuário, perfil, equipe e companhia; consulta automática sem renovar a sessão (RNF-5); consultas oferecidas e feitas pelo Cadastro; confirmação do plano com pedido pendente e chave de idempotência (RNF-20); prazo do RNF-6 pelo aviso de encerramento; Java 21 mantido ao lado do Java 25 da ADR-0018 ([#178](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/178)).
+
 ### Alterado
 
 - Os 44 RFs ganharam um título no padrão Ação-Resultado-Objeto (ARO), numa coluna nova (TÍTULO) do item 6. É a anotação 1 do professor na correção do RA1. 23 títulos mudaram e foram levados também para as estórias (item 7), para a matriz (Apêndice A) e para os 16 casos de uso que tinham o mesmo nome, nos itens 9 e 10. O RF-18 e o RF-41 ficaram com o título antigo, porque no ARO perderiam informação: o nome do estado "Não aplicável" e a condição dos 5 minutos ([#139](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/139)).
