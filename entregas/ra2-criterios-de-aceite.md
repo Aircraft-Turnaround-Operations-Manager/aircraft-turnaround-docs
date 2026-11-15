@@ -26,7 +26,7 @@
 1. **Condição de conclusão:** todos os critérios aplicáveis deste arquivo (`C00.y`, `C12.y` a `C15.y`, `Y.y` e `K.y`) marcados como atendidos, cada um com evidência.
 2. **Lista de tarefas antes de começar,** com um item por ID de critério do escopo pedido.
 3. **Evidência por critério:** seção do documento, contagem feita, nome do arquivo do diagrama ou da planilha.
-4. **Contagem por comando, não por estimativa:** 37 diagramas de sequência, 179 critérios de aceite cobertos etc. são conferidos por script ou listagem.
+4. **Contagem por comando, não por estimativa:** 37 diagramas de sequência, 180 critérios de aceite cobertos etc. são conferidos por script ou listagem.
 5. **Não encerrar com itens abertos;** só parar em bloqueio real, dizendo qual critério e por quê.
 6. **Verificação independente ao final,** separada da escrita, que recebe só este arquivo e o documento produzido.
 7. **Relatório final** em tabela `ID | status | evidência`.
@@ -190,7 +190,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 **Rubrica, Excede:** "Planilha completa e bem estruturada, contendo cenários diversos, dados de entrada, passos, resultados esperados e clara relação com os critérios de aceite."
 
 - [ ] **C15.1** **Estrutura:** a planilha tem as colunas `ID` (CT-nnn), `Caso de uso`, `Cenário` (fluxos percorridos, ex.: FP1–FP3 / A1.1–A1.3), `Estória e critério de aceite` (ex.: US015-CA2), `Caso de teste` (título), `Pré-condições`, `Dados de entrada`, `Passos` e `Resultado esperado`.
-- [ ] **C15.2** **Relação com os critérios de aceite:** todo critério de aceite das 44 estórias (179 no RA1) é coberto por pelo menos um caso de teste, e todo caso de teste aponta para um critério existente (conferido por script).
+- [ ] **C15.2** **Relação com os critérios de aceite:** todo critério de aceite das 44 estórias (179 no RA1; 180 depois da #190) é coberto por pelo menos um caso de teste, e todo caso de teste aponta para um critério existente (conferido por script).
 - [ ] **C15.3** **Cenários diversos:** para cada um dos 37 casos de uso, o fluxo básico, cada fluxo alternativo e cada fluxo de exceção têm pelo menos um cenário com caso de teste.
 - [ ] **C15.4** **Dados de entrada concretos:** valores de verdade (horários com data e fuso, identificadores, quantidades, códigos de atraso da ANAC), e não "dados válidos"; valores-limite onde a regra tem limite (ex.: TOBT + 5 min, 5 s, antecipação de 5 min; ADR-0001 e ADR-0003).
 - [ ] **C15.5** **Passos:** cada caso de teste tem passos numerados, executáveis por quem não escreveu o caso.
@@ -226,8 +226,8 @@ Itens 7 e 10 (RA1) ──► Item 15 (casos de teste) ── pode começar já; 
 | A — Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 48 critérios |
 | B — Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 47 critérios |
 | C — Monitoramento | 7 (UC22 a UC28) | 14 estórias, 52 critérios |
-| D — Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 32 critérios |
-| **Total** | **37** | **44 estórias, 179 critérios** |
+| D — Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios |
+| **Total** | **37** | **44 estórias, 180 critérios** |
 
 - **Janela de tempo:** de 28/10 a 28/11. Pelo plano de ensino, as aulas de 29/10 (classes), 05/11 (sequência) e 12/11 e 19/11 (casos de teste) são de prática desses itens; 21/11 é o TDE3; a entrega é sábado, 28/11, às 23:59.
 
@@ -244,7 +244,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.5** Todo critério de aceite (item 7) é coberto por pelo menos um caso de teste (item 15), e todo fluxo de cada caso de uso (item 10) tem cenário de teste.
 - [ ] **K.6** Os estados (turnaround e tarefa) têm os mesmos valores no `CONTEXT.md`, no item 12 (domínio do campo), no item 13 (enumerações), no item 14 (condições de guarda) e no item 15 (resultados esperados).
 - [ ] **K.7** O título ARO de cada RF é idêntico nos itens 6 e 7 e no Apêndice A (C00.2).
-- [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 179 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
+- [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 180 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
 - [ ] **K.9** Os critérios gerais Y.1 a Y.8 estão atendidos, e a checagem do RA1 continua passando (`scripts/verificar_revisao.py`, `scripts/marcos_nos_diagramas.py`).
 - [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D16 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
 - [ ] **K.11** Não há issue aberta com o rótulo `pendencia-cruzada`: toda suposição de um item sobre outro foi resolvida com o ID do requisito ou com a decisão do grupo registrada.
@@ -266,3 +266,4 @@ Respostas de rdsalvesPUC em 28/10. Cada decisão fechada vira ADR na tarefa corr
 | B6 | **Dicionário de dados como apêndice** (Apêndice B, C12.10). | Decidido |
 | B7 | **Divisão:** ajuste ARO e itens 12 e 13 com rdsalvesPUC; itens 14 e 15 por área (seção 4). | Decidido |
 | B8 | **Contrato comum entre os serviços (ADR-0016):** porta de entrada (Spring Cloud Gateway) que consulta o Cadastro a cada ação; login próprio no Cadastro; REST com JSON entre serviços e no site, com GraphQL só nos painéis e WebSocket para as atualizações; RabbitMQ com envelope comum dos avisos; horários em UTC; UUID versão 4; nomes em português, com tabelas e campos em snake_case singular e JSON em camelCase. Votado pelos quatro integrantes; vale como base do RA2 e pode ser revisto por uma ADR nova. | Decidido |
+| B9 | **Blueprint do turnaround como apêndice** (Apêndice C), só na versão com a correção da ADR-0015; a primeira proposta e os cinco conflitos ficam na pesquisa ([#184](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/184)). Decidido por rdsalvesPUC, sem votação. | Decidido |

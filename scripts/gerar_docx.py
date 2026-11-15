@@ -5,7 +5,7 @@ Precisa de python-docx. O template (ESSW - Especificacao de Projeto - Template.d
 Figura PNG com um .svg de mesmo nome ao lado entra em SVG (vetorial no Word 2016+ e no PDF), com a PNG de reserva.
 A declaração de uso de IA vem de especificacao/00-*.md (ou de --ia=ARQUIVO) e entra antes do item 1, sem número.
 Item sem arquivo em especificacao/ sai do documento; com --manter-ra2, os itens 12 a 15 sem arquivo ficam com o texto do template.
-Depois do item 15 vêm os apêndices (apendice-*.md, em ordem: A matriz, B dicionário de dados) e as referências.
+Depois do item 15 vêm os apêndices (apendice-*.md, em ordem: A matriz, B dicionário de dados, C blueprint) e as referências.
 Depois de gerar, abra o .docx no Word, atualize o sumário (F9) e exporte em PDF: o script não calcula páginas.
 """
 import copy, io, re, struct, sys
@@ -409,7 +409,7 @@ def main():
     ant = ancora.getprevious()
     if ant is None or not eh_pb(ant):
         p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE); ancora.addprevious(p._p)
-    for k, ap in enumerate(sorted(pasta.glob('apendice-*.md'))):  # A matriz, B dicionário de dados
+    for k, ap in enumerate(sorted(pasta.glob('apendice-*.md'))):  # A matriz, B dicionário de dados, C blueprint
         if k:
             p = doc.add_paragraph(); p.add_run().add_break(WD_BREAK.PAGE); ancora.addprevious(p._p)
         m.escrever(ancora, blocos(ler(ap), pasta), pasta, tam=7, h1=True, sem_num=True)
