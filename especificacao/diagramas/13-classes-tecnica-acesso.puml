@@ -1,0 +1,24 @@
+@startuml
+' Item 13 — Autenticação, usuários e equipes. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore cadastro
+restore contrato
+restore contrato.PortaDeEntrada
+restore contrato.Acesso
+restore cadastro.AutenticacaoView
+restore cadastro.UsuarioView
+restore cadastro.EquipeView
+restore cadastro.AcessoController
+restore cadastro.AutenticacaoController
+restore cadastro.UsuarioController
+restore cadastro.EquipeController
+restore cadastro.AutenticacaoService
+restore cadastro.UsuarioService
+restore cadastro.EquipeService
+restore cadastro.UsuarioRepository
+restore cadastro.FalhaLoginRepository
+restore cadastro.SessaoRepository
+restore cadastro.EquipeRepository
+restore cadastro.ExecucaoEmSoloCliente
+restore cadastro.TarefaPendente
+@enduml

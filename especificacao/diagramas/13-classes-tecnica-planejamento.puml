@@ -1,0 +1,24 @@
+@startuml
+' Item 13 — Abertura e planejamento do turnaround. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore cadastro
+restore cadastro.TurnaroundView
+restore cadastro.ModeloTarefaView
+restore cadastro.PlanoView
+restore cadastro.PoliticaAbastecimentoView
+restore cadastro.TurnaroundController
+restore cadastro.CompanhiaController
+restore cadastro.ModeloTarefaController
+restore cadastro.PlanoController
+restore cadastro.PoliticaAbastecimentoController
+restore cadastro.TurnaroundService
+restore cadastro.ModeloTarefaService
+restore cadastro.PlanoService
+restore cadastro.PoliticaAbastecimentoService
+restore cadastro.TurnaroundRepository
+restore cadastro.CompanhiaRepository
+restore cadastro.ModeloTarefaRepository
+restore cadastro.PlanoRepository
+restore cadastro.PoliticaAbastecimentoRepository
+restore cadastro.ExecucaoEmSoloCliente
+@enduml

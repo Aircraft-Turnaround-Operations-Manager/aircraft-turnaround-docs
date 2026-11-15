@@ -1,0 +1,18 @@
+@startuml
+' Item 13 — Classes de negócio — Execução em Solo. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore execucao
+restore execucao.TipoMarco
+restore execucao.TipoRegistro
+restore execucao.Turnaround
+restore execucao.Marco
+restore execucao.CorrecaoAibt
+restore execucao.Tarefa
+restore execucao.PontoConfirmacao
+restore execucao.LeituraQrCode
+restore execucao.TabelaCodigoAtraso
+restore execucao.CodigoAtraso
+restore execucao.RegistroTarefa
+restore execucao.HistoricoEstadoTurnaround
+restore execucao.HistoricoEstadoTarefa
+@enduml

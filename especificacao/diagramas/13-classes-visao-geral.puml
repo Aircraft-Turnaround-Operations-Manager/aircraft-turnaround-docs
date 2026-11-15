@@ -1,0 +1,55 @@
+@startuml
+' Item 13 — Visão geral das classes de negócio. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+left to right direction
+restore cadastro
+restore excecoes
+restore execucao
+restore monitoramento
+restore cadastro.Equipe
+restore cadastro.Companhia
+restore cadastro.Usuario
+restore cadastro.FalhaLogin
+restore cadastro.Sessao
+restore cadastro.PoliticaAbastecimento
+restore cadastro.ModeloTarefa
+restore cadastro.TarefaModelo
+restore cadastro.PontoConfirmacaoModelo
+restore cadastro.Turnaround
+restore cadastro.Plano
+restore cadastro.TarefaPlano
+restore cadastro.PontoConfirmacaoPlano
+restore excecoes.TurnaroundReferencia
+restore excecoes.SolicitacaoAtualizacaoTobt
+restore excecoes.AtualizacaoTobt
+restore excecoes.TabelaCodigoAtraso
+restore excecoes.CodigoAtraso
+restore excecoes.Excecao
+restore excecoes.Reatribuicao
+restore excecoes.Replanejamento
+restore excecoes.AcaoAlerta
+restore excecoes.Liberacao
+restore excecoes.PedidoPendente
+restore execucao.Turnaround
+restore execucao.Marco
+restore execucao.CorrecaoAibt
+restore execucao.Tarefa
+restore execucao.PontoConfirmacao
+restore execucao.LeituraQrCode
+restore execucao.TabelaCodigoAtraso
+restore execucao.CodigoAtraso
+restore execucao.RegistroTarefa
+restore execucao.HistoricoEstadoTurnaround
+restore execucao.HistoricoEstadoTarefa
+restore monitoramento.TurnaroundMonitorado
+restore monitoramento.TarefaMonitorada
+restore monitoramento.Projecao
+restore monitoramento.ProjecaoTarefa
+restore monitoramento.CaminhoCritico
+restore monitoramento.CaminhoCriticoTarefa
+restore monitoramento.Alerta
+restore monitoramento.AlertaTarefa
+restore monitoramento.AvisoChecagem
+restore monitoramento.AtualizacaoTobtMonitorada
+hide members
+@enduml

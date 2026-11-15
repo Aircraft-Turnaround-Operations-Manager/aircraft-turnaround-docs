@@ -1,0 +1,25 @@
+@startuml
+' Item 13 — Exceções, atualização do TOBT e ação sobre o alerta. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore excecoes
+restore execucao
+restore excecoes.ExcecaoView
+restore excecoes.RegistroAcaoAlertaView
+restore excecoes.AtualizacaoTobtView
+restore excecoes.ExcecaoController
+restore excecoes.AcaoAlertaController
+restore excecoes.AtualizacaoTobtController
+restore excecoes.ExcecaoService
+restore excecoes.AcaoAlertaService
+restore excecoes.AtualizacaoTobtService
+restore excecoes.PedidoService
+restore excecoes.ExcecaoRepository
+restore excecoes.TurnaroundReferenciaRepository
+restore excecoes.CodigoAtrasoRepository
+restore excecoes.AcaoAlertaRepository
+restore excecoes.SolicitacaoAtualizacaoTobtRepository
+restore excecoes.AtualizacaoTobtRepository
+restore excecoes.ExecucaoEmSoloCliente
+restore execucao.TurnaroundController
+restore execucao.TurnaroundService
+@enduml

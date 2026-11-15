@@ -1,0 +1,24 @@
+@startuml
+' Item 13 — Reatribuição e replanejamento. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore excecoes
+restore execucao
+restore excecoes.ReatribuicaoView
+restore excecoes.ReplanejamentoView
+restore excecoes.ReatribuicaoController
+restore excecoes.ReplanejamentoController
+restore excecoes.ReatribuicaoService
+restore excecoes.ReplanejamentoService
+restore excecoes.PedidoService
+restore excecoes.ReatribuicaoRepository
+restore excecoes.ReplanejamentoRepository
+restore excecoes.ExecucaoEmSoloCliente
+restore excecoes.OperadorDisponivel
+restore excecoes.TarefaResumo
+restore execucao.AtribuicaoController
+restore execucao.ReplanejamentoController
+restore execucao.AtribuicaoService
+restore execucao.ReplanejamentoService
+restore execucao.CadastroCliente
+restore execucao.OperadorDisponivel
+@enduml
