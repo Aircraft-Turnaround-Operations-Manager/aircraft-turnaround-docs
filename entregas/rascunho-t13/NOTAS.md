@@ -14,6 +14,7 @@ Parada em 15/11/2026, 05:20, com 77% do limite de 5 horas. Tudo está na branch 
 
 - Passos 1 e 2 feitos: correções da EX e da EL aplicadas; script em 0 problema; vistas regeradas.
 - Script ganhou: `[0..1]` contra a coluna Obrigatório do Apêndice B (achou 42 no Cadastro e no Monitoramento, já corrigidos); dependência entre serviços só de tela e de cliente para controle (passo 5 feito); contrato cliente × controle; «dto» espelho igual dos dois lados.
+- Siglas do texto passadas (TOBT, DTO, UC, AIBT, QR Code na primeira ocorrência).
 - Decisões novas: gravação pelo todo da composição (Execução em Solo sem MarcoRepository e sem os repositórios de histórico; as partes só consultam); `EncerramentoExcecao` «dto» (UC33 passo 7 mostra o estado de retorno); `PlanoConfirmado`, `TarefaPlanejada` e `PontoPlanejado` também no Cadastro, e o cliente chama `receberPlano`; `AuditoriaService.existeCausa` responde o `consultarPedido`.
 
 ## Próximos passos, em ordem
@@ -90,7 +91,7 @@ Siglas: EX = conferencia-execucao.md; EL = conferencia-excecoes.md.
 - EX31: já explicado no texto 13.2 (valores com acento, constante sem acento no código).
 - EX32: `atualizarTobtVigente(turnaroundId, tobtVigente, ocorridoEm)`.
 
-## Fora do item 13: registrar antes do PR
+## Fora do item 13: registrado em 15/11 (#151, #178, #179, #183 por comentário; #205 item 12; #206 área D UC32/UC36; #207 dúvidas do grupo)
 
 - **#151, T14-D:** o UC32 de exemplo não bate com as classes (EL-O1, EX-O1).
 - **#183:** o Exceções e Liberação compara a projeção com o TOBT; o Monitoramento publica toda projeção; e o canal da solicitação passa a ser o `CoordenadorNotificador` (EL-O7).
