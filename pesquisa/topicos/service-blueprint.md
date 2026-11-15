@@ -14,7 +14,7 @@ atualizado: 2026-11-13
 
 > Base de conhecimento do projeto · revisão momento a momento feita em 30/10/2026 para decidir a divisão em microsserviços · versão interativa no [artefato publicado](https://claude.ai/artifact/8sGNer92aRqri469tj5i7V) · convenções e índices no [mapa da pesquisa](../README.md).
 
-> **Decisão vigente (prevalece sobre o texto abaixo):** [D15 — Divisão em quatro microsserviços](../../docs/adr/0015-divisao-em-microsservicos.md), complementada pela [D16 — Contrato entre os serviços](../../docs/adr/0016-contrato-entre-os-servicos.md). Este arquivo é o material de construção da D15: guarda a análise que levou a ela. As regras de quem é dono de cada dado e de quando usar aviso ou pedido estão na ADR.
+> **Decisão vigente (prevalece sobre o texto abaixo):** [D15 — Divisão em quatro microsserviços](../../docs/adr/0015-divisao-em-microsservicos.md), complementada pela [D16 — Contrato entre os serviços](../../docs/adr/0016-contrato-entre-os-servicos.md). Este arquivo é o material de construção da D15: guarda a análise que levou a ela. As regras de quem é dono de cada dado e de quando usar aviso ou pedido estão na ADR. A versão com a correção, sem a primeira proposta e os conflitos, está no [Apêndice C](../../especificacao/apendice-c-blueprint-do-turnaround.md) da especificação.
 
 ## Para que serve
 
@@ -80,5 +80,5 @@ Os oito momentos não cobrem todos os casos entre serviços. Exemplo: o encerram
 - **Decisão que nasceu daqui:** [ADR-0015](../../docs/adr/0015-divisao-em-microsservicos.md) · **Contrato entre os serviços:** [ADR-0016](../../docs/adr/0016-contrato-entre-os-servicos.md)
 - **Chegada registrada pelo operador:** [ADR-0013](../../docs/adr/0013-chegada-registrada-pelo-operador.md) · **Serviços sob demanda:** [ADR-0014](../../docs/adr/0014-servicos-sob-demanda.md)
 - **Pesquisa relacionada:** [Marcos e horários](marcos-e-horarios.md) · [Atividades, paralelismo e dependências](atividades-e-dependencias.md) · [Papéis e atores](papeis-e-atores.md)
-- **Itens da especificação:** [Item 12](../../especificacao/12-modelo-de-dados.md) · [Item 14](../../especificacao/14-diagramas-de-sequencia/00-item.md)
+- **Itens da especificação:** [Apêndice C](../../especificacao/apendice-c-blueprint-do-turnaround.md) · [Item 12](../../especificacao/12-modelo-de-dados.md) · [Item 14](../../especificacao/14-diagramas-de-sequencia/00-item.md)
 - **Mapa da pesquisa:** [README.md](../README.md) · **Contexto geral:** [CONTEXT.md](../../CONTEXT.md)

@@ -154,7 +154,7 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
 
 **T17 · [RA2][Geral] Consolidar em PDF e enviar no Canvas**
 - Responsável: quem puxar · Rótulos: `ra2`, `geral`
-- Descrição: gerar o documento completo, com os itens 1 a 15, o Apêndice A, o Apêndice B e as referências, além da declaração de uso de IA atualizada. Exportar em PDF e enviar na tarefa "Avaliação do RA 2 - Projeto" até **sábado, 28/11/2026, às 23:59**.
+- Descrição: gerar o documento completo, com os itens 1 a 15, os Apêndices A, B e C e as referências, além da declaração de uso de IA atualizada. Exportar em PDF e enviar na tarefa "Avaliação do RA 2 - Projeto" até **sábado, 28/11/2026, às 23:59**.
 - Critérios: Y.1, Y.3, Y.6, C00.3, C00.4, C15.8
 - Bloqueada por: T16
 
