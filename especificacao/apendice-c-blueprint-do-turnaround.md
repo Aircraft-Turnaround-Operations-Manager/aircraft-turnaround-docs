@@ -3,7 +3,8 @@
 <!-- Apêndice C, decidido na issue #184: o blueprint do turnaround na versão com a correção, ou seja, a divisão em
 microsserviços do registro de decisão de arquitetura ADR-0015. A primeira proposta e os cinco conflitos que levaram à
 correção ficam só na pesquisa (pesquisa/topicos/service-blueprint.md), que guarda o histórico. Se a ADR-0015 mudar,
-este apêndice muda junto. O gerador o põe depois do Apêndice B. -->
+este apêndice muda junto. O gerador o põe depois do Apêndice B. A figura (diagramas/apendice-c-blueprint.drawio, com PNG e SVG) mostra a
+mesma tabela em raias; se a tabela mudar, a figura muda junto. -->
 
 Este apêndice percorre o turnaround do Aircraft Turnaround Orchestration System em oito momentos, da chegada da aeronave à saída da posição, e mostra, em cada um, qual serviço grava o quê e que mensagem vai de um serviço para outro. É a divisão em quatro microsserviços do registro de decisão de arquitetura (ADR) ADR-0015, com o contrato da ADR-0016, e sustenta os itens 12 a 14. Cada passo cita os requisitos funcionais (RF) que o definem.
 
@@ -30,6 +31,10 @@ Serviços: Cadastro e Planejamento (Cad.), Execução em Solo (Exe.), Monitorame
 | 6 | Última tarefa | Pronto para liberação | A Exe. grava o fim real do atendimento em solo (AEGT) e muda o estado (RF-20, RF-21). Aviso ao Mon. |
 | 7 | Liberação | Liberado | A Exc. confere as exceções e pede a liberação à Exe., que confere o estado e as tarefas no dado original. Só com o "sim" a Exc. grava o horário real de prontidão (ARDT) confirmado pela Autoridade de Liberação (RF-39). |
 | 8 | Saída | Fora de bloco | O Operador de Solo/Rampa registra o horário real de saída da posição (AOBT). A Exe. grava o AOBT, muda o turnaround para "Fora de bloco" e bloqueia novos registros na mesma gravação (RF-44). Aviso ao Mon. (RF-34). |
+
+A figura mostra os mesmos oito momentos em raias: na raia de cima, o que cada ator faz na tela; abaixo da linha de interação, uma raia por serviço. A seta dupla é um pedido com resposta, e a seta tracejada é um aviso.
+
+![Blueprint do turnaround por serviço, em raias](diagramas/apendice-c-blueprint.png)
 
 ## C.3 Regras que o blueprint aplica
 
