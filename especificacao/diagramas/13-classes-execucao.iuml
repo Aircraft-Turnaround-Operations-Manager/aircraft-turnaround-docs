@@ -1,6 +1,9 @@
 ' Item 13 (T13, issue #145) — serviço Execução em Solo (ADR-0015, ADR-0018): classes de negócio das 12 tabelas do
 ' Apêndice B.2 e classes técnicas dos casos de uso UC12 a UC21 e UC37, mais os pedidos que o serviço atende
 ' (regras 3 a 6 da ADR-0015). O Motor de Eventos daqui é o MarcoService (UC20) e o PropagacaoService (UC21).
+' Gravação: o Turnaround é o todo; TurnaroundRepository.salvar grava o turnaround e as partes (tarefas, marcos,
+' correções, registros, leituras e histórico). Os repositórios das partes só consultam. Toda ação que muda o
+' turnaround ou uma tarefa começa por buscarComTrava (ADR-0018) e confere aceitaRegistros (RF-44).
 
 namespace execucao {
 
@@ -32,23 +35,26 @@ namespace execucao {
     - estado: EstadoTurnaround [0..1]
     - permiteComPassageiros: Boolean
     - planoRecebidoEm: DateTime
-    - tobtVigente: DateTime
-    - ardt: DateTime
-    - liberadoPorId: UUID
+    - tobtVigente: DateTime [0..1]
+    - ardt: DateTime [0..1]
+    - liberadoPorId: UUID [0..1]
     - tarefas: List<Tarefa>
     - marcos: List<Marco>
     - correcoesAibt: List<CorrecaoAibt>
     - historico: List<HistoricoEstadoTurnaround>
+    + aplicarPlano(plano: PlanoConfirmado, momento: DateTime): void
     + registrarChegada(aibt: DateTime, autorId: UUID, momento: DateTime): Marco
     + corrigirAibt(aibtNovo: DateTime, motivo: String, autorId: UUID, requisicaoId: UUID, momento: DateTime): CorrecaoAibt
-    + marco(tipo: TipoMarco): Marco
+    + buscarMarco(tipo: TipoMarco): Marco
+    + buscarTarefa(tarefaId: UUID): Tarefa
     + algumaTarefaIniciada(): Boolean
     + obrigatoriasPendentes(): List<Tarefa>
     + estadoPeloAndamento(): EstadoTurnaround
     + aceitaRegistros(): Boolean
     + mudarEstado(novo: EstadoTurnaround, autorId: UUID, causaId: UUID, momento: DateTime): HistoricoEstadoTurnaround
-    + aplicarLiberacao(ardt: DateTime, autorId: UUID, momento: DateTime): void
+    + aplicarLiberacao(ardt: DateTime, autorId: UUID, liberacaoId: UUID, momento: DateTime): void
     + registrarSaida(autorId: UUID, momento: DateTime): Marco
+    + atualizarTobtVigente(tobtVigente: DateTime, ocorridoEm: DateTime): void
   }
 
   class Marco <<entity>> {
@@ -56,7 +62,7 @@ namespace execucao {
     - tipo: TipoMarco
     - horario: DateTime
     - registradoEm: DateTime
-    - autorId: UUID
+    - autorId: UUID [0..1]
     - registroOrigem: RegistroTarefa [0..1]
   }
 
@@ -75,10 +81,10 @@ namespace execucao {
     - nome: String
     - tipoAtividade: String
     - equipeId: UUID
-    - responsavelId: UUID
+    - responsavelId: UUID [0..1]
     - duracaoPlanejadaMin: Integer
-    - inicioPlanejado: DateTime
-    - fimPlanejado: DateTime
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
     - obrigatoria: Boolean
     - permiteNaoAplicavel: Boolean
     - sobDemanda: Boolean
@@ -90,18 +96,24 @@ namespace execucao {
     - historico: List<HistoricoEstadoTarefa>
     + iniciar(autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
     + concluir(autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
-    + pausar(justificativa: String, codigo: CodigoAtraso, autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
+    + pausar(justificativa: String, impedimento: Boolean, codigoAtraso: CodigoAtraso, autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
     + retomar(autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
     + marcarNaoAplicavel(justificativa: String, autorId: UUID, horarioAcao: DateTime, requisicaoId: UUID): RegistroTarefa
-    + reatribuir(novoResponsavelId: UUID): UUID
+    + reatribuir(operadorNovoId: UUID): UUID
     + alterarJanela(inicio: DateTime, fim: DateTime): void
     + definirPredecessoras(predecessoras: List<Tarefa>): void
     + acionar(responsavelId: UUID, inicio: DateTime, fim: DateTime): void
     + estaIniciada(): Boolean
     + estaTerminada(): Boolean
+    + estaNoCatalogo(): Boolean
+    + ehEmbarque(): Boolean
+    + ehDesembarque(): Boolean
+    + ehAbastecimento(): Boolean
     + predecessorasPendentes(): List<Tarefa>
     + pontosPendentes(): List<PontoConfirmacao>
+    + buscarPonto(identificador: String): PontoConfirmacao
     + mudarEstado(novo: EstadoTarefa, autorId: UUID, causaId: UUID, momento: DateTime): HistoricoEstadoTarefa
+    - registrarMudanca(): void
   }
 
   class PontoConfirmacao <<entity>> {
@@ -127,7 +139,7 @@ namespace execucao {
     - carregadaEm: DateTime
     - vigente: Boolean
     - codigos: List<CodigoAtraso>
-    + codigo(sigla: String): CodigoAtraso
+    + buscarCodigo(codigo: String): CodigoAtraso
   }
 
   class CodigoAtraso <<entity>> {
@@ -142,7 +154,7 @@ namespace execucao {
     - horarioAcao: DateTime
     - recebidoEm: DateTime
     - autorId: UUID
-    - justificativa: String
+    - justificativa: String [0..1]
     - codigoAtraso: CodigoAtraso [0..1]
     - requisicaoId: UUID
   }
@@ -152,7 +164,7 @@ namespace execucao {
     - estadoAnterior: EstadoTurnaround [0..1]
     - estadoNovo: EstadoTurnaround
     - ocorridoEm: DateTime
-    - autorId: UUID
+    - autorId: UUID [0..1]
     - causaId: UUID
   }
 
@@ -161,7 +173,7 @@ namespace execucao {
     - estadoAnterior: EstadoTarefa [0..1]
     - estadoNovo: EstadoTarefa
     - ocorridoEm: DateTime
-    - autorId: UUID
+    - autorId: UUID [0..1]
     - causaId: UUID
   }
 
@@ -169,7 +181,7 @@ namespace execucao {
   execucao.Turnaround "1" *-- "0..5" execucao.Marco : marcos
   execucao.Turnaround "1" *-- "*" execucao.CorrecaoAibt : correcoesAibt
   execucao.Turnaround "1" *-- "*" execucao.HistoricoEstadoTurnaround : historico
-  execucao.Marco "0..1" --> "0..1" execucao.RegistroTarefa : registroOrigem
+  execucao.Marco "0..2" --> "0..1" execucao.RegistroTarefa : registroOrigem
   execucao.Tarefa "*" --> "*" execucao.Tarefa : predecessoras
   execucao.Tarefa "1" *-- "*" execucao.PontoConfirmacao : pontos
   execucao.Tarefa "1" *-- "*" execucao.RegistroTarefa : registros
@@ -178,47 +190,133 @@ namespace execucao {
   execucao.TabelaCodigoAtraso "1" *-- "1..*" execucao.CodigoAtraso : codigos
   execucao.RegistroTarefa "*" --> "0..1" execucao.CodigoAtraso : codigoAtraso
 
+  ' ---------- dados de entrada e saída (sem tabela) ----------
+
+  class PlanoConfirmado <<dto>> {
+    - turnaroundId: UUID
+    - planoId: UUID
+    - vooChegada: String
+    - vooPartida: String
+    - matricula: String
+    - posicao: String
+    - permiteComPassageiros: Boolean
+    - tarefas: List<TarefaPlanejada>
+  }
+
+  class TarefaPlanejada <<dto>> {
+    - tarefaId: UUID
+    - nome: String
+    - tipoAtividade: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - obrigatoria: Boolean
+    - permiteNaoAplicavel: Boolean
+    - sobDemanda: Boolean
+    - acionada: Boolean
+    - predecessoraIds: List<UUID>
+    - pontos: List<PontoPlanejado>
+  }
+
+  class PontoPlanejado <<dto>> {
+    - pontoId: UUID
+    - identificador: String
+    - nome: String
+  }
+
+  class TarefaResumo <<dto>> {
+    - tarefaId: UUID
+    - turnaroundId: UUID
+    - matricula: String
+    - nome: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - estado: EstadoTarefa [0..1]
+    - obrigatoria: Boolean
+    - sobDemanda: Boolean
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - horarioEstado: DateTime [0..1]
+    - predecessoraIds: List<UUID>
+  }
+
+  class TarefaDoOperador <<dto>> {
+    - tarefa: Tarefa
+    - matricula: String
+    - posicao: String
+    - estadoTurnaround: EstadoTurnaround [0..1]
+  }
+
   class SituacaoTurnaround <<dto>> {
     - turnaroundId: UUID
+    - matricula: String
+    - vooChegada: String
+    - vooPartida: String
+    - posicao: String
     - estado: EstadoTurnaround [0..1]
-    - obrigatoriasPendentes: List<Tarefa>
-    - tarefasObrigatorias: List<Tarefa>
-    - aegt: DateTime
-    - ardt: DateTime
-    - liberadoPorId: UUID
+    - tarefasObrigatorias: List<TarefaResumo>
+    - obrigatoriasPendentes: List<TarefaResumo>
+    - aegt: DateTime [0..1]
+    - ardt: DateTime [0..1]
+    - liberadoPorId: UUID [0..1]
+  }
+
+  class MudancaEstado <<dto>> {
+    - turnaroundId: UUID
+    - estadoAnterior: EstadoTurnaround
+    - estadoNovo: EstadoTurnaround
+  }
+
+  class OperadorAtivo <<dto>> {
+    - usuarioId: UUID
+    - nome: String
   }
 
   class OperadorDisponivel <<dto>> {
     - usuarioId: UUID
+    - nome: String
     - minutosDesdeUltimaConclusao: Integer [0..1]
-    - ultimaMatricula: String
+    - ultimaMatricula: String [0..1]
   }
+
+  execucao.PlanoConfirmado "1" *-- "*" execucao.TarefaPlanejada : tarefas
+  execucao.TarefaPlanejada "1" *-- "*" execucao.PontoPlanejado : pontos
+  execucao.TarefaDoOperador "*" --> "1" execucao.Tarefa : tarefa
+  execucao.SituacaoTurnaround "1" --> "*" execucao.TarefaResumo : tarefasObrigatorias
+  execucao.SituacaoTurnaround "1" --> "*" execucao.TarefaResumo : obrigatoriasPendentes
 
   ' ---------- interface (site no celular do operador e no computador do coordenador) ----------
 
   class ChegadaView <<boundary>> {
+    + abrir(turnaroundId: UUID): void
     + registrarChegada(turnaroundId: UUID, aibt: DateTime): void
   }
 
   class CorrecaoChegadaView <<boundary>> {
+    + abrir(turnaroundId: UUID): void
     + salvarCorrecao(turnaroundId: UUID, aibtNovo: DateTime, motivo: String): void
   }
 
   class ListaTarefasView <<boundary>> {
+    + carregar(): void
     + abrirTarefa(tarefaId: UUID): void
-    + atualizarTarefa(tarefa: Tarefa): void
+    + atualizarTarefa(tarefa: TarefaDoOperador): void
   }
 
   class TarefaView <<boundary>> {
     + iniciar(tarefaId: UUID): void
     + concluir(tarefaId: UUID): void
-    + pausar(tarefaId: UUID, justificativa: String, codigoAtraso: String): void
+    + pausar(tarefaId: UUID, justificativa: String, impedimento: Boolean, codigoVersao: Integer, codigoAtraso: String): void
     + retomar(tarefaId: UUID): void
     + marcarNaoAplicavel(tarefaId: UUID, justificativa: String): void
   }
 
   class LeituraQrCodeView <<boundary>> {
-    + lerQrCode(tarefaId: UUID, conteudo: String): void
+    + abrir(tarefaId: UUID): void
+    + lerQrCode(tarefaId: UUID, identificador: String): void
   }
 
   class MarcosView <<boundary>> {
@@ -226,65 +324,73 @@ namespace execucao {
   }
 
   class SaidaPosicaoView <<boundary>> {
+    + abrir(turnaroundId: UUID): void
     + registrarSaida(turnaroundId: UUID, autorizacaoRecebida: Boolean): void
   }
 
+  ' Guarda no celular os registros e as leituras feitos sem conexão (RNF-8); tipo = um dos TipoRegistro ou "Leitura".
   class FilaRegistrosSemConexao <<boundary>> {
     - pendentes: List<String>
-    + guardar(registro: String, horarioAcao: DateTime, requisicaoId: UUID): void
-    + enviarPendentes(): void
+    + guardar(usuarioId: UUID, tarefaId: UUID, tipo: String, dados: String, horarioAcao: DateTime, requisicaoId: UUID): void
+    + enviarPendentes(usuarioId: UUID): void
   }
 
   ' ---------- controle (REST) ----------
 
   class ChegadaController <<control>> {
-    + registrarChegada(turnaroundId: UUID, aibt: DateTime, requisicaoId: UUID, acesso: Acesso): Marco
+    + registrarChegada(turnaroundId: UUID, aibt: DateTime, acesso: Acesso): Marco
     + corrigirAibt(turnaroundId: UUID, aibtNovo: DateTime, motivo: String, requisicaoId: UUID, acesso: Acesso): CorrecaoAibt
     + listarCorrecoes(turnaroundId: UUID, acesso: Acesso): List<CorrecaoAibt>
     + chegadaRegistrada(turnaroundId: UUID): Boolean
   }
 
   class TarefaController <<control>> {
-    + listarDoOperador(acesso: Acesso): List<Tarefa>
-    + consultar(tarefaId: UUID, acesso: Acesso): Tarefa
+    + listarDoOperador(acesso: Acesso): List<TarefaDoOperador>
+    + consultar(tarefaId: UUID, acesso: Acesso): TarefaDoOperador
     + registrarInicio(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
     + registrarConclusao(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
-    + pausar(tarefaId: UUID, justificativa: String, codigoVersao: Integer, codigoAtraso: String, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
+    + pausar(tarefaId: UUID, justificativa: String, impedimento: Boolean, codigoVersao: Integer, codigoAtraso: String, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
     + retomar(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
     + marcarNaoAplicavel(tarefaId: UUID, justificativa: String, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): RegistroTarefa
-    + listarPendentesDoOperador(usuarioId: UUID): List<Tarefa>
-    + listarPendentesDaEquipe(equipeId: UUID): List<Tarefa>
+    + listarTarefasPendentesDoOperador(usuarioId: UUID): List<TarefaResumo>
+    + listarTarefasPendentesDaEquipe(equipeId: UUID): List<TarefaResumo>
   }
 
   class LeituraQrCodeController <<control>> {
-    + registrarLeitura(tarefaId: UUID, identificador: String, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): LeituraQrCode
+    + registrarLeitura(tarefaId: UUID, identificador: String, horarioAcao: DateTime, requisicaoId: UUID, acesso: Acesso): PontoConfirmacao
   }
 
   class CodigoAtrasoController <<control>> {
     + consultarVigente(acesso: Acesso): TabelaCodigoAtraso
+    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>, acesso: Acesso): TabelaCodigoAtraso
   }
 
   class TurnaroundController <<control>> {
     + consultar(turnaroundId: UUID, acesso: Acesso): Turnaround
     + registrarSaida(turnaroundId: UUID, acesso: Acesso): Marco
-    + receberPlano(turnaround: Turnaround): void
-    + aplicarExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): EstadoTurnaround
-    + sairDeExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): EstadoTurnaround
+    + receberPlano(plano: PlanoConfirmado): void
+    + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
+    + consultarTarefa(tarefaId: UUID): TarefaResumo
+    + aplicarExcecao(turnaroundId: UUID, tarefaId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
+    + sairDeExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
     + consultarSituacao(turnaroundId: UUID): SituacaoTurnaround
     + listarSituacoes(turnaroundIds: List<UUID>): List<SituacaoTurnaround>
-    + liberar(turnaroundId: UUID, ardt: DateTime, autorId: UUID): SituacaoTurnaround
+    + liberar(turnaroundId: UUID, liberacaoId: UUID, ardt: DateTime, autorId: UUID): SituacaoTurnaround
+    + consultarPedido(registroId: UUID): Boolean
   }
 
   class AtribuicaoController <<control>> {
     + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
-    + reatribuir(tarefaId: UUID, novoResponsavelId: UUID, autorId: UUID, reatribuicaoId: UUID): UUID
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, autorId: UUID, horarioAcao: DateTime, reatribuicaoId: UUID): UUID
   }
 
   class ReplanejamentoController <<control>> {
-    + listarNaoIniciadas(turnaroundId: UUID): List<Tarefa>
-    + alterarJanela(tarefaId: UUID, inicio: DateTime, fim: DateTime, autorId: UUID, replanejamentoId: UUID): Tarefa
-    + alterarDependencias(tarefaId: UUID, predecessoraIds: List<UUID>, autorId: UUID, replanejamentoId: UUID): Tarefa
-    + acionarSobDemanda(tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, autorId: UUID, replanejamentoId: UUID): Tarefa
+    + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
+    + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
   }
 
   ' ---------- serviço ----------
@@ -293,7 +399,7 @@ namespace execucao {
     - turnarounds: TurnaroundRepository
     - correcoes: CorrecaoAibtRepository
     - propagacao: PropagacaoService
-    + registrarChegada(turnaroundId: UUID, aibt: DateTime, requisicaoId: UUID, autorId: UUID): Marco
+    + registrarChegada(turnaroundId: UUID, aibt: DateTime, autorId: UUID): Marco
     + corrigirAibt(turnaroundId: UUID, aibtNovo: DateTime, motivo: String, requisicaoId: UUID, autorId: UUID): CorrecaoAibt
     + listarCorrecoes(turnaroundId: UUID): List<CorrecaoAibt>
     + chegadaRegistrada(turnaroundId: UUID): Boolean
@@ -307,61 +413,63 @@ namespace execucao {
     - marcos: MarcoService
     - propagacao: PropagacaoService
     - notificador: ListaTarefasNotificador
-    + listarDoOperador(operadorId: UUID): List<Tarefa>
-    + consultar(tarefaId: UUID, operadorId: UUID): Tarefa
-    + registrarInicio(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): RegistroTarefa
-    + registrarConclusao(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): RegistroTarefa
-    + pausar(tarefaId: UUID, justificativa: String, codigoVersao: Integer, codigoAtraso: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): RegistroTarefa
-    + retomar(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): RegistroTarefa
-    + marcarNaoAplicavel(tarefaId: UUID, justificativa: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): RegistroTarefa
-    + listarPendentesDoOperador(usuarioId: UUID): List<Tarefa>
-    + listarPendentesDaEquipe(equipeId: UUID): List<Tarefa>
-    - conferirResponsavel(tarefa: Tarefa, autorId: UUID): void
+    + listarDoOperador(operadorId: UUID): List<TarefaDoOperador>
+    + consultar(tarefaId: UUID, operadorId: UUID): TarefaDoOperador
+    + registrarInicio(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): RegistroTarefa
+    + registrarConclusao(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): RegistroTarefa
+    + pausar(tarefaId: UUID, justificativa: String, impedimento: Boolean, codigoVersao: Integer, codigoAtraso: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): RegistroTarefa
+    + retomar(tarefaId: UUID, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): RegistroTarefa
+    + marcarNaoAplicavel(tarefaId: UUID, justificativa: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): RegistroTarefa
+    + listarTarefasPendentesDoOperador(usuarioId: UUID): List<TarefaResumo>
+    + listarTarefasPendentesDaEquipe(equipeId: UUID): List<TarefaResumo>
+    - conferirResponsavel(tarefa: Tarefa, autorId: UUID, equipeId: UUID): void
   }
 
   class LeituraQrCodeService <<service>> {
+    - turnarounds: TurnaroundRepository
     - pontos: PontoConfirmacaoRepository
     - leituras: LeituraQrCodeRepository
     - tarefas: TarefaRepository
-    + registrarLeitura(tarefaId: UUID, identificador: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID): LeituraQrCode
+    + registrarLeitura(tarefaId: UUID, identificador: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): PontoConfirmacao
   }
 
   class MarcoService <<service>> {
-    - marcos: MarcoRepository
-    + registrarMarcos(registro: RegistroTarefa): List<Marco>
+    + registrarMarcos(turnaround: Turnaround, tarefa: Tarefa, registro: RegistroTarefa): List<Marco>
   }
 
   class PropagacaoService <<service>> {
-    - tarefas: TarefaRepository
-    - historicoTurnaround: HistoricoEstadoTurnaroundRepository
-    - historicoTarefa: HistoricoEstadoTarefaRepository
     - notificador: ListaTarefasNotificador
     + propagarChegada(turnaround: Turnaround, causaId: UUID): void
-    + propagarRegistro(registro: RegistroTarefa): void
+    + propagarRegistro(turnaround: Turnaround, tarefa: Tarefa, registro: RegistroTarefa): void
     + reavaliarNaoIniciadas(turnaround: Turnaround, causaId: UUID): void
   }
 
   class TurnaroundService <<service>> {
     - turnarounds: TurnaroundRepository
-    - historicoTurnaround: HistoricoEstadoTurnaroundRepository
+    - tarefas: TarefaRepository
+    - propagacao: PropagacaoService
     + consultar(turnaroundId: UUID): Turnaround
-    + receberPlano(turnaround: Turnaround): void
-    + aplicarExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): EstadoTurnaround
-    + sairDeExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): EstadoTurnaround
+    + receberPlano(plano: PlanoConfirmado): void
+    + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
+    + consultarTarefa(tarefaId: UUID): TarefaResumo
+    + aplicarExcecao(turnaroundId: UUID, tarefaId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
+    + sairDeExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
     + consultarSituacao(turnaroundId: UUID): SituacaoTurnaround
     + listarSituacoes(turnaroundIds: List<UUID>): List<SituacaoTurnaround>
-    + liberar(turnaroundId: UUID, ardt: DateTime, autorId: UUID): SituacaoTurnaround
+    + liberar(turnaroundId: UUID, liberacaoId: UUID, ardt: DateTime, autorId: UUID): SituacaoTurnaround
     + registrarSaida(turnaroundId: UUID, autorId: UUID): Marco
-    + atualizarTobtVigente(turnaroundId: UUID, tobtVigente: DateTime): void
+    + atualizarTobtVigente(turnaroundId: UUID, tobtVigente: DateTime, ocorridoEm: DateTime): void
+    + consultarPedido(registroId: UUID): Boolean
   }
 
   class AtribuicaoService <<service>> {
+    - turnarounds: TurnaroundRepository
     - tarefas: TarefaRepository
     - registros: RegistroTarefaRepository
     - cadastro: CadastroCliente
     - notificador: ListaTarefasNotificador
     + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
-    + reatribuir(tarefaId: UUID, novoResponsavelId: UUID, autorId: UUID, reatribuicaoId: UUID): UUID
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, autorId: UUID, horarioAcao: DateTime, reatribuicaoId: UUID): UUID
   }
 
   class ReplanejamentoService <<service>> {
@@ -369,10 +477,12 @@ namespace execucao {
     - turnarounds: TurnaroundRepository
     - cadastro: CadastroCliente
     - propagacao: PropagacaoService
-    + listarNaoIniciadas(turnaroundId: UUID): List<Tarefa>
-    + alterarJanela(tarefaId: UUID, inicio: DateTime, fim: DateTime, autorId: UUID, replanejamentoId: UUID): Tarefa
-    + alterarDependencias(tarefaId: UUID, predecessoraIds: List<UUID>, autorId: UUID, replanejamentoId: UUID): Tarefa
-    + acionarSobDemanda(tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, autorId: UUID, replanejamentoId: UUID): Tarefa
+    + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
+    + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
     - conferirCiclos(turnaround: Turnaround): void
     - conferirJanelas(tarefa: Tarefa): void
     - conferirPolitica(turnaround: Turnaround): void
@@ -381,7 +491,7 @@ namespace execucao {
   class CodigoAtrasoService <<service>> {
     - codigos: CodigoAtrasoRepository
     + consultarVigente(): TabelaCodigoAtraso
-    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>): TabelaCodigoAtraso
+    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>, autorId: UUID): TabelaCodigoAtraso
   }
 
   ' ---------- acesso a dados ----------
@@ -389,6 +499,7 @@ namespace execucao {
   interface TurnaroundRepository <<repository>> {
     + buscarPorId(id: UUID): Turnaround
     + buscarComTrava(id: UUID): Turnaround
+    + buscarPorTarefa(tarefaId: UUID): Turnaround
     + listarPorIds(ids: List<UUID>): List<Turnaround>
     + salvar(turnaround: Turnaround): void
   }
@@ -399,33 +510,24 @@ namespace execucao {
     + listarPendentesDoOperador(usuarioId: UUID): List<Tarefa>
     + listarPendentesDaEquipe(equipeId: UUID): List<Tarefa>
     + listarOperadoresEmExecucao(operadorIds: List<UUID>): List<UUID>
-    + salvar(tarefa: Tarefa): void
   }
 
   interface RegistroTarefaRepository <<repository>> {
     + buscarPorRequisicao(requisicaoId: UUID): RegistroTarefa
     + listarUltimasConclusoes(operadorIds: List<UUID>): List<RegistroTarefa>
-    + salvar(registro: RegistroTarefa): void
-  }
-
-  interface MarcoRepository <<repository>> {
-    + buscarPorTipo(turnaroundId: UUID, tipo: TipoMarco): Marco
-    + salvar(marco: Marco): void
   }
 
   interface CorrecaoAibtRepository <<repository>> {
     + buscarPorRequisicao(requisicaoId: UUID): CorrecaoAibt
     + listarPorTurnaround(turnaroundId: UUID): List<CorrecaoAibt>
-    + salvar(correcao: CorrecaoAibt): void
   }
 
   interface PontoConfirmacaoRepository <<repository>> {
-    + buscarPorIdentificador(tarefaIds: List<UUID>, identificador: String): PontoConfirmacao
+    + buscarPorIdentificador(turnaroundId: UUID, identificador: String): List<PontoConfirmacao>
   }
 
   interface LeituraQrCodeRepository <<repository>> {
     + buscarPorRequisicao(requisicaoId: UUID): LeituraQrCode
-    + salvar(leitura: LeituraQrCode): void
   }
 
   interface CodigoAtrasoRepository <<repository>> {
@@ -434,25 +536,15 @@ namespace execucao {
     + salvar(tabela: TabelaCodigoAtraso): void
   }
 
-  interface HistoricoEstadoTurnaroundRepository <<repository>> {
-    + salvar(historico: HistoricoEstadoTurnaround): void
-    + listarPorTurnaround(turnaroundId: UUID): List<HistoricoEstadoTurnaround>
-  }
-
-  interface HistoricoEstadoTarefaRepository <<repository>> {
-    + salvar(historico: HistoricoEstadoTarefa): void
-    + listarPorTarefa(tarefaId: UUID): List<HistoricoEstadoTarefa>
-  }
-
   ' ---------- comunicação ----------
 
   class CadastroCliente <<client>> {
-    + listarOperadoresAtivos(equipeId: UUID): List<UUID>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
   }
 
   class ListaTarefasNotificador <<websocket>> {
-    + notificarTarefa(operadorId: UUID, tarefa: Tarefa): void
-    + notificarReatribuicao(operadorAnteriorId: UUID, operadorNovoId: UUID, tarefa: Tarefa): void
+    + notificarTarefa(operadorId: UUID, tarefa: TarefaDoOperador): void
+    + notificarReatribuicao(operadorAnteriorId: UUID, operadorNovoId: UUID, tarefa: TarefaDoOperador): void
     + notificarRecusa(operadorId: UUID, requisicaoId: UUID, motivo: String): void
   }
 
@@ -464,14 +556,20 @@ namespace execucao {
   ' ---------- ligações das camadas ----------
 
   execucao.ChegadaView ..> execucao.ChegadaController
+  execucao.ChegadaView ..> execucao.TurnaroundController
   execucao.CorrecaoChegadaView ..> execucao.ChegadaController
   execucao.ListaTarefasView ..> execucao.TarefaController
+  execucao.ListaTarefasView ..> execucao.TarefaView
   execucao.TarefaView ..> execucao.TarefaController
   execucao.TarefaView ..> execucao.CodigoAtrasoController
   execucao.TarefaView ..> execucao.FilaRegistrosSemConexao
+  execucao.TarefaView ..> execucao.LeituraQrCodeView
   execucao.LeituraQrCodeView ..> execucao.LeituraQrCodeController
+  execucao.LeituraQrCodeView ..> execucao.TarefaController
+  execucao.LeituraQrCodeView ..> execucao.FilaRegistrosSemConexao
   execucao.MarcosView ..> execucao.TurnaroundController
   execucao.SaidaPosicaoView ..> execucao.TurnaroundController
+  execucao.ListaTarefasNotificador ..> execucao.ListaTarefasView
 
   execucao.ChegadaController ..> execucao.ChegadaService
   execucao.TarefaController ..> execucao.TarefaService
@@ -491,16 +589,15 @@ namespace execucao {
   execucao.TarefaService --> execucao.MarcoService
   execucao.TarefaService --> execucao.PropagacaoService
   execucao.TarefaService --> execucao.ListaTarefasNotificador
+  execucao.LeituraQrCodeService --> execucao.TurnaroundRepository
   execucao.LeituraQrCodeService --> execucao.PontoConfirmacaoRepository
   execucao.LeituraQrCodeService --> execucao.LeituraQrCodeRepository
   execucao.LeituraQrCodeService --> execucao.TarefaRepository
-  execucao.MarcoService --> execucao.MarcoRepository
-  execucao.PropagacaoService --> execucao.TarefaRepository
-  execucao.PropagacaoService --> execucao.HistoricoEstadoTurnaroundRepository
-  execucao.PropagacaoService --> execucao.HistoricoEstadoTarefaRepository
   execucao.PropagacaoService --> execucao.ListaTarefasNotificador
   execucao.TurnaroundService --> execucao.TurnaroundRepository
-  execucao.TurnaroundService --> execucao.HistoricoEstadoTurnaroundRepository
+  execucao.TurnaroundService --> execucao.TarefaRepository
+  execucao.TurnaroundService --> execucao.PropagacaoService
+  execucao.AtribuicaoService --> execucao.TurnaroundRepository
   execucao.AtribuicaoService --> execucao.TarefaRepository
   execucao.AtribuicaoService --> execucao.RegistroTarefaRepository
   execucao.AtribuicaoService --> execucao.CadastroCliente
@@ -512,7 +609,17 @@ namespace execucao {
   execucao.CodigoAtrasoService --> execucao.CodigoAtrasoRepository
   execucao.ConsumidorAvisosExecucao --> execucao.TurnaroundService
   execucao.AtribuicaoService ..> execucao.OperadorDisponivel
+  execucao.CadastroCliente ..> execucao.OperadorAtivo
   execucao.TurnaroundService ..> execucao.SituacaoTurnaround
+  execucao.TurnaroundService ..> execucao.MudancaEstado
+  execucao.TurnaroundService ..> execucao.PlanoConfirmado
+  execucao.TarefaService ..> execucao.TarefaDoOperador
+  execucao.TarefaService ..> execucao.TarefaResumo
+  execucao.ReplanejamentoService ..> execucao.TarefaResumo
+
+  ' ---------- ligações com outros serviços (cliente para o controle que atende o pedido) ----------
+
+  execucao.CadastroCliente ..> cadastro.EquipeController
 
   comum.ConsumidorAvisos <|-- execucao.ConsumidorAvisosExecucao
   execucao.ChegadaService --> comum.AuditoriaService
@@ -521,6 +628,7 @@ namespace execucao {
   execucao.TarefaService --> comum.PublicadorAvisos
   execucao.LeituraQrCodeService --> comum.AuditoriaService
   execucao.LeituraQrCodeService --> comum.PublicadorAvisos
+  execucao.MarcoService --> comum.AuditoriaService
   execucao.MarcoService --> comum.PublicadorAvisos
   execucao.PropagacaoService --> comum.AuditoriaService
   execucao.PropagacaoService --> comum.PublicadorAvisos
@@ -530,5 +638,6 @@ namespace execucao {
   execucao.AtribuicaoService --> comum.PublicadorAvisos
   execucao.ReplanejamentoService --> comum.AuditoriaService
   execucao.ReplanejamentoService --> comum.PublicadorAvisos
+  execucao.CodigoAtrasoService --> comum.AuditoriaService
   execucao.CodigoAtrasoService --> comum.PublicadorAvisos
 }

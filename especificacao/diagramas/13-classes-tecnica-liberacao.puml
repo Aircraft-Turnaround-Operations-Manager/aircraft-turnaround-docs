@@ -11,9 +11,11 @@ restore excecoes.LiberacaoRepository
 restore excecoes.ExcecaoRepository
 restore excecoes.TurnaroundReferenciaRepository
 restore excecoes.ExecucaoEmSoloCliente
-restore excecoes.CondicoesLiberacao
+restore excecoes.SituacaoLiberacao
 restore excecoes.TurnaroundLiberavel
 restore excecoes.SituacaoTurnaround
+restore excecoes.TarefaResumo
+restore excecoes.AtualizacaoTobtService
 restore execucao.SaidaPosicaoView
 restore execucao.TurnaroundController
 restore execucao.TurnaroundService

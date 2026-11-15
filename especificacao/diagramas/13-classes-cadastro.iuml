@@ -24,13 +24,13 @@ namespace cadastro {
     - id: UUID
     - identificadorAcesso: String
     - nome: String
-    - senhaHash: String
+    - senhaHash: String [0..1]
     - perfil: Perfil
     - equipe: Equipe [0..1]
     - companhia: Companhia [0..1]
-    - desativadoEm: DateTime
-    - bloqueadoAte: DateTime
-    - anonimizadoEm: DateTime
+    - desativadoEm: DateTime [0..1]
+    - bloqueadoAte: DateTime [0..1]
+    - anonimizadoEm: DateTime [0..1]
     + estaAtivo(): Boolean
     + estaBloqueado(momento: DateTime): Boolean
     + conferirSenha(senha: String): Boolean
@@ -51,7 +51,7 @@ namespace cadastro {
     - usuario: Usuario
     - iniciadaEm: DateTime
     - ultimaAcaoEm: DateTime
-    - encerradaEm: DateTime
+    - encerradaEm: DateTime [0..1]
     + estaAberta(momento: DateTime, inatividadeMin: Integer): Boolean
     + renovar(momento: DateTime): void
     + encerrar(momento: DateTime): void
@@ -116,7 +116,7 @@ namespace cadastro {
     - mtttMin: Integer
     - criadoPor: Usuario
     - criadoEm: DateTime
-    - aobt: DateTime
+    - aobt: DateTime [0..1]
     + atualizarPrevisao(eibt: DateTime, mtttMin: Integer): void
     + registrarAobt(aobt: DateTime): void
   }
@@ -126,7 +126,7 @@ namespace cadastro {
     - turnaround: Turnaround
     - modelo: ModeloTarefa
     - politica: PoliticaAbastecimento [0..1]
-    - confirmadoEm: DateTime
+    - confirmadoEm: DateTime [0..1]
     - confirmadoPor: Usuario [0..1]
     - tarefas: List<TarefaPlano>
     + estaConfirmado(): Boolean
@@ -143,8 +143,8 @@ namespace cadastro {
     - equipe: Equipe
     - responsavel: Usuario [0..1]
     - duracaoPlanejadaMin: Integer
-    - inicioPlanejado: DateTime
-    - fimPlanejado: DateTime
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
     - obrigatoria: Boolean
     - permiteNaoAplicavel: Boolean
     - sobDemanda: Boolean
@@ -246,7 +246,7 @@ namespace cadastro {
     + criar(dados: Equipe, acesso: Acesso): Equipe
     + alterar(equipeId: UUID, nome: String, acesso: Acesso): Equipe
     + desativar(equipeId: UUID, acesso: Acesso): void
-    + listarOperadoresAtivos(equipeId: UUID): List<Usuario>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
   }
 
   class CompanhiaController <<control>> {
@@ -313,7 +313,7 @@ namespace cadastro {
     + criar(dados: Equipe, autorId: UUID): Equipe
     + alterar(equipeId: UUID, nome: String, autorId: UUID): Equipe
     + desativar(equipeId: UUID, autorId: UUID): void
-    + listarOperadoresAtivos(equipeId: UUID): List<Usuario>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
   }
 
   class TurnaroundService <<service>> {
@@ -432,17 +432,67 @@ namespace cadastro {
   ' ---------- comunicação com outros serviços ----------
 
   class ExecucaoEmSoloCliente <<client>> {
-    + enviarPlano(plano: Plano): void
+    + receberPlano(plano: PlanoConfirmado): void
     + chegadaRegistrada(turnaroundId: UUID): Boolean
-    + listarTarefasPendentesDoOperador(usuarioId: UUID): List<TarefaPendente>
-    + listarTarefasPendentesDaEquipe(equipeId: UUID): List<TarefaPendente>
+    + listarTarefasPendentesDoOperador(usuarioId: UUID): List<TarefaResumo>
+    + listarTarefasPendentesDaEquipe(equipeId: UUID): List<TarefaResumo>
   }
 
-  class TarefaPendente <<dto>> {
+  class TarefaResumo <<dto>> {
     - tarefaId: UUID
     - turnaroundId: UUID
-    - nome: String
     - matricula: String
+    - nome: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - estado: EstadoTarefa [0..1]
+    - obrigatoria: Boolean
+    - sobDemanda: Boolean
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - horarioEstado: DateTime [0..1]
+    - predecessoraIds: List<UUID>
+  }
+
+  ' O plano confirmado vai à Execução em Solo neste formato (RNF-4); a Execução em Solo define os estados.
+  class PlanoConfirmado <<dto>> {
+    - turnaroundId: UUID
+    - planoId: UUID
+    - vooChegada: String
+    - vooPartida: String
+    - matricula: String
+    - posicao: String
+    - permiteComPassageiros: Boolean
+    - tarefas: List<TarefaPlanejada>
+  }
+
+  class TarefaPlanejada <<dto>> {
+    - tarefaId: UUID
+    - nome: String
+    - tipoAtividade: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - obrigatoria: Boolean
+    - permiteNaoAplicavel: Boolean
+    - sobDemanda: Boolean
+    - acionada: Boolean
+    - predecessoraIds: List<UUID>
+    - pontos: List<PontoPlanejado>
+  }
+
+  class PontoPlanejado <<dto>> {
+    - pontoId: UUID
+    - identificador: String
+    - nome: String
+  }
+
+  class OperadorAtivo <<dto>> {
+    - usuarioId: UUID
+    - nome: String
   }
 
   class ConsumidorAvisosCadastro <<consumer>> {
@@ -495,7 +545,15 @@ namespace cadastro {
   cadastro.PoliticaAbastecimentoService --> cadastro.PoliticaAbastecimentoRepository
   cadastro.PoliticaAbastecimentoService --> cadastro.CompanhiaRepository
   cadastro.ConsumidorAvisosCadastro --> cadastro.TurnaroundService
-  cadastro.ExecucaoEmSoloCliente ..> cadastro.TarefaPendente
+  cadastro.ExecucaoEmSoloCliente ..> cadastro.TarefaResumo
+  cadastro.ExecucaoEmSoloCliente ..> cadastro.PlanoConfirmado
+  cadastro.PlanoConfirmado "1" *-- "*" cadastro.TarefaPlanejada : tarefas
+  cadastro.TarefaPlanejada "1" *-- "*" cadastro.PontoPlanejado : pontos
+  cadastro.PlanoService ..> cadastro.PlanoConfirmado
+  cadastro.EquipeService ..> cadastro.OperadorAtivo
+  cadastro.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
+  cadastro.ExecucaoEmSoloCliente ..> execucao.ChegadaController
+  cadastro.ExecucaoEmSoloCliente ..> execucao.TarefaController
   comum.ConsumidorAvisos <|-- cadastro.ConsumidorAvisosCadastro
   cadastro.UsuarioService --> comum.AuditoriaService
   cadastro.EquipeService --> comum.AuditoriaService

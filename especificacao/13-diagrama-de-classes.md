@@ -23,29 +23,31 @@ Dentro de cada serviço, as classes seguem as camadas de referência da ADR-0015
 | Serviço | «service» | Aplica as regras de negócio e decide sobre o dado de que o serviço é dono | `LiberacaoService` |
 | Acesso a dados | «repository» | Lê e grava as tabelas do item 12 do próprio serviço | `LiberacaoRepository` |
 | Negócio | «entity» | Classe que corresponde a uma tabela do item 12, com as regras que dependem só dos seus dados | `Liberacao` |
-| Dado de troca | «dto» | Dado de entrada ou de saída sem tabela própria, como o resultado de uma consulta | `CondicoesLiberacao` |
+| Dado de troca | «dto» | Objeto de transferência de dados (DTO, em inglês *data transfer object*): dado de entrada ou de saída sem tabela própria, como o resultado de uma consulta | `SituacaoLiberacao` |
 | Comunicação | «client», «publisher», «consumer», «websocket», «scheduler», «gateway» | Pedido a outro serviço, aviso pela mensageria, atualização da tela em tempo real, tarefa por horário e porta de entrada | `ExecucaoEmSoloCliente` |
 
 As regras de comunicação são as da ADR-0015 e da ADR-0016:
 
 - **Porta de entrada.** Toda ação do site passa pela `PortaDeEntrada`, que pergunta ao Cadastro, a cada ação, se a sessão e o usuário continuam ativos (`AcessoController.verificarAcesso`, requisito não funcional (RNF) 1). O controle do serviço recebe o `Acesso` (usuário, perfil, equipe e companhia) e confere se o perfil pode fazer a ação.
-- **Pedido.** Quando um serviço precisa da decisão do dono do dado, faz um pedido em REST, com resposta, pelo seu cliente (`ExecucaoEmSoloCliente`, `CadastroCliente`). É o caso da abertura e do encerramento da exceção, da reatribuição, do replanejamento, da liberação e das consultas de tarefas pendentes e de operadores disponíveis (ADR-0015, regra 3).
+- **Pedido.** Quando um serviço precisa da decisão do dono do dado, faz um pedido em REST, com resposta, pelo seu cliente (`ExecucaoEmSoloCliente`, `CadastroCliente`). É o caso da abertura e do encerramento da exceção, da reatribuição, do replanejamento, da liberação e das consultas de tarefas pendentes e de operadores disponíveis (ADR-0015, regra 3). O diagrama liga cada cliente, por dependência, ao controle do outro serviço que atende o pedido, e todo método do cliente tem o mesmo nome, os mesmos parâmetros e o mesmo retorno no controle. Quando o pedido leva ou devolve um dado de troca, os dois serviços declaram o mesmo «dto», com os mesmos campos (`TarefaResumo`, `SituacaoTurnaround`, `PlanoConfirmado`, `MudancaEstado`, `OperadorAtivo`, `OperadorDisponivel`), porque nenhum usa a classe do outro.
 - **Aviso.** O que já aconteceu vai num aviso, com o envelope comum da ADR-0016 (`EnvelopeAviso`). O serviço grava o aviso em `AvisoSaida` na mesma transação da mudança, e o `PublicadorAvisos` o publica na mensageria. Quem recebe usa o seu `ConsumidorAvisos`, que descarta o aviso repetido (`AvisoProcessado`).
-- **Tempo real.** A lista de tarefas do operador (`ListaTarefasNotificador`, ADR-0018) e os painéis do coordenador (`PainelNotificador`) recebem as mudanças por WebSocket, para cumprir os 5 segundos do objetivo 2.
+- **Tempo real.** A lista de tarefas do operador (`ListaTarefasNotificador`, ADR-0018), os painéis do coordenador (`PainelNotificador`) e a solicitação de atualização da previsão (`CoordenadorNotificador`, ADR-0020) recebem as mudanças por WebSocket, para cumprir os 5 segundos do objetivo 2.
+- **Telas de serviços diferentes.** O site é um só, então uma tela pode abrir a tela de outro serviço ou chamar o controle dele pela porta de entrada. O diagrama desenha essas dependências entre serviços (por exemplo, `AlertasView` do Monitoramento abre a `RegistroAcaoAlertaView` do Exceções e Liberação). Fora delas e dos clientes, nenhuma classe de um serviço depende de classe de outro.
 
 **Correspondência com os atores e os estados** (critério Y.4):
 
-- O Motor de Eventos, ator não humano do item 5, não é uma classe: é o comportamento automático de cinco classes. Na Execução em Solo, o `MarcoService` grava o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) e o fim real do atendimento em solo (AEGT) (requisito funcional (RF) 20), e o `PropagacaoService` propaga o estado das tarefas e do turnaround (RF-21). No Monitoramento, o `RecalculoService` recalcula a projeção e o caminho crítico (RF-22 a RF-24), o `AlertaService` emite os alertas (RF-27 a RF-31), e o `AvisoChecagemService` emite o aviso de checagem (RF-32). O `AgendadorMinuto` dispara o que depende do relógio (ADR-0015, regra 7).
+- O Motor de Eventos, ator não humano do item 5, não é uma classe: é o comportamento automático de classes de três serviços. Na Execução em Solo, o `MarcoService` grava o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) e o fim real do atendimento em solo (AEGT) (requisito funcional (RF) 20), e o `PropagacaoService` propaga o estado das tarefas e do turnaround (RF-21). No Monitoramento, o `RecalculoService` recalcula a projeção e o caminho crítico (RF-22 a RF-24), o `AlertaService` emite os alertas (RF-27 a RF-31), e o `AvisoChecagemService` emite o aviso de checagem (RF-32). O `AgendadorMinuto` dispara o que depende do relógio (ADR-0015, regra 7). No Exceções e Liberação, o `AtualizacaoTobtService.avaliarProjecao` compara cada projeção recebida com o horário-alvo de prontidão (TOBT) vigente e abre ou encerra a solicitação de atualização da previsão (UC34, passo 1).
 - O Operador de Solo/Rampa, o Coordenador de Turnaround, a Autoridade de Liberação e o Administrador do Sistema são os valores da enumeração `Perfil`. As telas que cada um usa estão nas vistas da seção 13.5.
 - Os estados do turnaround e da tarefa são as enumerações `EstadoTurnaround` e `EstadoTarefa`, com os valores exatos do `CONTEXT.md`. Só a Execução em Solo os muda (ADR-0015, regra 4); os outros serviços guardam cópia para exibir ou calcular.
 
 ## 13.2 Notação e convenções
 
 - **Classe:** compartimentos de nome, atributos e métodos. Visibilidade em todo membro: `-` privado, `#` protegido e `+` público. O membro estático aparece sublinhado (por exemplo, `EnvelopeAviso.novo`).
-- **Atributo:** `nome: Tipo`, com a multiplicidade entre colchetes quando o valor pode faltar (`[0..1]`). **Método:** `nome(parametro: Tipo): Retorno`, e `void` quando não há retorno.
+- **Atributo:** `nome: Tipo`, com a multiplicidade entre colchetes quando o valor pode faltar (`[0..1]`); o atributo de um campo que o item 12 aceita vazio tem sempre `[0..1]`, e o de campo obrigatório não tem. **Método:** `nome(parametro: Tipo): Retorno`, e `void` quando não há retorno.
 - **Tipos neutros** (decisão B1 dos critérios de aceite): `String`, `Integer`, `Real`, `Boolean`, `Date`, `DateTime` (data, hora e fuso, sempre em tempo universal coordenado (UTC)), `UUID` (identificador universal único, um tipo de dado do pacote `contrato`) e `List<T>`. Cada serviço traduz os tipos para a sua linguagem (ADR-0018 e ADR-0020).
 - **Nomes** (ADR-0016, ponto 8): classes em PascalCase e no singular, métodos e atributos em camelCase, em português e sem acento. O atributo tem o nome do campo do item 12 em camelCase (`tobt_vigente` → `tobtVigente`). Os valores das enumerações são os valores exatos do domínio, com acento, porque são os que as telas mostram e os avisos levam; no código, cada serviço os escreve na convenção da sua linguagem.
 - **Relacionamentos:** associação (seta aberta) quando um atributo tem o tipo de outra classe; composição (losango cheio) quando a parte só existe dentro do todo, como a tarefa dentro do plano; agregação (losango vazio) quando a parte existe sem o todo, como o operador na equipe; dependência (seta tracejada) quando a classe só usa a outra como parâmetro, retorno ou chamada; herança (triângulo) nos consumidores de avisos. As associações têm a multiplicidade nas duas pontas.
+- **Gravação.** O todo de uma composição grava as partes: na Execução em Solo, `TurnaroundRepository.salvar` grava o turnaround com as tarefas, os marcos, as correções do AIBT, os registros, as leituras e o histórico. Os repositórios das partes só consultam (por exemplo, a busca pela chave de envio). Toda ação que muda o turnaround ou uma tarefa começa por `buscarComTrava`, que trava a linha do turnaround até o fim da transação (ADR-0018), e confere se o turnaround ainda aceita registros (RF-44).
 - **Referência entre classes e entre serviços.** Dentro do serviço, a classe guarda o objeto (`- turnaround: TurnaroundReferencia`), e não o identificador. Entre serviços, guarda só o identificador (`- tarefaId: UUID`), porque cada serviço tem o seu código e o seu banco, e só o dono decide sobre o dado (ADR-0015, regra 1). Nenhuma classe de um serviço tem atributo, parâmetro ou retorno do tipo de uma classe de outro serviço; o que vai de um serviço para outro é um dado de troca do próprio serviço.
 
 ## 13.3 Visão geral das classes de negócio
@@ -103,7 +105,7 @@ UC03 a UC08, UC10 e UC11.
 
 ### 13.5.3 Execução das tarefas no solo
 
-UC12 a UC19. A `FilaRegistrosSemConexao` guarda no celular o registro feito sem conexão, com o horário da ação e a chave de envio, e o envia na ordem quando a conexão volta (RNF-8).
+UC12 a UC19 e UC37. A `FilaRegistrosSemConexao` guarda no celular o registro e a leitura de QR Code feitos sem conexão, com o operador, o horário da ação e a chave de envio, e os envia na ordem quando a conexão volta e o mesmo operador está autenticado (RNF-8). O serviço confere, a cada registro, que a tarefa é do operador e da equipe dele (`TarefaService.conferirResponsavel`).
 
 ![Diagrama de classes — execução das tarefas no solo](diagramas/13-classes-tecnica-execucao.png)
 
@@ -121,13 +123,13 @@ UC22, UC23, UC26, UC27 e UC28. Os painéis (UC22 e UC23) são lidos por GraphQL,
 
 ### 13.5.6 Exceções, atualização do TOBT e ação sobre o alerta
 
-UC29, UC31, UC33 e UC34. A abertura e o encerramento da exceção são pedidos à Execução em Solo, gravados antes como pedido pendente (ADR-0020).
+UC29, UC31, UC33 e UC34. A abertura e o encerramento da exceção são pedidos à Execução em Solo, gravados antes como pedido pendente (ADR-0020); a Execução em Solo responde com a mudança de estado (`MudancaEstado`). A ação sobre um alerta (UC31) não é uma chamada à parte: a tela de registro abre a tela da ação com o alerta, e abrir a exceção, reatribuir, replanejar ou atualizar o TOBT recebem o `alertaId` e gravam a `AcaoAlerta` na mesma transação, depois de conferir que o alerta ainda não tem ação. A atualização do TOBT é recusada quando a solicitação já foi encerrada ou o turnaround já foi liberado.
 
 ![Diagrama de classes — exceções, TOBT e ação sobre o alerta](diagramas/13-classes-tecnica-excecoes.png)
 
 ### 13.5.7 Reatribuição e replanejamento
 
-UC30, UC35 e UC36. A decisão é da Execução em Solo, que é a dona da tarefa; o Exceções e Liberação guarda o motivo e o autor.
+UC30, UC35 e UC36. A decisão é da Execução em Solo, que é a dona da tarefa; o Exceções e Liberação guarda o motivo e o autor. Todo pedido leva o horário da ação e a chave do registro (`reatribuicaoId`, `replanejamentoId`), que a Execução em Solo grava como causa na auditoria; depois de uma queda, `consultarPedido` diz se o pedido já foi aplicado, e o pedido pendente é concluído ou desfeito (ADR-0020). A lista de operadores vem com o nome, buscado no Cadastro na hora, e já ordenada (RF-43).
 
 ![Diagrama de classes — reatribuição e replanejamento](diagramas/13-classes-tecnica-reatribuicao-replanejamento.png)
 
@@ -139,10 +141,10 @@ UC32 e UC37. O Exceções e Liberação confere as exceções e pede a liberaç�
 
 ## 13.6 Contrato entre os serviços e infraestrutura comum
 
-O pacote `contrato` tem o que os quatro serviços combinaram (ADR-0016): o identificador `UUID`, as enumerações de estado e de perfil, o tipo da ação sobre o alerta, o `Acesso` que a porta de entrada passa a cada ação e o `EnvelopeAviso`. O pacote `comum` mostra uma vez a infraestrutura que cada serviço tem no seu código: a trilha de auditoria (RNF-2), a tabela de avisos a publicar, a de avisos processados, o publicador e o consumidor de avisos. Cada serviço tem o seu consumidor, que herda de `ConsumidorAvisos`. O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20).
+O pacote `contrato` tem o que os quatro serviços combinaram (ADR-0016): o identificador `UUID`, as enumerações de estado e de perfil, o tipo da ação sobre o alerta, o `Acesso` que a porta de entrada passa a cada ação e o `EnvelopeAviso`. O pacote `comum` mostra uma vez a infraestrutura que cada serviço tem no seu código: a trilha de auditoria (RNF-2), a tabela de avisos a publicar, a de avisos processados, o publicador e o consumidor de avisos. Cada serviço tem o seu consumidor, que herda de `ConsumidorAvisos`, e a sua `RotinaAnonimizacao`, que anonimiza a trilha vencida (RNF-6). O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20).
 
 ![Diagrama de classes — contrato e infraestrutura comum](diagramas/13-classes-contrato.png)
 
 ## 13.7 Conferência
 
-`python scripts/conferir_classes.py` confere as fontes das classes contra os critérios do item: formato dos atributos e dos métodos, tipos, nenhuma classe de outro serviço, associação desenhada para todo atributo que aponta para outra classe de negócio, toda tabela de negócio do Apêndice B com classe e atributos, e os valores das enumerações contra o `CONTEXT.md` e os domínios do Apêndice B. Com `--sequencia`, confere também que todo método chamado nos diagramas de sequência do item 14 existe na classe que recebe a mensagem (C13.8); os métodos que o item 14 pedir entram aqui.
+`python scripts/conferir_classes.py` confere as fontes das classes contra os critérios do item: formato dos atributos e dos métodos, tipos, nenhuma classe de outro serviço, associação desenhada para todo atributo que aponta para outra classe de negócio, toda tabela de negócio do Apêndice B com classe e atributos, `[0..1]` só nos campos opcionais, os valores das enumerações contra o `CONTEXT.md` e os domínios do Apêndice B, e o contrato entre os serviços (todo método de cliente igual ao do controle que atende o pedido e o mesmo «dto» com os mesmos campos dos dois lados). Com `--sequencia`, confere também que todo método chamado nos diagramas de sequência do item 14 existe na classe que recebe a mensagem (C13.8); os métodos que o item 14 pedir entram aqui.

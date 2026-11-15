@@ -24,6 +24,7 @@ restore comum.RegistroAuditoriaRepository
 restore comum.AvisoSaidaRepository
 restore comum.AvisoProcessadoRepository
 restore comum.AuditoriaService
+restore comum.RotinaAnonimizacao
 restore comum.PublicadorAvisos
 restore comum.ConsumidorAvisos
 restore cadastro.ConsumidorAvisosCadastro

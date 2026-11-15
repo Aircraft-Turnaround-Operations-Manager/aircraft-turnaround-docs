@@ -10,6 +10,12 @@ Parada em 15/11/2026, 05:20, com 77% do limite de 5 horas. Tudo está na branch 
 - Texto `especificacao/13-diagrama-de-classes.md` (rascunho completo).
 - Conferências independentes da Execução em Solo e do Exceções e Liberação, nesta pasta: `conferencia-execucao.md` (6 graves, 17 médios, 11 leves) e `conferencia-excecoes.md` (11 graves, 15 médios, 10 leves).
 
+## Retomada em 15/11/2026 (tarde)
+
+- Passos 1 e 2 feitos: correções da EX e da EL aplicadas; script em 0 problema; vistas regeradas.
+- Script ganhou: `[0..1]` contra a coluna Obrigatório do Apêndice B (achou 42 no Cadastro e no Monitoramento, já corrigidos); dependência entre serviços só de tela e de cliente para controle (passo 5 feito); contrato cliente × controle; «dto» espelho igual dos dois lados.
+- Decisões novas: gravação pelo todo da composição (Execução em Solo sem MarcoRepository e sem os repositórios de histórico; as partes só consultam); `EncerramentoExcecao` «dto» (UC33 passo 7 mostra o estado de retorno); `PlanoConfirmado`, `TarefaPlanejada` e `PontoPlanejado` também no Cadastro, e o cliente chama `receberPlano`; `AuditoriaService.existeCausa` responde o `consultarPedido`.
+
 ## Próximos passos, em ordem
 
 1. Aplicar as correções abaixo nas fontes, nos dois serviços de uma vez, porque os achados se cruzam.

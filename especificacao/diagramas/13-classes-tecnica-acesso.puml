@@ -3,6 +3,7 @@
 !include 13-classes-estilo.iuml
 restore cadastro
 restore contrato
+restore execucao
 restore contrato.PortaDeEntrada
 restore contrato.Acesso
 restore cadastro.AutenticacaoView
@@ -20,5 +21,9 @@ restore cadastro.FalhaLoginRepository
 restore cadastro.SessaoRepository
 restore cadastro.EquipeRepository
 restore cadastro.ExecucaoEmSoloCliente
-restore cadastro.TarefaPendente
+restore cadastro.TarefaResumo
+restore cadastro.OperadorAtivo
+restore execucao.TarefaController
+restore execucao.CadastroCliente
+restore execucao.OperadorAtivo
 @enduml

@@ -94,14 +94,14 @@ namespace comum {
     - objetoId: String
     - acao: AcaoAuditoria
     - autorTipo: TipoAutor
-    - autorId: UUID
-    - causaId: UUID
-    - gatilho: String
-    - turnaroundId: UUID
+    - autorId: UUID [0..1]
+    - causaId: UUID [0..1]
+    - gatilho: String [0..1]
+    - turnaroundId: UUID [0..1]
     - ocorridoEm: DateTime
-    - valoresAnteriores: String
-    - valoresNovos: String
-    - anonimizadoEm: DateTime
+    - valoresAnteriores: String [0..1]
+    - valoresNovos: String [0..1]
+    - anonimizadoEm: DateTime [0..1]
     + anonimizar(momento: DateTime): void
   }
 
@@ -110,12 +110,12 @@ namespace comum {
     - tipo: String
     - versao: Integer
     - ocorridoEm: DateTime
-    - turnaroundId: UUID
-    - autorId: UUID
-    - causaId: UUID
+    - turnaroundId: UUID [0..1]
+    - autorId: UUID [0..1]
+    - causaId: UUID [0..1]
     - dados: String
     - gravadoEm: DateTime
-    - publicadoEm: DateTime
+    - publicadoEm: DateTime [0..1]
     + {static} de(envelope: EnvelopeAviso, gravadoEm: DateTime): AvisoSaida
     + paraEnvelope(origem: String): EnvelopeAviso
     + marcarPublicado(momento: DateTime): void
@@ -130,6 +130,7 @@ namespace comum {
     + salvar(registro: RegistroAuditoria): void
     + listarPorTurnaround(turnaroundId: UUID): List<RegistroAuditoria>
     + listarParaAnonimizar(limite: DateTime): List<RegistroAuditoria>
+    + existeCausa(causaId: UUID): Boolean
   }
 
   interface AvisoSaidaRepository <<repository>> {
@@ -144,8 +145,16 @@ namespace comum {
 
   class AuditoriaService <<service>> {
     - repositorio: RegistroAuditoriaRepository
-    + registrar(objeto: String, objetoId: String, acao: AcaoAuditoria, autorId: UUID, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
+    + registrar(objeto: String, objetoId: String, acao: AcaoAuditoria, autorId: UUID, causaId: UUID, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
     + registrarAutomatico(objeto: String, objetoId: String, acao: AcaoAuditoria, causaId: UUID, gatilho: String, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
+    + existeCausa(causaId: UUID): Boolean
+    + anonimizarVencidos(momento: DateTime): void
+  }
+
+  ' Roda uma vez por dia em cada serviço e anonimiza a trilha vencida pelo prazo do RNF-6.
+  class RotinaAnonimizacao <<scheduler>> {
+    - auditoria: AuditoriaService
+    + executarDiariamente(): void
   }
 
   class PublicadorAvisos <<publisher>> {
@@ -164,6 +173,7 @@ namespace comum {
   comum.RegistroAuditoria ..> comum.AcaoAuditoria
   comum.RegistroAuditoria ..> comum.TipoAutor
   comum.AuditoriaService --> comum.RegistroAuditoriaRepository
+  comum.RotinaAnonimizacao --> comum.AuditoriaService
   comum.PublicadorAvisos --> comum.AvisoSaidaRepository
   comum.ConsumidorAvisos --> comum.AvisoProcessadoRepository
   comum.RegistroAuditoriaRepository ..> comum.RegistroAuditoria

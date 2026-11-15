@@ -5,10 +5,14 @@ O que confere (critérios de entregas/ra2-criterios-de-aceite.md, seção 3.2):
   C13.2  todo atributo segue `nome: Tipo`, com tipo neutro (B1) ou classe/enumeração do diagrama
   C13.3  todo método segue `nome(p: Tipo, ...): Retorno`
   C13.5  nenhum atributo, parâmetro ou retorno de um serviço usa classe de outro serviço (entre serviços, só UUID);
-         todo atributo que aponta para outra classe de negócio do serviço tem a linha de associação desenhada
+         todo atributo que aponta para outra classe de negócio do serviço tem a linha de associação desenhada;
+         entre serviços, só a dependência de tela para tela ou controle (o site é um só) e de «client» para o
+         controle do outro serviço; todo método de um «client» existe, com os mesmos parâmetros e retorno, num
+         controle ligado a ele; o mesmo «dto» declarado em dois serviços tem os mesmos campos
   C13.6  toda tabela de negócio do Apêndice B tem classe no serviço, com um atributo por campo e tipo compatível;
          a chave estrangeira vira atributo do tipo da classe (sem o _id) ou a lista na classe do todo (composição);
-         as tabelas associativas de dependência viram a lista `predecessoras`
+         as tabelas associativas de dependência viram a lista `predecessoras`; o atributo de campo opcional
+         (Obrigatório = Não) tem [0..1], e o de campo obrigatório não tem
   C13.7  EstadoTurnaround, EstadoTarefa e Perfil têm exatamente os valores do CONTEXT.md e do Apêndice B; toda
          enumeração usada por um atributo que vem de uma tabela tem os valores do domínio do campo
   C13.8  (com --sequencia) toda mensagem dos diagramas de sequência 14-sequencia-*.puml que chama `metodo(...)`
@@ -121,9 +125,45 @@ def conferir_associacoes(classes, relacoes):
         for x in (a, b):
             if x not in classes: erro(f'{arq}:{n}: relação com classe inexistente {x}')
         sa, sb = a.split('.')[0], b.split('.')[0]
-        if sa in SERVICOS and sb in SERVICOS and sa != sb: erro(f'{arq}:{n}: relação entre serviços {a} e {b} (C13.5)')
+        if sa in SERVICOS and sb in SERVICOS and sa != sb:
+            ea, eb = classes.get(a, {}).get('est'), classes.get(b, {}).get('est')
+            if not (seta == '..>' and ((ea == 'boundary' and eb in ('boundary', 'control', 'resolver')) or
+                                       (ea == 'client' and eb in ('control', 'resolver')))):
+                erro(f'{arq}:{n}: relação entre serviços {a} e {b} (C13.5; só tela → tela/controle e cliente → controle)')
         if '--' in seta and '..' not in seta and not (m1 or m2) and classes.get(a, {}).get('est') == 'entity':
             erro(f'{arq}:{n}: associação sem multiplicidade {a} — {b} (C13.5)')
+
+
+def assinatura(params):
+    return [re.sub(r'\s+', '', p) for p in params if not p.startswith('acesso:')]
+
+
+def conferir_contratos(classes, relacoes):
+    """C13.5: cada método de um «client» existe, com os mesmos parâmetros e o mesmo retorno, num controle do outro
+    serviço ligado a ele por dependência; e todo «client» tem essa ligação."""
+    for chave, c in classes.items():
+        if c['est'] != 'client': continue
+        alvos = [b for a, b, seta, *_ in relacoes if a == chave and classes.get(b, {}).get('est') in ('control', 'resolver')
+                 and b.split('.')[0] != c['ns']]
+        if not alvos: erro(f'{chave}: cliente sem dependência para o controle do outro serviço (C13.5)'); continue
+        for vis, nome, params, ret, n in c['metodos']:
+            cands = [(b, m) for b in alvos for m in classes[b]['metodos'] if m[1] == nome]
+            if not cands: erro(f'{chave}.{nome}(): nenhum controle ligado ({", ".join(alvos)}) atende o pedido (C13.5)'); continue
+            if not any(assinatura(m[2]) == assinatura(params) and m[3] == ret for b, m in cands):
+                b, m = cands[0]
+                erro(f'{chave}.{nome}({", ".join(params)}): {ret} ≠ {b}.{nome}({", ".join(m[2])}): {m[3]} (C13.5)')
+
+
+def conferir_dtos_espelho(classes):
+    """C13.5: o mesmo dado de troca, declarado nos dois serviços, tem os mesmos campos e tipos dos dois lados."""
+    por_nome = {}
+    for chave, c in classes.items():
+        if c['est'] == 'dto' and c['ns'] in SERVICOS: por_nome.setdefault(c['nome'], []).append(chave)
+    for nome, chaves in por_nome.items():
+        base = [(a[1], a[2]) for a in classes[chaves[0]]['atributos']]
+        for outra in chaves[1:]:
+            if [(a[1], a[2]) for a in classes[outra]['atributos']] != base:
+                erro(f'{chaves[0]} e {outra}: o mesmo dado de troca com campos diferentes (C13.5)')
 
 
 def camel(snake):
@@ -143,8 +183,9 @@ def ler_apendice_b():
         if m: serv = m.group(1).strip(); out[serv] = {}; continue
         m = re.match(r'### B\.\d+\.\d+ `(\w+)`( \(técnica\))?', linha)
         if m: tab = out[serv][m.group(1)] = {'tecnica': bool(m.group(2)), 'campos': []}; continue
-        m = re.match(r'\| `(\w+)` \| `([^`]+)` \| ([^|]+) \| [^|]+ \| ([^|]+) \|', linha)
-        if m and tab is not None: tab['campos'].append((m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()))
+        m = re.match(r'\| `(\w+)` \| `([^`]+)` \| ([^|]+) \| ([^|]+) \| ([^|]+) \|', linha)
+        if m and tab is not None:
+            tab['campos'].append((m.group(1), m.group(2), m.group(3).strip(), m.group(5).strip(), m.group(4).strip() == 'Não'))
     return out
 
 
@@ -179,7 +220,11 @@ def conferir_modelo(classes):
             c = classes[chave]
             attrs = {a[1]: a[2] for a in c['atributos']}
             campos = {x[0] for x in d['campos']}
-            for nome, tipo_sql, chave_campo, dom in d['campos']:
+            for nome, tipo_sql, chave_campo, dom, opcional in d['campos']:
+                an = camel(nome) if camel(nome) in attrs else camel(nome[:-3]) if nome.endswith('_id') else None
+                if an in attrs and not attrs[an].startswith('List<') and attrs[an].endswith('[0..1]') != opcional:
+                    erro(f'{chave}.{an}: {"falta" if opcional else "sobra"} [0..1] (campo {tabela}.{nome} '
+                         f'{"opcional" if opcional else "obrigatório"} no Apêndice B) (C13.6)')
                 if nome == 'codigo_versao' and 'codigo_atraso' in campos and 'FK' in chave_campo: continue
                 if nome == 'codigo_atraso' and 'FK' in chave_campo:
                     if 'codigoAtraso' not in attrs: erro(f'{chave}: falta codigoAtraso: CodigoAtraso (FK composta) (C13.6)')
@@ -244,6 +289,8 @@ def main():
     classes, relacoes = ler_classes()
     conferir_tipos(classes)
     conferir_associacoes(classes, relacoes)
+    conferir_contratos(classes, relacoes)
+    conferir_dtos_espelho(classes)
     tabelas = conferir_modelo(classes)
     conferir_estados(classes)
     msgs = conferir_sequencia(classes) if '--sequencia' in sys.argv else None

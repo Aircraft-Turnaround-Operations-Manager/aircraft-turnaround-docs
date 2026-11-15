@@ -47,13 +47,13 @@ namespace monitoramento {
     - tobtVigente: DateTime
     - eibt: DateTime
     - mtttMin: Integer
-    - aibt: DateTime
-    - acgt: DateTime
-    - asbt: DateTime
-    - aegt: DateTime
-    - ardt: DateTime
-    - aobt: DateTime
-    - prontoParaLiberacaoEm: DateTime
+    - aibt: DateTime [0..1]
+    - acgt: DateTime [0..1]
+    - asbt: DateTime [0..1]
+    - aegt: DateTime [0..1]
+    - ardt: DateTime [0..1]
+    - aobt: DateTime [0..1]
+    - prontoParaLiberacaoEm: DateTime [0..1]
     - toleranciaProntidaoMin: Integer
     - esperaTarefaProntaMin: Integer
     - antecedenciaEmbarqueMin: Integer
@@ -80,15 +80,15 @@ namespace monitoramento {
     - fimPlanejado: DateTime
     - inicioPlanejadoOriginal: DateTime
     - fimPlanejadoOriginal: DateTime
-    - inicioReal: DateTime
-    - fimReal: DateTime
-    - prontaEm: DateTime
+    - inicioReal: DateTime [0..1]
+    - fimReal: DateTime [0..1]
+    - prontaEm: DateTime [0..1]
     - executadoMin: Integer
-    - emExecucaoDesde: DateTime
-    - justificativa: String
-    - codigoVersao: Integer
-    - codigoAtraso: String
-    - codigoDescricao: String
+    - emExecucaoDesde: DateTime [0..1]
+    - justificativa: String [0..1]
+    - codigoVersao: Integer [0..1]
+    - codigoAtraso: String [0..1]
+    - codigoDescricao: String [0..1]
     - versaoOrigem: Integer
     - predecessoras: List<TarefaMonitorada>
     + aceitaVersao(versao: Integer): Boolean
@@ -105,7 +105,7 @@ namespace monitoramento {
     - desvioVigenteMin: Integer
     - calculadaEm: DateTime
     - causaTipo: CausaRecalculo
-    - causaId: UUID
+    - causaId: UUID [0..1]
     - causaTarefa: TarefaMonitorada [0..1]
     - tarefas: List<ProjecaoTarefa>
     + alemDaTolerancia(toleranciaMin: Integer): Boolean
@@ -113,12 +113,12 @@ namespace monitoramento {
 
   class ProjecaoTarefa <<entity>> {
     - tarefa: TarefaMonitorada
-    - inicioProjetado: DateTime
-    - fimProjetado: DateTime
-    - atrasoInicioMin: Integer
-    - atrasoFimMin: Integer
+    - inicioProjetado: DateTime [0..1]
+    - fimProjetado: DateTime [0..1]
+    - atrasoInicioMin: Integer [0..1]
+    - atrasoFimMin: Integer [0..1]
     - impactadaPor: TarefaMonitorada [0..1]
-    - impactoMin: Integer
+    - impactoMin: Integer [0..1]
   }
 
   class CaminhoCritico <<entity>> {
@@ -143,17 +143,17 @@ namespace monitoramento {
     - critico: Boolean
     - ciclo: Integer
     - emitidoEm: DateTime
-    - minutosEspera: Integer
+    - minutosEspera: Integer [0..1]
     - projecao: Projecao [0..1]
-    - eibt: DateTime
-    - mtttMin: Integer
-    - tobtVigente: DateTime
+    - eibt: DateTime [0..1]
+    - mtttMin: Integer [0..1]
+    - tobtVigente: DateTime [0..1]
     - estadoTurnaround: EstadoTurnaround [0..1]
-    - encerradoEm: DateTime
-    - acaoId: UUID
+    - encerradoEm: DateTime [0..1]
+    - acaoId: UUID [0..1]
     - tipoAcao: TipoAcaoAlerta [0..1]
-    - acaoAutorId: UUID
-    - acaoRegistradaEm: DateTime
+    - acaoAutorId: UUID [0..1]
+    - acaoRegistradaEm: DateTime [0..1]
     - tarefasCitadas: List<AlertaTarefa>
     + estaAberto(): Boolean
     + minutosDecorridos(agora: DateTime): Integer
@@ -163,8 +163,8 @@ namespace monitoramento {
   class AlertaTarefa <<entity>> {
     - tarefa: TarefaMonitorada
     - estado: EstadoTarefa
-    - atrasoInicioMin: Integer
-    - atrasoFimMin: Integer
+    - atrasoInicioMin: Integer [0..1]
+    - atrasoFimMin: Integer [0..1]
   }
 
   class AvisoChecagem <<entity>> {
@@ -172,8 +172,8 @@ namespace monitoramento {
     - turnaround: TurnaroundMonitorado
     - tobtVigente: DateTime
     - emitidoEm: DateTime
-    - encerradoEm: DateTime
-    - autorChecagemId: UUID
+    - encerradoEm: DateTime [0..1]
+    - autorChecagemId: UUID [0..1]
     + estaEncerrado(): Boolean
     + registrarChecagem(autorId: UUID, momento: DateTime): void
   }

@@ -3,12 +3,18 @@
 !include 13-classes-estilo.iuml
 restore excecoes
 restore execucao
+restore monitoramento
 restore excecoes.ExcecaoView
 restore excecoes.RegistroAcaoAlertaView
 restore excecoes.AtualizacaoTobtView
 restore excecoes.ExcecaoController
-restore excecoes.AcaoAlertaController
 restore excecoes.AtualizacaoTobtController
+restore excecoes.CoordenadorNotificador
+restore excecoes.EncerramentoExcecao
+restore excecoes.MudancaEstado
+restore excecoes.LiberacaoRepository
+restore monitoramento.AlertasView
+restore monitoramento.AlertaController
 restore excecoes.ExcecaoService
 restore excecoes.AcaoAlertaService
 restore excecoes.AtualizacaoTobtService
@@ -22,4 +28,5 @@ restore excecoes.AtualizacaoTobtRepository
 restore excecoes.ExecucaoEmSoloCliente
 restore execucao.TurnaroundController
 restore execucao.TurnaroundService
+restore execucao.MudancaEstado
 @enduml

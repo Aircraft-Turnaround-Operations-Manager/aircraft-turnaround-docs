@@ -29,7 +29,6 @@ restore excecoes.Reatribuicao
 restore excecoes.Replanejamento
 restore excecoes.AcaoAlerta
 restore excecoes.Liberacao
-restore excecoes.PedidoPendente
 restore execucao.Turnaround
 restore execucao.Marco
 restore execucao.CorrecaoAibt

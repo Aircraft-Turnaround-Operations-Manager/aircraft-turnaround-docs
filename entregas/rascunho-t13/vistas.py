@@ -17,7 +17,7 @@ def de(ns, *est):
     return [k for k, v in classes.items() if k.startswith(ns + '.') and v in est]
 
 VISTAS = {
-  'visao-geral': ('Visão geral das classes de negócio', [k for k, v in classes.items() if v == 'entity' and k.split('.')[0] not in ('comum',)], 'todas', 'left to right direction'),
+  'visao-geral': ('Visão geral das classes de negócio', [k for k, v in classes.items() if v == 'entity' and k.split('.')[0] not in ('comum',) and k != 'excecoes.PedidoPendente'], 'todas', 'left to right direction'),
   'negocio-cadastro': ('Classes de negócio — Cadastro e Planejamento', de('cadastro', 'entity'), None, ''),
   'negocio-execucao': ('Classes de negócio — Execução em Solo', de('execucao', 'entity', 'enumeration'), None, ''),
   'negocio-monitoramento': ('Classes de negócio — Monitoramento', de('monitoramento', 'entity', 'enumeration'), None, ''),
@@ -36,22 +36,27 @@ tec('tecnica-acesso', 'Autenticação, usuários e equipes', [
   'cadastro.AcessoController', 'cadastro.AutenticacaoController', 'cadastro.UsuarioController', 'cadastro.EquipeController',
   'cadastro.AutenticacaoService', 'cadastro.UsuarioService', 'cadastro.EquipeService',
   'cadastro.UsuarioRepository', 'cadastro.FalhaLoginRepository', 'cadastro.SessaoRepository', 'cadastro.EquipeRepository',
-  'cadastro.ExecucaoEmSoloCliente', 'cadastro.TarefaPendente'])
+  'cadastro.ExecucaoEmSoloCliente', 'cadastro.TarefaResumo', 'cadastro.OperadorAtivo',
+  'execucao.TarefaController', 'execucao.CadastroCliente', 'execucao.OperadorAtivo'])
 tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
   'cadastro.TurnaroundView', 'cadastro.ModeloTarefaView', 'cadastro.PlanoView', 'cadastro.PoliticaAbastecimentoView',
   'cadastro.TurnaroundController', 'cadastro.CompanhiaController', 'cadastro.ModeloTarefaController', 'cadastro.PlanoController', 'cadastro.PoliticaAbastecimentoController',
   'cadastro.TurnaroundService', 'cadastro.ModeloTarefaService', 'cadastro.PlanoService', 'cadastro.PoliticaAbastecimentoService',
   'cadastro.TurnaroundRepository', 'cadastro.CompanhiaRepository', 'cadastro.ModeloTarefaRepository', 'cadastro.PlanoRepository', 'cadastro.PoliticaAbastecimentoRepository',
-  'cadastro.ExecucaoEmSoloCliente'])
+  'cadastro.ExecucaoEmSoloCliente', 'cadastro.PlanoConfirmado', 'cadastro.TarefaPlanejada', 'cadastro.PontoPlanejado',
+  'execucao.TurnaroundController', 'execucao.ChegadaController', 'execucao.TurnaroundService', 'execucao.PlanoConfirmado',
+  'execucao.TarefaPlanejada', 'execucao.PontoPlanejado'])
 tec('tecnica-execucao', 'Execução das tarefas no solo', [
   'execucao.ChegadaView', 'execucao.CorrecaoChegadaView', 'execucao.ListaTarefasView', 'execucao.TarefaView', 'execucao.LeituraQrCodeView', 'execucao.MarcosView', 'execucao.FilaRegistrosSemConexao',
   'execucao.ChegadaController', 'execucao.TarefaController', 'execucao.LeituraQrCodeController', 'execucao.CodigoAtrasoController',
   'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.LeituraQrCodeService', 'execucao.CodigoAtrasoService',
   'execucao.TurnaroundRepository', 'execucao.TarefaRepository', 'execucao.RegistroTarefaRepository', 'execucao.CorrecaoAibtRepository',
-  'execucao.PontoConfirmacaoRepository', 'execucao.LeituraQrCodeRepository', 'execucao.CodigoAtrasoRepository', 'execucao.ListaTarefasNotificador'])
+  'execucao.PontoConfirmacaoRepository', 'execucao.LeituraQrCodeRepository', 'execucao.CodigoAtrasoRepository', 'execucao.ListaTarefasNotificador',
+  'execucao.TurnaroundController', 'execucao.TarefaDoOperador'])
 tec('tecnica-motor-de-eventos', 'Motor de Eventos: marcos, propagação, recálculo e alertas', [
-  'execucao.MarcoService', 'execucao.PropagacaoService', 'execucao.MarcoRepository', 'execucao.TarefaRepository',
-  'execucao.HistoricoEstadoTurnaroundRepository', 'execucao.HistoricoEstadoTarefaRepository', 'execucao.ListaTarefasNotificador',
+  'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.TurnaroundService', 'execucao.ReplanejamentoService',
+  'execucao.MarcoService', 'execucao.PropagacaoService', 'execucao.TurnaroundRepository', 'execucao.ListaTarefasNotificador',
+  'excecoes.ConsumidorAvisosExcecoes', 'excecoes.AtualizacaoTobtService',
   'monitoramento.ConsumidorAvisosMonitoramento', 'monitoramento.CopiaService', 'monitoramento.AgendadorMinuto',
   'monitoramento.RecalculoService', 'monitoramento.AlertaService', 'monitoramento.AvisoChecagemService',
   'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.TarefaMonitoradaRepository', 'monitoramento.ProjecaoRepository',
@@ -65,23 +70,28 @@ tec('tecnica-acompanhamento', 'Painel, linha do tempo, alertas, checagem e indic
   'monitoramento.PainelNotificador'])
 tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o alerta', [
   'excecoes.ExcecaoView', 'excecoes.RegistroAcaoAlertaView', 'excecoes.AtualizacaoTobtView',
-  'excecoes.ExcecaoController', 'excecoes.AcaoAlertaController', 'excecoes.AtualizacaoTobtController',
+  'excecoes.ExcecaoController', 'excecoes.AtualizacaoTobtController', 'excecoes.CoordenadorNotificador',
+  'excecoes.EncerramentoExcecao', 'excecoes.MudancaEstado', 'excecoes.LiberacaoRepository',
+  'monitoramento.AlertasView', 'monitoramento.AlertaController',
   'excecoes.ExcecaoService', 'excecoes.AcaoAlertaService', 'excecoes.AtualizacaoTobtService', 'excecoes.PedidoService',
   'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository', 'excecoes.CodigoAtrasoRepository', 'excecoes.AcaoAlertaRepository',
   'excecoes.SolicitacaoAtualizacaoTobtRepository', 'excecoes.AtualizacaoTobtRepository', 'excecoes.ExecucaoEmSoloCliente',
-  'execucao.TurnaroundController', 'execucao.TurnaroundService'])
+  'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.MudancaEstado'])
 tec('tecnica-reatribuicao-replanejamento', 'Reatribuição e replanejamento', [
   'excecoes.ReatribuicaoView', 'excecoes.ReplanejamentoView',
   'excecoes.ReatribuicaoController', 'excecoes.ReplanejamentoController',
   'excecoes.ReatribuicaoService', 'excecoes.ReplanejamentoService', 'excecoes.PedidoService',
   'excecoes.ReatribuicaoRepository', 'excecoes.ReplanejamentoRepository', 'excecoes.ExecucaoEmSoloCliente',
-  'excecoes.OperadorDisponivel', 'excecoes.TarefaResumo',
+  'excecoes.OperadorDisponivel', 'excecoes.OperadorAtivo', 'excecoes.TarefaResumo', 'excecoes.TurnaroundReferenciaRepository',
+  'excecoes.AcaoAlertaService', 'monitoramento.PainelResolver',
   'execucao.AtribuicaoController', 'execucao.ReplanejamentoController', 'execucao.AtribuicaoService', 'execucao.ReplanejamentoService',
-  'execucao.CadastroCliente', 'execucao.OperadorDisponivel'])
+  'execucao.CadastroCliente', 'execucao.OperadorDisponivel', 'execucao.OperadorAtivo', 'execucao.TarefaResumo',
+  'cadastro.EquipeController'])
 tec('tecnica-liberacao', 'Liberação e saída da posição', [
   'excecoes.LiberacaoView', 'excecoes.LiberacaoController', 'excecoes.LiberacaoService', 'excecoes.PedidoService',
   'excecoes.LiberacaoRepository', 'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository',
-  'excecoes.ExecucaoEmSoloCliente', 'excecoes.CondicoesLiberacao', 'excecoes.TurnaroundLiberavel', 'excecoes.SituacaoTurnaround',
+  'excecoes.ExecucaoEmSoloCliente', 'excecoes.SituacaoLiberacao', 'excecoes.TurnaroundLiberavel', 'excecoes.SituacaoTurnaround',
+  'excecoes.TarefaResumo', 'excecoes.AtualizacaoTobtService',
   'execucao.SaidaPosicaoView', 'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.TurnaroundRepository', 'execucao.SituacaoTurnaround'])
 
 usadas = set()

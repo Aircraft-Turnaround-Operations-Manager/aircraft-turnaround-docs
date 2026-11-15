@@ -25,4 +25,6 @@ restore execucao.PontoConfirmacaoRepository
 restore execucao.LeituraQrCodeRepository
 restore execucao.CodigoAtrasoRepository
 restore execucao.ListaTarefasNotificador
+restore execucao.TurnaroundController
+restore execucao.TarefaDoOperador
 @enduml
