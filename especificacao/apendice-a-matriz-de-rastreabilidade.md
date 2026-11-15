@@ -48,7 +48,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-37 | Reatribuir tarefa a outro operador da mesma equipe | Obj. 2 e 3 | Coordenador de Turnaround | US037 | UC30 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | reatribuicao (Exceções e Liberação), tarefa (Execução em Solo), turnaround_referencia (Exceções e Liberação), usuario (Cadastro e Planejamento) |
 | RF-38 | Registrar ação tomada para cada alerta | Obj. 3 | Coordenador de Turnaround | US038 | UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-15, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 | acao_alerta (Exceções e Liberação), alerta (Monitoramento), atualizacao_tobt (Exceções e Liberação), reatribuicao (Exceções e Liberação), replanejamento (Exceções e Liberação), turnaround_referencia (Exceções e Liberação) |
 | RF-39 | Confirmar prontidão e liberar aeronave | Obj. 3 | Autoridade de Liberação | US039 | UC32 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), liberacao (Exceções e Liberação), tarefa (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
-| RF-40 | Encerrar exceção do turnaround | Obj. 3 | Coordenador de Turnaround | US040 | UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
+| RF-40 | Encerrar exceção do turnaround | Obj. 3 | Coordenador de Turnaround | US040 | UC29, UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
 | RF-41 | Atualizar o TOBT quando a projeção se afasta 5 minutos ou mais | Obj. 1 | Coordenador de Turnaround | US041 | UC34 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 | atualizacao_tobt (Exceções e Liberação), projecao (Monitoramento), solicitacao_atualizacao_tobt (Exceções e Liberação), turnaround_referencia (Exceções e Liberação) |
 | RF-42 | Replanejar tarefas não iniciadas do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US042 | UC35 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), politica_abastecimento (Cadastro e Planejamento), replanejamento (Exceções e Liberação), tarefa (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação), usuario (Cadastro e Planejamento) |
 | RF-43 | Consultar operadores disponíveis da equipe | Obj. 2 | Coordenador de Turnaround | US043 | UC36 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | equipe (Cadastro e Planejamento), registro_tarefa (Execução em Solo), tarefa (Execução em Solo), usuario (Cadastro e Planejamento) |
@@ -313,6 +313,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US043-CA1 | — |
 | US043-CA2 | — |
 | US043-CA3 | — |
+| US043-CA4 | — |
 | US044-CA1 | — |
 | US044-CA2 | — |
 | US044-CA3 | — |
@@ -450,4 +451,5 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - US043-CA1 sem caso de teste (item 15)
 - US043-CA2 sem caso de teste (item 15)
 - US043-CA3 sem caso de teste (item 15)
+- US043-CA4 sem caso de teste (item 15)
 <!-- matriz:fim -->

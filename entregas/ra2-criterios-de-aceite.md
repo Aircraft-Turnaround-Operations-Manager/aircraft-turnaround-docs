@@ -226,7 +226,7 @@ Itens 7 e 10 (RA1) ──► Item 15 (casos de teste) ── pode começar já; 
 | A — Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 48 critérios |
 | B — Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 47 critérios |
 | C — Monitoramento | 7 (UC22 a UC28) | 14 estórias, 52 critérios |
-| D — Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 32 critérios |
+| D — Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios |
 | **Total** | **37** | **44 estórias, 179 critérios** |
 
 - **Janela de tempo:** de 28/10 a 28/11. Pelo plano de ensino, as aulas de 29/10 (classes), 05/11 (sequência) e 12/11 e 19/11 (casos de teste) são de prática desses itens; 21/11 é o TDE3; a entrega é sábado, 28/11, às 23:59.
