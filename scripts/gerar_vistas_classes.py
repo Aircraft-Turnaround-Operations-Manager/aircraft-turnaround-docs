@@ -1,8 +1,13 @@
-"""Gera as vistas especificacao/diagramas/13-classes-*.puml (rascunho de trabalho; os .puml gerados são a fonte editável)."""
+"""Gera as vistas do diagrama de classes (item 13): especificacao/diagramas/13-classes-*.puml.
+
+As classes ficam nas fontes 13-classes-*.iuml; cada vista inclui todas e restaura só as da sua lista.
+Rode de novo depois de criar, renomear ou apagar uma classe; o script avisa a classe que ficou fora de toda vista.
+Uso: python scripts/gerar_vistas_classes.py
+"""
 import re
 from pathlib import Path
 
-D = Path(r'C:\Users\rdsalves\Documents\Aircraft-Turnaround-Operations-Manager\aircraft-turnaround-docs\especificacao\diagramas')
+D = Path(__file__).resolve().parent.parent / 'especificacao' / 'diagramas'
 classes = {}
 for arq in sorted(D.glob('13-classes-*.iuml')):
     ns = None
@@ -17,7 +22,11 @@ def de(ns, *est):
     return [k for k, v in classes.items() if k.startswith(ns + '.') and v in est]
 
 VISTAS = {
-  'visao-geral': ('Visão geral das classes de negócio', [k for k, v in classes.items() if v == 'entity' and k.split('.')[0] not in ('comum',) and k != 'excecoes.PedidoPendente'], 'todas', 'left to right direction'),
+  'visao-geral': ('Visão geral das classes de negócio', [k for k, v in classes.items() if v == 'entity' and k.split('.')[0] not in ('comum',) and k != 'excecoes.PedidoPendente'], 'todas', 'left to right direction\n'
+                  "' pacotes na ordem da seção 13.4 e do ciclo do turnaround\n"
+                  'cadastro.Plano -[hidden]down- execucao.Turnaround\n'
+                  'execucao.Turnaround -[hidden]down- monitoramento.TurnaroundMonitorado\n'
+                  'monitoramento.TurnaroundMonitorado -[hidden]down- excecoes.TurnaroundReferencia'),
   'negocio-cadastro': ('Classes de negócio — Cadastro e Planejamento', de('cadastro', 'entity'), None, ''),
   'negocio-execucao': ('Classes de negócio — Execução em Solo', de('execucao', 'entity', 'enumeration'), None, ''),
   'negocio-monitoramento': ('Classes de negócio — Monitoramento', de('monitoramento', 'entity', 'enumeration'), None, ''),
@@ -49,26 +58,29 @@ tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
   'execucao.TurnaroundController', 'execucao.ChegadaController', 'execucao.TurnaroundService', 'execucao.PlanoConfirmado',
   'execucao.TarefaPlanejada', 'execucao.PontoPlanejado'])
 tec('tecnica-execucao', 'Execução das tarefas no solo', [
-  'execucao.ChegadaView', 'execucao.CorrecaoChegadaView', 'execucao.ListaTarefasView', 'execucao.TarefaView', 'execucao.LeituraQrCodeView', 'execucao.MarcosView', 'execucao.FilaRegistrosSemConexao',
+  'execucao.ChegadaView', 'execucao.CorrecaoChegadaView', 'execucao.ListaTarefasView', 'execucao.TarefaView', 'execucao.LeituraQrCodeView', 'execucao.MarcoView', 'execucao.FilaRegistrosSemConexao',
   'execucao.ChegadaController', 'execucao.TarefaController', 'execucao.LeituraQrCodeController', 'execucao.CodigoAtrasoController',
   'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.LeituraQrCodeService', 'execucao.CodigoAtrasoService',
   'execucao.TurnaroundRepository', 'execucao.TarefaRepository', 'execucao.RegistroTarefaRepository', 'execucao.CorrecaoAibtRepository',
   'execucao.PontoConfirmacaoRepository', 'execucao.LeituraQrCodeRepository', 'execucao.CodigoAtrasoRepository', 'execucao.ListaTarefasNotificador',
   'execucao.TurnaroundController', 'execucao.TarefaDoOperador'])
-tec('tecnica-motor-de-eventos', 'Motor de Eventos: marcos, propagação, recálculo e alertas', [
+tec('tecnica-marcos-propagacao', 'Motor de Eventos na Execução em Solo: marcos e propagação', [
   'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.TurnaroundService', 'execucao.ReplanejamentoService',
   'execucao.MarcoService', 'execucao.PropagacaoService', 'execucao.TurnaroundRepository', 'execucao.ListaTarefasNotificador',
-  'excecoes.ConsumidorAvisosExcecoes', 'excecoes.AtualizacaoTobtService',
+  'execucao.ConsumidorAvisosExecucao', 'comum.ConsumidorAvisos', 'comum.PublicadorAvisos'])
+tec('tecnica-recalculo-alertas', 'Motor de Eventos no Monitoramento: recálculo e alertas', [
+  'comum.PublicadorAvisos', 'comum.ConsumidorAvisos',
   'monitoramento.ConsumidorAvisosMonitoramento', 'monitoramento.CopiaService', 'monitoramento.AgendadorMinuto',
   'monitoramento.RecalculoService', 'monitoramento.AlertaService', 'monitoramento.AvisoChecagemService',
   'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.TarefaMonitoradaRepository', 'monitoramento.ProjecaoRepository',
   'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
-  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'monitoramento.PainelNotificador', 'monitoramento.PainelService'])
+  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'monitoramento.PainelNotificador', 'monitoramento.PainelService',
+  'excecoes.ConsumidorAvisosExcecoes', 'excecoes.AtualizacaoTobtService'])
 tec('tecnica-acompanhamento', 'Painel, linha do tempo, alertas, checagem e indicadores', [
-  'monitoramento.PainelView', 'monitoramento.LinhaDoTempoView', 'monitoramento.AlertasView', 'monitoramento.AvisoChecagemView', 'monitoramento.IndicadoresView',
+  'monitoramento.PainelView', 'monitoramento.LinhaDoTempoView', 'monitoramento.ListaAlertasView', 'monitoramento.AvisoChecagemView', 'monitoramento.IndicadorView',
   'monitoramento.PainelResolver', 'monitoramento.AlertaController', 'monitoramento.AvisoChecagemController', 'monitoramento.IndicadorController',
   'monitoramento.PainelService', 'monitoramento.AlertaService', 'monitoramento.AvisoChecagemService', 'monitoramento.IndicadorService',
-  'monitoramento.Painel', 'monitoramento.LinhaPainel', 'monitoramento.LinhaDoTempo', 'monitoramento.IndicadoresAderencia', 'monitoramento.Indicador',
+  'monitoramento.Painel', 'monitoramento.LinhaPainel', 'monitoramento.LinhaDoTempo', 'monitoramento.RelatorioAderencia', 'monitoramento.Indicador',
   'monitoramento.PainelNotificador', 'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.ProjecaoRepository',
   'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
   'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView'])
@@ -76,7 +88,7 @@ tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o aler
   'excecoes.ExcecaoView', 'excecoes.RegistroAcaoAlertaView', 'excecoes.AtualizacaoTobtView',
   'excecoes.ExcecaoController', 'excecoes.AtualizacaoTobtController', 'excecoes.CoordenadorNotificador',
   'excecoes.EncerramentoExcecao', 'excecoes.MudancaEstado', 'excecoes.LiberacaoRepository',
-  'monitoramento.AlertasView', 'monitoramento.AlertaController',
+  'monitoramento.ListaAlertasView', 'monitoramento.AlertaController',
   'excecoes.ExcecaoService', 'excecoes.AcaoAlertaService', 'excecoes.AtualizacaoTobtService', 'excecoes.PedidoService',
   'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository', 'excecoes.CodigoAtrasoRepository', 'excecoes.AcaoAlertaRepository',
   'excecoes.SolicitacaoAtualizacaoTobtRepository', 'excecoes.AtualizacaoTobtRepository', 'excecoes.ExecucaoEmSoloCliente',
@@ -96,7 +108,8 @@ tec('tecnica-liberacao', 'Liberação e saída da posição', [
   'excecoes.LiberacaoRepository', 'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository',
   'excecoes.ExecucaoEmSoloCliente', 'excecoes.SituacaoLiberacao', 'excecoes.TurnaroundLiberavel', 'excecoes.SituacaoTurnaround',
   'excecoes.TarefaResumo', 'excecoes.AtualizacaoTobtService',
-  'execucao.SaidaPosicaoView', 'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.TurnaroundRepository', 'execucao.SituacaoTurnaround'])
+  'execucao.SaidaPosicaoView', 'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.TurnaroundRepository', 'execucao.SituacaoTurnaround',
+  'comum.PublicadorAvisos', 'excecoes.ConsumidorAvisosExcecoes', 'excecoes.TurnaroundReferenciaService'])
 
 usadas = set()
 for nome, (titulo, lista, ocultar, extra) in VISTAS.items():

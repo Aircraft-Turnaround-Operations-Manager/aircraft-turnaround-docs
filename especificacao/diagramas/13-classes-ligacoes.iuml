@@ -13,10 +13,10 @@ monitoramento.PainelView ..> cadastro.UsuarioController
 execucao.CadastroCliente ..> cadastro.EquipeController
 monitoramento.LinhaDoTempoView ..> cadastro.UsuarioController
 monitoramento.LinhaDoTempoView ..> cadastro.EquipeController
-monitoramento.AlertasView ..> cadastro.UsuarioController
-monitoramento.AlertasView ..> cadastro.EquipeController
+monitoramento.ListaAlertasView ..> cadastro.UsuarioController
+monitoramento.ListaAlertasView ..> cadastro.EquipeController
 monitoramento.AvisoChecagemView ..> cadastro.UsuarioController
-monitoramento.AlertasView ..> excecoes.RegistroAcaoAlertaView
+monitoramento.ListaAlertasView ..> excecoes.RegistroAcaoAlertaView
 excecoes.RegistroAcaoAlertaView ..> monitoramento.AlertaController
 excecoes.ReplanejamentoView ..> monitoramento.LinhaDoTempoView
 excecoes.ExecucaoEmSoloCliente ..> execucao.TurnaroundController

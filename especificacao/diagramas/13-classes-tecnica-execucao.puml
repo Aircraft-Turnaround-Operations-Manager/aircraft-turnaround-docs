@@ -7,7 +7,7 @@ restore execucao.CorrecaoChegadaView
 restore execucao.ListaTarefasView
 restore execucao.TarefaView
 restore execucao.LeituraQrCodeView
-restore execucao.MarcosView
+restore execucao.MarcoView
 restore execucao.FilaRegistrosSemConexao
 restore execucao.ChegadaController
 restore execucao.TarefaController

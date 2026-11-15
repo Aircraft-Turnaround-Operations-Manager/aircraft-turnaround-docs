@@ -49,7 +49,7 @@ namespace excecoes {
     + desvioDaProjecaoMin(): Integer
     + pedeAtualizacaoTobt(): Boolean
     + atualizarTobt(tobtNovo: DateTime, autorId: UUID, solicitacao: SolicitacaoAtualizacaoTobt, momento: DateTime): AtualizacaoTobt
-    + registrarProjecao(projecaoProntidao: DateTime, calculadaEm: DateTime): void
+    + aplicarProjecao(projecaoProntidao: DateTime, calculadaEm: DateTime): void
   }
 
   class SolicitacaoAtualizacaoTobt <<entity>> {
@@ -245,7 +245,7 @@ namespace excecoes {
   ' ---------- interface ----------
 
   class ExcecaoView <<boundary>> {
-    + abrirFormulario(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + buscarCodigo(texto: String): void
     + confirmarAbertura(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String): void
     + selecionarExcecao(excecaoId: UUID): void
@@ -264,20 +264,20 @@ namespace excecoes {
   }
 
   class LiberacaoView <<boundary>> {
-    + abrirLiberacoes(): void
+    + abrir(): void
     + selecionarTurnaround(turnaroundId: UUID): void
     + confirmarProntidao(turnaroundId: UUID): void
   }
 
   class AtualizacaoTobtView <<boundary>> {
-    + abrirSolicitacao(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + exibirSolicitacao(solicitacao: SolicitacaoAtualizacaoTobt): void
     + retirarSolicitacao(solicitacaoId: UUID): void
     + atualizarTobt(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1]): void
   }
 
   class ReplanejamentoView <<boundary>> {
-    + abrirReplanejamento(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
     + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime): void
     + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>): void
     + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String): void
@@ -331,6 +331,8 @@ namespace excecoes {
     - pedidos: PedidoService
     - execucao: ExecucaoEmSoloCliente
     - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + listarAbertas(turnaroundId: UUID): List<Excecao>
     + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
     + consultarCodigos(): TabelaCodigoAtraso
@@ -344,6 +346,8 @@ namespace excecoes {
     - pedidos: PedidoService
     - execucao: ExecucaoEmSoloCliente
     - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + consultarTarefa(tarefaId: UUID): TarefaResumo
     + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
     + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID [0..1], autorId: UUID): Reatribuicao
@@ -353,6 +357,8 @@ namespace excecoes {
 ' AcaoAlerta já montada por quem chama, com o registro tipado (excecao, reatribuicao, replanejamento ou atualizacaoTobt).
   class AcaoAlertaService <<service>> {
     - acoes: AcaoAlertaRepository
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + conferirSemAcao(alertaId: UUID): void
     + registrar(acao: AcaoAlerta): void
   }
@@ -364,6 +370,8 @@ namespace excecoes {
     - pedidos: PedidoService
     - execucao: ExecucaoEmSoloCliente
     - atualizacoesTobt: AtualizacaoTobtService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + listarTurnarounds(companhiaId: UUID): List<TurnaroundLiberavel>
     + consultarCondicoes(turnaroundId: UUID, companhiaId: UUID): SituacaoLiberacao
     + confirmarProntidao(turnaroundId: UUID, autorId: UUID, companhiaId: UUID, horarioConfirmacao: DateTime): Liberacao
@@ -377,6 +385,8 @@ namespace excecoes {
     - liberacoes: LiberacaoRepository
     - acoesAlerta: AcaoAlertaService
     - notificador: CoordenadorNotificador
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + avaliarProjecao(turnaroundId: UUID, projecaoProntidao: DateTime, calculadaEm: DateTime): void
     + consultarTobt(turnaroundId: UUID): TurnaroundReferencia
     + consultarSolicitacao(turnaroundId: UUID): SolicitacaoAtualizacaoTobt
@@ -390,6 +400,8 @@ namespace excecoes {
     - pedidos: PedidoService
     - execucao: ExecucaoEmSoloCliente
     - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
     + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
     + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
@@ -410,7 +422,7 @@ namespace excecoes {
   class TurnaroundReferenciaService <<service>> {
     - turnarounds: TurnaroundReferenciaRepository
     - codigos: CodigoAtrasoRepository
-    + aplicarTurnaroundAberto(turnaroundId: UUID, companhiaId: UUID, tobtPlanejado: DateTime): void
+    + aplicarTurnaroundAberto(turnaround: TurnaroundReferencia): void
     + aplicarAobt(turnaroundId: UUID, aobt: DateTime): void
     + aplicarTabelaCodigos(tabela: TabelaCodigoAtraso): void
   }

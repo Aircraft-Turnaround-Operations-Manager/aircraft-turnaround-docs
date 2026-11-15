@@ -75,8 +75,8 @@ namespace monitoramento {
     ' as cinco tolerâncias e prazos acima vêm da configuração do serviço (RNF-21) em aplicarTurnaroundAberto
     + estaEmCalculo(): Boolean
     + tarefasObrigatorias(): List<TarefaMonitorada>
-    + registrarMarco(tipo: MarcoMonitorado, horario: DateTime): void
-    + mudarEstado(estado: EstadoTurnaround, momento: DateTime): void
+    + aplicarMarco(tipo: MarcoMonitorado, horario: DateTime): void
+    + aplicarEstado(estado: EstadoTurnaround, momento: DateTime): void
     + corDoRisco(projecao: Projecao, alertaCriticoAberto: Boolean): CorRisco
   }
 
@@ -261,7 +261,7 @@ namespace monitoramento {
     - metaPercentual: Integer [0..1]
   }
 
-  class IndicadoresAderencia <<dto>> {
+  class RelatorioAderencia <<dto>> {
     - inicio: Date
     - fim: Date
     - indicadores: List<Indicador>
@@ -271,37 +271,38 @@ namespace monitoramento {
   ' ---------- interface ----------
 
   class PainelView <<boundary>> {
-    + abrirPainel(): void
+    + abrir(): void
     + atualizarLinha(linha: LinhaPainel): void
     + retirarLinha(turnaroundId: UUID): void
     + exibirAvisoAlerta(alerta: Alerta): void
   }
 
   class LinhaDoTempoView <<boundary>> {
-    + abrirLinhaDoTempo(turnaroundId: UUID): void
+    + abrir(turnaroundId: UUID): void
     + buscarTurnaround(texto: String): void
     + abrirCaminhoCritico(turnaroundId: UUID): void
     + abrirHistoricoAlertas(turnaroundId: UUID): void
     + atualizar(turnaroundId: UUID): void
   }
 
-  class AlertasView <<boundary>> {
-    + abrirAlertas(): void
+  class ListaAlertasView <<boundary>> {
+    + abrir(): void
     + registrarAcao(alertaId: UUID): void
     + incluirAlerta(alerta: Alerta): void
     + retirarAlerta(alertaId: UUID): void
   }
 
   class AvisoChecagemView <<boundary>> {
-    + abrirAvisos(): void
+    + abrir(): void
     + exibirAviso(aviso: AvisoChecagem, pendentes: List<ProjecaoTarefa>): void
     + retirarAviso(avisoId: UUID): void
     + registrarChecagem(avisoId: UUID): void
     + lembrarDepois(avisoId: UUID): void
   }
 
-  class IndicadoresView <<boundary>> {
-    + consultarIndicadores(inicio: Date, fim: Date): void
+  class IndicadorView <<boundary>> {
+    + abrir(): void
+    + consultar(inicio: Date, fim: Date): void
   }
 
   ' ---------- controle (GraphQL nos painéis; REST nas demais telas) ----------
@@ -325,7 +326,7 @@ namespace monitoramento {
   }
 
   class IndicadorController <<control>> {
-    + consultar(inicio: Date, fim: Date, acesso: Acesso): IndicadoresAderencia
+    + consultar(inicio: Date, fim: Date, acesso: Acesso): RelatorioAderencia
   }
 
   ' ---------- serviço ----------
@@ -350,6 +351,8 @@ namespace monitoramento {
     - alertas: AlertaService
     - painel: PainelService
     - notificador: PainelNotificador
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
     + recalcular(turnaroundId: UUID, causa: CausaRecalculo, causaId: UUID, momento: DateTime): Projecao
     + recalcularAbertos(momento: DateTime, causa: CausaRecalculo): void
     - projetarTarefas(turnaround: TurnaroundMonitorado, momento: DateTime): List<ProjecaoTarefa>
@@ -364,6 +367,7 @@ namespace monitoramento {
     - caminhos: CaminhoCriticoRepository
     - painel: PainelService
     - notificador: PainelNotificador
+    - auditoria: AuditoriaService
     + verificarGatilhos(turnaround: TurnaroundMonitorado, projecao: Projecao, anterior: Projecao, momento: DateTime): List<Alerta>
     + verificarViabilidade(turnaroundId: UUID, momento: DateTime): Alerta
     + verificarHorarios(momento: DateTime): void
@@ -379,6 +383,7 @@ namespace monitoramento {
     - turnarounds: TurnaroundMonitoradoRepository
     - projecoes: ProjecaoRepository
     - notificador: PainelNotificador
+    - auditoria: AuditoriaService
     + emitirDevidos(momento: DateTime): void
     + listarAbertos(): List<AvisoChecagem>
     + registrarChecagem(avisoId: UUID, autorId: UUID): AvisoChecagem
@@ -388,7 +393,7 @@ namespace monitoramento {
     - turnarounds: TurnaroundMonitoradoRepository
     - alertas: AlertaRepository
     - atualizacoes: AtualizacaoTobtMonitoradaRepository
-    + calcular(inicio: Date, fim: Date): IndicadoresAderencia
+    + calcular(inicio: Date, fim: Date): RelatorioAderencia
   }
 
   ' Ordem dos avisos: aplicarPlano não sobrescreve a tarefa que já recebeu aviso da Execução em Solo (versaoOrigem > 0),
@@ -497,16 +502,16 @@ namespace monitoramento {
 
   monitoramento.PainelView ..> monitoramento.PainelResolver
   monitoramento.LinhaDoTempoView ..> monitoramento.PainelResolver
-  monitoramento.AlertasView ..> monitoramento.AlertaController
+  monitoramento.ListaAlertasView ..> monitoramento.AlertaController
   monitoramento.AvisoChecagemView ..> monitoramento.AvisoChecagemController
-  monitoramento.IndicadoresView ..> monitoramento.IndicadorController
+  monitoramento.IndicadorView ..> monitoramento.IndicadorController
   monitoramento.PainelView ..> monitoramento.LinhaDoTempoView
-  monitoramento.PainelView ..> monitoramento.AlertasView
-  monitoramento.AlertasView ..> monitoramento.LinhaDoTempoView
+  monitoramento.PainelView ..> monitoramento.ListaAlertasView
+  monitoramento.ListaAlertasView ..> monitoramento.LinhaDoTempoView
   monitoramento.LinhaDoTempoView ..> monitoramento.AlertaController
   monitoramento.PainelNotificador ..> monitoramento.PainelView
   monitoramento.PainelNotificador ..> monitoramento.LinhaDoTempoView
-  monitoramento.PainelNotificador ..> monitoramento.AlertasView
+  monitoramento.PainelNotificador ..> monitoramento.ListaAlertasView
   monitoramento.PainelNotificador ..> monitoramento.AvisoChecagemView
 
   monitoramento.PainelResolver ..> monitoramento.PainelService
@@ -552,14 +557,14 @@ namespace monitoramento {
   monitoramento.ConsumidorAvisosMonitoramento --> monitoramento.AlertaService
   monitoramento.PainelService ..> monitoramento.Painel
   monitoramento.PainelService ..> monitoramento.LinhaDoTempo
-  monitoramento.IndicadorService ..> monitoramento.IndicadoresAderencia
-  monitoramento.IndicadoresAderencia "1" *-- "4" monitoramento.Indicador : indicadores
+  monitoramento.IndicadorService ..> monitoramento.RelatorioAderencia
+  monitoramento.RelatorioAderencia "1" *-- "4" monitoramento.Indicador : indicadores
   monitoramento.Painel "1" *-- "*" monitoramento.LinhaPainel : linhas
   monitoramento.LinhaDoTempo "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
   monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.Projecao : projecao
   monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.CaminhoCritico : caminho
   monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.AvisoChecagem : avisoChecagem
-  monitoramento.IndicadoresAderencia "*" --> "*" monitoramento.TurnaroundMonitorado : turnarounds
+  monitoramento.RelatorioAderencia "*" --> "*" monitoramento.TurnaroundMonitorado : turnarounds
 
 
   comum.ConsumidorAvisos <|-- monitoramento.ConsumidorAvisosMonitoramento

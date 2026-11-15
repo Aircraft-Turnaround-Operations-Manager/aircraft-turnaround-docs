@@ -194,31 +194,32 @@ namespace cadastro {
   ' ---------- interface (telas do site, Angular) ----------
 
   class AutenticacaoView <<boundary>> {
+    + abrir(): void
     + entrar(identificadorAcesso: String, senha: String): void
   }
 
   class UsuarioView <<boundary>> {
-    + abrirLista(): void
+    + abrir(): void
     + abrirUsuario(usuarioId: UUID): void
     + salvarUsuario(dados: Usuario, senhaInicial: String): void
     + desativarUsuario(usuarioId: UUID): void
   }
 
   class EquipeView <<boundary>> {
-    + abrirLista(): void
+    + abrir(): void
     + salvarEquipe(dados: Equipe): void
     + desativarEquipe(equipeId: UUID): void
   }
 
   class TurnaroundView <<boundary>> {
-    + novoTurnaround(): void
+    + abrir(): void
     + abrirPrevisao(turnaroundId: UUID): void
-    + abrirTurnaround(dados: Turnaround): void
+    + salvarTurnaround(dados: Turnaround): void
     + salvarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
   }
 
   class ModeloTarefaView <<boundary>> {
-    + abrirModelos(): void
+    + abrir(): void
     + abrirTarefa(modeloId: UUID, tarefaModeloId: UUID): void
     + salvarModelo(dados: ModeloTarefa): void
     + salvarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>): void
@@ -226,7 +227,7 @@ namespace cadastro {
   }
 
   class PlanoView <<boundary>> {
-    + abrirPlanejamento(turnaroundId: UUID): void
+    + abrir(turnaroundId: UUID): void
     + abrirAplicarModelo(turnaroundId: UUID): void
     + selecionarModelo(modeloId: UUID): void
     + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean): void

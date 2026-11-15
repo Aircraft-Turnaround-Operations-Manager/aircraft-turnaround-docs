@@ -5,9 +5,9 @@ restore excecoes
 restore monitoramento
 restore monitoramento.PainelView
 restore monitoramento.LinhaDoTempoView
-restore monitoramento.AlertasView
+restore monitoramento.ListaAlertasView
 restore monitoramento.AvisoChecagemView
-restore monitoramento.IndicadoresView
+restore monitoramento.IndicadorView
 restore monitoramento.PainelResolver
 restore monitoramento.AlertaController
 restore monitoramento.AvisoChecagemController
@@ -19,7 +19,7 @@ restore monitoramento.IndicadorService
 restore monitoramento.Painel
 restore monitoramento.LinhaPainel
 restore monitoramento.LinhaDoTempo
-restore monitoramento.IndicadoresAderencia
+restore monitoramento.RelatorioAderencia
 restore monitoramento.Indicador
 restore monitoramento.PainelNotificador
 restore monitoramento.TurnaroundMonitoradoRepository

@@ -13,7 +13,7 @@ restore excecoes.CoordenadorNotificador
 restore excecoes.EncerramentoExcecao
 restore excecoes.MudancaEstado
 restore excecoes.LiberacaoRepository
-restore monitoramento.AlertasView
+restore monitoramento.ListaAlertasView
 restore monitoramento.AlertaController
 restore excecoes.ExcecaoService
 restore excecoes.AcaoAlertaService

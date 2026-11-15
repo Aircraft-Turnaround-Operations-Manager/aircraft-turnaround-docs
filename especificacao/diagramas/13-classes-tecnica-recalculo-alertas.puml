@@ -1,19 +1,11 @@
 @startuml
-' Item 13 — Motor de Eventos: marcos, propagação, recálculo e alertas. Vista gerada a partir das fontes 13-classes-*.iuml.
+' Item 13 — Motor de Eventos no Monitoramento: recálculo e alertas. Vista gerada a partir das fontes 13-classes-*.iuml.
 !include 13-classes-estilo.iuml
+restore comum
 restore excecoes
-restore execucao
 restore monitoramento
-restore execucao.ChegadaService
-restore execucao.TarefaService
-restore execucao.TurnaroundService
-restore execucao.ReplanejamentoService
-restore execucao.MarcoService
-restore execucao.PropagacaoService
-restore execucao.TurnaroundRepository
-restore execucao.ListaTarefasNotificador
-restore excecoes.ConsumidorAvisosExcecoes
-restore excecoes.AtualizacaoTobtService
+restore comum.PublicadorAvisos
+restore comum.ConsumidorAvisos
 restore monitoramento.ConsumidorAvisosMonitoramento
 restore monitoramento.CopiaService
 restore monitoramento.AgendadorMinuto
@@ -29,4 +21,6 @@ restore monitoramento.AvisoChecagemRepository
 restore monitoramento.AtualizacaoTobtMonitoradaRepository
 restore monitoramento.PainelNotificador
 restore monitoramento.PainelService
+restore excecoes.ConsumidorAvisosExcecoes
+restore excecoes.AtualizacaoTobtService
 @enduml
