@@ -595,7 +595,7 @@ namespace execucao {
   execucao.LeituraQrCodeView ..> execucao.FilaRegistrosSemConexao
   execucao.MarcoView ..> execucao.TurnaroundController
   execucao.SaidaPosicaoView ..> execucao.TurnaroundController
-  execucao.ListaTarefasNotificador ..> execucao.ListaTarefasView
+  execucao.ListaTarefasNotificador .[norank].> execucao.ListaTarefasView
 
   execucao.ChegadaController ..> execucao.ChegadaService
   execucao.TarefaController ..> execucao.TarefaService

@@ -72,7 +72,8 @@ def ler_classes():
                 if m: atual['atributos'].append((m.group(1), m.group(2), m.group(3).strip(), n)); continue
                 erro(f'{arq.name}:{n}: membro fora do formato (C13.1 a C13.3): {t}')
                 continue
-            m = re.match(r'([\w.]+)\s*(?:"([^"]*)")?\s*([.\-*o<|]+[.\->|*o]*)\s*(?:"([^"]*)")?\s*([\w.]+)(?:\s*:\s*(\w+))?$', t)
+            # [norank] só muda a disposição da figura (a seta não define a camada), não a relação
+            m = re.match(r'([\w.]+)\s*(?:"([^"]*)")?\s*([.\-*o<|]+[.\->|*o]*)\s*(?:"([^"]*)")?\s*([\w.]+)(?:\s*:\s*(\w+))?$', t.replace('[norank]', ''))
             if m:
                 relacoes.append((m.group(1), m.group(5), m.group(3), m.group(6), m.group(2), m.group(4), arq.name, n))
             elif ns:

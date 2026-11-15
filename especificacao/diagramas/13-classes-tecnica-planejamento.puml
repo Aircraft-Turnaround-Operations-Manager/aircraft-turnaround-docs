@@ -1,6 +1,7 @@
 @startuml
 ' Item 13 — Abertura e planejamento do turnaround. Vista gerada a partir das fontes 13-classes-*.iuml.
 !include 13-classes-estilo.iuml
+left to right direction
 restore cadastro
 restore comum
 restore execucao

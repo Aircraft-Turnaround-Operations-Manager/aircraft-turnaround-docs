@@ -1,6 +1,10 @@
 @startuml
 ' Item 13 — Contrato entre os serviços e infraestrutura comum. Vista gerada a partir das fontes 13-classes-*.iuml.
 !include 13-classes-estilo.iuml
+cadastro.ConsumidorAvisosCadastro -[hidden]down- cadastro.RotinaAnonimizacaoCadastro
+execucao.ConsumidorAvisosExecucao -[hidden]down- execucao.RotinaAnonimizacaoExecucao
+monitoramento.ConsumidorAvisosMonitoramento -[hidden]down- monitoramento.RotinaAnonimizacaoMonitoramento
+excecoes.ConsumidorAvisosExcecoes -[hidden]down- excecoes.RotinaAnonimizacaoExcecoes
 restore cadastro
 restore comum
 restore contrato

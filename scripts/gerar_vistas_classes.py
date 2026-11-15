@@ -111,6 +111,34 @@ tec('tecnica-liberacao', 'Liberação e saída da posição', [
   'execucao.SaidaPosicaoView', 'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.TurnaroundRepository', 'execucao.SituacaoTurnaround',
   'comum.PublicadorAvisos', 'excecoes.ConsumidorAvisosExcecoes', 'excecoes.TurnaroundReferenciaService'])
 
+# Disposição de cada vista, escolhida para a figura caber na página do PDF sem linhas amontoadas
+# (medida por scripts/medir_figuras_pdf.py). "empilhar" põe a segunda classe uma camada abaixo da primeira,
+# por uma ligação oculta, para quebrar uma linha larga em duas.
+DISPOSICAO = {}
+def disp(nome, direcao='', linha='', empilhar=()):
+    DISPOSICAO[nome] = ([direcao] if direcao else []) + ([f'skinparam linetype {linha}'] if linha else []) +                        [f'{a} -[hidden]down- {b}' for a, b in empilhar]
+disp('tecnica-execucao', empilhar=[
+  ('execucao.TurnaroundRepository', 'execucao.CorrecaoAibtRepository'),
+  ('execucao.LeituraQrCodeRepository', 'execucao.PontoConfirmacaoRepository'),
+  ('execucao.RegistroTarefaRepository', 'execucao.TarefaDoOperador'),
+  ('execucao.ListaTarefasNotificador', 'execucao.CodigoAtrasoRepository')])
+disp('tecnica-acesso', 'left to right direction')
+disp('tecnica-planejamento', 'left to right direction')
+disp('tecnica-marcos-propagacao', empilhar=[('execucao.ListaTarefasNotificador', 'comum.PublicadorAvisos'), ('execucao.ListaTarefasNotificador', 'comum.ConsumidorAvisos')])
+disp('tecnica-recalculo-alertas', 'left to right direction')
+disp('tecnica-acompanhamento', empilhar=[
+  ('monitoramento.CaminhoCriticoRepository', 'monitoramento.Painel'), ('monitoramento.ProjecaoRepository', 'monitoramento.LinhaDoTempo'),
+  ('monitoramento.AtualizacaoTobtMonitoradaRepository', 'monitoramento.RelatorioAderencia'),
+  ('monitoramento.AlertaRepository', 'excecoes.RegistroAcaoAlertaView')])
+disp('tecnica-excecoes', 'left to right direction')
+disp('tecnica-reatribuicao-replanejamento', 'left to right direction')
+disp('contrato', empilhar=[
+  ('cadastro.ConsumidorAvisosCadastro', 'cadastro.RotinaAnonimizacaoCadastro'), ('execucao.ConsumidorAvisosExecucao', 'execucao.RotinaAnonimizacaoExecucao'),
+  ('monitoramento.ConsumidorAvisosMonitoramento', 'monitoramento.RotinaAnonimizacaoMonitoramento'),
+  ('excecoes.ConsumidorAvisosExcecoes', 'excecoes.RotinaAnonimizacaoExcecoes')])
+disp('negocio-execucao', 'left to right direction', 'ortho')
+disp('negocio-monitoramento', 'left to right direction')
+
 usadas = set()
 for nome, (titulo, lista, ocultar, extra) in VISTAS.items():
     faltam = [x for x in lista if x not in classes]
@@ -120,6 +148,7 @@ for nome, (titulo, lista, ocultar, extra) in VISTAS.items():
     linhas = ['@startuml', f"' Item 13 — {titulo}. Vista gerada a partir das fontes 13-classes-*.iuml.",
               '!include 13-classes-estilo.iuml']
     if extra: linhas.append(extra)
+    linhas += DISPOSICAO.get(nome, [])
     linhas += [f'restore {n}' for n in ns] + [f'restore {x}' for x in lista]
     if ocultar == 'todas':
         linhas.append('hide members')

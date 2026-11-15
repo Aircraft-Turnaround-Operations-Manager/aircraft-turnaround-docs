@@ -6,8 +6,10 @@ skinparam defaultFontName Arial
 skinparam defaultFontSize 12
 skinparam classAttributeIconSize 0
 skinparam packageStyle folder
-skinparam nodesep 40
-skinparam ranksep 60
+skinparam nodesep 20
+skinparam ranksep 35
+' quebra as assinaturas longas para a figura caber melhor na página (letra legível no PDF)
+skinparam wrapWidth 250
 skinparam classBackgroundColor #FFFFFF
 skinparam classBorderColor #555555
 skinparam packageBackgroundColor #FAFAFA

@@ -555,7 +555,7 @@ namespace excecoes {
   excecoes.LiberacaoView ..> excecoes.LiberacaoController
   excecoes.AtualizacaoTobtView ..> excecoes.AtualizacaoTobtController
   excecoes.ReplanejamentoView ..> excecoes.ReplanejamentoController
-  excecoes.CoordenadorNotificador ..> excecoes.AtualizacaoTobtView
+  excecoes.CoordenadorNotificador .[norank].> excecoes.AtualizacaoTobtView
 
   excecoes.ExcecaoController ..> excecoes.ExcecaoService
   excecoes.ReatribuicaoController ..> excecoes.ReatribuicaoService

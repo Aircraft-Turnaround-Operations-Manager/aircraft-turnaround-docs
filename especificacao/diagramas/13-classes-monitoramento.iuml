@@ -509,10 +509,10 @@ namespace monitoramento {
   monitoramento.PainelView ..> monitoramento.ListaAlertasView
   monitoramento.ListaAlertasView ..> monitoramento.LinhaDoTempoView
   monitoramento.LinhaDoTempoView ..> monitoramento.AlertaController
-  monitoramento.PainelNotificador ..> monitoramento.PainelView
-  monitoramento.PainelNotificador ..> monitoramento.LinhaDoTempoView
-  monitoramento.PainelNotificador ..> monitoramento.ListaAlertasView
-  monitoramento.PainelNotificador ..> monitoramento.AvisoChecagemView
+  monitoramento.PainelNotificador .[norank].> monitoramento.PainelView
+  monitoramento.PainelNotificador .[norank].> monitoramento.LinhaDoTempoView
+  monitoramento.PainelNotificador .[norank].> monitoramento.ListaAlertasView
+  monitoramento.PainelNotificador .[norank].> monitoramento.AvisoChecagemView
 
   monitoramento.PainelResolver ..> monitoramento.PainelService
   monitoramento.AlertaController ..> monitoramento.AlertaService
