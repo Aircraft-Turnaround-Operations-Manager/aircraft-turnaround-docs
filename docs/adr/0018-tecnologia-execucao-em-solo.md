@@ -42,7 +42,7 @@ O banco é o mesmo nas três opções. Um banco relacional com transação é o 
 
 | Parte | Escolha | Motivo |
 |---|---|---|
-| Linguagem | **Java 25** (versão de suporte longo) | Mesma linguagem da porta de entrada. Tipos próprios para horário em UTC (`Instant`) e para UUID (`java.util.UUID`). Versão com suporte longo, que não sai de linha durante o projeto. |
+| Linguagem | **Java 21** (versão de suporte longo) | Mesma linguagem e mesma versão da porta de entrada e do Cadastro e Planejamento (ADR-0017), com o mesmo ambiente e as mesmas imagens de contêiner. Tipos próprios para horário em UTC (`Instant`) e para UUID (`java.util.UUID`). Versão com suporte longo, que não sai de linha durante o projeto, e aceita pelo Spring Boot 4, que pede Java 17 ou mais novo. |
 | Framework | **Spring Boot 4** | Já traz as três camadas da ADR-0015 (`@RestController`, `@Service`, `@Repository`) e os módulos de que o serviço precisa: Spring Web (REST), Spring Data JPA (banco), Spring AMQP (RabbitMQ), Spring WebSocket (lista do operador), Spring Security (perfil) e Spring Boot Actuator (verificação de disponibilidade). A descrição OpenAPI sai do código com o springdoc-openapi. |
 | Banco | **PostgreSQL 18** | Transação completa e trava de linha (`SELECT ... FOR UPDATE`) para atender um pedido de cada vez por turnaround. Tipos nativos `uuid` e `timestamp with time zone`, o mesmo tipo de horário do item 12. Gravação confirmada em disco antes da resposta, o que atende o RNF-20. |
 
@@ -76,6 +76,7 @@ Toda ação que muda o turnaround ou uma tarefa roda numa transação que trava 
 - A Execução em Solo passa a ter duas tabelas técnicas, além das tabelas de negócio: a de avisos a publicar e a de avisos processados. Elas não guardam dado de negócio, mas os diagramas de sequência (item 14) gravam nelas; por isso entram no modelo do item 12 como tabelas técnicas do serviço. A chave de envio do celular não tem tabela própria: é uma coluna das tabelas de registro.
 - A trava por turnaround faz um pedido esperar o outro. Com até 30 tarefas por turnaround e 5 registros por segundo no sistema todo (RNF-13), a espera fica curta. [Inferência] Ainda assim, o teste de carga do RNF-13 precisa confirmar os 5 s do RNF-11.
 - Java com Spring Boot usa mais memória e demora mais para subir do que um serviço em Node.js. No desenvolvimento, isso pesa só na máquina do integrante. Em produção, a verificação de saúde só libera o serviço depois que ele está pronto.
+- A primeira versão desta ADR escolhia o Java 25. A troca para o Java 21 alinha os três serviços em Java (porta de entrada, Cadastro e Planejamento e Execução em Solo), a pedido do responsável pela porta de entrada ([#178](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/178)). Nada do serviço depende de recurso que só existe no Java 25, e o contrato da ADR-0016 não depende da versão.
 - A escolha pode ser revista durante a implementação. Nesse caso, uma ADR nova substitui esta.
 
 ---
