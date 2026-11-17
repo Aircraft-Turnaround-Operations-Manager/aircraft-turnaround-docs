@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-11-15
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0020, adr-0021, adr-0022, mapa-pesquisa]
+atualizado: 2026-11-17
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0019, adr-0020, adr-0021, adr-0022, adr-0023, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -30,6 +30,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0016](0016-contrato-entre-os-servicos.md) | D16 | Contrato comum entre os serviços, votado pelo grupo: REST, RabbitMQ, envelope dos avisos, UTC, UUID e nomes em português; base provisória do RA2 (complementada pela 0023) | 12, 13, 14, 15 |
 | [0017](0017-tecnologia-cadastro-e-planejamento.md) | D17 | Tecnologia do serviço Cadastro e Planejamento: Java 21, Spring Boot 4 e PostgreSQL 16, seguindo o contrato da 0016 | 12, 13, 14 |
 | [0018](0018-tecnologia-execucao-em-solo.md) | D18 | Tecnologia do serviço Execução em Solo: Java 25, Spring Boot 4 e PostgreSQL 18, seguindo o contrato da 0016 | 12, 14 |
+| [0019](0019-tecnologia-monitoramento.md) | D19 | Tecnologia do serviço Monitoramento: Python 3.14, FastAPI e MongoDB 8.0, com o contrato da ADR-0016 | 12, 14 |
 | [0020](0020-tecnologia-excecoes-e-liberacao.md) | D20 | Tecnologia do serviço Exceções e Liberação: C# com .NET 10, ASP.NET Core 10 e PostgreSQL 18, seguindo o contrato da 0016 | 12, 14 |
 | [0021](0021-matriz-de-rastreabilidade-estendida.md) | D21 | Matriz de rastreabilidade estendida aos itens 12, 14 e 15: RF → tabelas, caso de uso → diagrama de sequência, critério de aceite → casos de teste (complementa a 0012) | 12, 14, 15 |
 | [0022](0022-ids-provisorios-dos-casos-de-teste.md) | D22 | Casos de teste com ID provisório por área (CT-A001…) e renumeração única (CT-001…) na consolidação (complementa a 0011) | 15 |
