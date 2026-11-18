@@ -56,6 +56,7 @@ namespace execucao {
     + mudarEstado(novo: EstadoTurnaround, autorId: UUID, causaId: UUID, momento: DateTime): HistoricoEstadoTurnaround
     + aplicarLiberacao(ardt: DateTime, autorId: UUID, liberacaoId: UUID, momento: DateTime): void
     + registrarSaida(autorId: UUID, momento: DateTime): Marco
+    + usuariosVinculados(): List<UUID>
     + aplicarTobtVigente(tobtVigente: DateTime, ocorridoEm: DateTime): void
   }
 

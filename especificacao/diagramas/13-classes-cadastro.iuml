@@ -123,8 +123,9 @@ namespace cadastro {
     - criadoPor: Usuario
     - criadoEm: DateTime
     - aobt: DateTime [0..1]
+    - usuariosVinculados: List<Usuario>
     + atualizarPrevisao(eibt: DateTime, mtttMin: Integer): void
-    + aplicarAobt(aobt: DateTime): void
+    + aplicarEncerramento(aobt: DateTime, usuarios: List<Usuario>): void
   }
 
   class Plano <<entity>> {
@@ -195,6 +196,7 @@ namespace cadastro {
   cadastro.TarefaModelo "1" *-- "*" cadastro.PontoConfirmacaoModelo : pontos
   cadastro.Turnaround "*" --> "1" cadastro.Companhia : companhia
   cadastro.Turnaround "*" --> "1" cadastro.Usuario : criadoPor
+  cadastro.Turnaround "*" --> "*" cadastro.Usuario : usuariosVinculados
   cadastro.Plano "0..1" --> "1" cadastro.Turnaround : turnaround
   cadastro.Plano "*" --> "1" cadastro.ModeloTarefa : modelo
   cadastro.Plano "*" --> "0..1" cadastro.PoliticaAbastecimento : politica
@@ -375,7 +377,7 @@ namespace cadastro {
     + consultar(turnaroundId: UUID): Turnaround
     + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date): Turnaround
     + atualizarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer, autorId: UUID): Turnaround
-    + aplicarAobt(turnaroundId: UUID, aobt: DateTime): void
+    + aplicarEncerramento(turnaroundId: UUID, aobt: DateTime, usuarioIds: List<UUID>): void
   }
 
   class ModeloTarefaService <<service>> {
