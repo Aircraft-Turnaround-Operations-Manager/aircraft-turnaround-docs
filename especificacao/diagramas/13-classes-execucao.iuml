@@ -441,7 +441,6 @@ namespace execucao {
     - leituras: LeituraQrCodeRepository
     - tarefas: TarefaRepository
     - auditoria: AuditoriaService
-    - publicador: PublicadorAvisos
     + registrarLeitura(tarefaId: UUID, identificador: String, horarioAcao: DateTime, requisicaoId: UUID, autorId: UUID, equipeId: UUID): PontoConfirmacao
   }
 
@@ -656,7 +655,6 @@ namespace execucao {
   execucao.TarefaService --> comum.AuditoriaService
   execucao.TarefaService --> comum.PublicadorAvisos
   execucao.LeituraQrCodeService --> comum.AuditoriaService
-  execucao.LeituraQrCodeService --> comum.PublicadorAvisos
   execucao.MarcoService --> comum.AuditoriaService
   execucao.MarcoService --> comum.PublicadorAvisos
   execucao.PropagacaoService --> comum.AuditoriaService
