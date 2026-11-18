@@ -20,10 +20,10 @@
 |---|---|
 | **Nome do caso de uso** | UC01 – Autenticar acesso do usuário |
 | **Ator(es)** | Usuário (abstrato), generalizando Operador de Solo/Rampa, Coordenador de Turnaround, Autoridade de Liberação e Administrador do Sistema (ADR-0010) |
-| **Descrição** | O usuário informa credenciais e acessa a visão correspondente ao perfil cadastrado. Atende ao RF-1 e à US001. |
+| **Descrição** | O usuário informa credenciais e acessa a visão correspondente ao perfil cadastrado, e pode encerrar a sessão quando quiser. Atende ao RF-1 e à US001. |
 | **Pré-condições** | 1. Existe cadastro com identificador, credencial e um dos quatro perfis humanos.<br>2. A tela de autenticação está acessível. |
-| **Pós-condições** | Sucesso: sessão autenticada e visão do perfil exibida.<br>Recusa: nenhuma sessão criada nem dado protegido exibido. |
-| **Regras de negócio** | **RN1.** RF-1 exige cadastro ativo e credenciais válidas; Usuário não é um quinto perfil selecionável.<br>**RN2.** O perfil vem do cadastro, não de uma escolha no login. Identificador inexistente, senha incorreta e usuário desativado recebem a mesma mensagem.<br>**RN3.** A autorização é verificada em cada operação; desativação revoga o acesso na próxima requisição (RNF-1). |
+| **Pós-condições** | Sucesso: sessão autenticada e visão do perfil exibida.<br>Recusa: nenhuma sessão criada nem dado protegido exibido.<br>Saída: sessão encerrada no servidor. |
+| **Regras de negócio** | **RN1.** RF-1 exige cadastro ativo e credenciais válidas; Usuário não é um quinto perfil selecionável.<br>**RN2.** O perfil vem do cadastro, não de uma escolha no login. Identificador inexistente, senha incorreta e usuário desativado recebem a mesma mensagem.<br>**RN3.** A autorização é verificada em cada operação; desativação revoga o acesso na próxima requisição (RNF-1).<br>**RN4.** Encerrar a sessão a invalida no servidor, e não só na tela: a ação seguinte feita com ela é recusada, como na expiração por inatividade do RNF-5 (ADR-0010). |
 | **Protótipo(s) de tela** | Autenticação pelo identificador de acesso e senha, no computador e no celular.<br>![UC01 – autenticação web](prototipos/uc-a1-autenticar-web.png) ![UC01 – autenticação no celular](prototipos/uc-a1-autenticar-celular.png) |
 
 ### Fluxo básico
@@ -42,6 +42,13 @@
 |---|---|
 | A1.1. O Usuário fecha a tela sem enviar. |  |
 |  | A1.2. Nenhuma sessão é criada. |
+
+### Fluxo alternativo A2 – Encerrar a sessão (depois do passo 5)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A2.1. O Usuário autenticado seleciona Sair. |  |
+|  | A2.2. O sistema encerra a sessão no servidor, exibe a tela de autenticação e recusa a ação seguinte feita com a sessão encerrada (RN4). O caso de uso termina. |
 
 ### Fluxo de exceção E1 – Credenciais inválidas ou usuário desativado (passo 4)
 
@@ -67,10 +74,10 @@
 |---|---|
 | **Nome do caso de uso** | UC02 – Gerenciar cadastro de usuários e perfis |
 | **Ator(es)** | Administrador do Sistema |
-| **Descrição** | O administrador cadastra, altera e desativa usuários e define perfil e equipe. Atende ao RF-2 e à US002. |
-| **Pré-condições** | 1. O Administrador do Sistema está autenticado e ativo.<br>2. Há equipes ativas disponíveis quando o cadastro for de operador. |
+| **Descrição** | O administrador cadastra, altera e desativa usuários e define perfil, equipe e companhia. Atende ao RF-2 e à US002. |
+| **Pré-condições** | 1. O Administrador do Sistema está autenticado e ativo.<br>2. Há equipes ativas disponíveis quando o cadastro for de operador e companhias cadastradas quando for de Autoridade de Liberação. |
 | **Pós-condições** | Sucesso: usuário criado, alterado ou desativado com auditoria.<br>Recusa ou cancelamento: cadastro anterior preservado. |
-| **Regras de negócio** | **RN1.** RF-2 exige nome, identificador único, perfil e, na criação, senha inicial protegida pelo RNF-3. Operador de Solo/Rampa também exige equipe ativa.<br>**RN2.** Somente o Administrador do Sistema executa a gestão. Administrar não concede permissão de atuar nos turnarounds.<br>**RN3.** Desativar preserva histórico e vínculos e revoga o acesso. Desativar um Operador de Solo/Rampa com tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado é recusado até a tarefa ser reatribuída (UC05 antes do início das tarefas; UC30 depois); o sistema não reatribui sozinho. Editar dados não reativa um cadastro desativado.<br>**RN4.** Editar perfil ou equipe mantém a senha, sem exibi-la. A senha inicial é entregue por canal autorizado fora deste caso, nunca pela auditoria ou resposta de cadastro. |
+| **Regras de negócio** | **RN1.** RF-2 exige nome, identificador único, perfil e, na criação, senha inicial protegida pelo RNF-3. Operador de Solo/Rampa também exige equipe ativa, e a Autoridade de Liberação, a companhia aérea que representa (UC32).<br>**RN2.** Somente o Administrador do Sistema executa a gestão. Administrar não concede permissão de atuar nos turnarounds.<br>**RN3.** Desativar preserva histórico e vínculos e revoga o acesso. Desativar um Operador de Solo/Rampa com tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado é recusado até a tarefa ser reatribuída (UC05 antes do início das tarefas; UC30 depois); o sistema não reatribui sozinho. Trocar a equipe desse operador é recusado pelo mesmo motivo. Contam como pendentes as tarefas regulares do plano, confirmado ou ainda não; os serviços sob demanda do catálogo ainda não acionados não contam. Editar dados não reativa um cadastro desativado.<br>**RN4.** Editar perfil ou equipe mantém a senha, sem exibi-la. A senha inicial é entregue por canal autorizado fora deste caso, nunca pela auditoria ou resposta de cadastro. |
 | **Protótipo(s) de tela** | Lista de usuários e cadastro com identificador de acesso, senha inicial, perfil e equipe do operador.<br>![UC02 – gerenciar usuários](prototipos/uc-a2-gerenciar-usuarios.png) |
 
 ### Fluxo básico
@@ -79,7 +86,7 @@
 |---|---|
 | 1. O Administrador do Sistema abre Usuários e seleciona Novo usuário. |  |
 |  | 2. O sistema apresenta o formulário. |
-| 3. O administrador informa nome, identificador, senha inicial, perfil e equipe se for operador. |  |
+| 3. O administrador informa nome, identificador, senha inicial, perfil, equipe se for operador e companhia se for Autoridade de Liberação. |  |
 | 4. O administrador seleciona Salvar usuário. |  |
 |  | 5. O sistema verifica autorização, campos, unicidade e equipe ativa (**E1**, **E2**). |
 |  | 6. O sistema protege a senha inicial conforme RNF-3, salva o cadastro ativo e a auditoria e apresenta o usuário na lista sem a credencial (**E3**). |
@@ -111,7 +118,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E1.1. Dados obrigatórios ausentes, senha inicial vazia na criação, identificador duplicado, perfil inválido ou equipe ausente/inativa são indicados. |
+|  | E1.1. Dados obrigatórios ausentes, senha inicial vazia na criação, identificador duplicado, perfil inválido, equipe ausente/inativa ou companhia ausente para Autoridade de Liberação são indicados. |
 |  | E1.2. Não há gravação e o fluxo volta ao passo 3. |
 
 ### Fluxo de exceção E2 – Acesso revogado (passo 5 ou A2)
@@ -133,6 +140,13 @@
 |  | E4.1. O usuário a desativar é Operador de Solo/Rampa com tarefa pendente em turnaround não encerrado. |
 |  | E4.2. O sistema recusa a desativação, lista as tarefas a reatribuir e o usuário continua ativo (RN3; US002, critério 7). |
 
+### Fluxo de exceção E5 – Troca de equipe de operador com tarefa pendente (A1)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+|  | E5.1. A alteração troca a equipe de um Operador de Solo/Rampa com tarefa pendente em turnaround não encerrado. |
+|  | E5.2. O sistema recusa a troca, lista as tarefas a reatribuir e o operador continua na equipe atual (RN3; US002, critério 8). |
+
 ## UC03 – Abrir turnaround da aeronave
 
 | Campo | |
@@ -140,17 +154,17 @@
 | **Nome do caso de uso** | UC03 – Abrir turnaround da aeronave |
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador reúne voos existentes e suas referências em um cadastro para planejamento. Atende ao RF-3 e à US003. |
-| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há dados dos voos, companhia operadora, aeronave, posição e referências de tempo. |
+| **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há dados dos voos com as datas, companhia operadora, aeronave, serviço, posição e referências de tempo. |
 | **Pós-condições** | Sucesso: cadastro único com identificador, referências e auditoria, disponível para aplicação de modelo.<br>Recusa ou cancelamento: nenhum novo cadastro criado. |
-| **Regras de negócio** | **RN1.** RF-3 exige voos e datas, companhia operadora, aeronave, posição, horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário-alvo de prontidão (TOBT) e tempo mínimo de turnaround (MTTT) em minutos positivos [2][4].<br>**RN2.** Horários têm data e fuso. TOBT planejado é fixo e o vigente começa igual a ele (ADR-0003).<br>**RN3.** Só pode existir um turnaround para os mesmos voos e datas. A programação dos voos não é alterada.<br>**RN4.** Abrir não registra horário real de chegada à posição (AIBT) [2][4], não entra em "Em solo" nem inicia tarefas. A chegada é registrada no UC12. |
-| **Protótipo(s) de tela** | Abertura do turnaround com voos, companhia, aeronave, posição e referências de tempo.<br>![UC03 – abrir turnaround](prototipos/uc-a3-abrir-turnaround.png) |
+| **Regras de negócio** | **RN1.** RF-3 exige voos e datas, companhia operadora, aeronave, serviço, posição, horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário-alvo de prontidão (TOBT) e tempo mínimo de turnaround (MTTT) em minutos positivos [2][4].<br>**RN2.** Horários têm data e fuso. TOBT planejado é fixo e o vigente começa igual a ele (ADR-0003).<br>**RN3.** Só pode existir um turnaround para os mesmos voos e datas. A programação dos voos não é alterada.<br>**RN4.** Abrir não registra horário real de chegada à posição (AIBT) [2][4], não entra em "Em solo" nem inicia tarefas. A chegada é registrada no UC12. |
+| **Protótipo(s) de tela** | Abertura do turnaround com voos e datas, companhia, aeronave, serviço, posição e referências de tempo.<br>![UC03 – abrir turnaround](prototipos/uc-a3-abrir-turnaround.png) |
 
 ### Fluxo básico
 
 | Ações do ator | Ações do sistema |
 |---|---|
 | 1. O Coordenador de Turnaround seleciona Novo turnaround. |  |
-|  | 2. O sistema apresenta os dados de voo, companhia, aeronave, posição e referências de tempo. |
+|  | 2. O sistema apresenta os dados de voo com as datas, companhia, aeronave, serviço, posição e referências de tempo. |
 | 3. O coordenador preenche os campos e seleciona Abrir turnaround. |  |
 |  | 4. O sistema verifica autorização, campos, formatos, MTTT positivo e duplicidade (**E1**, **E2**). |
 |  | 5. O sistema grava cadastro e auditoria, mantendo TOBT planejado fixo e inicializando o vigente (**E3**). |
@@ -194,9 +208,9 @@
 |---|---|
 | **Nome do caso de uso** | UC04 – Criar modelo de tarefas |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O coordenador define um modelo reutilizável por tipo de aeronave e serviço, com tarefas classificadas. Pode ser estendido pelo UC07 (pontos de confirmação) e pelo UC08 (dependências). Atende ao RF-4 e à US004. |
+| **Descrição** | O coordenador define ou altera um modelo reutilizável por tipo de aeronave e serviço, com tarefas classificadas. Pode ser estendido pelo UC07 (pontos de confirmação) e pelo UC08 (dependências). Atende ao RF-4 e à US004. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. Há equipes ativas cadastradas. |
-| **Pós-condições** | Sucesso: modelo e configurações de tarefas gravados com auditoria.<br>Recusa ou cancelamento: nenhum modelo criado. |
+| **Pós-condições** | Sucesso: modelo e configurações de tarefas gravados com auditoria.<br>Recusa ou cancelamento: nenhum modelo criado nem alterado. |
 | **Regras de negócio** | **RN1.** RF-4 exige nome do modelo, tipo de aeronave, serviço e ao menos uma tarefa com nome, tipo de atividade, equipe ativa, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda".<br>**RN2.** Embarque, desembarque e abastecimento têm tipos explícitos; a identificação não depende do nome digitado. Para serviço com embarque de passageiros, exatamente uma tarefa representa o embarque [22][45].<br>**RN3.** Criar modelo não copia tarefas para turnaround nem atribui operadores. Dependências e pontos são configurados nos casos próprios.<br>**RN4.** A permissão de "Não aplicável" é por tarefa e não muda sua situação durante a criação do modelo.<br>**RN5.** Tarefas marcadas "sob demanda" ficam no catálogo, com tipo, equipe e duração planejada. Não entram no plano até serem acionadas pelo Coordenador de Turnaround (ADR-0014) [69][70][71]. |
 | **Protótipo(s) de tela** | Criação do modelo com configurações das tarefas regulares e do catálogo sob demanda.<br>![UC04 – criar modelo](prototipos/uc-a4-criar-modelo.png) |
 
@@ -231,6 +245,14 @@
 | A3.1. O coordenador marca uma tarefa, como limpeza profunda, como "sob demanda". |  |
 |  | A3.2. O sistema a mantém no catálogo sem incluir automaticamente no plano. |
 
+### Fluxo alternativo A4 – Alterar modelo existente (passo 1)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A4.1. O coordenador abre um modelo existente, altera a identificação ou as tarefas e seleciona Salvar modelo. |  |
+|  | A4.2. O sistema aplica as verificações do passo 5 (**E1**). |
+|  | A4.3. O sistema grava as alterações com valores anteriores e novos e a auditoria, sem alterar as cópias já aplicadas a turnarounds (UC06, RN4), e segue no passo 6. |
+
 ### Fluxo de exceção E1 – Configuração inválida (passo 5)
 
 | Ações do ator | Ações do sistema |
@@ -261,7 +283,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | 1. O Coordenador de Turnaround abre o planejamento. |  |
-|  | 2. O sistema exibe tarefas, equipes, tipos, obrigatoriedade, dependências e política de abastecimento, com operadores ativos disponíveis para seleção. |
+|  | 2. O sistema exibe tarefas, equipes, tipos, obrigatoriedade, dependências e política de abastecimento, com os operadores ativos da equipe de cada tarefa para seleção. |
 | 3. O coordenador atribui um operador e janela de início e fim a cada tarefa e define obrigatoriedade. |  |
 | 4. O coordenador seleciona Confirmar plano. |  |
 |  | 5. O sistema verifica autorização, ausência de início, responsáveis, janelas, dependências e política (**E1**, **E2**, **E3**). |
@@ -491,7 +513,7 @@
 | **Descrição** | O administrador mantém equipes que serão vinculadas aos operadores e às tarefas. Atende ao RF-9 e à US009. |
 | **Pré-condições** | 1. O Administrador do Sistema está autenticado e ativo. |
 | **Pós-condições** | Sucesso: equipe criada, alterada ou desativada com auditoria e histórico preservado.<br>Recusa ou cancelamento: cadastro anterior preservado. |
-| **Regras de negócio** | **RN1.** RF-9 exige nome e identificador único de equipe ou especialidade; equipe é dado cadastral, não novo ator (ADR-0010).<br>**RN2.** Equipe desativada não aceita novos vínculos. Desativação é recusada com usuários ativos vinculados ou tarefas pendentes em turnarounds não encerrados.<br>**RN3.** Alterar nome preserva identificador interno e vínculos. Modelos com equipe desativada não podem gerar novas atribuições até sua revisão.<br>**RN4.** O administrador não reatribui tarefas operacionais para resolver um impedimento; isso fica no UC30 (reatribuir tarefa). |
+| **Regras de negócio** | **RN1.** RF-9 exige nome e identificador único de equipe ou especialidade; equipe é dado cadastral, não novo ator (ADR-0010).<br>**RN2.** Equipe desativada não aceita novos vínculos. Desativação é recusada com usuários ativos vinculados ou tarefas pendentes em turnarounds não encerrados. Contam como pendentes as tarefas regulares do plano, confirmado ou ainda não; os serviços sob demanda do catálogo ainda não acionados não contam.<br>**RN3.** Alterar nome preserva identificador interno e vínculos. Modelos com equipe desativada não podem gerar novas atribuições até sua revisão.<br>**RN4.** O administrador não reatribui tarefas operacionais para resolver um impedimento; isso fica no UC30 (reatribuir tarefa). |
 | **Protótipo(s) de tela** | Lista e cadastro de equipes ou especialidades, com nome, identificador e situação.<br>![UC09 – gerenciar equipes](prototipos/uc-a9-gerenciar-equipes.png) |
 
 ### Fluxo básico
@@ -604,15 +626,15 @@
 | **Ator(es)** | Coordenador de Turnaround |
 | **Descrição** | O coordenador registra a política da companhia que determina se o abastecimento pode coincidir com o fluxo de passageiros. Atende ao RF-11 e à US011. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado e ativo.<br>2. A companhia operadora está identificada; para habilitar a regra, o coordenador dispõe da política operacional autorizada da companhia. |
-| **Pós-condições** | Sucesso: política versionada com autor e horário para novos turnarounds.<br>Recusa ou cancelamento: política anterior preservada; turnarounds iniciados não mudam. |
-| **Regras de negócio** | **RN1.** RF-11 usa padrão "não permitido" para abastecimento com passageiros a bordo; desabilitada, a regra exige desembarque antes do abastecimento e abastecimento antes do embarque (ADR-0005) [24][26][27].<br>**RN2.** Habilitar representa uma política previamente autorizada pela companhia, não uma autorização regulatória concedida pelo sistema. Permitir paralelismo não remove automaticamente outras dependências.<br>**RN3.** A configuração é copiada com versão ao turnaround e fica fixa após o início. Alterar a política geral vale para novos turnarounds, sem mudar cópias existentes.<br>**RN4.** A política e o plano não podem se contradizer. Antes de confirmar o plano, devem existir as tarefas e relações necessárias à sequência exigida; o sistema recusa a configuração incompatível.<br>**RN5.** A permissão pressupõe as condições da ADR-0005 e do Regulamento Brasileiro da Aviação Civil (RBAC) nº 91 da Agência Nacional de Aviação Civil (ANAC), seção 91.102(g) [27]:<br>• Procedimento aprovado e tripulante de voo supervisionando na cabine.<br>• Pelo menos 50% dos comissários requeridos e/ou pessoas treinadas para evacuação, com meios de evacuação disponíveis.<br>• Motores desligados, exceto a unidade auxiliar de energia (APU), e sistemas desnecessários desligados.<br>• Comunicação entre solo e cabine.<br>Essas condições são verificadas na operação real, não automaticamente pelo sistema. |
+| **Pós-condições** | Sucesso: política versionada com autor e horário, válida para os modelos aplicados depois.<br>Recusa ou cancelamento: política anterior preservada; turnarounds iniciados não mudam. |
+| **Regras de negócio** | **RN1.** RF-11 usa padrão "não permitido" para abastecimento com passageiros a bordo; desabilitada, a regra exige desembarque antes do abastecimento e abastecimento antes do embarque (ADR-0005) [24][26][27].<br>**RN2.** Habilitar representa uma política previamente autorizada pela companhia, não uma autorização regulatória concedida pelo sistema. Permitir paralelismo não remove automaticamente outras dependências.<br>**RN3.** A configuração é copiada com versão ao turnaround quando o modelo é aplicado (UC06) e a cópia não muda depois. Alterar a política geral vale para os modelos aplicados depois da mudança, sem mudar cópias existentes.<br>**RN4.** A política e o plano não podem se contradizer. Antes de confirmar o plano, devem existir as tarefas e relações necessárias à sequência exigida; o sistema recusa a configuração incompatível.<br>**RN5.** A permissão pressupõe as condições da ADR-0005 e do Regulamento Brasileiro da Aviação Civil (RBAC) nº 91 da Agência Nacional de Aviação Civil (ANAC), seção 91.102(g) [27]:<br>• Procedimento aprovado e tripulante de voo supervisionando na cabine.<br>• Pelo menos 50% dos comissários requeridos e/ou pessoas treinadas para evacuação, com meios de evacuação disponíveis.<br>• Motores desligados, exceto a unidade auxiliar de energia (APU), e sistemas desnecessários desligados.<br>• Comunicação entre solo e cabine.<br>Essas condições são verificadas na operação real, não automaticamente pelo sistema. |
 | **Protótipo(s) de tela** | Configuração da permissão de abastecimento com passageiros por companhia, com versão e histórico.<br>![UC11 – política de abastecimento](prototipos/uc-a11-politica-de-abastecimento.png) |
 
 ### Fluxo básico
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| 1. O Coordenador de Turnaround abre a política de abastecimento de uma companhia (**E3**). |  |
+| 1. O Coordenador de Turnaround abre a política de abastecimento de uma companhia (**A3**). |  |
 |  | 2. O sistema exibe a permissão atual e sua versão; se não existir configuração, exibe "Não permitido". |
 | 3. O coordenador escolhe manter desabilitada ou habilitar conforme a política autorizada da companhia. |  |
 |  | 4. O sistema apresenta a consequência da escolha e pede confirmação. |
@@ -632,6 +654,13 @@
 |---|---|
 |  | A2.1. Política anterior preservada. |
 
+### Fluxo alternativo A3 – Abrir a política a partir de um turnaround com cópia (passo 1)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A3.1. O coordenador abre a política de abastecimento a partir de um turnaround que já tem a cópia. |  |
+|  | A3.2. O sistema mostra a cópia do turnaround só para consulta, informa que ela é fixa (RN3) e que só a política geral da companhia pode ser alterada, valendo para os modelos aplicados depois. |
+
 ### Fluxo de exceção E1 – Acesso revogado (passo 6)
 
 | Ações do ator | Ações do sistema |
@@ -643,11 +672,5 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 |  | E2.1. Política anterior e cópias operacionais permanecem inalteradas. |
-
-### Fluxo de exceção E3 – Tentar alterar a cópia de um turnaround iniciado (passo 1)
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E3.1. O sistema informa que a regra está fixa e recusa a alteração. |
 
 Fontes citadas: [2], [3], [4], [7], [22], [24], [26], [27], [45], [69], [70] e [71], conforme `pesquisa/fontes.md`.

@@ -2,7 +2,7 @@
 
 **COMO:** Usuário, ator abstrato que representa os quatro perfis humanos
 
-**POSSO:** autenticar-me e acessar a visão do meu perfil
+**POSSO:** autenticar-me, acessar a visão do meu perfil e encerrar a sessão
 
 **PARA:** acessar apenas as funções permitidas para mim
 
@@ -13,12 +13,13 @@
 | 1 | **DADO QUE:** meu cadastro está ativo <br> **QUANDO:** informo credenciais válidas <br> **ENTÃO:** acesso a tela do meu perfil: tarefas (Operador de Solo/Rampa), painel (Coordenador de Turnaround), liberações (Autoridade de Liberação) ou usuários (Administrador do Sistema) |
 | 2 | **DADO QUE:** estou na autenticação <br> **QUANDO:** informo credenciais inválidas ou uso cadastro desativado <br> **ENTÃO:** não é criada sessão e recebo a mensagem "Não foi possível autenticar. Verifique suas credenciais ou contate o administrador", sem revelar a causa específica |
 | 3 | **DADO QUE:** estou autenticado como Operador de Solo/Rampa <br> **QUANDO:** tento acessar diretamente a gestão de usuários <br> **ENTÃO:** o acesso é recusado sem retornar dados protegidos ou alterar registros (RNF-1) |
+| 4 | **DADO QUE:** estou autenticado <br> **QUANDO:** seleciono Sair <br> **ENTÃO:** a sessão é encerrada, volto à tela de autenticação e qualquer ação protegida feita com a sessão encerrada é recusada até nova autenticação |
 
 ## US002 – REQUISITO RF-2: Gerenciar cadastro de usuários e perfis
 
 **COMO:** Administrador do Sistema
 
-**POSSO:** cadastrar, alterar e desativar usuários e atribuir perfil e equipe
+**POSSO:** cadastrar, alterar e desativar usuários e atribuir perfil, equipe e companhia
 
 **PARA:** manter os acessos necessários à operação e seu histórico
 
@@ -31,14 +32,15 @@
 | 3 | **DADO QUE:** existe um usuário ativo <br> **QUANDO:** confirmo sua desativação <br> **ENTÃO:** o histórico permanece, mas a próxima entrada ou ação protegida é bloqueada, mesmo com sessão aberta |
 | 4 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** há campo obrigatório vazio ou falta a senha inicial na criação <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
 | 5 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** informo um identificador de acesso que já pertence a outro usuário <br> **ENTÃO:** o sistema indica a duplicidade e não grava |
-| 6 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** escolho um perfil fora dos quatro previstos ou deixo um operador sem equipe ativa <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
+| 6 | **DADO QUE:** estou cadastrando ou alterando um usuário <br> **QUANDO:** escolho um perfil fora dos quatro previstos, deixo um operador sem equipe ativa ou deixo uma Autoridade de Liberação sem companhia <br> **ENTÃO:** o sistema indica o campo inválido e não grava |
 | 7 | **DADO QUE:** um Operador de Solo/Rampa tem tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado <br> **QUANDO:** tento desativá-lo <br> **ENTÃO:** o sistema recusa a desativação, lista as tarefas que precisam ser reatribuídas antes (RF-5 ou RF-37) e o usuário continua ativo |
+| 8 | **DADO QUE:** um Operador de Solo/Rampa tem tarefa pendente (fora de "Concluída" e "Não aplicável") em turnaround não encerrado <br> **QUANDO:** tento trocar sua equipe <br> **ENTÃO:** o sistema recusa a troca, lista as tarefas que precisam ser reatribuídas antes (RF-5 ou RF-37) e o operador continua na equipe atual |
 
 ## US003 – REQUISITO RF-3: Abrir turnaround da aeronave
 
 **COMO:** Coordenador de Turnaround
 
-**POSSO:** abrir o cadastro de um turnaround com os voos, a companhia, a aeronave, a posição, o horário programado de chegada à posição (SIBT), o horário programado de saída da posição (SOBT), o horário estimado de chegada à posição (EIBT), o horário-alvo de prontidão (TOBT) e o tempo mínimo de turnaround (MTTT) [2][4], com data e fuso nos horários e o MTTT em minutos positivos; o TOBT planejado fica fixo e o vigente começa igual a ele (ADR-0003)
+**POSSO:** abrir o cadastro de um turnaround com os voos e suas datas, a companhia, a aeronave, o serviço, a posição, o horário programado de chegada à posição (SIBT), o horário programado de saída da posição (SOBT), o horário estimado de chegada à posição (EIBT), o horário-alvo de prontidão (TOBT) e o tempo mínimo de turnaround (MTTT) [2][4], com data e fuso nos horários e o MTTT em minutos positivos; o TOBT planejado fica fixo e o vigente começa igual a ele (ADR-0003)
 
 **PARA:** planejar as tarefas e comparar os horários previstos com os reais
 
@@ -46,7 +48,7 @@
 
 | # | |
 |---|---|
-| 1 | **DADO QUE:** os voos e datas ainda não têm turnaround <br> **QUANDO:** salvo voos, companhia, aeronave, posição, horários válidos e MTTT positivo <br> **ENTÃO:** o cadastro é criado com TOBT planejado fixo e vigente igual a ele, sem registrar chegada real nem iniciar tarefas |
+| 1 | **DADO QUE:** os voos e datas ainda não têm turnaround <br> **QUANDO:** salvo voos com as datas, companhia, aeronave, serviço, posição, horários válidos e MTTT positivo <br> **ENTÃO:** o cadastro é criado com TOBT planejado fixo e vigente igual a ele, sem registrar chegada real nem iniciar tarefas |
 | 2 | **DADO QUE:** estou preenchendo a abertura <br> **QUANDO:** falta um dado obrigatório, há horário inválido ou MTTT menor ou igual a zero <br> **ENTÃO:** os campos inválidos são indicados e nenhum cadastro é criado |
 | 3 | **DADO QUE:** já existe um cadastro para os mesmos voos e datas <br> **QUANDO:** tento abrir novamente <br> **ENTÃO:** o sistema apresenta o identificador existente e não duplica o turnaround |
 | 4 | **DADO QUE:** a chegada é às 23:50 e a partida às 00:40 do dia seguinte <br> **QUANDO:** informo datas completas e fusos <br> **ENTÃO:** os horários são preservados sem recusar a virada do dia |
@@ -55,7 +57,7 @@
 
 **COMO:** Coordenador de Turnaround
 
-**POSSO:** criar um modelo de tarefas por tipo de aeronave e serviço
+**POSSO:** criar e alterar um modelo de tarefas por tipo de aeronave e serviço
 
 **PARA:** reutilizar o planejamento em outros turnarounds
 
@@ -65,9 +67,10 @@
 |---|---|
 | 1 | **DADO QUE:** há equipes ativas cadastradas <br> **QUANDO:** salvo um modelo com nome, aeronave, serviço e tarefas com nome, tipo, equipe, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda" <br> **ENTÃO:** o modelo e suas configurações são gravados com auditoria |
 | 2 | **DADO QUE:** o serviço inclui embarque de passageiros <br> **QUANDO:** salvo exatamente uma tarefa do tipo Embarque <br> **ENTÃO:** essa tarefa fica identificada para o marco de embarque mesmo que seu nome livre seja diferente |
-| 3 | **DADO QUE:** estou criando um modelo <br> **QUANDO:** há tarefa sem equipe ativa ou com duração não positiva <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
+| 3 | **DADO QUE:** estou criando ou alterando um modelo <br> **QUANDO:** há tarefa sem equipe ativa ou com duração não positiva <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
 | 4 | **DADO QUE:** cadastro uma limpeza profunda como "sob demanda" com tipo, equipe e duração planejada <br> **QUANDO:** salvo o modelo <br> **ENTÃO:** o serviço fica no catálogo e não entra no plano até ser acionado pelo Coordenador de Turnaround (ADR-0014) [69][70][71] |
 | 5 | **DADO QUE:** estou criando um modelo para um serviço com embarque de passageiros <br> **QUANDO:** o modelo não tem nenhuma tarefa do tipo Embarque ou tem mais de uma <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
+| 6 | **DADO QUE:** um modelo já foi aplicado a um turnaround <br> **QUANDO:** altero uma tarefa do modelo e salvo <br> **ENTÃO:** a alteração é gravada com os valores anteriores e novos, o autor e o horário, e a cópia já aplicada ao turnaround não muda (RF-6) |
 
 ## US005 – REQUISITO RF-5: Confirmar plano inicial do turnaround
 
