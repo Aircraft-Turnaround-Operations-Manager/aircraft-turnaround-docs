@@ -9,7 +9,7 @@ decisor: João Pedro Cardoso de Liz
 itens_template: [12, 14]
 areas: [B]
 fontes: []
-relacionados: [adr-0015, adr-0016, adr-0007, adr-0013]
+relacionados: [adr-0015, adr-0016, adr-0023, adr-0007, adr-0013]
 ---
 # ADR-0018 — Tecnologia do serviço Execução em Solo: Java, Spring Boot e PostgreSQL
 
@@ -52,7 +52,7 @@ Bibliotecas de apoio: Flyway para criar e versionar as tabelas por scripts SQL; 
 
 | Ponto da ADR-0016 | Como a Execução em Solo cumpre |
 |---|---|
-| **2. Porta de entrada** | O serviço só recebe as ações do site pela porta de entrada. Ele lê o usuário e o perfil que a porta de entrada informa e confere, com o Spring Security, se o perfil pode fazer a ação (RNF-1). Por exemplo, só o Operador de Solo/Rampa com a tarefa atribuída registra o início, e só o Coordenador de Turnaround corrige o AIBT (RF-13). O formato em que a porta de entrada passa o usuário e o perfil (cabeçalho, token ou outro) ainda não está definido; ele é combinado com o responsável pela porta de entrada (ADR-0016, ponto 2), e esta ADR não o supõe. |
+| **2. Porta de entrada** | O serviço só recebe as ações do site pela porta de entrada. O Spring Security confere o token interno assinado que a porta de entrada envia ([ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md), ponto 1: assinatura com a chave pública da porta de entrada e validade), lê dele o usuário, o perfil e a equipe e confere se o perfil pode fazer a ação (RNF-1). Por exemplo, só o Operador de Solo/Rampa com a tarefa atribuída registra o início, e só o Coordenador de Turnaround corrige o AIBT (RF-13). O token também diz se a chamada é ação do usuário (ADR-0023, ponto 2): as consultas automáticas da lista de tarefas não renovam a sessão (RNF-5). |
 | **3. REST entre serviços** | Os pedidos com resposta (exceção, reatribuição, liberação e replanejamento) chegam em REST com JSON sobre HTTPS (RNF-3), em endereços versionados, como `/v1/turnarounds/{id}/tarefas`. Uma recusa de regra de negócio volta com o motivo no corpo da resposta, no formato de erro padrão do Spring (Problem Details). A descrição OpenAPI é gerada a partir do código. Para cumprir os 5 s do RNF-11, a lista de tarefas do operador (RF-14) recebe as mudanças por WebSocket. A ADR-0016 cita o WebSocket só no painel; esta ADR estende o mesmo meio à lista do operador, que tem o mesmo prazo de 5 s. O serviço não oferece GraphQL; se os itens 13 e 14 pedirem, o Spring for GraphQL atende sem trocar de framework. |
 | **4 e 5. RabbitMQ e envelope dos avisos** | O serviço tem uma fila durável própria, `execucao-em-solo`, e publica e consome pelo Spring AMQP, com mensagens persistentes. Todo aviso usa uma única classe de envelope, com os campos `id`, `tipo`, `versao`, `ocorridoEm`, `turnaroundId`, `autorId`, `origem` (sempre `execucao-em-solo`), `causaId` e `dados`, como `ChegadaRegistrada` ou `TarefaConcluida`. O aviso é gravado numa tabela de saída na mesma transação da mudança e publicado logo depois da gravação; assim, não há mudança gravada sem aviso nem aviso de mudança que não aconteceu (RNF-20). Ao consumir, o serviço grava o `id` do aviso numa tabela de avisos processados, com chave única, na mesma transação das mudanças que o aviso causa (por exemplo, a cópia do horário-alvo de prontidão (TOBT) vigente), e ignora o repetido. A mensagem só é confirmada à fila depois de gravada. Os marcos (RF-20) e a propagação do estado (RF-21) não passam pela fila: o Motor de Eventos roda na mesma transação do registro do operador que o aciona, e o aviso só leva o resultado aos outros serviços (item 13, seção 13.5.4). |
 | **6. Horários em UTC** | Os horários são `Instant` no código e `timestamp with time zone` no banco, com a conexão do banco em UTC. O JSON sai no formato ISO 8601 terminado em `Z`. O registro feito sem conexão chega com o horário do celular, já convertido para UTC, e o serviço grava esse horário como horário da ação, e não o do envio (RNF-8). |
@@ -85,7 +85,7 @@ Toda ação que muda o turnaround ou uma tarefa roda numa transação que trava 
 ## Ligações
 
 - **Divisão em microsserviços:** [ADR-0015](0015-divisao-em-microsservicos.md)
-- **Contrato entre os serviços:** [ADR-0016](0016-contrato-entre-os-servicos.md)
+- **Contrato entre os serviços:** [ADR-0016](0016-contrato-entre-os-servicos.md); identidade passada pela porta de entrada na [ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md)
 - **Dados do operador e QR Code:** [ADR-0007](0007-dados-do-operador-e-qr-code.md)
 - **Chegada registrada pelo operador:** [ADR-0013](0013-chegada-registrada-pelo-operador.md)
 - **Requisitos da área B:** [RFs](../../especificacao/06-requisitos-funcionais/area-b.md), [RNFs](../../especificacao/08-requisitos-nao-funcionais/area-b.md)
