@@ -1,0 +1,11 @@
+@startuml
+' Item 13 — Pedidos pendentes do Exceções e Liberação à Execução em Solo. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore excecoes
+restore excecoes.RetomadaPedidos
+restore excecoes.PedidoService
+restore excecoes.PedidoPendenteRepository
+restore excecoes.PedidoPendente
+restore excecoes.TipoPedido
+restore excecoes.SituacaoPedido
+@enduml

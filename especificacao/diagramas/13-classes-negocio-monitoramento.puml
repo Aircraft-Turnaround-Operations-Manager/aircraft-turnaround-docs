@@ -1,0 +1,20 @@
+@startuml
+' Item 13 — Classes de negócio — Monitoramento. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+left to right direction
+restore monitoramento
+restore monitoramento.TipoAlerta
+restore monitoramento.CausaRecalculo
+restore monitoramento.MarcoMonitorado
+restore monitoramento.CorRisco
+restore monitoramento.TurnaroundMonitorado
+restore monitoramento.TarefaMonitorada
+restore monitoramento.Projecao
+restore monitoramento.ProjecaoTarefa
+restore monitoramento.CaminhoCritico
+restore monitoramento.CaminhoCriticoTarefa
+restore monitoramento.Alerta
+restore monitoramento.AlertaTarefa
+restore monitoramento.AvisoChecagem
+restore monitoramento.AtualizacaoTobtMonitorada
+@enduml
