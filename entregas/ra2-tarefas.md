@@ -113,15 +113,15 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
 **T13 · [RA2][Item 13] Diagrama de classes**
 - Responsável: `rdsalvesPUC` · Rótulos: `ra2`, `item-13`
 - Descrição: as classes de negócio a partir do item 12 e as classes técnicas das camadas de referência (`Controller → Service → Repository`), com uma visão geral e vistas por função do sistema.
-- Critérios: C13.1 a C13.10. O C13.8 só fecha depois do item 14: os métodos que os diagramas de sequência pedirem entram aqui.
+- Critérios: C13.1 a C13.7, C13.9 e C13.10. O C13.8 fica com a T14: ele só pode ser conferido com os diagramas de sequência, e a T14 depende das classes. Deixá-lo aqui faria a T13 e a T14 se bloquearem em círculo. Os métodos que os diagramas pedirem entram no item 13 em PR próprio.
 - Bloqueada por: T12 · Bloqueia: T14
 
 ### Fase 3 — Por área (todos)
 
 **T14 · [RA2][Item 14] Diagramas de sequência (37, um por caso de uso)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra2`, `item-14`
-- Descrição: começar pela conferência cruzada do item (seção 1.4). Depois, conferir as legendas e a contagem dos 37 diagramas e ajustar o C13.8 com o responsável do item 13.
-- Critérios: C14.1 a C14.8
+- Descrição: começar pela conferência cruzada do item (seção 1.4). Depois, conferir as legendas e a contagem dos 37 diagramas e conferir o C13.8 (`python scripts/conferir_classes.py --sequencia`) com o responsável do item 13.
+- Critérios: C14.1 a C14.8 e C13.8
 - Bloqueada por: T02, T03, T13
 - Sub-issues:
   - **T14-A** · UC01 a UC11 (11 diagramas) · `eduardofabrii` · `area-a`
