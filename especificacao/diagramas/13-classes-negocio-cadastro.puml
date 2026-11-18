@@ -1,0 +1,19 @@
+@startuml
+' Item 13 — Classes de negócio — Cadastro e Planejamento. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore cadastro
+restore cadastro.Equipe
+restore cadastro.Companhia
+restore cadastro.Usuario
+restore cadastro.FalhaLogin
+restore cadastro.Sessao
+restore cadastro.PoliticaAbastecimento
+restore cadastro.ModeloTarefa
+restore cadastro.TarefaModelo
+restore cadastro.PontoConfirmacaoModelo
+restore cadastro.Turnaround
+restore cadastro.Plano
+restore cadastro.SituacaoPlano
+restore cadastro.TarefaPlano
+restore cadastro.PontoConfirmacaoPlano
+@enduml

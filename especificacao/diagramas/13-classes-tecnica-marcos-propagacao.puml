@@ -1,0 +1,19 @@
+@startuml
+' Item 13 — Motor de Eventos na Execução em Solo: marcos e propagação. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+execucao.ListaTarefasNotificador -[hidden]down- comum.PublicadorAvisos
+execucao.ListaTarefasNotificador -[hidden]down- comum.ConsumidorAvisos
+restore comum
+restore execucao
+restore execucao.ChegadaService
+restore execucao.TarefaService
+restore execucao.TurnaroundService
+restore execucao.ReplanejamentoService
+restore execucao.MarcoService
+restore execucao.PropagacaoService
+restore execucao.TurnaroundRepository
+restore execucao.ListaTarefasNotificador
+restore execucao.ConsumidorAvisosExecucao
+restore comum.ConsumidorAvisos
+restore comum.PublicadorAvisos
+@enduml

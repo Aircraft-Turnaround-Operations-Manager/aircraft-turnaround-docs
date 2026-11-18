@@ -1,0 +1,628 @@
+' Item 13 (T13, issue #145) — serviço Exceções e Liberação (ADR-0015, ADR-0020): classes de negócio das 10 tabelas do
+' Apêndice B.4 e classes técnicas dos casos de uso UC29 a UC36. Toda mudança no estado do turnaround ou na tarefa é um
+' pedido à Execução em Solo (ExecucaoEmSoloCliente), gravado antes como PedidoPendente (ADR-0020; RNF-20).
+' Padrão de todo pedido: trava o TurnaroundReferencia, PedidoService.registrar, chamada ao cliente, depois concluir ou
+' desfazer, na mesma transação do registro e do aviso. A ação sobre um alerta (UC31) chega como alertaId opcional
+' nos métodos de abrir, reatribuir, replanejar e atualizar o TOBT e é gravada na mesma transação (AcaoAlertaService).
+
+namespace excecoes {
+
+  ' ---------- negócio ----------
+
+  enum MotivoEncerramentoSolicitacao <<enumeration>> {
+    Atendida
+    Projeção de volta à faixa
+    Turnaround liberado
+  }
+
+  enum TipoReplanejamento <<enumeration>> {
+    Janela
+    Dependências
+    Inclusão sob demanda
+  }
+
+  enum TipoPedido <<enumeration>> {
+    Abertura de exceção
+    Encerramento de exceção
+    Reatribuição
+    Replanejamento
+    Liberação
+  }
+
+  enum SituacaoPedido <<enumeration>> {
+    Pendente
+    Concluído
+    Desfeito
+  }
+
+  ' limiarAtualizacaoTobtMin e prazoAcaoCriticaMin vêm da configuração do RNF-21 na abertura do turnaround.
+  class TurnaroundReferencia <<entity>> {
+    - turnaroundId: UUID
+    - companhiaId: UUID
+    - tobtPlanejado: DateTime
+    - tobtVigente: DateTime
+    - projecaoProntidao: DateTime [0..1]
+    - projecaoCalculadaEm: DateTime [0..1]
+    - limiarAtualizacaoTobtMin: Integer
+    - prazoAcaoCriticaMin: Integer
+    - aobt: DateTime [0..1]
+    + desvioDaProjecaoMin(): Integer
+    + pedeAtualizacaoTobt(): Boolean
+    + atualizarTobt(tobtNovo: DateTime, autorId: UUID, solicitacao: SolicitacaoAtualizacaoTobt, momento: DateTime): AtualizacaoTobt
+    + aplicarProjecao(projecaoProntidao: DateTime, calculadaEm: DateTime): void
+  }
+
+  class SolicitacaoAtualizacaoTobt <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - projecaoProntidao: DateTime
+    - projecaoCalculadaEm: DateTime
+    - solicitadaEm: DateTime
+    - encerradaEm: DateTime [0..1]
+    - motivoEncerramento: MotivoEncerramentoSolicitacao [0..1]
+    + estaAberta(): Boolean
+    + antecipacao(tobtVigente: DateTime): Boolean
+    + encerrar(motivo: MotivoEncerramentoSolicitacao, momento: DateTime): void
+  }
+
+  class AtualizacaoTobt <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - solicitacao: SolicitacaoAtualizacaoTobt [0..1]
+    - tobtAnterior: DateTime
+    - tobtNovo: DateTime
+    - autorId: UUID
+    - registradaEm: DateTime
+  }
+
+  class TabelaCodigoAtraso <<entity>> {
+    - versao: Integer
+    - referencia: String
+    - carregadaEm: DateTime
+    - vigente: Boolean
+    - codigos: List<CodigoAtraso>
+    + buscarCodigo(codigo: String): CodigoAtraso
+  }
+
+  class CodigoAtraso <<entity>> {
+    - codigo: String
+    - categoria: String
+    - descricao: String
+  }
+
+  class Excecao <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - tarefaId: UUID
+    - codigoAtraso: CodigoAtraso
+    - descricaoProblema: String
+    - estadoTurnaroundAnterior: EstadoTurnaround [0..1]
+    - abertaPorId: UUID
+    - abertaEm: DateTime
+    - solucao: String [0..1]
+    - encerradaPorId: UUID [0..1]
+    - encerradaEm: DateTime [0..1]
+    + estaAberta(): Boolean
+    + encerrar(solucao: String, autorId: UUID, momento: DateTime): void
+  }
+
+  class Reatribuicao <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - tarefaId: UUID
+    - operadorAnteriorId: UUID
+    - operadorNovoId: UUID
+    - motivo: String
+    - autorId: UUID
+    - registradaEm: DateTime
+  }
+
+  class Replanejamento <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - tarefaId: UUID
+    - tipo: TipoReplanejamento
+    - motivo: String [0..1]
+    - autorId: UUID
+    - registradaEm: DateTime
+  }
+
+  class AcaoAlerta <<entity>> {
+    - id: UUID
+    - alertaId: UUID
+    - turnaround: TurnaroundReferencia
+    - tipoAcao: TipoAcaoAlerta
+    - excecao: Excecao [0..1]
+    - reatribuicao: Reatribuicao [0..1]
+    - replanejamento: Replanejamento [0..1]
+    - atualizacaoTobt: AtualizacaoTobt [0..1]
+    - autorId: UUID
+    - registradaEm: DateTime
+  }
+
+  class Liberacao <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundReferencia
+    - ardt: DateTime
+    - autorId: UUID
+    - registradaEm: DateTime
+  }
+
+  excecoes.SolicitacaoAtualizacaoTobt "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.AtualizacaoTobt "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.AtualizacaoTobt "0..1" --> "0..1" excecoes.SolicitacaoAtualizacaoTobt : solicitacao
+  excecoes.TabelaCodigoAtraso "1" *-- "1..*" excecoes.CodigoAtraso : codigos
+  excecoes.Excecao "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.Excecao "*" --> "1" excecoes.CodigoAtraso : codigoAtraso
+  excecoes.Reatribuicao "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.Replanejamento "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.AcaoAlerta "*" --> "1" excecoes.TurnaroundReferencia : turnaround
+  excecoes.AcaoAlerta "0..1" --> "0..1" excecoes.Excecao : excecao
+  excecoes.AcaoAlerta "0..1" --> "0..1" excecoes.Reatribuicao : reatribuicao
+  excecoes.AcaoAlerta "0..1" --> "0..1" excecoes.Replanejamento : replanejamento
+  excecoes.AcaoAlerta "0..1" --> "0..1" excecoes.AtualizacaoTobt : atualizacaoTobt
+  excecoes.Liberacao "0..1" --> "1" excecoes.TurnaroundReferencia : turnaround
+
+  ' ---------- dados de entrada e saída (sem tabela) ----------
+
+  class TarefaResumo <<dto>> {
+    - tarefaId: UUID
+    - turnaroundId: UUID
+    - matricula: String
+    - nome: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - estado: EstadoTarefa [0..1]
+    - obrigatoria: Boolean
+    - sobDemanda: Boolean
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - horarioEstado: DateTime [0..1]
+    - predecessoraIds: List<UUID>
+  }
+
+  class SituacaoTurnaround <<dto>> {
+    - turnaroundId: UUID
+    - matricula: String
+    - vooChegada: String
+    - vooPartida: String
+    - posicao: String
+    - estado: EstadoTurnaround [0..1]
+    - tarefasObrigatorias: List<TarefaResumo>
+    - obrigatoriasPendentes: List<TarefaResumo>
+    - aegt: DateTime [0..1]
+    - ardt: DateTime [0..1]
+    - liberadoPorId: UUID [0..1]
+  }
+
+  class MudancaEstado <<dto>> {
+    - turnaroundId: UUID
+    - estadoAnterior: EstadoTurnaround
+    - estadoNovo: EstadoTurnaround
+  }
+
+  class EncerramentoExcecao <<dto>> {
+    - excecao: Excecao
+    - estadoTurnaround: EstadoTurnaround
+  }
+
+  class OperadorAtivo <<dto>> {
+    - usuarioId: UUID
+    - nome: String
+  }
+
+  class OperadorDisponivel <<dto>> {
+    - usuarioId: UUID
+    - nome: String
+    - minutosDesdeUltimaConclusao: Integer [0..1]
+    - ultimaMatricula: String [0..1]
+  }
+
+  class SituacaoLiberacao <<dto>> {
+    - situacao: SituacaoTurnaround
+    - excecoesAbertas: List<Excecao>
+    + podeLiberar(): Boolean
+  }
+
+  class TurnaroundLiberavel <<dto>> {
+    - turnaroundId: UUID
+    - matricula: String
+    - vooChegada: String
+    - vooPartida: String
+    - posicao: String
+    - estado: EstadoTurnaround [0..1]
+    - obrigatoriasPendentes: Integer
+    - excecoesAbertas: Integer
+  }
+
+  excecoes.SituacaoTurnaround "1" --> "*" excecoes.TarefaResumo : tarefasObrigatorias
+  excecoes.SituacaoTurnaround "1" --> "*" excecoes.TarefaResumo : obrigatoriasPendentes
+  excecoes.EncerramentoExcecao "0..1" --> "1" excecoes.Excecao : excecao
+  excecoes.SituacaoLiberacao "1" --> "1" excecoes.SituacaoTurnaround : situacao
+  excecoes.SituacaoLiberacao "*" --> "*" excecoes.Excecao : excecoesAbertas
+
+  ' ---------- interface ----------
+
+  class ExcecaoView <<boundary>> {
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + buscarCodigo(texto: String): void
+    + confirmarAbertura(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String): void
+    + selecionarExcecao(excecaoId: UUID): void
+    + encerrarExcecao(excecaoId: UUID, solucao: String): void
+  }
+
+  class ReatribuicaoView <<boundary>> {
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + escolherTarefa(tarefaId: UUID): void
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String): void
+  }
+
+  class RegistroAcaoAlertaView <<boundary>> {
+    + abrir(alertaId: UUID): void
+    + escolherAcao(alertaId: UUID, tipoAcao: TipoAcaoAlerta): void
+  }
+
+  class LiberacaoView <<boundary>> {
+    + abrir(): void
+    + selecionarTurnaround(turnaroundId: UUID): void
+    + confirmarProntidao(turnaroundId: UUID): void
+  }
+
+  class AtualizacaoTobtView <<boundary>> {
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + exibirSolicitacao(solicitacao: SolicitacaoAtualizacaoTobt): void
+    + retirarSolicitacao(solicitacaoId: UUID): void
+    + atualizarTobt(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1]): void
+  }
+
+  class ReplanejamentoView <<boundary>> {
+    + abrir(turnaroundId: UUID, alertaId: UUID [0..1]): void
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime): void
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>): void
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String): void
+    + exibirResultado(turnaroundId: UUID): void
+  }
+
+  ' ---------- controle (REST) ----------
+
+  class ExcecaoController <<control>> {
+    + listarAbertas(turnaroundId: UUID, acesso: Acesso): List<Excecao>
+    + listarTarefas(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
+    + consultarCodigos(acesso: Acesso): TabelaCodigoAtraso
+    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], acesso: Acesso): Excecao
+    + encerrar(excecaoId: UUID, solucao: String, acesso: Acesso): EncerramentoExcecao
+  }
+
+  class ReatribuicaoController <<control>> {
+    + consultarTarefa(tarefaId: UUID, acesso: Acesso): TarefaResumo
+    + listarOperadoresDisponiveis(tarefaId: UUID, acesso: Acesso): List<OperadorDisponivel>
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID [0..1], acesso: Acesso): Reatribuicao
+  }
+
+  class LiberacaoController <<control>> {
+    + listarTurnarounds(acesso: Acesso): List<TurnaroundLiberavel>
+    + consultarCondicoes(turnaroundId: UUID, acesso: Acesso): SituacaoLiberacao
+    + confirmarProntidao(turnaroundId: UUID, acesso: Acesso): Liberacao
+  }
+
+  class AtualizacaoTobtController <<control>> {
+    + consultarTobt(turnaroundId: UUID, acesso: Acesso): TurnaroundReferencia
+    + consultarSolicitacao(turnaroundId: UUID, acesso: Acesso): SolicitacaoAtualizacaoTobt
+    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1], alertaId: UUID [0..1], acesso: Acesso): AtualizacaoTobt
+  }
+
+  class ReplanejamentoController <<control>> {
+    + listarNaoIniciadas(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
+    + listarCatalogoSobDemanda(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
+    + listarOperadoresAtivos(equipeId: UUID, acesso: Acesso): List<OperadorAtivo>
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID [0..1], acesso: Acesso): Replanejamento
+  }
+
+  ' ---------- serviço ----------
+
+  ' abrir e encerrar travam o TurnaroundReferencia antes de contar as exceções abertas.
+  class ExcecaoService <<service>> {
+    - excecoes: ExcecaoRepository
+    - turnarounds: TurnaroundReferenciaRepository
+    - codigos: CodigoAtrasoRepository
+    - pedidos: PedidoService
+    - execucao: ExecucaoEmSoloCliente
+    - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + listarAbertas(turnaroundId: UUID): List<Excecao>
+    + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
+    + consultarCodigos(): TabelaCodigoAtraso
+    + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], autorId: UUID): Excecao
+    + encerrar(excecaoId: UUID, solucao: String, autorId: UUID): EncerramentoExcecao
+  }
+
+  class ReatribuicaoService <<service>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    - reatribuicoes: ReatribuicaoRepository
+    - pedidos: PedidoService
+    - execucao: ExecucaoEmSoloCliente
+    - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + consultarTarefa(tarefaId: UUID): TarefaResumo
+    + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, motivo: String, alertaId: UUID [0..1], autorId: UUID): Reatribuicao
+  }
+
+  ' Chamado pelos outros serviços deste pacote, na transação da ação: confere que o alerta ainda não tem ação e grava a
+' AcaoAlerta já montada por quem chama, com o registro tipado (excecao, reatribuicao, replanejamento ou atualizacaoTobt).
+  class AcaoAlertaService <<service>> {
+    - acoes: AcaoAlertaRepository
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + conferirSemAcao(alertaId: UUID): void
+    + registrar(acao: AcaoAlerta): void
+  }
+
+  class LiberacaoService <<service>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    - excecoes: ExcecaoRepository
+    - liberacoes: LiberacaoRepository
+    - pedidos: PedidoService
+    - execucao: ExecucaoEmSoloCliente
+    - atualizacoesTobt: AtualizacaoTobtService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + listarTurnarounds(companhiaId: UUID): List<TurnaroundLiberavel>
+    + consultarCondicoes(turnaroundId: UUID, companhiaId: UUID): SituacaoLiberacao
+    + confirmarProntidao(turnaroundId: UUID, autorId: UUID, companhiaId: UUID, horarioConfirmacao: DateTime): Liberacao
+  }
+
+  ' avaliarProjecao é parte do Motor de Eventos (UC34, passo 1): roda a cada aviso de projeção do Monitoramento.
+  class AtualizacaoTobtService <<service>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    - solicitacoes: SolicitacaoAtualizacaoTobtRepository
+    - atualizacoes: AtualizacaoTobtRepository
+    - liberacoes: LiberacaoRepository
+    - acoesAlerta: AcaoAlertaService
+    - notificador: CoordenadorNotificador
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + avaliarProjecao(turnaroundId: UUID, projecaoProntidao: DateTime, calculadaEm: DateTime): void
+    + consultarTobt(turnaroundId: UUID): TurnaroundReferencia
+    + consultarSolicitacao(turnaroundId: UUID): SolicitacaoAtualizacaoTobt
+    + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1], alertaId: UUID [0..1], autorId: UUID): AtualizacaoTobt
+    + encerrarPorLiberacao(turnaroundId: UUID): void
+  }
+
+  class ReplanejamentoService <<service>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    - replanejamentos: ReplanejamentoRepository
+    - pedidos: PedidoService
+    - execucao: ExecucaoEmSoloCliente
+    - acoesAlerta: AcaoAlertaService
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
+    + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, alertaId: UUID [0..1], autorId: UUID): Replanejamento
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, alertaId: UUID [0..1], autorId: UUID): Replanejamento
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, motivo: String, alertaId: UUID [0..1], autorId: UUID): Replanejamento
+  }
+
+  class PedidoService <<service>> {
+    - pedidos: PedidoPendenteRepository
+    - execucao: ExecucaoEmSoloCliente
+    + registrar(tipo: TipoPedido, turnaroundId: UUID, registroId: UUID, autorId: UUID, horarioAcao: DateTime, dados: String): PedidoPendente
+    + concluir(pedido: PedidoPendente): void
+    + desfazer(pedido: PedidoPendente): void
+    + retomarPendentes(): void
+  }
+
+  class TurnaroundReferenciaService <<service>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    - codigos: CodigoAtrasoRepository
+    + aplicarTurnaroundAberto(turnaround: TurnaroundReferencia): void
+    + aplicarAobt(turnaroundId: UUID, aobt: DateTime): void
+    + aplicarTabelaCodigos(tabela: TabelaCodigoAtraso): void
+  }
+
+  ' ---------- acesso a dados ----------
+
+  interface TurnaroundReferenciaRepository <<repository>> {
+    + buscarPorId(turnaroundId: UUID): TurnaroundReferencia
+    + buscarComTrava(turnaroundId: UUID): TurnaroundReferencia
+    + listarPorCompanhia(companhiaId: UUID): List<TurnaroundReferencia>
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
+    + salvar(turnaround: TurnaroundReferencia): void
+  }
+
+  interface SolicitacaoAtualizacaoTobtRepository <<repository>> {
+    + buscarPorId(id: UUID): SolicitacaoAtualizacaoTobt
+    + buscarAberta(turnaroundId: UUID): SolicitacaoAtualizacaoTobt
+    + salvar(solicitacao: SolicitacaoAtualizacaoTobt): void
+  }
+
+  interface AtualizacaoTobtRepository <<repository>> {
+    + buscarPorId(id: UUID): AtualizacaoTobt
+    + salvar(atualizacao: AtualizacaoTobt): void
+  }
+
+  interface CodigoAtrasoRepository <<repository>> {
+    + buscarVigente(): TabelaCodigoAtraso
+    + buscarCodigo(versao: Integer, codigo: String): CodigoAtraso
+    + salvar(tabela: TabelaCodigoAtraso): void
+  }
+
+  interface ExcecaoRepository <<repository>> {
+    + buscarPorId(id: UUID): Excecao
+    + buscarComTrava(id: UUID): Excecao
+    + listarAbertas(turnaroundId: UUID): List<Excecao>
+    + contarAbertas(turnaroundId: UUID): Integer
+    + salvar(excecao: Excecao): void
+  }
+
+  interface ReatribuicaoRepository <<repository>> {
+    + buscarPorId(id: UUID): Reatribuicao
+    + salvar(reatribuicao: Reatribuicao): void
+  }
+
+  interface ReplanejamentoRepository <<repository>> {
+    + buscarPorId(id: UUID): Replanejamento
+    + salvar(replanejamento: Replanejamento): void
+  }
+
+  interface AcaoAlertaRepository <<repository>> {
+    + buscarPorAlerta(alertaId: UUID): AcaoAlerta
+    + salvar(acao: AcaoAlerta): void
+  }
+
+  interface LiberacaoRepository <<repository>> {
+    + buscarPorTurnaround(turnaroundId: UUID): Liberacao
+    + salvar(liberacao: Liberacao): void
+  }
+
+  ' ---------- comunicação ----------
+
+  class PedidoPendente <<entity>> {
+    - id: UUID
+    - tipo: TipoPedido
+    - turnaroundId: UUID
+    - registroId: UUID
+    - autorId: UUID
+    - horarioAcao: DateTime
+    - dados: String
+    - situacao: SituacaoPedido
+    - resolvidoEm: DateTime [0..1]
+    + concluir(momento: DateTime): void
+    + desfazer(momento: DateTime): void
+  }
+
+  interface PedidoPendenteRepository <<repository>> {
+    + listarPendentes(): List<PedidoPendente>
+    + salvar(pedido: PedidoPendente): void
+  }
+
+  class ExecucaoEmSoloCliente <<client>> {
+    + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
+    + consultarTarefa(tarefaId: UUID): TarefaResumo
+    + aplicarExcecao(turnaroundId: UUID, tarefaId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
+    + sairDeExcecao(turnaroundId: UUID, excecaoId: UUID, autorId: UUID, horarioAcao: DateTime): MudancaEstado
+    + listarOperadoresDisponiveis(tarefaId: UUID): List<OperadorDisponivel>
+    + reatribuir(turnaroundId: UUID, tarefaId: UUID, operadorNovoId: UUID, autorId: UUID, horarioAcao: DateTime, reatribuicaoId: UUID): UUID
+    + listarNaoIniciadas(turnaroundId: UUID): List<TarefaResumo>
+    + listarCatalogoSobDemanda(turnaroundId: UUID): List<TarefaResumo>
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+    + alterarJanela(turnaroundId: UUID, tarefaId: UUID, inicio: DateTime, fim: DateTime, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + alterarDependencias(turnaroundId: UUID, tarefaId: UUID, predecessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + acionarSobDemanda(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, inicio: DateTime, fim: DateTime, predecessoraIds: List<UUID>, sucessoraIds: List<UUID>, autorId: UUID, horarioAcao: DateTime, replanejamentoId: UUID): TarefaResumo
+    + consultarSituacao(turnaroundId: UUID): SituacaoTurnaround
+    + listarSituacoes(turnaroundIds: List<UUID>): List<SituacaoTurnaround>
+    + liberar(turnaroundId: UUID, liberacaoId: UUID, ardt: DateTime, autorId: UUID): SituacaoTurnaround
+    + consultarPedido(registroId: UUID): Boolean
+  }
+
+  ' Leva ao computador do Coordenador de Turnaround a solicitação de atualização do TOBT (UC34) e a retira quando encerrada.
+  class CoordenadorNotificador <<websocket>> {
+    + notificarSolicitacao(solicitacao: SolicitacaoAtualizacaoTobt): void
+    + retirarSolicitacao(turnaroundId: UUID, solicitacaoId: UUID): void
+  }
+
+  class ConsumidorAvisosExcecoes <<consumer>> {
+    - turnarounds: TurnaroundReferenciaService
+    - atualizacoes: AtualizacaoTobtService
+    # tratar(envelope: EnvelopeAviso): void
+  }
+
+  class RotinaAnonimizacaoExcecoes <<scheduler>> {
+    - turnarounds: TurnaroundReferenciaRepository
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
+  }
+
+  class RetomadaPedidos <<scheduler>> {
+    - pedidos: PedidoService
+    + executarAoIniciar(): void
+  }
+
+  ' ---------- ligações das camadas ----------
+
+  excecoes.ExcecaoView ..> excecoes.ExcecaoController
+  excecoes.ReatribuicaoView ..> excecoes.ReatribuicaoController
+  excecoes.RegistroAcaoAlertaView ..> excecoes.ExcecaoView
+  excecoes.RegistroAcaoAlertaView ..> excecoes.ReatribuicaoView
+  excecoes.RegistroAcaoAlertaView ..> excecoes.ReplanejamentoView
+  excecoes.RegistroAcaoAlertaView ..> excecoes.AtualizacaoTobtView
+  excecoes.LiberacaoView ..> excecoes.LiberacaoController
+  excecoes.AtualizacaoTobtView ..> excecoes.AtualizacaoTobtController
+  excecoes.ReplanejamentoView ..> excecoes.ReplanejamentoController
+  excecoes.CoordenadorNotificador .[norank].> excecoes.AtualizacaoTobtView
+
+  excecoes.ExcecaoController ..> excecoes.ExcecaoService
+  excecoes.ReatribuicaoController ..> excecoes.ReatribuicaoService
+  excecoes.LiberacaoController ..> excecoes.LiberacaoService
+  excecoes.AtualizacaoTobtController ..> excecoes.AtualizacaoTobtService
+  excecoes.ReplanejamentoController ..> excecoes.ReplanejamentoService
+
+  excecoes.ExcecaoService --> excecoes.ExcecaoRepository
+  excecoes.ExcecaoService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.ExcecaoService --> excecoes.CodigoAtrasoRepository
+  excecoes.ExcecaoService --> excecoes.PedidoService
+  excecoes.ExcecaoService --> excecoes.ExecucaoEmSoloCliente
+  excecoes.ExcecaoService --> excecoes.AcaoAlertaService
+  excecoes.ReatribuicaoService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.ReatribuicaoService --> excecoes.ReatribuicaoRepository
+  excecoes.ReatribuicaoService --> excecoes.PedidoService
+  excecoes.ReatribuicaoService --> excecoes.ExecucaoEmSoloCliente
+  excecoes.ReatribuicaoService --> excecoes.AcaoAlertaService
+  excecoes.AcaoAlertaService --> excecoes.AcaoAlertaRepository
+  excecoes.LiberacaoService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.LiberacaoService --> excecoes.ExcecaoRepository
+  excecoes.LiberacaoService --> excecoes.LiberacaoRepository
+  excecoes.LiberacaoService --> excecoes.PedidoService
+  excecoes.LiberacaoService --> excecoes.ExecucaoEmSoloCliente
+  excecoes.LiberacaoService --> excecoes.AtualizacaoTobtService
+  excecoes.AtualizacaoTobtService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.AtualizacaoTobtService --> excecoes.SolicitacaoAtualizacaoTobtRepository
+  excecoes.AtualizacaoTobtService --> excecoes.AtualizacaoTobtRepository
+  excecoes.AtualizacaoTobtService --> excecoes.LiberacaoRepository
+  excecoes.AtualizacaoTobtService --> excecoes.AcaoAlertaService
+  excecoes.AtualizacaoTobtService --> excecoes.CoordenadorNotificador
+  excecoes.ReplanejamentoService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.ReplanejamentoService --> excecoes.ReplanejamentoRepository
+  excecoes.ReplanejamentoService --> excecoes.PedidoService
+  excecoes.ReplanejamentoService --> excecoes.ExecucaoEmSoloCliente
+  excecoes.ReplanejamentoService --> excecoes.AcaoAlertaService
+  excecoes.PedidoService --> excecoes.PedidoPendenteRepository
+  excecoes.PedidoService --> excecoes.ExecucaoEmSoloCliente
+  excecoes.TurnaroundReferenciaService --> excecoes.TurnaroundReferenciaRepository
+  excecoes.TurnaroundReferenciaService --> excecoes.CodigoAtrasoRepository
+  excecoes.ConsumidorAvisosExcecoes --> excecoes.TurnaroundReferenciaService
+  excecoes.ConsumidorAvisosExcecoes --> excecoes.AtualizacaoTobtService
+  excecoes.RetomadaPedidos --> excecoes.PedidoService
+  excecoes.PedidoPendenteRepository ..> excecoes.PedidoPendente
+  excecoes.ExcecaoService ..> excecoes.EncerramentoExcecao
+  excecoes.LiberacaoService ..> excecoes.SituacaoLiberacao
+  excecoes.LiberacaoService ..> excecoes.TurnaroundLiberavel
+  excecoes.ExecucaoEmSoloCliente ..> excecoes.SituacaoTurnaround
+  excecoes.ExecucaoEmSoloCliente ..> excecoes.MudancaEstado
+  excecoes.ExecucaoEmSoloCliente ..> excecoes.OperadorDisponivel
+  excecoes.ExecucaoEmSoloCliente ..> excecoes.OperadorAtivo
+  excecoes.ExecucaoEmSoloCliente ..> excecoes.TarefaResumo
+
+
+  comum.ConsumidorAvisos <|-- excecoes.ConsumidorAvisosExcecoes
+  comum.RotinaAnonimizacao <|-- excecoes.RotinaAnonimizacaoExcecoes
+  excecoes.RotinaAnonimizacaoExcecoes --> excecoes.TurnaroundReferenciaRepository
+  excecoes.ExcecaoService --> comum.AuditoriaService
+  excecoes.ExcecaoService --> comum.PublicadorAvisos
+  excecoes.ReatribuicaoService --> comum.AuditoriaService
+  excecoes.ReatribuicaoService --> comum.PublicadorAvisos
+  excecoes.AcaoAlertaService --> comum.AuditoriaService
+  excecoes.AcaoAlertaService --> comum.PublicadorAvisos
+  excecoes.LiberacaoService --> comum.AuditoriaService
+  excecoes.LiberacaoService --> comum.PublicadorAvisos
+  excecoes.AtualizacaoTobtService --> comum.AuditoriaService
+  excecoes.AtualizacaoTobtService --> comum.PublicadorAvisos
+  excecoes.ReplanejamentoService --> comum.AuditoriaService
+  excecoes.ReplanejamentoService --> comum.PublicadorAvisos
+}
