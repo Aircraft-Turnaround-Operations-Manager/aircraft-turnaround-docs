@@ -68,6 +68,7 @@ namespace contrato {
     - rotas: List<String>
     + encaminhar(sessaoId: UUID, rota: String, corpo: String, acaoDoUsuario: Boolean): String
     + entrar(identificadorAcesso: String, senha: String): String
+    + sair(sessaoId: UUID): void
     - verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso
   }
 

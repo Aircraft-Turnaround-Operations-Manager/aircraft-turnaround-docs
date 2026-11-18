@@ -211,6 +211,7 @@ namespace cadastro {
   class AutenticacaoView <<boundary>> {
     + abrir(): void
     + entrar(identificadorAcesso: String, senha: String): void
+    + sair(): void
   }
 
   class UsuarioView <<boundary>> {
@@ -235,8 +236,10 @@ namespace cadastro {
 
   class ModeloTarefaView <<boundary>> {
     + abrir(): void
+    + abrirModelo(modeloId: UUID): void
     + abrirTarefa(modeloId: UUID, tarefaModeloId: UUID): void
     + salvarModelo(dados: ModeloTarefa): void
+    + salvarAlteracao(modeloId: UUID, dados: ModeloTarefa): void
     + salvarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>): void
     + salvarDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>): void
   }
@@ -263,6 +266,7 @@ namespace cadastro {
 
   class AutenticacaoController <<control>> {
     + autenticar(identificadorAcesso: String, senha: String): TokenAcesso
+    + encerrarSessao(sessaoId: UUID): void
   }
 
   class UsuarioController <<control>> {
@@ -297,6 +301,7 @@ namespace cadastro {
     + listar(acesso: Acesso): List<ModeloTarefa>
     + listarCompativeis(turnaroundId: UUID, acesso: Acesso): List<ModeloTarefa>
     + criar(dados: ModeloTarefa, acesso: Acesso): ModeloTarefa
+    + alterar(modeloId: UUID, dados: ModeloTarefa, acesso: Acesso): ModeloTarefa
     + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, acesso: Acesso): TarefaModelo
     + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaModelo
   }
@@ -326,6 +331,7 @@ namespace cadastro {
     - inatividadeMin: Integer
     + autenticar(identificadorAcesso: String, senha: String, momento: DateTime): TokenAcesso
     + verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean, momento: DateTime): Acesso
+    + encerrarSessao(sessaoId: UUID, momento: DateTime): void
     - registrarFalha(usuario: Usuario, momento: DateTime): void
     - emitirToken(sessao: Sessao): TokenAcesso
   }
@@ -380,6 +386,7 @@ namespace cadastro {
     + listar(): List<ModeloTarefa>
     + listarCompativeis(turnaroundId: UUID): List<ModeloTarefa>
     + criar(dados: ModeloTarefa, autorId: UUID): ModeloTarefa
+    + alterar(modeloId: UUID, dados: ModeloTarefa, autorId: UUID): ModeloTarefa
     + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, autorId: UUID): TarefaModelo
     + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaModelo
     - conferirDependencias(modelo: ModeloTarefa): void
@@ -565,7 +572,7 @@ namespace cadastro {
     - nome: String
   }
 
-  ' Resposta do login: referência da sessão levada no token (ADR-0016, ponto 2; formato na #178).
+  ' Resposta do login: referência da sessão levada no token de login (ADR-0016, ponto 2; ADR-0023, ponto 1).
   class TokenAcesso <<dto>> {
     - sessaoId: UUID
     - perfil: Perfil
