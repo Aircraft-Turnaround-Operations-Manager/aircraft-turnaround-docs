@@ -9,7 +9,7 @@ decisor: Rodrigo Alves
 itens_template: [12, 14]
 areas: [D]
 fontes: []
-relacionados: [adr-0015, adr-0016, adr-0003, adr-0004, adr-0006]
+relacionados: [adr-0015, adr-0016, adr-0023, adr-0003, adr-0004, adr-0006]
 ---
 # ADR-0020 — Tecnologia do serviço Exceções e Liberação: C#, ASP.NET Core e PostgreSQL
 
@@ -56,7 +56,7 @@ Bibliotecas de apoio: Entity Framework Core 10 com o provedor Npgsql, para o ace
 
 | Ponto da ADR-0016 | Como o Exceções e Liberação cumpre |
 |---|---|
-| **2. Porta de entrada** | O serviço só recebe as ações do site pela porta de entrada. Ele lê o usuário e o perfil que a porta de entrada informa e confere, com as políticas de autorização do ASP.NET Core, se o perfil pode fazer a ação (RNF-1). Por exemplo, só a Autoridade de Liberação confirma a prontidão, e só da companhia que ela representa (RF-39; ADR-0004); só o Coordenador de Turnaround abre e encerra exceção, reatribui, replaneja e registra a ação sobre o alerta. O formato em que a porta de entrada passa o usuário e o perfil (cabeçalho, token ou outro) ainda não está definido; ele é combinado com o responsável pela porta de entrada (ADR-0016, ponto 2), e esta ADR não o supõe. |
+| **2. Porta de entrada** | O serviço só recebe as ações do site pela porta de entrada. O serviço confere o token interno assinado que a porta de entrada envia ([ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md), ponto 1: assinatura com a chave pública da porta de entrada e validade), lê dele o usuário, o perfil e a companhia e confere, com as políticas de autorização do ASP.NET Core, se o perfil pode fazer a ação (RNF-1). Por exemplo, só a Autoridade de Liberação confirma a prontidão, e só da companhia que ela representa (RF-39; ADR-0004); só o Coordenador de Turnaround abre e encerra exceção, reatribui, replaneja e registra a ação sobre o alerta. O token também diz se a chamada é ação do usuário (ADR-0023, ponto 2): as consultas automáticas não renovam a sessão (RNF-5). |
 | **3. REST entre serviços** | As ações do site chegam em REST com JSON sobre HTTPS (RNF-3), em endereços versionados, minúsculos e no plural, como `/v1/excecoes` e `/v1/liberacoes/{turnaroundId}`. Os pedidos à Execução em Solo também saem em REST. Uma recusa de regra de negócio volta com o motivo no formato Problem Details, por exemplo a lista de tarefas obrigatórias pendentes que impede a liberação. Em falha técnica da Execução em Solo, o serviço não repete sozinho um pedido que muda dado: informa ao usuário que a ação não foi concluída, como manda o ponto 3. A descrição OpenAPI é gerada do código. O serviço não oferece GraphQL nem WebSocket, porque não tem painel; se os itens 13 e 14 pedirem, o ASP.NET Core tem WebSocket nativo. |
 | **4 e 5. RabbitMQ e envelope dos avisos** | O serviço tem uma fila durável própria, `excecoes-e-liberacao`, e publica e consome pelo RabbitMQ.Client, com mensagens persistentes e confirmação de publicação. Todo aviso usa um único `record` de envelope, com os campos `id`, `tipo`, `versao`, `ocorridoEm`, `turnaroundId`, `autorId`, `origem` (sempre `excecoes-e-liberacao`), `causaId` e `dados`. O aviso é gravado numa tabela de saída na mesma transação da mudança e publicado logo depois, por um serviço em segundo plano (`BackgroundService`); assim, não há mudança gravada sem aviso nem aviso de mudança que não aconteceu (RNF-20). Ao consumir, por exemplo o aviso do Monitoramento que dispara o RF-41, o serviço grava o `id` do aviso numa tabela de avisos processados, com chave única, na mesma transação das mudanças que ele causa, e ignora o repetido. A mensagem só é confirmada à fila depois de gravada. |
 | **6. Horários em UTC** | Os horários são `DateTime` com `Kind = Utc` no código e `timestamp with time zone` no banco; o provedor Npgsql recusa gravar um horário que não esteja em UTC. O JSON sai no formato ISO 8601 terminado em `Z`. O ARDT é o horário da confirmação pela Autoridade de Liberação (RF-39), registrado pelo serviço em UTC. |
@@ -103,7 +103,7 @@ As transições de estado do turnaround são testadas pela Execução em Solo, q
 ## Ligações
 
 - **Divisão em microsserviços:** [ADR-0015](0015-divisao-em-microsservicos.md)
-- **Contrato entre os serviços:** [ADR-0016](0016-contrato-entre-os-servicos.md)
+- **Contrato entre os serviços:** [ADR-0016](0016-contrato-entre-os-servicos.md); identidade passada pela porta de entrada na [ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md)
 - **Tecnologia dos outros serviços:** [ADR-0017](0017-tecnologia-cadastro-e-planejamento.md), [ADR-0018](0018-tecnologia-execucao-em-solo.md), [ADR-0019](0019-tecnologia-monitoramento.md)
 - **Atualização do TOBT:** [ADR-0003](0003-atualizar-previsao-na-antecipacao.md) · **Autoridade de Liberação:** [ADR-0004](0004-quatro-atores-e-autoridade-de-liberacao.md) · **Códigos de atraso:** [ADR-0006](0006-codigos-de-atraso-tabela-anac.md)
 - **Requisitos da área D:** [RFs](../../especificacao/06-requisitos-funcionais/area-d.md), [RNFs](../../especificacao/08-requisitos-nao-funcionais/area-d.md)
