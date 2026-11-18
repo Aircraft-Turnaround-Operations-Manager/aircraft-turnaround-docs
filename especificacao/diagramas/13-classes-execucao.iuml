@@ -35,6 +35,7 @@ namespace execucao {
     - estado: EstadoTurnaround [0..1]
     - permiteComPassageiros: Boolean
     - planoRecebidoEm: DateTime
+    - chavePlano: UUID
     - tobtVigente: DateTime [0..1]
     - ardt: DateTime [0..1]
     - liberadoPorId: UUID [0..1]
@@ -43,6 +44,7 @@ namespace execucao {
     - correcoesAibt: List<CorrecaoAibt>
     - historico: List<HistoricoEstadoTurnaround>
     + aplicarPlano(plano: PlanoConfirmado, momento: DateTime): void
+    + planoJaRecebido(chave: UUID): Boolean
     + registrarChegada(aibt: DateTime, autorId: UUID, momento: DateTime): Marco
     + corrigirAibt(aibtNovo: DateTime, motivo: String, autorId: UUID, requisicaoId: UUID, momento: DateTime): CorrecaoAibt
     + buscarMarco(tipo: TipoMarco): Marco
@@ -196,6 +198,7 @@ namespace execucao {
   class PlanoConfirmado <<dto>> {
     - turnaroundId: UUID
     - planoId: UUID
+    - chaveConfirmacao: UUID
     - vooChegada: String
     - vooPartida: String
     - matricula: String

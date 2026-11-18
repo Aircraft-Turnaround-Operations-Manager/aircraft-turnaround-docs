@@ -13,6 +13,7 @@ restore cadastro.TarefaModelo
 restore cadastro.PontoConfirmacaoModelo
 restore cadastro.Turnaround
 restore cadastro.Plano
+restore cadastro.SituacaoPlano
 restore cadastro.TarefaPlano
 restore cadastro.PontoConfirmacaoPlano
 @enduml

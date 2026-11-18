@@ -1,9 +1,11 @@
 ' Item 13 (T13, issue #145) — serviço Cadastro e Planejamento (ADR-0015): classes de negócio das 15 tabelas do
 ' Apêndice B.1 e classes técnicas dos casos de uso UC01 a UC11. Fonte única; as vistas 13-classes-*.puml incluem este
 ' arquivo. Dentro do serviço, a referência é pelo tipo; para outro serviço, pelo identificador (UUID), sem classe.
-' Plano confirmado: toda mudança (aplicar modelo, responsáveis, dependências) trava o plano (buscarComTrava) e reenvia o
-' plano à Execução em Solo (receberPlano) antes de gravar; a Execução em Solo recusa depois do primeiro início (ADR-0015,
-' regra 5) e, na recusa ou na falha, nada é gravado. A entrada pela classe de negócio ignora identificador, autor,
+' Confirmação do plano (ADR-0023, ponto 5): o Cadastro trava o plano (buscarComTrava), grava o envio como "Confirmação
+' pendente", com a chave e o conteúdo, e só então chama a Execução em Solo (receberPlano). Com a resposta positiva, aplica o
+' conteúdo e marca "Confirmado"; com a recusa, descarta o envio e o plano fica como estava. Num plano confirmado, toda
+' mudança (aplicar modelo, responsáveis, dependências) segue o mesmo caminho, e a Execução em Solo recusa depois do primeiro
+' início (ADR-0015, regra 5). Depois de uma queda, a RetomadaConfirmacaoPlano reenvia com a mesma chave. A entrada pela classe de negócio ignora identificador, autor,
 ' horários e senhaHash, que o servidor define.
 
 namespace cadastro {
@@ -132,11 +134,24 @@ namespace cadastro {
     - politica: PoliticaAbastecimento [0..1]
     - confirmadoEm: DateTime [0..1]
     - confirmadoPor: Usuario [0..1]
+    - situacao: SituacaoPlano
+    - chaveConfirmacao: UUID [0..1]
+    - envioPendente: String [0..1]
     - tarefas: List<TarefaPlano>
     + estaConfirmado(): Boolean
+    + aceitaEdicao(): Boolean
     + permiteComPassageiros(): Boolean
     + tarefasSemResponsavel(): List<TarefaPlano>
+    + iniciarConfirmacao(chave: UUID, conteudo: String): void
     + confirmar(autor: Usuario, momento: DateTime): void
+    + desfazerConfirmacao(): void
+  }
+
+  ' "Em edição" até a primeira confirmação; "Confirmação pendente" entre o envio e a resposta (ADR-0023, ponto 5).
+  enum SituacaoPlano <<enumeration>> {
+    Em edição
+    Confirmação pendente
+    Confirmado
   }
 
   class TarefaPlano <<entity>> {
@@ -388,6 +403,7 @@ namespace cadastro {
     - conferirPolitica(plano: Plano): void
     - conferirEquipesAtivas(modelo: ModeloTarefa): void
     - enviarPlano(plano: Plano): void
+    + retomarConfirmacoes(): void
   }
 
   class PoliticaAbastecimentoService <<service>> {
@@ -453,6 +469,7 @@ namespace cadastro {
     + buscarComTrava(turnaroundId: UUID): Plano
     + listarTarefasNaoConfirmadasDaEquipe(equipeId: UUID): List<TarefaPlano>
     + listarTarefasNaoConfirmadasDoResponsavel(usuarioId: UUID): List<TarefaPlano>
+    + listarConfirmacaoPendente(): List<Plano>
     + salvar(plano: Plano): void
     + excluir(plano: Plano): void
   }
@@ -493,6 +510,7 @@ namespace cadastro {
   class PlanoConfirmado <<dto>> {
     - turnaroundId: UUID
     - planoId: UUID
+    - chaveConfirmacao: UUID
     - vooChegada: String
     - vooPartida: String
     - matricula: String
@@ -554,6 +572,12 @@ namespace cadastro {
     - nome: String
   }
 
+  ' Ao voltar de uma queda, reenvia os planos com confirmação pendente, com a mesma chave (ADR-0023, ponto 5; RNF-20).
+  class RetomadaConfirmacaoPlano <<scheduler>> {
+    - planos: PlanoService
+    + executarAoIniciar(): void
+  }
+
   ' Além da trilha, anonimiza os dados pessoais vencidos do cadastro (RNF-6).
   class RotinaAnonimizacaoCadastro <<scheduler>> {
     - usuarios: UsuarioService
@@ -605,6 +629,7 @@ namespace cadastro {
   cadastro.UsuarioService ..> cadastro.UsuarioResumo
   cadastro.UsuarioService ..> cadastro.NomeUsuario
   cadastro.RotinaAnonimizacaoCadastro --> cadastro.UsuarioService
+  cadastro.RetomadaConfirmacaoPlano --> cadastro.PlanoService
   cadastro.RotinaAnonimizacaoCadastro --> cadastro.TurnaroundRepository
   cadastro.UsuarioService --> cadastro.ExecucaoEmSoloCliente
   cadastro.EquipeService --> cadastro.EquipeRepository

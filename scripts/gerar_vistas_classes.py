@@ -27,7 +27,7 @@ VISTAS = {
                   'cadastro.Plano -[hidden]down- execucao.Turnaround\n'
                   'execucao.Turnaround -[hidden]down- monitoramento.TurnaroundMonitorado\n'
                   'monitoramento.TurnaroundMonitorado -[hidden]down- excecoes.TurnaroundReferencia'),
-  'negocio-cadastro': ('Classes de negócio — Cadastro e Planejamento', de('cadastro', 'entity'), None, ''),
+  'negocio-cadastro': ('Classes de negócio — Cadastro e Planejamento', de('cadastro', 'entity', 'enumeration'), None, ''),
   'negocio-execucao': ('Classes de negócio — Execução em Solo', de('execucao', 'entity', 'enumeration'), None, ''),
   'negocio-monitoramento': ('Classes de negócio — Monitoramento', de('monitoramento', 'entity', 'enumeration'), None, ''),
   'negocio-excecoes': ('Classes de negócio — Exceções e Liberação', [k for k in de('excecoes', 'entity', 'enumeration') if 'Pedido' not in k], None, ''),
@@ -57,6 +57,7 @@ tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
   'cadastro.TurnaroundService', 'cadastro.ModeloTarefaService', 'cadastro.PlanoService', 'cadastro.PoliticaAbastecimentoService',
   'cadastro.TurnaroundRepository', 'cadastro.CompanhiaRepository', 'cadastro.ModeloTarefaRepository', 'cadastro.PlanoRepository', 'cadastro.PoliticaAbastecimentoRepository',
   'cadastro.ConsumidorAvisosCadastro', 'comum.PublicadorAvisos', 'cadastro.ExecucaoEmSoloCliente', 'cadastro.PlanoConfirmado', 'cadastro.TarefaPlanejada', 'cadastro.PontoPlanejado',
+  'cadastro.SituacaoPlano', 'cadastro.RetomadaConfirmacaoPlano',
   'execucao.TurnaroundController', 'execucao.ChegadaController', 'execucao.TurnaroundService', 'execucao.PlanoConfirmado',
   'execucao.TarefaPlanejada', 'execucao.PontoPlanejado'])
 tec('tecnica-execucao', 'Execução das tarefas no solo', [

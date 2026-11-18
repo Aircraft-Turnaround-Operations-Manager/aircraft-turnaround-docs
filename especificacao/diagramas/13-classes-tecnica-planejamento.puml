@@ -29,6 +29,8 @@ restore cadastro.ExecucaoEmSoloCliente
 restore cadastro.PlanoConfirmado
 restore cadastro.TarefaPlanejada
 restore cadastro.PontoPlanejado
+restore cadastro.SituacaoPlano
+restore cadastro.RetomadaConfirmacaoPlano
 restore execucao.TurnaroundController
 restore execucao.ChegadaController
 restore execucao.TurnaroundService
