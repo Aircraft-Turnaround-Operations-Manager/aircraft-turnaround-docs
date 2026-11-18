@@ -57,7 +57,7 @@
 
 **COMO:** Coordenador de Turnaround
 
-**POSSO:** criar um modelo de tarefas por tipo de aeronave e serviço
+**POSSO:** criar e alterar um modelo de tarefas por tipo de aeronave e serviço
 
 **PARA:** reutilizar o planejamento em outros turnarounds
 
@@ -67,9 +67,10 @@
 |---|---|
 | 1 | **DADO QUE:** há equipes ativas cadastradas <br> **QUANDO:** salvo um modelo com nome, aeronave, serviço e tarefas com nome, tipo, equipe, duração positiva, obrigatoriedade, permissão de "Não aplicável" e indicação "sob demanda" <br> **ENTÃO:** o modelo e suas configurações são gravados com auditoria |
 | 2 | **DADO QUE:** o serviço inclui embarque de passageiros <br> **QUANDO:** salvo exatamente uma tarefa do tipo Embarque <br> **ENTÃO:** essa tarefa fica identificada para o marco de embarque mesmo que seu nome livre seja diferente |
-| 3 | **DADO QUE:** estou criando um modelo <br> **QUANDO:** há tarefa sem equipe ativa ou com duração não positiva <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
+| 3 | **DADO QUE:** estou criando ou alterando um modelo <br> **QUANDO:** há tarefa sem equipe ativa ou com duração não positiva <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
 | 4 | **DADO QUE:** cadastro uma limpeza profunda como "sob demanda" com tipo, equipe e duração planejada <br> **QUANDO:** salvo o modelo <br> **ENTÃO:** o serviço fica no catálogo e não entra no plano até ser acionado pelo Coordenador de Turnaround (ADR-0014) [69][70][71] |
 | 5 | **DADO QUE:** estou criando um modelo para um serviço com embarque de passageiros <br> **QUANDO:** o modelo não tem nenhuma tarefa do tipo Embarque ou tem mais de uma <br> **ENTÃO:** o sistema indica o erro e não salva o modelo |
+| 6 | **DADO QUE:** um modelo já foi aplicado a um turnaround <br> **QUANDO:** altero uma tarefa do modelo e salvo <br> **ENTÃO:** a alteração é gravada com os valores anteriores e novos, o autor e o horário, e a cópia já aplicada ao turnaround não muda (RF-6) |
 
 ## US005 – REQUISITO RF-5: Confirmar plano inicial do turnaround
 
