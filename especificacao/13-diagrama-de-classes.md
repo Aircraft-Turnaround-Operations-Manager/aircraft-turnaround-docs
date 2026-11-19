@@ -108,7 +108,7 @@ UC03 a UC08, UC10 e UC11. A abertura, a previsão e o plano vão aos outros serv
 
 ### 13.5.3 Execução das tarefas no solo
 
-UC12 a UC19 e UC37. A `FilaRegistrosSemConexao` guarda no celular o registro e a leitura de código de resposta rápida (QR Code) feitos sem conexão, com o operador, o horário da ação e a chave de envio, e os envia na ordem quando a conexão volta e o mesmo operador está autenticado (RNF-8). A cada registro e a cada leitura, a tarefa confere que é do operador e da equipe dele (`Tarefa.conferirResponsavel`, usada pelo `TarefaService` e pelo `LeituraQrCodeService`; RF-19).
+UC12 a UC19 e UC37. A `FilaRegistrosSemConexao` guarda no celular o registro e a leitura de código de resposta rápida (QR Code) feitos sem conexão, com o operador, o horário da ação e a chave de envio, e os envia na ordem quando a conexão volta e o mesmo operador está autenticado (RNF-8). A cada registro e a cada leitura, a tarefa confere que é do operador e da equipe dele (`Tarefa.conferirResponsavel`, usada pelo `TarefaService` e pelo `LeituraQrCodeService`; RF-19). Na chegada, o `Turnaround.registrarChegada` confere as recusas da ADR-0013 (regra 2): operador sem tarefa atribuída no turnaround, horário futuro, chegada já registrada e plano não confirmado (RF-12).
 
 ![Diagrama de classes — execução das tarefas no solo](diagramas/13-classes-tecnica-execucao.png)
 

@@ -571,7 +571,7 @@
 | **Descrição** | Durante a execução de uma tarefa da sua equipe atribuída a ele, o Operador de Solo/Rampa lê, com a câmera do celular, o QR Code fixado em cada ponto da aeronave ligado à tarefa, por exemplo cada zona, fileira ou assento da cabine na limpeza. Cada leitura confirma um ponto, com autor e horário. A conclusão da tarefa continua sendo registrada no UC16, que só a aceita com todos os pontos confirmados. Atende ao RF-19 e à US019. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador, está atribuída a ele, está no estado "Em execução" e tem pontos de confirmação por QR Code no modelo de tarefas do turnaround.<br>3. Os QR Codes estão fixados nos pontos correspondentes da aeronave. |
 | **Pós-condições** | **Sucesso:** cada ponto lido está confirmado na tarefa, com o usuário e o horário da leitura gravados.<br>**Recusa:** nenhuma leitura é gravada, e os pontos da tarefa mantêm a situação anterior. |
-| **Regras de negócio** | **RN1.** A leitura só é aceita com a tarefa no estado "Em execução" (RF-19).<br>**RN2.** O sistema recusa o QR Code que não pertença a uma tarefa da equipe do operador atribuída a ele no turnaround, e o QR Code que não corresponda a nenhum ponto cadastrado no turnaround, sem gravar nenhum registro (RF-19, ADR-0010).<br>**RN3.** Cada leitura aceita grava o usuário e o horário e marca o ponto como confirmado (RF-19).<br>**RN4.** A leitura não conclui a tarefa: a conclusão é registrada no UC16, e só é aceita quando todos os pontos da tarefa estão confirmados (RF-16).<br>**RN5.** Os pontos são definidos por tarefa no modelo de tarefas, por zona, fileira ou assento. [Inferência] Ler assento por assento pode atrasar a limpeza; por isso a zona ou a fileira são as opções preferidas, e o assento fica como opção (ADR-0007).<br>**RN6.** [Fato] Há leitura de QR Code para comprovar limpeza em aeroporto [63] e checklist digital de limpeza da cabine por zona [64]; [Inferência] ligar a leitura por ponto ao andamento do turnaround é regra do projeto (ADR-0007).<br>**RN7.** A leitura usa a câmera do celular pelo navegador, sem aplicativo instalado (RNF-9, RNF-10). |
+| **Regras de negócio** | **RN1.** A leitura só é aceita com a tarefa no estado "Em execução" (RF-19).<br>**RN2.** A leitura vale só para a tarefa aberta: o sistema recusa o QR Code que não corresponda a um ponto dessa tarefa, sem gravar nenhum registro. O identificador do ponto é único só dentro da tarefa, e o mesmo QR Code pode servir a pontos de tarefas diferentes (RF-7, RF-19, ADR-0010).<br>**RN3.** Cada leitura aceita grava o usuário e o horário e marca o ponto como confirmado (RF-19).<br>**RN4.** A leitura não conclui a tarefa: a conclusão é registrada no UC16, e só é aceita quando todos os pontos da tarefa estão confirmados (RF-16).<br>**RN5.** Os pontos são definidos por tarefa no modelo de tarefas, por zona, fileira ou assento. [Inferência] Ler assento por assento pode atrasar a limpeza; por isso a zona ou a fileira são as opções preferidas, e o assento fica como opção (ADR-0007).<br>**RN6.** [Fato] Há leitura de QR Code para comprovar limpeza em aeroporto [63] e checklist digital de limpeza da cabine por zona [64]; [Inferência] ligar a leitura por ponto ao andamento do turnaround é regra do projeto (ADR-0007).<br>**RN7.** A leitura usa a câmera do celular pelo navegador, sem aplicativo instalado (RNF-9, RNF-10). |
 | **Protótipo(s) de tela** | Leitura do QR Code pela câmera e lista de pontos da tarefa, com os confirmados e os que faltam.<br>![UC19 – leitura do QR Code](prototipos/uc-b6-leitura-qr-code.png) ![UC19 – pontos da tarefa](prototipos/uc-b6-pontos-da-tarefa.png) |
 
 ### Fluxo básico
@@ -581,9 +581,9 @@
 | 1. O Operador de Solo/Rampa abre, na lista de tarefas (UC14), uma tarefa "Em execução" com pontos de QR Code, por exemplo a limpeza da cabine com um QR Code por zona. |  |
 |  | 2. O sistema exibe o detalhe com a lista de pontos, cada um marcado como "confirmado" ou "a confirmar", a contagem de confirmados, por exemplo "0 de 6 zonas", e a opção "Ler QR Code". |
 | 3. O Operador de Solo/Rampa seleciona "Ler QR Code". |  |
-|  | 4. O sistema abre a câmera do celular (**E4**). |
+|  | 4. O sistema abre a câmera do celular (**E3**). |
 | 5. O Operador de Solo/Rampa aponta a câmera para o QR Code de um ponto. |  |
-|  | 6. O sistema reconhece o QR Code e verifica que ele pertence a um ponto dessa tarefa e que a tarefa continua "Em execução" e atribuída ao operador (**E1**, **E2**, **E3**, **E5**). |
+|  | 6. O sistema reconhece o QR Code e verifica que ele pertence a um ponto dessa tarefa e que a tarefa continua "Em execução" e atribuída ao operador (**E1**, **E2**, **E4**). |
 |  | 7. O sistema grava a leitura com o usuário e o horário, marca o ponto como "confirmado" e atualiza a contagem, por exemplo "1 de 6 zonas". |
 | 8. O Operador de Solo/Rampa repete os passos 5 a 7 para cada ponto que falta. |  |
 |  | 9. Com todos os pontos confirmados, o sistema exibe "Todos os pontos confirmados" e a opção "Concluir" (UC16). O caso de uso termina. |
@@ -605,56 +605,38 @@
 |  | A2.1. O sistema informa que o ponto já estava confirmado, mantém o registro da primeira leitura e não grava outro. |
 |  | A2.2. O caso de uso volta ao passo 5. |
 
-### Fluxo alternativo A3 – QR Code de outra tarefa dele em execução (passo 6)
+### Fluxo de exceção E1 – QR Code que não é ponto da tarefa aberta (passo 6)
 
-*Condição:* o QR Code é de um ponto de outra tarefa atribuída ao operador, também "Em execução".
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | A3.1. O sistema grava a leitura na tarefa a que o QR Code pertence, com o usuário e o horário, marca o ponto como "confirmado" nessa tarefa e informa em qual tarefa a leitura foi registrada (RF-19). |
-|  | A3.2. O caso de uso volta ao passo 5. |
-
-### Fluxo de exceção E1 – QR Code de tarefa não atribuída ao operador (passo 6)
-
-*Condição:* o QR Code pertence a uma tarefa de outra equipe, ou da mesma equipe atribuída a outro operador.
+*Condição:* o QR Code não corresponde a nenhum ponto da tarefa aberta, por exemplo porque é de outra tarefa, dele ou de outro operador, ou não é de nenhum ponto do turnaround (RN2).
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E1.1. O sistema recusa a leitura, informa que o QR Code não pertence a uma tarefa atribuída a ele e não grava nenhum registro. |
+|  | E1.1. O sistema recusa a leitura, informa que o QR Code não é ponto desta tarefa e não grava nenhum registro. |
 |  | E1.2. O caso de uso volta ao passo 5. |
 
-### Fluxo de exceção E2 – QR Code não reconhecido (passo 6)
+### Fluxo de exceção E2 – Tarefa fora de execução ou reatribuída (passo 6)
 
-*Condição:* o QR Code não corresponde a nenhum ponto cadastrado no turnaround.
-
-| Ações do ator | Ações do sistema |
-|---|---|
-|  | E2.1. O sistema informa que o QR Code não foi reconhecido e não grava nenhum registro. |
-|  | E2.2. O caso de uso volta ao passo 5. |
-
-### Fluxo de exceção E3 – QR Code de tarefa atribuída a ele fora de execução (passo 6)
-
-*Condição:* o QR Code é de uma tarefa atribuída ao operador que está "Pronta" ou "Pausada", por exemplo porque a tarefa foi pausada com a câmera aberta ou o QR Code lido é de outra tarefa dele.
+*Condição:* a tarefa aberta não está mais "Em execução" ou não está mais atribuída ao operador, por exemplo porque foi pausada com a câmera aberta ou reatribuída pelo Coordenador de Turnaround (RF-37).
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E3.1. O sistema recusa a leitura, informa que a tarefa precisa estar em execução e não grava nenhum registro. |
+|  | E2.1. O sistema recusa a leitura, informa que a tarefa precisa estar em execução e atribuída a ele e não grava nenhum registro. |
 
-### Fluxo de exceção E4 – Câmera indisponível (passo 4)
+### Fluxo de exceção E3 – Câmera indisponível (passo 4)
 
 *Condição:* o navegador não tem permissão de usar a câmera, ou o celular não tem câmera disponível.
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E4.1. O sistema informa que a leitura precisa da câmera e como permitir o acesso no navegador, e não grava nenhum registro. |
+|  | E3.1. O sistema informa que a leitura precisa da câmera e como permitir o acesso no navegador, e não grava nenhum registro. |
 
-### Fluxo de exceção E5 – Sem conexão com a internet (passo 6)
+### Fluxo de exceção E4 – Sem conexão com a internet (passo 6)
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E5.1. O sistema guarda a leitura no celular com o horário da ação e exibe o ponto como "confirmado", com a marca "pendente de envio" (RNF-8). |
-|  | E5.2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; a leitura que já não for válida no servidor é recusada sem alterar a tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou, e o ponto volta para "a confirmar". |
-|  | E5.3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
+|  | E4.1. O sistema guarda a leitura no celular com o horário da ação e exibe o ponto como "confirmado", com a marca "pendente de envio" (RNF-8). |
+|  | E4.2. Quando a conexão volta, o sistema envia os registros pendentes em até 5 segundos, na ordem em que foram feitos; a leitura que já não for válida no servidor é recusada sem alterar a tarefa, e o sistema exibe no celular o aviso da recusa, com o motivo, em até 5 segundos depois que a conexão voltou, e o ponto volta para "a confirmar". |
+|  | E4.3. Se a sessão expirou por inatividade enquanto o celular estava sem conexão, o sistema leva o operador à autenticação e só envia os registros pendentes, que continuam guardados no celular, depois que o mesmo operador se autentica de novo; os prazos de 5 segundos do passo 2 contam dessa autenticação, e o servidor confere as permissões atuais do operador antes de aceitar os registros (RNF-8). |
 
 ## UC20 – Registrar marcos do atendimento em solo
 
