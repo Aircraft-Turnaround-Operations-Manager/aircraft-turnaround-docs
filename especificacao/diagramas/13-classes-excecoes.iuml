@@ -231,7 +231,8 @@ namespace excecoes {
     - vooChegada: String
     - vooPartida: String
     - posicao: String
-    - estado: EstadoTurnaround [0..1]
+    - estado: EstadoTurnaround
+    - tobtVigente: DateTime
     - obrigatoriasPendentes: Integer
     - excecoesAbertas: Integer
   }

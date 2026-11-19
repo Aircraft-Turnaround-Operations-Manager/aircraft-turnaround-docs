@@ -276,7 +276,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | 1. A Autoridade de Liberação abre a lista de liberações. |  |
-|  | 2. O sistema exibe os turnarounds da companhia: primeiro os que estão em "Pronto para liberação" e, em seguida, os que ainda não podem ser liberados, cada um com o estado e a quantidade de tarefas obrigatórias pendentes e de exceções abertas. |
+|  | 2. O sistema exibe os turnarounds da companhia com a chegada registrada e ainda não liberados: primeiro os que estão em "Pronto para liberação" e, em seguida, os que ainda não podem ser liberados ("Em solo", "Operações em andamento" ou "Em exceção"), cada um com o estado e a quantidade de tarefas obrigatórias pendentes e de exceções abertas. Em cada grupo, a ordem é a do TOBT vigente, do mais cedo para o mais tarde. O turnaround sai da lista quando é liberado. |
 | 3. A Autoridade de Liberação seleciona um turnaround no estado "Pronto para liberação". |  |
 |  | 4. O sistema exibe as condições da liberação: as tarefas obrigatórias, todas "Concluída" ou "Não aplicável", com o horário de cada uma; a ausência de exceção aberta; e o fim real do atendimento em solo (AEGT) [2]. |
 | 5. A Autoridade de Liberação seleciona "Confirmar prontidão". |  |
