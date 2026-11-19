@@ -118,9 +118,9 @@
 | # | |
 |---|---|
 | 1 | **DADO QUE:** uma tarefa de limpeza atribuída a mim está no estado "Em execução" e tem um QR Code por zona da cabine <br> **QUANDO:** leio o QR Code de uma zona <br> **ENTÃO:** o sistema grava a leitura dessa zona com o meu usuário e o horário e mostra a zona como confirmada na tarefa |
-| 2 | **DADO QUE:** um QR Code pertence a uma tarefa de outra equipe, ou da minha equipe atribuída a outro operador <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema recusa a leitura, informa que o QR Code não pertence a uma tarefa atribuída a mim e não grava nenhum registro |
-| 3 | **DADO QUE:** um QR Code não corresponde a nenhum ponto cadastrado no turnaround <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema informa que o QR Code não foi reconhecido e não grava nenhum registro |
-| 4 | **DADO QUE:** uma tarefa de limpeza atribuída a mim está no estado "Pronta" ou "Pausada" <br> **QUANDO:** leio o QR Code de uma zona dessa tarefa <br> **ENTÃO:** o sistema recusa a leitura, informa que a tarefa precisa estar em execução e não grava nenhum registro |
+| 2 | **DADO QUE:** um QR Code pertence a uma tarefa de outra equipe, ou da minha equipe atribuída a outro operador <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema recusa a leitura, informa que o QR Code não é ponto da tarefa aberta e não grava nenhum registro |
+| 3 | **DADO QUE:** um QR Code não corresponde a nenhum ponto cadastrado no turnaround <br> **QUANDO:** leio esse QR Code <br> **ENTÃO:** o sistema recusa a leitura, informa que o QR Code não é ponto da tarefa aberta e não grava nenhum registro |
+| 4 | **DADO QUE:** estou com a câmera aberta numa tarefa de limpeza, e ela foi pausada ou reatribuída a outro operador <br> **QUANDO:** leio o QR Code de uma zona dessa tarefa <br> **ENTÃO:** o sistema recusa a leitura, informa que a tarefa precisa estar em execução e atribuída a mim e não grava nenhum registro |
 
 ## US020 – REQUISITO RF-20: Registrar marcos do atendimento em solo
 
