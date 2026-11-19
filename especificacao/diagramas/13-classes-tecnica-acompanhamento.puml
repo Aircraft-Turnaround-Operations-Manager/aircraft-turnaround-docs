@@ -5,6 +5,7 @@ monitoramento.CaminhoCriticoRepository -[hidden]down- monitoramento.Painel
 monitoramento.ProjecaoRepository -[hidden]down- monitoramento.LinhaDoTempo
 monitoramento.AtualizacaoTobtMonitoradaRepository -[hidden]down- monitoramento.RelatorioAderencia
 monitoramento.AlertaRepository -[hidden]down- excecoes.RegistroAcaoAlertaView
+restore cadastro
 restore excecoes
 restore monitoramento
 restore monitoramento.PainelView
@@ -33,4 +34,6 @@ restore monitoramento.AlertaRepository
 restore monitoramento.AvisoChecagemRepository
 restore monitoramento.AtualizacaoTobtMonitoradaRepository
 restore excecoes.RegistroAcaoAlertaView
+restore cadastro.UsuarioController
+restore cadastro.EquipeController
 @enduml
