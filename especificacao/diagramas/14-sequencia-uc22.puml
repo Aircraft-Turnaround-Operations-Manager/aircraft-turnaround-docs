@@ -1,0 +1,139 @@
+@startuml
+' UC22 – Acompanhar painel dos turnarounds (RF-25, US025; ADR-0015; ADR-0016, ponto 3: GraphQL no painel e WebSocket).
+' Classes e métodos do item 13 (13-classes-monitoramento.iuml); tabelas do item 12 (Apêndice B.3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc22.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CT
+boundary "PainelView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Monitoramento" #FAFAFA
+  control "PainelResolver" as R <<resolver>>
+  participant "PainelService" as PS <<service>>
+  entity "TurnaroundMonitorado" as TM
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "ProjecaoRepository" as PR <<repository>>
+  participant "AlertaRepository" as AR <<repository>>
+  database "BancoMonitoramento" as DB
+  participant "RecalculoService" as RS <<service>>
+  participant "CopiaService" as CS <<service>>
+  participant "PainelNotificador" as N <<websocket>>
+end box
+
+== Passos 1 e 2: abrir o painel ==
+CT -> V : abrir()
+activate V
+V -> G : encaminhar(sessaoId, rota = "POST /v1/graphql { painel }", corpo, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+opt E2: sessão expirada
+  G --> V : 401 sessão expirada
+  V --> CT : tela de autenticação (UC01); depois dela, volta ao passo 2
+end
+G -> R : painel(acesso)
+activate R
+R -> PS : montarPainel()
+activate PS
+PS -> TR : listarAbertos()
+activate TR
+TR -> DB : SELECT turnaround_monitorado\nWHERE aobt IS NULL (inclui os sem AIBT; RN1)
+TR --> PS : turnarounds abertos
+deactivate TR
+PS -> AR : listarAbertos()
+activate AR
+AR -> DB : SELECT alerta WHERE encerrado_em IS NULL
+AR --> PS : alertas abertos (com "critico")
+deactivate AR
+loop para cada turnaround aberto
+  PS -> PR : buscarUltima(turnaroundId)
+  activate PR
+  PR -> DB : SELECT projecao\nORDER BY calculada_em DESC (a última)
+  PR --> PS : projeção, desvio do TOBT planejado e do vigente
+  deactivate PR
+  PS -> TM : corDoRisco(projecao, alertaCriticoAberto)
+  activate TM
+  TM --> PS : Verde, Amarela ou Vermelha (RN3)
+  deactivate TM
+end
+note right of PS
+  RN4: ordena pela maior diferença em relação ao
+  TOBT planejado; no empate, o TOBT planejado mais cedo.
+  RN7: resumo por cor e alertas abertos e críticos.
+  Turnaround sem projeção (antes do plano) fica
+  sem projeção, diferença e cor.
+end note
+PS --> R : Painel (resumo e linhas)
+deactivate PS
+R --> G : 200 Painel
+deactivate R
+G --> V : 200 Painel
+deactivate G
+alt A5: nenhum turnaround aberto
+  V --> CT : "Nenhum turnaround aberto" e resumo com zero em todas as cores
+else há turnarounds abertos
+  V --> CT : resumo por cor e lista ordenada: aeronave, posição, estado (ou EIBT, sem AIBT),\nTOBT planejado e vigente, projeção, diferença, cor e alertas abertos (RN1 a RN4)
+end
+
+== Passos 3 a 5: acompanhar em tempo real (RN5, RN6) ==
+ref over RS : UC24 – Recalcular projeção, atraso e caminho crítico (passo 4)
+RS -> PS : montarLinha(turnaroundId)
+activate PS
+PS -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround_monitorado
+TR --> PS : turnaround
+deactivate TR
+PS -> PR : buscarUltima(turnaroundId)
+activate PR
+PR -> DB : SELECT projecao (a última)
+PR --> PS : projeção
+deactivate PR
+PS --> RS : LinhaPainel
+deactivate PS
+RS -> N : notificarLinha(linha)
+activate N
+N -> V : atualizarLinha(linha)
+deactivate N
+V --> CT : nova projeção, diferença, cor e posição na lista,\nem até 5 s e sem recarregar a página
+
+opt A3: alerta crítico em turnaround amarelo
+  ref over RS, N : UC25 – Emitir alertas de risco ao horário (o alerta gravado monta a linha de novo)
+  N -> V : exibirAvisoAlerta(alerta)
+  N -> V : atualizarLinha(linha)
+  V --> CT : turnaround em vermelho e +1 alerta aberto,\nsem recarregar a página (US025, critério 2)
+end
+
+opt A4: turnaround passa para "Fora de bloco"
+  ref over CS : aviso de estado do turnaround da Execução em Solo (UC37),\nconsumido pelo ConsumidorAvisosMonitoramento
+  CS -> TM : aplicarEstado(estado = "Fora de bloco", momento)
+  activate TM
+  TM --> CS : ok
+  deactivate TM
+  CS -> TR : salvar(turnaround)
+  activate TR
+  TR -> DB : UPDATE turnaround_monitorado SET estado, aobt
+  TR --> CS : ok
+  deactivate TR
+  CS -> N : retirarLinha(turnaroundId)
+  activate N
+  N -> V : retirarLinha(turnaroundId)
+  deactivate N
+  V --> CT : turnaround fora da lista e resumo atualizado (US025, critério 3)
+end
+
+opt A1: Coordenador de Turnaround seleciona um turnaround da lista («extend»)
+  ref over CT, V, R : UC23 – Consultar linha do tempo do turnaround\n(ao voltar ao painel, segue do passo 3)
+end
+
+opt A2: Coordenador de Turnaround seleciona a quantidade de alertas abertos
+  ref over CT, V, R : UC26 – Consultar lista de alertas abertos
+end
+
+opt E1: sem conexão com a internet
+  V --> CT : última lista recebida, com "Sem conexão" e o horário da última atualização
+  note over V : ao voltar a conexão, a tela repete os passos 1 e 2\ncom acaoDoUsuario = não (consulta automática; RNF-5)
+end
+
+note over CT, V : Passo 6: o caso de uso termina quando o Coordenador de Turnaround sai do painel.
+deactivate V
+@enduml
