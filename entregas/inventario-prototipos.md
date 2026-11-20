@@ -85,6 +85,8 @@ Observações de origem:
 | D-2 | uc-d4-confirmar-prontidao (UC32) | "Tarefas obrigatórias" com 13 linhas: inclui "Troca de mantas · Não aplicável" na coluna da direita (2ª linha), e a ordem da coluna da direita muda a partir dela. | 12 linhas, sem "Troca de mantas". O cabeçalho "12 de 12 … 1 não aplicável (Troca de mantas…)" é igual nos dois. |
 | D-3 | uc-c2-linha-do-tempo (UC23), v1 × v2 | v2 (no PDF): a faixa dos marcos termina em "Marcos registrados". | v1 (fora do PDF): termina em "gravados pelo Motor de Eventos". Nenhuma das duas está no Figma; outras diferenças pequenas ficam para a reconstrução. |
 
+**Decisão do Rodrigo (20/11/2026):** nas divergências D-1, D-2 e D-3, o PNG é a fonte da verdade. As melhorias provavelmente foram feitas direto nos PNGs, sem passar pelo Figma. O canvas segue o PNG nessas telas (e, na D-3, a v2, que é a do PDF).
+
 ## 3. Frames do Figma que não aparecem no PDF
 
 Página "Céu":
