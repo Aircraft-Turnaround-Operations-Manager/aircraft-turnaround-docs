@@ -82,7 +82,7 @@ Observações de origem:
 | # | Tela | PNG (PDF) | Figma |
 |---|---|---|---|
 | D-1 | uc-b7-marcos-do-turnaround (UC20) | Logo da barra lateral: "Aircraft Turnaround Orchestration System", em três linhas. | "Aircraft Turnaround", em uma linha. Resto idêntico. |
-| D-2 | uc-d4-confirmar-prontidao (UC32) | "Tarefas obrigatórias" com 13 linhas: inclui "Troca de mantas · Não aplicável" na coluna da direita (2ª linha), e a ordem da coluna da direita muda a partir dela. | 12 linhas, sem "Troca de mantas". O cabeçalho "12 de 12 … 1 não aplicável (Troca de mantas…)" é igual nos dois. |
+| D-2 | uc-d4-confirmar-prontidao (UC32) | "Tarefas obrigatórias" com 12 linhas; na coluna da direita, a 2ª linha é "Troca de mantas", com o selo "Não aplicável" e um traço no lugar do visto. | 12 linhas; no mesmo lugar está "Água potável e lavatório 13:41", que não aparece no PNG. O resto da lista e o cabeçalho "12 de 12 … 11 concluídas · 1 não aplicável (Troca de mantas…)" são iguais nos dois. Conferido por regiões no tamanho nativo do PNG (1586 × 992): é a única diferença. |
 | D-3 | uc-c2-linha-do-tempo (UC23), v1 × v2 | v2 (no PDF): a faixa dos marcos termina em "Marcos registrados". | v1 (fora do PDF): termina em "gravados pelo Motor de Eventos". Nenhuma das duas está no Figma; outras diferenças pequenas ficam para a reconstrução. |
 
 **Decisão do Rodrigo (20/11/2026):** nas divergências D-1, D-2 e D-3, o PNG é a fonte da verdade. As melhorias provavelmente foram feitas direto nos PNGs, sem passar pelo Figma. O canvas segue o PNG nessas telas (e, na D-3, a v2, que é a do PDF).
