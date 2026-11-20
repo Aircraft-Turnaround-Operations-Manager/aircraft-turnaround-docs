@@ -3,7 +3,8 @@
 ' (UC25) e o AvisoChecagemService (UC27), acionados por aviso ou pelo AgendadorMinuto. Os painéis (UC22 e UC23) são
 ' consultados por GraphQL e atualizados por WebSocket (ADR-0016, ponto 3); as demais telas usam REST.
 ' Gravação pelo todo: TurnaroundMonitoradoRepository.salvar grava a cópia das tarefas; o recálculo e a aplicação de
-' um aviso travam a linha do turnaround (buscarComTrava). Toda mudança que o coordenador vê (recálculo, alerta,
+' um aviso travam a linha do turnaround (buscarComTrava). A entrada em "Pronto para liberação" encerra sem autor o aviso de
+' checagem aberto (CopiaService.aplicarEstado → AvisoChecagemService.encerrarPorProntidao; UC27 RN8). Toda mudança que o coordenador vê (recálculo, alerta,
 ' cópia de estado, marco ou previsão, aviso de checagem) monta a linha de novo e a envia pelo PainelNotificador.
 
 namespace monitoramento {
@@ -189,6 +190,7 @@ namespace monitoramento {
     - autorChecagemId: UUID [0..1]
     + estaEncerrado(): Boolean
     + registrarChecagem(autorId: UUID, momento: DateTime): void
+    + encerrarSemChecagem(momento: DateTime): void
   }
 
   class AtualizacaoTobtMonitorada <<entity>> {
@@ -387,6 +389,7 @@ namespace monitoramento {
     + emitirDevidos(momento: DateTime): void
     + listarAbertos(): List<AvisoChecagem>
     + registrarChecagem(avisoId: UUID, autorId: UUID): AvisoChecagem
+    + encerrarPorProntidao(turnaroundId: UUID, momento: DateTime): void
   }
 
   class IndicadorService <<service>> {
@@ -404,6 +407,7 @@ namespace monitoramento {
     - atualizacoes: AtualizacaoTobtMonitoradaRepository
     - recalculo: RecalculoService
     - alertas: AlertaService
+    - checagens: AvisoChecagemService
     - painel: PainelService
     - notificador: PainelNotificador
     + aplicarTurnaroundAberto(turnaround: TurnaroundMonitorado): void
@@ -547,6 +551,7 @@ namespace monitoramento {
   monitoramento.CopiaService --> monitoramento.AtualizacaoTobtMonitoradaRepository
   monitoramento.CopiaService --> monitoramento.RecalculoService
   monitoramento.CopiaService --> monitoramento.AlertaService
+  monitoramento.CopiaService --> monitoramento.AvisoChecagemService
   monitoramento.CopiaService --> monitoramento.PainelService
   monitoramento.CopiaService --> monitoramento.PainelNotificador
   monitoramento.RotinaAnonimizacaoMonitoramento --> monitoramento.TurnaroundMonitoradoRepository

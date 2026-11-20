@@ -116,13 +116,13 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC19 | — |
 | UC20 | — |
 | UC21 | — |
-| UC22 | — |
-| UC23 | — |
-| UC24 | — |
-| UC25 | — |
-| UC26 | — |
-| UC27 | — |
-| UC28 | — |
+| UC22 | 14-sequencia-uc22.png |
+| UC23 | 14-sequencia-uc23.png |
+| UC24 | 14-sequencia-uc24.png, 14-sequencia-uc24_001.png |
+| UC25 | 14-sequencia-uc25.png, 14-sequencia-uc25_001.png |
+| UC26 | 14-sequencia-uc26.png |
+| UC27 | 14-sequencia-uc27.png |
+| UC28 | 14-sequencia-uc28.png |
 | UC29 | — |
 | UC30 | — |
 | UC31 | — |
@@ -323,6 +323,36 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.6 Lacunas encontradas
 
+- UC01 sem diagrama de sequência (item 14)
+- UC02 sem diagrama de sequência (item 14)
+- UC03 sem diagrama de sequência (item 14)
+- UC04 sem diagrama de sequência (item 14)
+- UC05 sem diagrama de sequência (item 14)
+- UC06 sem diagrama de sequência (item 14)
+- UC07 sem diagrama de sequência (item 14)
+- UC08 sem diagrama de sequência (item 14)
+- UC09 sem diagrama de sequência (item 14)
+- UC10 sem diagrama de sequência (item 14)
+- UC11 sem diagrama de sequência (item 14)
+- UC12 sem diagrama de sequência (item 14)
+- UC13 sem diagrama de sequência (item 14)
+- UC14 sem diagrama de sequência (item 14)
+- UC15 sem diagrama de sequência (item 14)
+- UC16 sem diagrama de sequência (item 14)
+- UC17 sem diagrama de sequência (item 14)
+- UC18 sem diagrama de sequência (item 14)
+- UC19 sem diagrama de sequência (item 14)
+- UC20 sem diagrama de sequência (item 14)
+- UC21 sem diagrama de sequência (item 14)
+- UC29 sem diagrama de sequência (item 14)
+- UC30 sem diagrama de sequência (item 14)
+- UC31 sem diagrama de sequência (item 14)
+- UC32 sem diagrama de sequência (item 14)
+- UC33 sem diagrama de sequência (item 14)
+- UC34 sem diagrama de sequência (item 14)
+- UC35 sem diagrama de sequência (item 14)
+- UC36 sem diagrama de sequência (item 14)
+- UC37 sem diagrama de sequência (item 14)
 - US012-CA1 sem caso de teste (item 15)
 - US012-CA2 sem caso de teste (item 15)
 - US012-CA3 sem caso de teste (item 15)

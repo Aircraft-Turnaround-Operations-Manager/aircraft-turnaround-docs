@@ -1,0 +1,167 @@
+@startuml
+' UC25 – Emitir alertas de risco ao horário (RF-27 a RF-31, US027 a US031; incluído pelo UC24).
+' O Motor de Eventos é o comportamento automático do AlertaService (item 13, seção 13.1), acionado pelo recálculo (UC24),
+' por aviso de previsão ou de TOBT vigente, ou pelo AgendadorMinuto nos gatilhos por horário (ADR-0015, regra 7; RNF-12).
+' Tabelas do item 12 (B.3.8 alerta e B.3.9 alerta_tarefa). Imagens: python scripts/exportar_plantuml.py <este arquivo>
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+boundary "PainelView" as PV
+boundary "ListaAlertasView" as LV
+queue "RabbitMQ" as MQ
+box "Monitoramento" #FAFAFA
+  participant "ConsumidorAvisosMonitoramento" as CO <<consumer>>
+  participant "AgendadorMinuto" as AG <<scheduler>>
+  participant "CopiaService" as CS <<service>>
+  participant "RecalculoService" as RS <<service>>
+  participant "AlertaService" as AS <<service>>
+  entity "Projecao" as PJ
+  entity "CaminhoCritico" as CC
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "AlertaRepository" as AR <<repository>>
+  participant "CaminhoCriticoRepository" as CR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PainelService" as PS <<service>>
+  database "BancoMonitoramento" as DB
+  participant "PainelNotificador" as N <<websocket>>
+end box
+
+== Passos 1 e 2: verificar os gatilhos ==
+alt fluxo básico (RN3, viabilidade): alteração do EIBT ou do MTTT (UC10), abertura (UC03) ou TOBT vigente novo (UC34)
+  ME -> MQ : consumir(fila = "monitoramento")
+  MQ --> ME : aviso de previsão atualizada (Cadastro e Planejamento)\nou de TOBT vigente atualizado (Exceções e Liberação)
+  ME -> CO : tratar(envelope)
+  activate CO
+  CO -> CS : aplicarPrevisao(turnaroundId, eibt, mtttMin)
+  activate CS
+  note right of CS : na abertura, aplicarTurnaroundAberto(turnaround);\nno TOBT novo, aplicarTobtVigente(atualizacao):\nas duas também chamam verificarViabilidade
+  CS -> AS : verificarViabilidade(turnaroundId, momento)
+  activate AS
+  AS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado (com trava)
+  TR --> AS : AIBT, EIBT, MTTT e TOBT vigente
+  deactivate TR
+  alt US029-CA3: AIBT já registrado
+    AS --> CS : não verifica a viabilidade
+  else A5: EIBT + MTTT igual ou antes do TOBT vigente (ex.: 09:40 + 45 min = 10:25 ≤ 10:30)
+    AS --> CS : nenhum gatilho atendido; não emite alerta
+  else EIBT + MTTT depois do TOBT vigente (ex.: 10:40 + 40 min = 11:20 > 11:15)
+    ref over AS, N : Passos 3 a 5: emitir o alerta "Viabilidade" (abaixo)
+    AS --> CS : alerta emitido
+  end
+  deactivate AS
+  deactivate CS
+  deactivate CO
+else A1 (RN2): recálculo da projeção (UC24, passo 7)
+  RS -> AS : verificarGatilhos(turnaround, projecao, anterior, momento)
+  activate AS
+  AS -> PJ : alemDaTolerancia(toleranciaMin = 5)
+  activate PJ
+  PJ --> AS : projeção nova além de TOBT planejado + 5? (minutos completos)
+  deactivate PJ
+  AS -> PJ : alemDaTolerancia(toleranciaMin = 5)
+  activate PJ
+  PJ --> AS : a projeção anterior estava além? (rearme: só emite quando passa do limite)
+  deactivate PJ
+  alt a projeção passou de TOBT + 5 (ex.: 10:35 → 10:36, TOBT planejado 10:30)
+    ref over AS, N : Passos 3 a 5: emitir o alerta "Projeção além de TOBT + 5", com a\nprojeção, o desvio e as tarefas do caminho crítico com atraso (A1.1)
+  else A5 ou E1: continua até TOBT + 5 (ex.: PR-GTA 10:50 com TOBT 10:45) ou continua além desde o último alerta
+    AS --> RS : não emite
+  end
+  deactivate AS
+else A2, A3, A4 e A6: gatilhos por horário (RNF-12)
+  ME -> AG : executar(momento)
+  activate AG
+  AG -> AS : verificarHorarios(momento)
+  activate AS
+  AS -> TR : listarAbertos()
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada WHERE aobt IS NULL
+  TR --> AS : turnarounds abertos, com tarefas, ASBT, ARDT e TOBT vigente
+  deactivate TR
+  loop para cada turnaround aberto e cada gatilho
+    alt A2 (RN1): tarefa "Pronta" sem início há mais de Y min, contados do mais tarde entre pronta_em e o início planejado
+      ref over AS, N : Passos 3 a 5: alerta "Tarefa pronta não iniciada", com a tarefa,\na equipe, o responsável e os minutos de espera (A2.1)
+    else A3 (RN4): ASBT sem registro em TOBT vigente − X
+      ref over AS, N : Passos 3 a 5: alerta "Embarque não iniciado", com o TOBT vigente e o estado\ndo embarque e das predecessoras (alerta_tarefa) (A3.1)
+    else A4 (RN5): ARDT sem registro em TOBT vigente + 5, em minutos completos (10:36:00 para TOBT 10:30)
+      ref over AS, N : Passos 3 a 5: alerta "Prontidão não registrada", com o TOBT vigente, o estado do\nturnaround e as obrigatórias não concluídas (alerta_tarefa) (A4.1)
+    else E2: o registro que desfaz o gatilho chegou antes do limite (ex.: ASBT 10:08, limite 10:10)
+      AS --> AG : não emite (US030, critério 2)
+    end
+  end
+  deactivate AS
+  deactivate AG
+end
+
+newpage
+
+== Passos 3 a 5: emitir um alerta (para cada gatilho atendido) ==
+activate AS
+AS -> AR : buscarAberto(turnaroundId, tipo, tarefaId)
+activate AR
+AR -> DB : SELECT alerta WHERE turnaround_id, tipo, tarefa_id\nAND encerrado_em IS NULL
+AR --> AS : alerta aberto ou nenhum
+deactivate AR
+AS -> AR : buscarUltimo(turnaroundId, tipo, tarefaId)
+activate AR
+AR -> DB : SELECT alerta WHERE turnaround_id, tipo, tarefa_id\nORDER BY ciclo DESC (o último)
+AR --> AS : último alerta (ciclo, TOBT vigente e projeção na emissão, ação)
+deactivate AR
+alt E1: há alerta aberto do mesmo tipo, ou a ação do último já foi registrada sem fato novo (RN9)
+  AS --> AS : não emite outro alerta; o caso de uso termina
+else A6 (RN9): a ação do último foi registrada e houve fato novo
+  note right of AS
+    Rearme: RN1, a tarefa saiu de "Pronta" e voltou (pronta_em mais novo);
+    RN2, a projeção voltou para até TOBT + 5 e passou outra vez; RN3, nova
+    alteração do EIBT, do MTTT ou do TOBT vigente; RN4 e RN5, o TOBT vigente
+    mudou e o registro continua faltando no novo limite (ex.: TOBT 10:30 → 10:45
+    às 10:37: embarque na hora, porque 10:25 já passou; prontidão às 10:51:00).
+    O novo alerta tem o ciclo seguinte.
+  end note
+else primeiro alerta do tipo para o turnaround e a tarefa
+  AS --> AS : ciclo = 1
+end
+AS -> AS : classificarCritico(alerta, caminho)
+activate AS
+AS -> CR : buscarAtual(turnaroundId)
+activate CR
+CR -> DB : SELECT caminho_critico, caminho_critico_tarefa (o atual)
+CR --> AS : caminho crítico
+deactivate CR
+AS -> CC : contem(tarefa)
+activate CC
+CC --> AS : a tarefa do alerta está no caminho crítico?
+deactivate CC
+note right of AS : RN7: RN2 a RN5 são sempre críticos; RN1 é crítico só com\na tarefa no caminho crítico (PR-OKV limpeza: crítico;\nPR-GTA carregamento: não crítico)
+deactivate AS
+AS -> AR : salvar(alerta)
+activate AR
+AR -> DB : INSERT alerta (tipo, tarefa_id, critico, ciclo, emitido_em, minutos_espera,\nprojecao_id, eibt, mttt_min, tobt_vigente, estado_turnaround);\nINSERT alerta_tarefa (tarefas citadas, com o estado e os atrasos na emissão)
+AR --> AS : ok (passo 4)
+deactivate AR
+AS -> AU : registrarAutomatico(objeto = "alerta", objetoId, acao = "Inclusão", causaId, gatilho, turnaroundId, valoresAnteriores = vazio, valoresNovos = alerta)
+activate AU
+AU -> DB : INSERT registro_auditoria (autor_tipo = Motor de Eventos;\ngatilho = TOBT − X ou TOBT + 5 nos gatilhos por horário)
+AU --> AS : ok
+deactivate AU
+AS -> PS : montarLinha(turnaroundId)
+activate PS
+PS --> AS : LinhaPainel (cor vermelha com alerta crítico aberto)
+deactivate PS
+AS -> N : notificarAlerta(alerta)
+activate N
+N -> PV : exibirAvisoAlerta(alerta)
+N -> LV : incluirAlerta(alerta)
+deactivate N
+AS -> N : notificarLinha(linha)
+activate N
+N -> PV : atualizarLinha(linha)
+deactivate N
+note over PV, LV : Passo 5 e RN8: aviso sobre a tela, alerta na lista (UC26)\ne turnaround em vermelho no painel (UC22), em até 5 s
+opt E3: Coordenador de Turnaround sem conexão
+  note over PV, LV : o alerta fica gravado e aberto, e o tempo decorrido conta da emissão;\nquando a conexão volta, a lista e o painel são recarregados e o mostram
+end
+deactivate AS
+@enduml
