@@ -9,11 +9,11 @@ decisor: Rodrigo Alves
 itens_template: [6, 7, 8, 9, 10]
 areas: [A, B, C, D]
 fontes: []
-relacionados: [insumos-rfs, insumos-rnfs, adr-0010]
+relacionados: [insumos-rfs, insumos-rnfs, adr-0010, adr-0022]
 ---
 # ADR-0011 — Mínimo de 4 por integrante, sem máximo; numeração provisória por área
 
-- **Status:** aceita · **Data:** 05/10/2026 · **Decisor:** Rodrigo Alves
+- **Status:** aceita, complementada por [ADR-0022](0022-ids-provisorios-dos-casos-de-teste.md) (a mesma regra para os casos de teste do item 15) · **Data:** 05/10/2026 · **Decisor:** Rodrigo Alves
 
 ## Contexto
 
@@ -58,5 +58,5 @@ relacionados: [insumos-rfs, insumos-rnfs, adr-0010]
 - **Pesquisa:** [insumos-rfs](../../pesquisa/impacto/insumos-rfs.md), [insumos-rnfs](../../pesquisa/impacto/insumos-rnfs.md)
 - **Itens da especificação:** [Item 6 — Requisitos Funcionais](../../especificacao/06-requisitos-funcionais/00-item.md), [Item 7 — Estórias de Usuário](../../especificacao/07-estorias-de-usuario/00-item.md), [Item 8 — Requisitos Não Funcionais](../../especificacao/08-requisitos-nao-funcionais/00-item.md), [Item 9 — Diagrama Geral de Casos de Uso](../../especificacao/09-diagrama-geral-de-casos-de-uso.md), [Item 10 — Especificações de Caso de Uso](../../especificacao/10-especificacoes-de-caso-de-uso/00-item.md)
 - **Plano e critérios:** [ra1-tarefas](../../entregas/ra1-tarefas.md), [ra1-criterios-de-aceite](../../entregas/ra1-criterios-de-aceite.md)
-- **Outras decisões:** [D10](0010-administrador-usuario-e-equipe-do-operador.md)
+- **Outras decisões:** [D10](0010-administrador-usuario-e-equipe-do-operador.md), [D22](0022-ids-provisorios-dos-casos-de-teste.md) (complementa esta)
 - **Índice das decisões:** [README.md](README.md) · **Contexto geral:** [CONTEXT.md](../../CONTEXT.md)

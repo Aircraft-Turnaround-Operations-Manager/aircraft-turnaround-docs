@@ -1,0 +1,681 @@
+' Item 13 (T13, issue #145) — serviço Cadastro e Planejamento (ADR-0015): classes de negócio das 15 tabelas do
+' Apêndice B.1 e classes técnicas dos casos de uso UC01 a UC11. Fonte única; as vistas 13-classes-*.puml incluem este
+' arquivo. Dentro do serviço, a referência é pelo tipo; para outro serviço, pelo identificador (UUID), sem classe.
+' Confirmação do plano (ADR-0023, ponto 5): o Cadastro trava o plano (buscarComTrava), grava o envio como "Confirmação
+' pendente", com a chave e o conteúdo, e só então chama a Execução em Solo (receberPlano). Com a resposta positiva, aplica o
+' conteúdo e marca "Confirmado"; com a recusa, descarta o envio e o plano fica como estava. Num plano confirmado, toda
+' mudança (aplicar modelo, responsáveis, dependências) segue o mesmo caminho, e a Execução em Solo recusa depois do primeiro
+' início (ADR-0015, regra 5). Depois de uma queda, a RetomadaConfirmacaoPlano reenvia com a mesma chave. A entrada pela classe de negócio ignora identificador, autor,
+' horários e senhaHash, que o servidor define.
+
+namespace cadastro {
+
+  ' ---------- negócio ----------
+
+  class Equipe <<entity>> {
+    - id: UUID
+    - codigo: String
+    - nome: String
+    - ativa: Boolean
+    + renomear(nome: String): void
+    + desativar(): void
+  }
+
+  class Companhia <<entity>> {
+    - id: UUID
+    - nome: String
+  }
+
+  class Usuario <<entity>> {
+    - id: UUID
+    - identificadorAcesso: String
+    - nome: String
+    - senhaHash: String [0..1]
+    - perfil: Perfil
+    - equipe: Equipe [0..1]
+    - companhia: Companhia [0..1]
+    - desativadoEm: DateTime [0..1]
+    - bloqueadoAte: DateTime [0..1]
+    - anonimizadoEm: DateTime [0..1]
+    + estaAtivo(): Boolean
+    + estaBloqueado(momento: DateTime): Boolean
+    + conferirSenha(senha: String): Boolean
+    + definirSenha(senha: String): void
+    + bloquear(ate: DateTime): void
+    + desativar(momento: DateTime): void
+    + anonimizar(momento: DateTime): void
+  }
+
+  class FalhaLogin <<entity>> {
+    - id: UUID
+    - usuario: Usuario
+    - ocorridaEm: DateTime
+  }
+
+  class Sessao <<entity>> {
+    - id: UUID
+    - usuario: Usuario
+    - iniciadaEm: DateTime
+    - ultimaAcaoEm: DateTime
+    - encerradaEm: DateTime [0..1]
+    + estaAberta(momento: DateTime, inatividadeMin: Integer): Boolean
+    + renovar(momento: DateTime): void
+    + encerrar(momento: DateTime): void
+  }
+
+  class PoliticaAbastecimento <<entity>> {
+    - id: UUID
+    - companhia: Companhia
+    - versao: Integer
+    - permiteComPassageiros: Boolean
+    - registradaEm: DateTime
+    - autor: Usuario
+  }
+
+  class ModeloTarefa <<entity>> {
+    - id: UUID
+    - nome: String
+    - tipoAeronave: String
+    - tipoServico: String
+    - comPassageiros: Boolean
+    - tarefas: List<TarefaModelo>
+    + compativelCom(tipoAeronave: String, tipoServico: String): Boolean
+    + contarEmbarques(): Integer
+  }
+
+  class TarefaModelo <<entity>> {
+    - id: UUID
+    - nome: String
+    - tipoAtividade: String
+    - equipe: Equipe
+    - duracaoPlanejadaMin: Integer
+    - obrigatoria: Boolean
+    - permiteNaoAplicavel: Boolean
+    - sobDemanda: Boolean
+    - predecessoras: List<TarefaModelo>
+    - pontos: List<PontoConfirmacaoModelo>
+    + definirPredecessoras(predecessoras: List<TarefaModelo>): void
+    + definirPontos(pontos: List<PontoConfirmacaoModelo>): void
+  }
+
+  class PontoConfirmacaoModelo <<entity>> {
+    - id: UUID
+    - identificador: String
+    - nome: String
+  }
+
+  class Turnaround <<entity>> {
+    - id: UUID
+    - companhia: Companhia
+    - vooChegada: String
+    - dataVooChegada: Date
+    - vooPartida: String
+    - dataVooPartida: Date
+    - tipoAeronave: String
+    - matricula: String
+    - tipoServico: String
+    - posicao: String
+    - sibt: DateTime
+    - sobt: DateTime
+    - eibt: DateTime
+    - tobtPlanejado: DateTime
+    - mtttMin: Integer
+    - criadoPor: Usuario
+    - criadoEm: DateTime
+    - aobt: DateTime [0..1]
+    - usuariosVinculados: List<Usuario>
+    + atualizarPrevisao(eibt: DateTime, mtttMin: Integer): void
+    + aplicarEncerramento(aobt: DateTime, usuarios: List<Usuario>): void
+  }
+
+  class Plano <<entity>> {
+    - id: UUID
+    - turnaround: Turnaround
+    - modelo: ModeloTarefa
+    - politica: PoliticaAbastecimento [0..1]
+    - confirmadoEm: DateTime [0..1]
+    - confirmadoPor: Usuario [0..1]
+    - situacao: SituacaoPlano
+    - chaveConfirmacao: UUID [0..1]
+    - envioPendente: String [0..1]
+    - tarefas: List<TarefaPlano>
+    + estaConfirmado(): Boolean
+    + aceitaEdicao(): Boolean
+    + permiteComPassageiros(): Boolean
+    + tarefasSemResponsavel(): List<TarefaPlano>
+    + iniciarConfirmacao(chave: UUID, conteudo: String): void
+    + confirmar(autor: Usuario, momento: DateTime): void
+    + desfazerConfirmacao(): void
+  }
+
+  ' "Em edição" até a primeira confirmação; "Confirmação pendente" entre o envio e a resposta (ADR-0023, ponto 5).
+  enum SituacaoPlano <<enumeration>> {
+    Em edição
+    Confirmação pendente
+    Confirmado
+  }
+
+  class TarefaPlano <<entity>> {
+    - id: UUID
+    - tarefaModelo: TarefaModelo
+    - nome: String
+    - tipoAtividade: String
+    - equipe: Equipe
+    - responsavel: Usuario [0..1]
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - obrigatoria: Boolean
+    - permiteNaoAplicavel: Boolean
+    - sobDemanda: Boolean
+    - acionada: Boolean
+    - predecessoras: List<TarefaPlano>
+    - pontos: List<PontoConfirmacaoPlano>
+    + atribuir(responsavel: Usuario, inicio: DateTime, fim: DateTime): void
+    + definirObrigatoria(obrigatoria: Boolean): void
+    + acionar(): void
+    + definirPredecessoras(predecessoras: List<TarefaPlano>): void
+    + fazParteDoPlano(): Boolean
+  }
+
+  class PontoConfirmacaoPlano <<entity>> {
+    - id: UUID
+    - identificador: String
+    - nome: String
+  }
+
+  cadastro.Equipe "0..1" o-- "*" cadastro.Usuario : equipe
+  cadastro.Companhia "0..1" <-- "*" cadastro.Usuario : companhia
+  cadastro.FalhaLogin "*" --> "1" cadastro.Usuario : usuario
+  cadastro.Sessao "*" --> "1" cadastro.Usuario : usuario
+  cadastro.PoliticaAbastecimento "*" --> "1" cadastro.Companhia : companhia
+  cadastro.PoliticaAbastecimento "*" --> "1" cadastro.Usuario : autor
+  cadastro.ModeloTarefa "1" *-- "1..*" cadastro.TarefaModelo : tarefas
+  cadastro.TarefaModelo "*" --> "1" cadastro.Equipe : equipe
+  cadastro.TarefaModelo "*" --> "*" cadastro.TarefaModelo : predecessoras
+  cadastro.TarefaModelo "1" *-- "*" cadastro.PontoConfirmacaoModelo : pontos
+  cadastro.Turnaround "*" --> "1" cadastro.Companhia : companhia
+  cadastro.Turnaround "*" --> "1" cadastro.Usuario : criadoPor
+  cadastro.Turnaround "*" --> "*" cadastro.Usuario : usuariosVinculados
+  cadastro.Plano "0..1" --> "1" cadastro.Turnaround : turnaround
+  cadastro.Plano "*" --> "1" cadastro.ModeloTarefa : modelo
+  cadastro.Plano "*" --> "0..1" cadastro.PoliticaAbastecimento : politica
+  cadastro.Plano "*" --> "0..1" cadastro.Usuario : confirmadoPor
+  cadastro.Plano "1" *-- "1..*" cadastro.TarefaPlano : tarefas
+  cadastro.TarefaPlano "*" --> "1" cadastro.TarefaModelo : tarefaModelo
+  cadastro.TarefaPlano "*" --> "1" cadastro.Equipe : equipe
+  cadastro.TarefaPlano "*" --> "0..1" cadastro.Usuario : responsavel
+  cadastro.TarefaPlano "*" --> "*" cadastro.TarefaPlano : predecessoras
+  cadastro.TarefaPlano "1" *-- "*" cadastro.PontoConfirmacaoPlano : pontos
+
+  ' ---------- interface (telas do site, Angular) ----------
+
+  class AutenticacaoView <<boundary>> {
+    + abrir(): void
+    + entrar(identificadorAcesso: String, senha: String): void
+    + sair(): void
+  }
+
+  class UsuarioView <<boundary>> {
+    + abrir(): void
+    + abrirUsuario(usuarioId: UUID): void
+    + salvarUsuario(dados: Usuario, senhaInicial: String): void
+    + desativarUsuario(usuarioId: UUID): void
+  }
+
+  class EquipeView <<boundary>> {
+    + abrir(): void
+    + salvarEquipe(dados: Equipe): void
+    + desativarEquipe(equipeId: UUID): void
+  }
+
+  class TurnaroundView <<boundary>> {
+    + abrir(): void
+    + abrirPrevisao(turnaroundId: UUID): void
+    + salvarTurnaround(dados: Turnaround): void
+    + salvarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
+  }
+
+  class ModeloTarefaView <<boundary>> {
+    + abrir(): void
+    + abrirModelo(modeloId: UUID): void
+    + abrirTarefa(modeloId: UUID, tarefaModeloId: UUID): void
+    + salvarModelo(dados: ModeloTarefa): void
+    + salvarAlteracao(modeloId: UUID, dados: ModeloTarefa): void
+    + salvarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>): void
+    + salvarDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>): void
+  }
+
+  class PlanoView <<boundary>> {
+    + abrir(turnaroundId: UUID): void
+    + abrirAplicarModelo(turnaroundId: UUID): void
+    + selecionarModelo(modeloId: UUID): void
+    + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean): void
+    + salvarDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>): void
+    + confirmarPlano(turnaroundId: UUID, tarefas: List<TarefaPlano>): void
+  }
+
+  class PoliticaAbastecimentoView <<boundary>> {
+    + abrir(companhiaId: UUID): void
+    + confirmarPolitica(companhiaId: UUID, permiteComPassageiros: Boolean): void
+  }
+
+  ' ---------- controle (REST, chamado pela porta de entrada ou por outro serviço) ----------
+
+  class AcessoController <<control>> {
+    + verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso
+  }
+
+  class AutenticacaoController <<control>> {
+    + autenticar(identificadorAcesso: String, senha: String): TokenAcesso
+    + encerrarSessao(sessaoId: UUID): void
+  }
+
+  class UsuarioController <<control>> {
+    + listar(acesso: Acesso): List<UsuarioResumo>
+    + consultar(usuarioId: UUID, acesso: Acesso): UsuarioResumo
+    + criar(dados: Usuario, senhaInicial: String, acesso: Acesso): UsuarioResumo
+    + alterar(usuarioId: UUID, dados: Usuario, acesso: Acesso): UsuarioResumo
+    + desativar(usuarioId: UUID, acesso: Acesso): void
+    + listarNomes(usuarioIds: List<UUID>, acesso: Acesso): List<NomeUsuario>
+  }
+
+  class EquipeController <<control>> {
+    + listar(acesso: Acesso): List<Equipe>
+    + criar(dados: Equipe, acesso: Acesso): Equipe
+    + alterar(equipeId: UUID, nome: String, acesso: Acesso): Equipe
+    + desativar(equipeId: UUID, acesso: Acesso): void
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+  }
+
+  class CompanhiaController <<control>> {
+    + listar(acesso: Acesso): List<Companhia>
+  }
+
+  class TurnaroundController <<control>> {
+    + abrir(dados: Turnaround, acesso: Acesso): Turnaround
+    + consultar(turnaroundId: UUID, acesso: Acesso): Turnaround
+    + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date, acesso: Acesso): Turnaround
+    + atualizarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer, acesso: Acesso): Turnaround
+  }
+
+  class ModeloTarefaController <<control>> {
+    + listar(acesso: Acesso): List<ModeloTarefa>
+    + listarCompativeis(turnaroundId: UUID, acesso: Acesso): List<ModeloTarefa>
+    + criar(dados: ModeloTarefa, acesso: Acesso): ModeloTarefa
+    + alterar(modeloId: UUID, dados: ModeloTarefa, acesso: Acesso): ModeloTarefa
+    + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, acesso: Acesso): TarefaModelo
+    + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaModelo
+  }
+
+  class PlanoController <<control>> {
+    + consultar(turnaroundId: UUID, acesso: Acesso): Plano
+    + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean, acesso: Acesso): Plano
+    + definirDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>, acesso: Acesso): TarefaPlano
+    + confirmar(turnaroundId: UUID, tarefas: List<TarefaPlano>, acesso: Acesso): Plano
+    + listarOperadoresAtivos(equipeId: UUID, acesso: Acesso): List<OperadorAtivo>
+  }
+
+  class PoliticaAbastecimentoController <<control>> {
+    + consultarVigente(companhiaId: UUID, acesso: Acesso): PoliticaAbastecimento
+    + listarVersoes(companhiaId: UUID, acesso: Acesso): List<PoliticaAbastecimento>
+    + registrar(companhiaId: UUID, permiteComPassageiros: Boolean, acesso: Acesso): PoliticaAbastecimento
+  }
+
+  ' ---------- serviço (regras de negócio) ----------
+
+  ' verificarAcesso encerra a sessão vencida; só a ação do usuário a renova (RNF-5).
+  class AutenticacaoService <<service>> {
+    - usuarios: UsuarioRepository
+    - falhas: FalhaLoginRepository
+    - sessoes: SessaoRepository
+    - auditoria: AuditoriaService
+    - inatividadeMin: Integer
+    + autenticar(identificadorAcesso: String, senha: String, momento: DateTime): TokenAcesso
+    + verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean, momento: DateTime): Acesso
+    + encerrarSessao(sessaoId: UUID, momento: DateTime): void
+    - registrarFalha(usuario: Usuario, momento: DateTime): void
+    - emitirToken(sessao: Sessao): TokenAcesso
+  }
+
+  class UsuarioService <<service>> {
+    - usuarios: UsuarioRepository
+    - equipes: EquipeRepository
+    - companhias: CompanhiaRepository
+    - planos: PlanoRepository
+    - execucao: ExecucaoEmSoloCliente
+    - auditoria: AuditoriaService
+    + listar(): List<UsuarioResumo>
+    + consultar(usuarioId: UUID): UsuarioResumo
+    + criar(dados: Usuario, senhaInicial: String, autorId: UUID): UsuarioResumo
+    + alterar(usuarioId: UUID, dados: Usuario, autorId: UUID): UsuarioResumo
+    + desativar(usuarioId: UUID, autorId: UUID): void
+    + listarNomes(usuarioIds: List<UUID>): List<NomeUsuario>
+    + anonimizarVencidos(momento: DateTime): void
+  }
+
+  class EquipeService <<service>> {
+    - equipes: EquipeRepository
+    - usuarios: UsuarioRepository
+    - planos: PlanoRepository
+    - execucao: ExecucaoEmSoloCliente
+    - auditoria: AuditoriaService
+    + listar(): List<Equipe>
+    + criar(dados: Equipe, autorId: UUID): Equipe
+    + alterar(equipeId: UUID, nome: String, autorId: UUID): Equipe
+    + desativar(equipeId: UUID, autorId: UUID): void
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+  }
+
+  class TurnaroundService <<service>> {
+    - turnarounds: TurnaroundRepository
+    - companhias: CompanhiaRepository
+    - execucao: ExecucaoEmSoloCliente
+    - publicador: PublicadorAvisos
+    - auditoria: AuditoriaService
+    + abrir(dados: Turnaround, autorId: UUID): Turnaround
+    + consultar(turnaroundId: UUID): Turnaround
+    + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date): Turnaround
+    + atualizarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer, autorId: UUID): Turnaround
+    + aplicarEncerramento(turnaroundId: UUID, aobt: DateTime, usuarioIds: List<UUID>): void
+  }
+
+  class ModeloTarefaService <<service>> {
+    - modelos: ModeloTarefaRepository
+    - equipes: EquipeRepository
+    - turnarounds: TurnaroundRepository
+    - auditoria: AuditoriaService
+    + listar(): List<ModeloTarefa>
+    + listarCompativeis(turnaroundId: UUID): List<ModeloTarefa>
+    + criar(dados: ModeloTarefa, autorId: UUID): ModeloTarefa
+    + alterar(modeloId: UUID, dados: ModeloTarefa, autorId: UUID): ModeloTarefa
+    + configurarPontos(modeloId: UUID, tarefaModeloId: UUID, pontos: List<PontoConfirmacaoModelo>, autorId: UUID): TarefaModelo
+    + definirDependencias(modeloId: UUID, tarefaModeloId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaModelo
+    - conferirDependencias(modelo: ModeloTarefa): void
+  }
+
+  class PlanoService <<service>> {
+    - planos: PlanoRepository
+    - turnarounds: TurnaroundRepository
+    - modelos: ModeloTarefaRepository
+    - politicas: PoliticaAbastecimentoRepository
+    - usuarios: UsuarioRepository
+    - execucao: ExecucaoEmSoloCliente
+    - publicador: PublicadorAvisos
+    - auditoria: AuditoriaService
+    + consultar(turnaroundId: UUID): Plano
+    + aplicarModelo(turnaroundId: UUID, modeloId: UUID, substituir: Boolean, autorId: UUID): Plano
+    + definirDependencias(turnaroundId: UUID, tarefaPlanoId: UUID, predecessoraIds: List<UUID>, autorId: UUID): TarefaPlano
+    + confirmar(turnaroundId: UUID, tarefas: List<TarefaPlano>, autorId: UUID): Plano
+    + listarOperadoresAtivos(equipeId: UUID): List<OperadorAtivo>
+    - conferirDependencias(plano: Plano): void
+    - conferirPolitica(plano: Plano): void
+    - conferirEquipesAtivas(modelo: ModeloTarefa): void
+    - enviarPlano(plano: Plano): void
+    + retomarConfirmacoes(): void
+  }
+
+  class PoliticaAbastecimentoService <<service>> {
+    - politicas: PoliticaAbastecimentoRepository
+    - companhias: CompanhiaRepository
+    - auditoria: AuditoriaService
+    + consultarVigente(companhiaId: UUID): PoliticaAbastecimento
+    + listarVersoes(companhiaId: UUID): List<PoliticaAbastecimento>
+    + registrar(companhiaId: UUID, permiteComPassageiros: Boolean, autorId: UUID): PoliticaAbastecimento
+  }
+
+  ' ---------- acesso a dados ----------
+
+  interface UsuarioRepository <<repository>> {
+    + buscarPorId(id: UUID): Usuario
+    + buscarPorIdentificador(identificadorAcesso: String): Usuario
+    + existeIdentificador(identificadorAcesso: String): Boolean
+    + listar(): List<Usuario>
+    + listarAtivosPorEquipe(equipeId: UUID): List<Usuario>
+    + listarParaAnonimizar(limite: DateTime): List<Usuario>
+    + salvar(usuario: Usuario): void
+  }
+
+  interface FalhaLoginRepository <<repository>> {
+    + contarDesde(usuarioId: UUID, desde: DateTime): Integer
+    + salvar(falha: FalhaLogin): void
+    + apagarDoUsuario(usuarioId: UUID): void
+  }
+
+  interface SessaoRepository <<repository>> {
+    + buscarPorId(id: UUID): Sessao
+    + salvar(sessao: Sessao): void
+  }
+
+  interface EquipeRepository <<repository>> {
+    + buscarPorId(id: UUID): Equipe
+    + existeCodigo(codigo: String): Boolean
+    + listar(): List<Equipe>
+    + salvar(equipe: Equipe): void
+  }
+
+  interface CompanhiaRepository <<repository>> {
+    + buscarPorId(id: UUID): Companhia
+    + listar(): List<Companhia>
+  }
+
+  interface TurnaroundRepository <<repository>> {
+    + buscarPorId(id: UUID): Turnaround
+    + buscarPorVoos(vooChegada: String, dataVooChegada: Date, vooPartida: String, dataVooPartida: Date): Turnaround
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
+    + salvar(turnaround: Turnaround): void
+  }
+
+  interface ModeloTarefaRepository <<repository>> {
+    + buscarPorId(id: UUID): ModeloTarefa
+    + listar(): List<ModeloTarefa>
+    + listarCompativeis(tipoAeronave: String, tipoServico: String): List<ModeloTarefa>
+    + salvar(modelo: ModeloTarefa): void
+  }
+
+  interface PlanoRepository <<repository>> {
+    + buscarPorTurnaround(turnaroundId: UUID): Plano
+    + buscarComTrava(turnaroundId: UUID): Plano
+    + listarTarefasNaoConfirmadasDaEquipe(equipeId: UUID): List<TarefaPlano>
+    + listarTarefasNaoConfirmadasDoResponsavel(usuarioId: UUID): List<TarefaPlano>
+    + listarConfirmacaoPendente(): List<Plano>
+    + salvar(plano: Plano): void
+    + excluir(plano: Plano): void
+  }
+
+  interface PoliticaAbastecimentoRepository <<repository>> {
+    + buscarVigente(companhiaId: UUID): PoliticaAbastecimento
+    + listarPorCompanhia(companhiaId: UUID): List<PoliticaAbastecimento>
+    + salvar(politica: PoliticaAbastecimento): void
+  }
+
+  ' ---------- comunicação com outros serviços ----------
+
+  class ExecucaoEmSoloCliente <<client>> {
+    + receberPlano(plano: PlanoConfirmado): void
+    + chegadaRegistrada(turnaroundId: UUID): Boolean
+    + listarTarefasPendentesDoOperador(usuarioId: UUID): List<TarefaResumo>
+    + listarTarefasPendentesDaEquipe(equipeId: UUID): List<TarefaResumo>
+  }
+
+  class TarefaResumo <<dto>> {
+    - tarefaId: UUID
+    - turnaroundId: UUID
+    - matricula: String
+    - nome: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - estado: EstadoTarefa [0..1]
+    - obrigatoria: Boolean
+    - sobDemanda: Boolean
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - horarioEstado: DateTime [0..1]
+    - predecessoraIds: List<UUID>
+  }
+
+  ' O plano confirmado vai à Execução em Solo neste formato (RNF-4); a Execução em Solo define os estados.
+  class PlanoConfirmado <<dto>> {
+    - turnaroundId: UUID
+    - planoId: UUID
+    - chaveConfirmacao: UUID
+    - vooChegada: String
+    - vooPartida: String
+    - matricula: String
+    - posicao: String
+    - permiteComPassageiros: Boolean
+    - politicaVersao: Integer [0..1]
+    - tarefas: List<TarefaPlanejada>
+  }
+
+  class TarefaPlanejada <<dto>> {
+    - tarefaId: UUID
+    - nome: String
+    - tipoAtividade: String
+    - equipeId: UUID
+    - responsavelId: UUID [0..1]
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime [0..1]
+    - fimPlanejado: DateTime [0..1]
+    - obrigatoria: Boolean
+    - permiteNaoAplicavel: Boolean
+    - sobDemanda: Boolean
+    - acionada: Boolean
+    - predecessoraIds: List<UUID>
+    - pontos: List<PontoPlanejado>
+  }
+
+  class PontoPlanejado <<dto>> {
+    - pontoId: UUID
+    - identificador: String
+    - nome: String
+  }
+
+  class OperadorAtivo <<dto>> {
+    - usuarioId: UUID
+    - nome: String
+  }
+
+  ' Resposta de cadastro sem senha, hash nem token (RNF-3).
+  class UsuarioResumo <<dto>> {
+    - usuarioId: UUID
+    - identificadorAcesso: String
+    - nome: String
+    - perfil: Perfil
+    - equipeId: UUID [0..1]
+    - companhiaId: UUID [0..1]
+    - ativo: Boolean
+  }
+
+  ' Nome de pessoa para as telas de todos os serviços, que guardam só o identificador (item 12, seção 12.2).
+  class NomeUsuario <<dto>> {
+    - usuarioId: UUID
+    - nome: String
+  }
+
+  ' Resposta do login: referência da sessão levada no token de login (ADR-0016, ponto 2; ADR-0023, ponto 1).
+  class TokenAcesso <<dto>> {
+    - sessaoId: UUID
+    - perfil: Perfil
+    - nome: String
+  }
+
+  ' Ao voltar de uma queda, reenvia os planos com confirmação pendente, com a mesma chave (ADR-0023, ponto 5; RNF-20).
+  class RetomadaConfirmacaoPlano <<scheduler>> {
+    - planos: PlanoService
+    + executarAoIniciar(): void
+  }
+
+  ' Além da trilha, anonimiza os dados pessoais vencidos do cadastro (RNF-6).
+  class RotinaAnonimizacaoCadastro <<scheduler>> {
+    - usuarios: UsuarioService
+    - turnarounds: TurnaroundRepository
+    + executarDiariamente(): void
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
+  }
+
+  class ConsumidorAvisosCadastro <<consumer>> {
+    - turnarounds: TurnaroundService
+    # tratar(envelope: EnvelopeAviso): void
+  }
+
+  ' ---------- ligações das camadas ----------
+
+  cadastro.AutenticacaoView ..> cadastro.AutenticacaoController
+  cadastro.UsuarioView ..> cadastro.UsuarioController
+  cadastro.UsuarioView ..> cadastro.EquipeController
+  cadastro.UsuarioView ..> cadastro.CompanhiaController
+  cadastro.ModeloTarefaView ..> cadastro.EquipeController
+  cadastro.PlanoView ..> cadastro.ModeloTarefaController
+  cadastro.PlanoView ..> cadastro.PoliticaAbastecimentoController
+  cadastro.PoliticaAbastecimentoView ..> cadastro.CompanhiaController
+  cadastro.EquipeView ..> cadastro.EquipeController
+  cadastro.TurnaroundView ..> cadastro.TurnaroundController
+  cadastro.TurnaroundView ..> cadastro.CompanhiaController
+  cadastro.ModeloTarefaView ..> cadastro.ModeloTarefaController
+  cadastro.PlanoView ..> cadastro.PlanoController
+  cadastro.PoliticaAbastecimentoView ..> cadastro.PoliticaAbastecimentoController
+
+  cadastro.AcessoController ..> cadastro.AutenticacaoService
+  cadastro.AutenticacaoController ..> cadastro.AutenticacaoService
+  cadastro.UsuarioController ..> cadastro.UsuarioService
+  cadastro.EquipeController ..> cadastro.EquipeService
+  cadastro.CompanhiaController ..> cadastro.CompanhiaRepository
+  cadastro.TurnaroundController ..> cadastro.TurnaroundService
+  cadastro.ModeloTarefaController ..> cadastro.ModeloTarefaService
+  cadastro.PlanoController ..> cadastro.PlanoService
+  cadastro.PoliticaAbastecimentoController ..> cadastro.PoliticaAbastecimentoService
+
+  cadastro.AutenticacaoService --> cadastro.UsuarioRepository
+  cadastro.AutenticacaoService --> cadastro.FalhaLoginRepository
+  cadastro.AutenticacaoService --> cadastro.SessaoRepository
+  cadastro.AutenticacaoService ..> cadastro.TokenAcesso
+  cadastro.UsuarioService --> cadastro.UsuarioRepository
+  cadastro.UsuarioService --> cadastro.EquipeRepository
+  cadastro.UsuarioService --> cadastro.CompanhiaRepository
+  cadastro.UsuarioService --> cadastro.PlanoRepository
+  cadastro.UsuarioService ..> cadastro.UsuarioResumo
+  cadastro.UsuarioService ..> cadastro.NomeUsuario
+  cadastro.RotinaAnonimizacaoCadastro --> cadastro.UsuarioService
+  cadastro.RetomadaConfirmacaoPlano --> cadastro.PlanoService
+  cadastro.RotinaAnonimizacaoCadastro --> cadastro.TurnaroundRepository
+  cadastro.UsuarioService --> cadastro.ExecucaoEmSoloCliente
+  cadastro.EquipeService --> cadastro.EquipeRepository
+  cadastro.EquipeService --> cadastro.UsuarioRepository
+  cadastro.EquipeService --> cadastro.PlanoRepository
+  cadastro.EquipeService --> cadastro.ExecucaoEmSoloCliente
+  cadastro.TurnaroundService --> cadastro.TurnaroundRepository
+  cadastro.TurnaroundService --> cadastro.CompanhiaRepository
+  cadastro.TurnaroundService --> cadastro.ExecucaoEmSoloCliente
+  cadastro.ModeloTarefaService --> cadastro.ModeloTarefaRepository
+  cadastro.ModeloTarefaService --> cadastro.EquipeRepository
+  cadastro.ModeloTarefaService --> cadastro.TurnaroundRepository
+  cadastro.PlanoService --> cadastro.PlanoRepository
+  cadastro.PlanoService --> cadastro.TurnaroundRepository
+  cadastro.PlanoService --> cadastro.ModeloTarefaRepository
+  cadastro.PlanoService --> cadastro.PoliticaAbastecimentoRepository
+  cadastro.PlanoService --> cadastro.UsuarioRepository
+  cadastro.PlanoService --> cadastro.ExecucaoEmSoloCliente
+  cadastro.PoliticaAbastecimentoService --> cadastro.PoliticaAbastecimentoRepository
+  cadastro.PoliticaAbastecimentoService --> cadastro.CompanhiaRepository
+  cadastro.ConsumidorAvisosCadastro --> cadastro.TurnaroundService
+  cadastro.ExecucaoEmSoloCliente ..> cadastro.TarefaResumo
+  cadastro.ExecucaoEmSoloCliente ..> cadastro.PlanoConfirmado
+  cadastro.PlanoConfirmado "1" *-- "*" cadastro.TarefaPlanejada : tarefas
+  cadastro.TarefaPlanejada "1" *-- "*" cadastro.PontoPlanejado : pontos
+  cadastro.PlanoService ..> cadastro.PlanoConfirmado
+  cadastro.PlanoService ..> cadastro.OperadorAtivo
+  cadastro.EquipeService ..> cadastro.OperadorAtivo
+  comum.ConsumidorAvisos <|-- cadastro.ConsumidorAvisosCadastro
+  comum.RotinaAnonimizacao <|-- cadastro.RotinaAnonimizacaoCadastro
+  cadastro.AutenticacaoService --> comum.AuditoriaService
+  cadastro.UsuarioService --> comum.AuditoriaService
+  cadastro.EquipeService --> comum.AuditoriaService
+  cadastro.TurnaroundService --> comum.AuditoriaService
+  cadastro.TurnaroundService --> comum.PublicadorAvisos
+  cadastro.ModeloTarefaService --> comum.AuditoriaService
+  cadastro.PlanoService --> comum.AuditoriaService
+  cadastro.PlanoService --> comum.PublicadorAvisos
+  cadastro.PoliticaAbastecimentoService --> comum.AuditoriaService
+}

@@ -1,0 +1,17 @@
+@startuml
+' Item 13 — Classes de negócio — Exceções e Liberação. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore excecoes
+restore excecoes.MotivoEncerramentoSolicitacao
+restore excecoes.TipoReplanejamento
+restore excecoes.TurnaroundReferencia
+restore excecoes.SolicitacaoAtualizacaoTobt
+restore excecoes.AtualizacaoTobt
+restore excecoes.TabelaCodigoAtraso
+restore excecoes.CodigoAtraso
+restore excecoes.Excecao
+restore excecoes.Reatribuicao
+restore excecoes.Replanejamento
+restore excecoes.AcaoAlerta
+restore excecoes.Liberacao
+@enduml

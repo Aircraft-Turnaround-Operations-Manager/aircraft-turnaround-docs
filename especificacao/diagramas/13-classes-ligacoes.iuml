@@ -1,0 +1,24 @@
+' Item 13 (T13, issue #145) — dependências entre serviços, incluídas depois de todas as classes para que as vistas
+' as desenhem. Só tela → tela ou controle (o site é um só), cliente → controle do outro serviço e porta de entrada →
+' Cadastro (seção 13.1). conferir_classes.py confere que nenhuma outra relação cruza serviços.
+
+contrato.PortaDeEntrada ..> cadastro.AcessoController
+contrato.PortaDeEntrada ..> cadastro.AutenticacaoController
+cadastro.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
+cadastro.ExecucaoEmSoloCliente ..> execucao.ChegadaController
+cadastro.ExecucaoEmSoloCliente ..> execucao.TarefaController
+execucao.SaidaPosicaoView ..> cadastro.UsuarioController
+excecoes.ExcecaoView ..> cadastro.UsuarioController
+monitoramento.PainelView ..> cadastro.UsuarioController
+execucao.CadastroCliente ..> cadastro.EquipeController
+monitoramento.LinhaDoTempoView ..> cadastro.UsuarioController
+monitoramento.LinhaDoTempoView ..> cadastro.EquipeController
+monitoramento.ListaAlertasView ..> cadastro.UsuarioController
+monitoramento.ListaAlertasView ..> cadastro.EquipeController
+monitoramento.AvisoChecagemView ..> cadastro.UsuarioController
+monitoramento.ListaAlertasView ..> excecoes.RegistroAcaoAlertaView
+excecoes.RegistroAcaoAlertaView ..> monitoramento.AlertaController
+excecoes.ReplanejamentoView ..> monitoramento.LinhaDoTempoView
+excecoes.ExecucaoEmSoloCliente ..> execucao.TurnaroundController
+excecoes.ExecucaoEmSoloCliente ..> execucao.AtribuicaoController
+excecoes.ExecucaoEmSoloCliente ..> execucao.ReplanejamentoController

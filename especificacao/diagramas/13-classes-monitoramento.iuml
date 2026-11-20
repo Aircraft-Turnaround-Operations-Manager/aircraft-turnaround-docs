@@ -1,0 +1,576 @@
+' Item 13 (T13, issue #145) — serviço Monitoramento (ADR-0015): classes de negócio das 11 tabelas do Apêndice B.3 e
+' classes técnicas dos casos de uso UC22 a UC28. O Motor de Eventos daqui é o RecalculoService (UC24), o AlertaService
+' (UC25) e o AvisoChecagemService (UC27), acionados por aviso ou pelo AgendadorMinuto. Os painéis (UC22 e UC23) são
+' consultados por GraphQL e atualizados por WebSocket (ADR-0016, ponto 3); as demais telas usam REST.
+' Gravação pelo todo: TurnaroundMonitoradoRepository.salvar grava a cópia das tarefas; o recálculo e a aplicação de
+' um aviso travam a linha do turnaround (buscarComTrava). Toda mudança que o coordenador vê (recálculo, alerta,
+' cópia de estado, marco ou previsão, aviso de checagem) monta a linha de novo e a envia pelo PainelNotificador.
+
+namespace monitoramento {
+
+  ' ---------- negócio ----------
+
+  enum TipoAlerta <<enumeration>> {
+    Tarefa pronta não iniciada
+    Projeção além de TOBT + 5
+    Viabilidade
+    Embarque não iniciado
+    Prontidão não registrada
+  }
+
+  enum CausaRecalculo <<enumeration>> {
+    Início
+    Conclusão
+    Pausa
+    Retomada
+    Não aplicável
+    Chegada
+    Correção do AIBT
+    Replanejamento
+    Atualização do TOBT
+    Recálculo de minuto
+    Volta após falha
+  }
+
+  enum MarcoMonitorado <<enumeration>> {
+    AIBT
+    ACGT
+    ASBT
+    AEGT
+    ARDT
+    AOBT
+  }
+
+  enum CorRisco <<enumeration>> {
+    Verde
+    Amarela
+    Vermelha
+  }
+
+  class TurnaroundMonitorado <<entity>> {
+    - turnaroundId: UUID
+    - matricula: String
+    - tipoAeronave: String
+    - vooChegada: String
+    - vooPartida: String
+    - posicao: String
+    - estado: EstadoTurnaround [0..1]
+    - tobtPlanejado: DateTime
+    - tobtVigente: DateTime
+    - eibt: DateTime
+    - mtttMin: Integer
+    - aibt: DateTime [0..1]
+    - acgt: DateTime [0..1]
+    - asbt: DateTime [0..1]
+    - aegt: DateTime [0..1]
+    - ardt: DateTime [0..1]
+    - aobt: DateTime [0..1]
+    - prontoParaLiberacaoEm: DateTime [0..1]
+    - toleranciaProntidaoMin: Integer
+    - esperaTarefaProntaMin: Integer
+    - antecedenciaEmbarqueMin: Integer
+    - antecedenciaChecagemMin: Integer
+    - prazoAcaoCriticaMin: Integer
+    - tarefas: List<TarefaMonitorada>
+    ' as cinco tolerâncias e prazos acima vêm da configuração do serviço (RNF-21) em aplicarTurnaroundAberto
+    + estaEmCalculo(): Boolean
+    + tarefasObrigatorias(): List<TarefaMonitorada>
+    + aplicarMarco(tipo: MarcoMonitorado, horario: DateTime): void
+    + aplicarEstado(estado: EstadoTurnaround, momento: DateTime): void
+    + corDoRisco(projecao: Projecao, alertaCriticoAberto: Boolean): CorRisco
+  }
+
+  class TarefaMonitorada <<entity>> {
+    - tarefaId: UUID
+    - nome: String
+    - tipoAtividade: String
+    - equipeId: UUID
+    - responsavelId: UUID
+    - estado: EstadoTarefa
+    - obrigatoria: Boolean
+    - duracaoPlanejadaMin: Integer
+    - inicioPlanejado: DateTime
+    - fimPlanejado: DateTime
+    - inicioPlanejadoOriginal: DateTime
+    - fimPlanejadoOriginal: DateTime
+    - inicioReal: DateTime [0..1]
+    - fimReal: DateTime [0..1]
+    - prontaEm: DateTime [0..1]
+    - executadoMin: Integer
+    - emExecucaoDesde: DateTime [0..1]
+    - justificativa: String [0..1]
+    - codigoVersao: Integer [0..1]
+    - codigoAtraso: String [0..1]
+    - codigoDescricao: String [0..1]
+    - versaoOrigem: Integer
+    - predecessoras: List<TarefaMonitorada>
+    + aceitaVersao(versao: Integer): Boolean
+    + fimProjetado(agora: DateTime, fimPredecessoras: DateTime): DateTime
+    + dentroDaJanelaOriginal(): Boolean
+  }
+
+  class Projecao <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundMonitorado
+    - projecaoProntidao: DateTime
+    - tobtVigente: DateTime
+    - desvioPlanejadoMin: Integer
+    - desvioVigenteMin: Integer
+    - calculadaEm: DateTime
+    - causaTipo: CausaRecalculo
+    - causaId: UUID [0..1]
+    - causaTarefa: TarefaMonitorada [0..1]
+    - tarefas: List<ProjecaoTarefa>
+    + alemDaTolerancia(toleranciaMin: Integer): Boolean
+  }
+
+  class ProjecaoTarefa <<entity>> {
+    - tarefa: TarefaMonitorada
+    - inicioProjetado: DateTime [0..1]
+    - fimProjetado: DateTime [0..1]
+    - atrasoInicioMin: Integer [0..1]
+    - atrasoFimMin: Integer [0..1]
+    - impactadaPor: TarefaMonitorada [0..1]
+    - impactoMin: Integer [0..1]
+  }
+
+  class CaminhoCritico <<entity>> {
+    - id: UUID
+    - projecao: Projecao
+    - anterior: CaminhoCritico [0..1]
+    - tarefas: List<CaminhoCriticoTarefa>
+    + igualA(outro: CaminhoCritico): Boolean
+    + contem(tarefa: TarefaMonitorada): Boolean
+  }
+
+  class CaminhoCriticoTarefa <<entity>> {
+    - tarefa: TarefaMonitorada
+    - ordem: Integer
+  }
+
+  class Alerta <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundMonitorado
+    - tipo: TipoAlerta
+    - tarefa: TarefaMonitorada [0..1]
+    - critico: Boolean
+    - ciclo: Integer
+    - emitidoEm: DateTime
+    - minutosEspera: Integer [0..1]
+    - projecao: Projecao [0..1]
+    - eibt: DateTime [0..1]
+    - mtttMin: Integer [0..1]
+    - tobtVigente: DateTime [0..1]
+    - estadoTurnaround: EstadoTurnaround [0..1]
+    - encerradoEm: DateTime [0..1]
+    - acaoId: UUID [0..1]
+    - tipoAcao: TipoAcaoAlerta [0..1]
+    - acaoAutorId: UUID [0..1]
+    - acaoRegistradaEm: DateTime [0..1]
+    - tarefasCitadas: List<AlertaTarefa>
+    + estaAberto(): Boolean
+    + minutosDecorridos(agora: DateTime): Integer
+    + encerrar(acaoId: UUID, tipoAcao: TipoAcaoAlerta, autorId: UUID, registradaEm: DateTime, momento: DateTime): void
+  }
+
+  class AlertaTarefa <<entity>> {
+    - tarefa: TarefaMonitorada
+    - estado: EstadoTarefa
+    - atrasoInicioMin: Integer [0..1]
+    - atrasoFimMin: Integer [0..1]
+  }
+
+  class AvisoChecagem <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundMonitorado
+    - tobtVigente: DateTime
+    - emitidoEm: DateTime
+    - encerradoEm: DateTime [0..1]
+    - autorChecagemId: UUID [0..1]
+    + estaEncerrado(): Boolean
+    + registrarChecagem(autorId: UUID, momento: DateTime): void
+  }
+
+  class AtualizacaoTobtMonitorada <<entity>> {
+    - id: UUID
+    - turnaround: TurnaroundMonitorado
+    - tobtAnterior: DateTime
+    - tobtNovo: DateTime
+    - registradaEm: DateTime
+    + tardia(limiteMin: Integer): Boolean
+  }
+
+  monitoramento.TurnaroundMonitorado "1" *-- "*" monitoramento.TarefaMonitorada : tarefas
+  monitoramento.TarefaMonitorada "*" --> "*" monitoramento.TarefaMonitorada : predecessoras
+  monitoramento.Projecao "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+  monitoramento.Projecao "*" --> "0..1" monitoramento.TarefaMonitorada : causaTarefa
+  monitoramento.Projecao "1" *-- "*" monitoramento.ProjecaoTarefa : tarefas
+  monitoramento.ProjecaoTarefa "*" --> "1" monitoramento.TarefaMonitorada : tarefa
+  monitoramento.ProjecaoTarefa "*" --> "0..1" monitoramento.TarefaMonitorada : impactadaPor
+  monitoramento.CaminhoCritico "0..1" --> "1" monitoramento.Projecao : projecao
+  monitoramento.CaminhoCritico "0..1" --> "0..1" monitoramento.CaminhoCritico : anterior
+  monitoramento.CaminhoCritico "1" *-- "1..*" monitoramento.CaminhoCriticoTarefa : tarefas
+  monitoramento.CaminhoCriticoTarefa "*" --> "1" monitoramento.TarefaMonitorada : tarefa
+  monitoramento.Alerta "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+  monitoramento.Alerta "*" --> "0..1" monitoramento.TarefaMonitorada : tarefa
+  monitoramento.Alerta "*" --> "0..1" monitoramento.Projecao : projecao
+  monitoramento.Alerta "1" *-- "*" monitoramento.AlertaTarefa : tarefasCitadas
+  monitoramento.AlertaTarefa "*" --> "1" monitoramento.TarefaMonitorada : tarefa
+  monitoramento.AvisoChecagem "0..1" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+  monitoramento.AtualizacaoTobtMonitorada "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+
+  class LinhaPainel <<dto>> {
+    - turnaroundId: UUID
+    - matricula: String
+    - tipoAeronave: String
+    - vooPartida: String
+    - posicao: String
+    - estado: EstadoTurnaround [0..1]
+    - eibt: DateTime
+    - tobtPlanejado: DateTime
+    - tobtVigente: DateTime
+    - projecaoProntidao: DateTime [0..1]
+    - desvioPlanejadoMin: Integer [0..1]
+    - desvioVigenteMin: Integer [0..1]
+    - cor: CorRisco [0..1]
+    - alertasAbertos: Integer
+  }
+
+  ' Sem projeção (antes da confirmação do plano), a linha não tem projeção, desvio nem cor.
+  class Painel <<dto>> {
+    - verdes: Integer
+    - amarelos: Integer
+    - vermelhos: Integer
+    - alertasAbertos: Integer
+    - alertasCriticos: Integer
+    - linhas: List<LinhaPainel>
+  }
+
+  class LinhaDoTempo <<dto>> {
+    - turnaround: TurnaroundMonitorado
+    - projecao: Projecao [0..1]
+    - caminho: CaminhoCritico [0..1]
+    - avisoChecagem: AvisoChecagem [0..1]
+  }
+
+  class Indicador <<dto>> {
+    - nome: String
+    - numerador: Integer
+    - denominador: Integer
+    - percentual: Real [0..1]
+    - metaPercentual: Integer [0..1]
+  }
+
+  class RelatorioAderencia <<dto>> {
+    - inicio: Date
+    - fim: Date
+    - indicadores: List<Indicador>
+    - turnarounds: List<TurnaroundMonitorado>
+  }
+
+  ' ---------- interface ----------
+
+  class PainelView <<boundary>> {
+    + abrir(): void
+    + atualizarLinha(linha: LinhaPainel): void
+    + retirarLinha(turnaroundId: UUID): void
+    + exibirAvisoAlerta(alerta: Alerta): void
+  }
+
+  class LinhaDoTempoView <<boundary>> {
+    + abrir(turnaroundId: UUID): void
+    + buscarTurnaround(texto: String): void
+    + abrirCaminhoCritico(turnaroundId: UUID): void
+    + abrirHistoricoAlertas(turnaroundId: UUID): void
+    + atualizar(turnaroundId: UUID): void
+  }
+
+  class ListaAlertasView <<boundary>> {
+    + abrir(): void
+    + registrarAcao(alertaId: UUID): void
+    + incluirAlerta(alerta: Alerta): void
+    + retirarAlerta(alertaId: UUID): void
+  }
+
+  class AvisoChecagemView <<boundary>> {
+    + abrir(): void
+    + exibirAviso(aviso: AvisoChecagem, pendentes: List<ProjecaoTarefa>): void
+    + retirarAviso(avisoId: UUID): void
+    + registrarChecagem(avisoId: UUID): void
+    + lembrarDepois(avisoId: UUID): void
+  }
+
+  class IndicadorView <<boundary>> {
+    + abrir(): void
+    + consultar(inicio: Date, fim: Date): void
+  }
+
+  ' ---------- controle (GraphQL nos painéis; REST nas demais telas) ----------
+
+  class PainelResolver <<resolver>> {
+    + painel(acesso: Acesso): Painel
+    + linhaDoTempo(turnaroundId: UUID, acesso: Acesso): LinhaDoTempo
+    + buscarTurnarounds(texto: String, acesso: Acesso): List<TurnaroundMonitorado>
+    + recalculos(turnaroundId: UUID, acesso: Acesso): List<Projecao>
+  }
+
+  class AlertaController <<control>> {
+    + listarAbertos(acesso: Acesso): List<Alerta>
+    + listarDoTurnaround(turnaroundId: UUID, acesso: Acesso): List<Alerta>
+    + consultar(alertaId: UUID, acesso: Acesso): Alerta
+  }
+
+  class AvisoChecagemController <<control>> {
+    + listarAbertos(acesso: Acesso): List<AvisoChecagem>
+    + registrarChecagem(avisoId: UUID, acesso: Acesso): AvisoChecagem
+  }
+
+  class IndicadorController <<control>> {
+    + consultar(inicio: Date, fim: Date, acesso: Acesso): RelatorioAderencia
+  }
+
+  ' ---------- serviço ----------
+
+  class PainelService <<service>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    - projecoes: ProjecaoRepository
+    - caminhos: CaminhoCriticoRepository
+    - alertas: AlertaRepository
+    - avisos: AvisoChecagemRepository
+    + montarPainel(): Painel
+    + montarLinha(turnaroundId: UUID): LinhaPainel
+    + montarLinhaDoTempo(turnaroundId: UUID): LinhaDoTempo
+    + buscarTurnarounds(texto: String): List<TurnaroundMonitorado>
+    + listarRecalculos(turnaroundId: UUID): List<Projecao>
+  }
+
+  class RecalculoService <<service>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    - projecoes: ProjecaoRepository
+    - caminhos: CaminhoCriticoRepository
+    - alertas: AlertaService
+    - painel: PainelService
+    - notificador: PainelNotificador
+    - auditoria: AuditoriaService
+    - publicador: PublicadorAvisos
+    + recalcular(turnaroundId: UUID, causa: CausaRecalculo, causaId: UUID, momento: DateTime): Projecao
+    + recalcularAbertos(momento: DateTime, causa: CausaRecalculo): void
+    - projetarTarefas(turnaround: TurnaroundMonitorado, momento: DateTime): List<ProjecaoTarefa>
+    - identificarCaminhoCritico(turnaround: TurnaroundMonitorado, projecao: Projecao): CaminhoCritico
+  }
+
+  ' Depois de emitir ou encerrar um alerta, monta a linha do painel e a envia (RF-25). O aviso de ação sobre um alerta
+  ' desconhecido, já encerrado ou de outro turnaround é descartado e registrado no log (RNF-24).
+  class AlertaService <<service>> {
+    - alertas: AlertaRepository
+    - turnarounds: TurnaroundMonitoradoRepository
+    - caminhos: CaminhoCriticoRepository
+    - painel: PainelService
+    - notificador: PainelNotificador
+    - auditoria: AuditoriaService
+    + verificarGatilhos(turnaround: TurnaroundMonitorado, projecao: Projecao, anterior: Projecao, momento: DateTime): List<Alerta>
+    + verificarViabilidade(turnaroundId: UUID, momento: DateTime): Alerta
+    + verificarHorarios(momento: DateTime): void
+    + listarAbertos(): List<Alerta>
+    + listarDoTurnaround(turnaroundId: UUID): List<Alerta>
+    + consultar(alertaId: UUID): Alerta
+    + encerrarPorAcao(turnaroundId: UUID, alertaId: UUID, acaoId: UUID, tipoAcao: TipoAcaoAlerta, autorId: UUID, registradaEm: DateTime): void
+    - classificarCritico(alerta: Alerta, caminho: CaminhoCritico): Boolean
+  }
+
+  class AvisoChecagemService <<service>> {
+    - avisos: AvisoChecagemRepository
+    - turnarounds: TurnaroundMonitoradoRepository
+    - projecoes: ProjecaoRepository
+    - notificador: PainelNotificador
+    - auditoria: AuditoriaService
+    + emitirDevidos(momento: DateTime): void
+    + listarAbertos(): List<AvisoChecagem>
+    + registrarChecagem(avisoId: UUID, autorId: UUID): AvisoChecagem
+  }
+
+  class IndicadorService <<service>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    - alertas: AlertaRepository
+    - atualizacoes: AtualizacaoTobtMonitoradaRepository
+    + calcular(inicio: Date, fim: Date): RelatorioAderencia
+  }
+
+  ' Ordem dos avisos: aplicarPlano não sobrescreve a tarefa que já recebeu aviso da Execução em Solo (versaoOrigem > 0),
+  ' e aplicarTarefa de tarefa desconhecida cria a cópia com o que o aviso traz (item 12, seção 12.4).
+  class CopiaService <<service>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    - tarefas: TarefaMonitoradaRepository
+    - atualizacoes: AtualizacaoTobtMonitoradaRepository
+    - recalculo: RecalculoService
+    - alertas: AlertaService
+    - painel: PainelService
+    - notificador: PainelNotificador
+    + aplicarTurnaroundAberto(turnaround: TurnaroundMonitorado): void
+    + aplicarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
+    + aplicarPlano(turnaroundId: UUID, tarefas: List<TarefaMonitorada>): void
+    + aplicarTarefa(turnaroundId: UUID, tarefa: TarefaMonitorada, versao: Integer, causa: CausaRecalculo, causaId: UUID): void
+    + aplicarResponsavel(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, versao: Integer): void
+    + aplicarMarco(turnaroundId: UUID, tipo: MarcoMonitorado, horario: DateTime, causaId: UUID): void
+    + aplicarEstado(turnaroundId: UUID, estado: EstadoTurnaround, momento: DateTime): void
+    + aplicarTobtVigente(atualizacao: AtualizacaoTobtMonitorada): void
+  }
+
+  ' Roda em intervalo menor que 5 s: confere os gatilhos por horário a cada execução e recalcula na virada do minuto (RF-22).
+  class AgendadorMinuto <<scheduler>> {
+    - recalculo: RecalculoService
+    - alertas: AlertaService
+    - checagens: AvisoChecagemService
+    + executar(momento: DateTime): void
+    + executarAoIniciar(): void
+  }
+
+  class RotinaAnonimizacaoMonitoramento <<scheduler>> {
+    - turnarounds: TurnaroundMonitoradoRepository
+    # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
+  }
+
+  ' ---------- acesso a dados ----------
+
+  interface TurnaroundMonitoradoRepository <<repository>> {
+    + buscarPorId(turnaroundId: UUID): TurnaroundMonitorado
+    + buscarComTrava(turnaroundId: UUID): TurnaroundMonitorado
+    + listarAbertos(): List<TurnaroundMonitorado>
+    + listarEncerradosAntes(limite: DateTime): List<UUID>
+    + listarEncerradosNoPeriodo(inicio: Date, fim: Date): List<TurnaroundMonitorado>
+    + buscarPorTexto(texto: String): List<TurnaroundMonitorado>
+    + salvar(turnaround: TurnaroundMonitorado): void
+  }
+
+  interface TarefaMonitoradaRepository <<repository>> {
+    + buscarPorId(tarefaId: UUID): TarefaMonitorada
+    + listarPorTurnaround(turnaroundId: UUID): List<TarefaMonitorada>
+  }
+
+  interface ProjecaoRepository <<repository>> {
+    + buscarUltima(turnaroundId: UUID): Projecao
+    + listarPorTurnaround(turnaroundId: UUID): List<Projecao>
+    + salvar(projecao: Projecao): void
+  }
+
+  interface CaminhoCriticoRepository <<repository>> {
+    + buscarAtual(turnaroundId: UUID): CaminhoCritico
+    + salvar(caminho: CaminhoCritico): void
+  }
+
+  interface AlertaRepository <<repository>> {
+    + buscarPorId(id: UUID): Alerta
+    + listarAbertos(): List<Alerta>
+    + listarPorTurnaround(turnaroundId: UUID): List<Alerta>
+    + buscarAberto(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
+    + buscarUltimo(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
+    + listarCriticosDosTurnarounds(turnaroundIds: List<UUID>): List<Alerta>
+    + salvar(alerta: Alerta): void
+  }
+
+  interface AvisoChecagemRepository <<repository>> {
+    + buscarPorId(id: UUID): AvisoChecagem
+    + buscarPorTurnaround(turnaroundId: UUID): AvisoChecagem
+    + listarAbertos(): List<AvisoChecagem>
+    + salvar(aviso: AvisoChecagem): void
+  }
+
+  interface AtualizacaoTobtMonitoradaRepository <<repository>> {
+    + listarDosTurnarounds(turnaroundIds: List<UUID>): List<AtualizacaoTobtMonitorada>
+    + salvar(atualizacao: AtualizacaoTobtMonitorada): void
+  }
+
+  ' ---------- comunicação ----------
+
+  class PainelNotificador <<websocket>> {
+    + notificarLinha(linha: LinhaPainel): void
+    + notificarAlerta(alerta: Alerta): void
+    + notificarAlertaEncerrado(alertaId: UUID): void
+    + notificarAvisoChecagem(aviso: AvisoChecagem, pendentes: List<ProjecaoTarefa>): void
+    + notificarAvisoChecagemEncerrado(avisoId: UUID): void
+    + notificarLinhaDoTempo(turnaroundId: UUID): void
+    + retirarLinha(turnaroundId: UUID): void
+  }
+
+  class ConsumidorAvisosMonitoramento <<consumer>> {
+    - copias: CopiaService
+    - alertas: AlertaService
+    # tratar(envelope: EnvelopeAviso): void
+  }
+
+  ' ---------- ligações das camadas ----------
+
+  monitoramento.PainelView ..> monitoramento.PainelResolver
+  monitoramento.LinhaDoTempoView ..> monitoramento.PainelResolver
+  monitoramento.ListaAlertasView ..> monitoramento.AlertaController
+  monitoramento.AvisoChecagemView ..> monitoramento.AvisoChecagemController
+  monitoramento.IndicadorView ..> monitoramento.IndicadorController
+  monitoramento.PainelView ..> monitoramento.LinhaDoTempoView
+  monitoramento.PainelView ..> monitoramento.ListaAlertasView
+  monitoramento.ListaAlertasView ..> monitoramento.LinhaDoTempoView
+  monitoramento.LinhaDoTempoView ..> monitoramento.AlertaController
+  monitoramento.PainelNotificador .[norank].> monitoramento.PainelView
+  monitoramento.PainelNotificador .[norank].> monitoramento.LinhaDoTempoView
+  monitoramento.PainelNotificador .[norank].> monitoramento.ListaAlertasView
+  monitoramento.PainelNotificador .[norank].> monitoramento.AvisoChecagemView
+
+  monitoramento.PainelResolver ..> monitoramento.PainelService
+  monitoramento.AlertaController ..> monitoramento.AlertaService
+  monitoramento.AvisoChecagemController ..> monitoramento.AvisoChecagemService
+  monitoramento.IndicadorController ..> monitoramento.IndicadorService
+
+  monitoramento.PainelService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.PainelService --> monitoramento.ProjecaoRepository
+  monitoramento.PainelService --> monitoramento.CaminhoCriticoRepository
+  monitoramento.PainelService --> monitoramento.AlertaRepository
+  monitoramento.PainelService --> monitoramento.AvisoChecagemRepository
+  monitoramento.RecalculoService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.RecalculoService --> monitoramento.ProjecaoRepository
+  monitoramento.RecalculoService --> monitoramento.CaminhoCriticoRepository
+  monitoramento.RecalculoService --> monitoramento.AlertaService
+  monitoramento.RecalculoService --> monitoramento.PainelService
+  monitoramento.RecalculoService --> monitoramento.PainelNotificador
+  monitoramento.AlertaService --> monitoramento.AlertaRepository
+  monitoramento.AlertaService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.AlertaService --> monitoramento.CaminhoCriticoRepository
+  monitoramento.AlertaService --> monitoramento.PainelNotificador
+  monitoramento.AlertaService --> monitoramento.PainelService
+  monitoramento.AvisoChecagemService --> monitoramento.AvisoChecagemRepository
+  monitoramento.AvisoChecagemService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.AvisoChecagemService --> monitoramento.ProjecaoRepository
+  monitoramento.AvisoChecagemService --> monitoramento.PainelNotificador
+  monitoramento.IndicadorService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.IndicadorService --> monitoramento.AlertaRepository
+  monitoramento.IndicadorService --> monitoramento.AtualizacaoTobtMonitoradaRepository
+  monitoramento.CopiaService --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.CopiaService --> monitoramento.TarefaMonitoradaRepository
+  monitoramento.CopiaService --> monitoramento.AtualizacaoTobtMonitoradaRepository
+  monitoramento.CopiaService --> monitoramento.RecalculoService
+  monitoramento.CopiaService --> monitoramento.AlertaService
+  monitoramento.CopiaService --> monitoramento.PainelService
+  monitoramento.CopiaService --> monitoramento.PainelNotificador
+  monitoramento.RotinaAnonimizacaoMonitoramento --> monitoramento.TurnaroundMonitoradoRepository
+  monitoramento.AgendadorMinuto --> monitoramento.RecalculoService
+  monitoramento.AgendadorMinuto --> monitoramento.AlertaService
+  monitoramento.AgendadorMinuto --> monitoramento.AvisoChecagemService
+  monitoramento.ConsumidorAvisosMonitoramento --> monitoramento.CopiaService
+  monitoramento.ConsumidorAvisosMonitoramento --> monitoramento.AlertaService
+  monitoramento.PainelService ..> monitoramento.Painel
+  monitoramento.PainelService ..> monitoramento.LinhaDoTempo
+  monitoramento.IndicadorService ..> monitoramento.RelatorioAderencia
+  monitoramento.RelatorioAderencia "1" *-- "4" monitoramento.Indicador : indicadores
+  monitoramento.Painel "1" *-- "*" monitoramento.LinhaPainel : linhas
+  monitoramento.LinhaDoTempo "*" --> "1" monitoramento.TurnaroundMonitorado : turnaround
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.Projecao : projecao
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.CaminhoCritico : caminho
+  monitoramento.LinhaDoTempo "*" --> "0..1" monitoramento.AvisoChecagem : avisoChecagem
+  monitoramento.RelatorioAderencia "*" --> "*" monitoramento.TurnaroundMonitorado : turnarounds
+
+
+  comum.ConsumidorAvisos <|-- monitoramento.ConsumidorAvisosMonitoramento
+  comum.RotinaAnonimizacao <|-- monitoramento.RotinaAnonimizacaoMonitoramento
+  monitoramento.RecalculoService --> comum.AuditoriaService
+  monitoramento.RecalculoService --> comum.PublicadorAvisos
+  monitoramento.AlertaService --> comum.AuditoriaService
+  monitoramento.AvisoChecagemService --> comum.AuditoriaService
+}

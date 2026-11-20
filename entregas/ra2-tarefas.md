@@ -21,11 +21,11 @@ As áreas do RA1 passaram a corresponder aos quatro serviços (ADR-0015). Depois
 
 | Área | Serviço | Casos de uso (item 14) | Estórias e critérios (item 15) | Responsável |
 |---|---|---|---|---|
-| **A** | Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 48 critérios | Eduardo Fabri (`eduardofabrii`) |
+| **A** | Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 51 critérios | Eduardo Fabri (`eduardofabrii`) |
 | **B** | Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 47 critérios | João Pedro Cardoso de Liz (`Jcliz`) |
 | **C** | Monitoramento | 7 (UC22 a UC28) | 14 estórias, 52 critérios | João Vitor Correa Oliveira (`jvecodev`) |
-| **D** | Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 32 critérios | Rodrigo Alves (`rdsalvesPUC`) |
-| **Total** | | **37** | **44 estórias, 179 critérios** | |
+| **D** | Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios | Rodrigo Alves (`rdsalvesPUC`) |
+| **Total** | | **37** | **44 estórias, 183 critérios** | |
 
 A divisão por área serve só para dividir o trabalho. Diagramas e textos agrupam por função do sistema.
 
@@ -113,15 +113,15 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
 **T13 · [RA2][Item 13] Diagrama de classes**
 - Responsável: `rdsalvesPUC` · Rótulos: `ra2`, `item-13`
 - Descrição: as classes de negócio a partir do item 12 e as classes técnicas das camadas de referência (`Controller → Service → Repository`), com uma visão geral e vistas por função do sistema.
-- Critérios: C13.1 a C13.10. O C13.8 só fecha depois do item 14: os métodos que os diagramas de sequência pedirem entram aqui.
+- Critérios: C13.1 a C13.7, C13.9 e C13.10. O C13.8 fica com a T14: ele só pode ser conferido com os diagramas de sequência, e a T14 depende das classes. Deixá-lo aqui faria a T13 e a T14 se bloquearem em círculo. Os métodos que os diagramas pedirem entram no item 13 em PR próprio.
 - Bloqueada por: T12 · Bloqueia: T14
 
 ### Fase 3 — Por área (todos)
 
 **T14 · [RA2][Item 14] Diagramas de sequência (37, um por caso de uso)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra2`, `item-14`
-- Descrição: começar pela conferência cruzada do item (seção 1.4). Depois, conferir as legendas e a contagem dos 37 diagramas e ajustar o C13.8 com o responsável do item 13.
-- Critérios: C14.1 a C14.8
+- Descrição: começar pela conferência cruzada do item (seção 1.4). Depois, conferir as legendas e a contagem dos 37 diagramas e conferir o C13.8 (`python scripts/conferir_classes.py --sequencia`) com o responsável do item 13.
+- Critérios: C14.1 a C14.8 e C13.8
 - Bloqueada por: T02, T03, T13
 - Sub-issues:
   - **T14-A** · UC01 a UC11 (11 diagramas) · `eduardofabrii` · `area-a`
@@ -131,16 +131,16 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
   - Rótulos de cada uma: `ra2`, `item-14`, `por-integrante`, `area-x`
   - Critérios de cada sub-issue: C14.2 a C14.8 para todos os casos de uso da área
 
-**T15 · [RA2][Item 15] Casos de teste (179 critérios de aceite)** — tarefa-mãe
+**T15 · [RA2][Item 15] Casos de teste (183 critérios de aceite)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra2`, `item-15`
 - Descrição: começar pela conferência cruzada do item. Depois, juntar as planilhas das áreas, numerar os casos de teste de forma única (CT-nnn) e conferir por script a cobertura dos critérios e dos fluxos.
 - Critérios: C15.1 a C15.8
 - Bloqueada por: T00, T03. Não depende dos itens 12 a 14 e pode correr em paralelo com eles.
 - Sub-issues:
-  - **T15-A** · Casos de teste da área A (11 estórias, 48 critérios; UC01 a UC11) · `eduardofabrii` · `area-a`
+  - **T15-A** · Casos de teste da área A (11 estórias, 51 critérios; UC01 a UC11) · `eduardofabrii` · `area-a`
   - **T15-B** · Casos de teste da área B (11 estórias, 47 critérios; UC12 a UC21 e UC37) · `Jcliz` · `area-b`
   - **T15-C** · Casos de teste da área C (14 estórias, 52 critérios; UC22 a UC28) · `jvecodev` · `area-c`
-  - **T15-D** · Casos de teste da área D (8 estórias, 32 critérios; UC29 a UC36) · `rdsalvesPUC` · `area-d`
+  - **T15-D** · Casos de teste da área D (8 estórias, 33 critérios; UC29 a UC36) · `rdsalvesPUC` · `area-d`
   - Rótulos de cada uma: `ra2`, `item-15`, `por-integrante`, `area-x`
   - Critérios de cada sub-issue: C15.1 a C15.7 para todas as estórias e casos de uso da área
 
@@ -154,7 +154,7 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
 
 **T17 · [RA2][Geral] Consolidar em PDF e enviar no Canvas**
 - Responsável: quem puxar · Rótulos: `ra2`, `geral`
-- Descrição: gerar o documento completo, com os itens 1 a 15, o Apêndice A, o Apêndice B e as referências, além da declaração de uso de IA atualizada. Exportar em PDF e enviar na tarefa "Avaliação do RA 2 - Projeto" até **sábado, 28/11/2026, às 23:59**.
+- Descrição: gerar o documento completo, com os itens 1 a 15, os Apêndices A, B e C e as referências, além da declaração de uso de IA atualizada. Exportar em PDF e enviar na tarefa "Avaliação do RA 2 - Projeto" até **sábado, 28/11/2026, às 23:59**.
 - Critérios: Y.1, Y.3, Y.6, C00.3, C00.4, C15.8
 - Bloqueada por: T16
 

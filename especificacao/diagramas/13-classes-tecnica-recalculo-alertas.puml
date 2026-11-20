@@ -1,0 +1,27 @@
+@startuml
+' Item 13 — Motor de Eventos no Monitoramento: recálculo e alertas. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+left to right direction
+restore comum
+restore excecoes
+restore monitoramento
+restore comum.PublicadorAvisos
+restore comum.ConsumidorAvisos
+restore monitoramento.ConsumidorAvisosMonitoramento
+restore monitoramento.CopiaService
+restore monitoramento.AgendadorMinuto
+restore monitoramento.RecalculoService
+restore monitoramento.AlertaService
+restore monitoramento.AvisoChecagemService
+restore monitoramento.TurnaroundMonitoradoRepository
+restore monitoramento.TarefaMonitoradaRepository
+restore monitoramento.ProjecaoRepository
+restore monitoramento.CaminhoCriticoRepository
+restore monitoramento.AlertaRepository
+restore monitoramento.AvisoChecagemRepository
+restore monitoramento.AtualizacaoTobtMonitoradaRepository
+restore monitoramento.PainelNotificador
+restore monitoramento.PainelService
+restore excecoes.ConsumidorAvisosExcecoes
+restore excecoes.AtualizacaoTobtService
+@enduml

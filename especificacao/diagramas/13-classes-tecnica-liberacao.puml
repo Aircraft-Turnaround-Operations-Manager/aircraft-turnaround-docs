@@ -1,0 +1,28 @@
+@startuml
+' Item 13 — Liberação e saída da posição. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+restore comum
+restore excecoes
+restore execucao
+restore excecoes.LiberacaoView
+restore excecoes.LiberacaoController
+restore excecoes.LiberacaoService
+restore excecoes.PedidoService
+restore excecoes.LiberacaoRepository
+restore excecoes.ExcecaoRepository
+restore excecoes.TurnaroundReferenciaRepository
+restore excecoes.ExecucaoEmSoloCliente
+restore excecoes.SituacaoLiberacao
+restore excecoes.TurnaroundLiberavel
+restore excecoes.SituacaoTurnaround
+restore excecoes.TarefaResumo
+restore excecoes.AtualizacaoTobtService
+restore execucao.SaidaPosicaoView
+restore execucao.TurnaroundController
+restore execucao.TurnaroundService
+restore execucao.TurnaroundRepository
+restore execucao.SituacaoTurnaround
+restore comum.PublicadorAvisos
+restore excecoes.ConsumidorAvisosExcecoes
+restore excecoes.TurnaroundReferenciaService
+@enduml

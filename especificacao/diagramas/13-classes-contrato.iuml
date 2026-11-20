@@ -1,0 +1,187 @@
+' Item 13 (T13, issue #145) — contrato entre os serviços (ADR-0016) e infraestrutura que cada serviço repete.
+' Fonte única das classes deste pacote; as vistas 13-classes-*.puml incluem este arquivo.
+' Convenções (seção 13.2 do item): «entity» classe de negócio (tabela do item 12); «dto» dado de entrada ou saída sem tabela;
+' «enumeration» domínio fechado, com os valores exatos do CONTEXT.md e do Apêndice B; «dataType» tipo simples.
+' Tipos UML neutros (decisão B1): String, Integer, Real, Boolean, Date, DateTime, UUID e List<T>; void quando não há retorno.
+' [0..1] marca o atributo e o parâmetro opcionais.
+
+namespace contrato {
+
+  class UUID <<dataType>> {
+    - valor: String
+  }
+
+  enum EstadoTurnaround <<enumeration>> {
+    Em solo
+    Operações em andamento
+    Pronto para liberação
+    Liberado
+    Fora de bloco
+    Em exceção
+  }
+
+  enum EstadoTarefa <<enumeration>> {
+    Aguardando
+    Pronta
+    Em execução
+    Concluída
+    Pausada
+    Não aplicável
+  }
+
+  enum Perfil <<enumeration>> {
+    Operador de Solo/Rampa
+    Coordenador de Turnaround
+    Autoridade de Liberação
+    Administrador do Sistema
+  }
+
+  enum TipoAcaoAlerta <<enumeration>> {
+    Reatribuir tarefa
+    Replanejar
+    Atualizar a previsão
+    Abrir exceção
+  }
+
+  class Acesso <<dto>> {
+    - usuarioId: UUID
+    - perfil: Perfil
+    - equipeId: UUID [0..1]
+    - companhiaId: UUID [0..1]
+    + permite(perfilExigido: Perfil): Boolean
+  }
+
+  class EnvelopeAviso <<dto>> {
+    - id: UUID
+    - tipo: String
+    - versao: Integer
+    - ocorridoEm: DateTime
+    - turnaroundId: UUID [0..1]
+    - autorId: UUID [0..1]
+    - origem: String
+    - causaId: UUID [0..1]
+    - dados: String
+    + {static} novo(tipo: String, turnaroundId: UUID, autorId: UUID, causaId: UUID, dados: String): EnvelopeAviso
+  }
+
+  class PortaDeEntrada <<gateway>> {
+    - rotas: List<String>
+    + encaminhar(sessaoId: UUID, rota: String, corpo: String, acaoDoUsuario: Boolean): String
+    + entrar(identificadorAcesso: String, senha: String): String
+    + sair(sessaoId: UUID): void
+    - verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso
+  }
+
+  contrato.PortaDeEntrada ..> contrato.Acesso
+}
+
+namespace comum {
+
+  enum AcaoAuditoria <<enumeration>> {
+    Inclusão
+    Alteração
+    Exclusão
+    Desativação
+    Anonimização
+  }
+
+  enum TipoAutor <<enumeration>> {
+    Usuário
+    Motor de Eventos
+  }
+
+  class RegistroAuditoria <<entity>> {
+    - id: UUID
+    - objeto: String
+    - objetoId: String
+    - acao: AcaoAuditoria
+    - autorTipo: TipoAutor
+    - autorId: UUID [0..1]
+    - causaId: UUID [0..1]
+    - gatilho: String [0..1]
+    - turnaroundId: UUID [0..1]
+    - ocorridoEm: DateTime
+    - valoresAnteriores: String [0..1]
+    - valoresNovos: String [0..1]
+    - anonimizadoEm: DateTime [0..1]
+    + anonimizar(momento: DateTime): void
+  }
+
+  class AvisoSaida <<entity>> {
+    - id: UUID
+    - tipo: String
+    - versao: Integer
+    - ocorridoEm: DateTime
+    - turnaroundId: UUID [0..1]
+    - autorId: UUID [0..1]
+    - causaId: UUID [0..1]
+    - dados: String
+    - gravadoEm: DateTime
+    - publicadoEm: DateTime [0..1]
+    + {static} de(envelope: EnvelopeAviso, gravadoEm: DateTime): AvisoSaida
+    + paraEnvelope(origem: String): EnvelopeAviso
+    + marcarPublicado(momento: DateTime): void
+  }
+
+  class AvisoProcessado <<entity>> {
+    - avisoId: UUID
+    - processadoEm: DateTime
+  }
+
+  interface RegistroAuditoriaRepository <<repository>> {
+    + salvar(registro: RegistroAuditoria): void
+    + listarPorTurnaround(turnaroundId: UUID): List<RegistroAuditoria>
+    + listarParaAnonimizar(limite: DateTime, turnaroundIds: List<UUID>): List<RegistroAuditoria>
+    + existeCausa(causaId: UUID): Boolean
+  }
+
+  interface AvisoSaidaRepository <<repository>> {
+    + salvar(aviso: AvisoSaida): void
+    + listarNaoPublicados(): List<AvisoSaida>
+  }
+
+  interface AvisoProcessadoRepository <<repository>> {
+    + existe(avisoId: UUID): Boolean
+    + salvar(aviso: AvisoProcessado): void
+  }
+
+  class AuditoriaService <<service>> {
+    - repositorio: RegistroAuditoriaRepository
+    + registrar(objeto: String, objetoId: String, acao: AcaoAuditoria, autorId: UUID, causaId: UUID, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
+    + registrarAutomatico(objeto: String, objetoId: String, acao: AcaoAuditoria, causaId: UUID, gatilho: String, turnaroundId: UUID, valoresAnteriores: String, valoresNovos: String): void
+    + existeCausa(causaId: UUID): Boolean
+    + anonimizarVencidos(momento: DateTime, turnaroundsVencidos: List<UUID>): void
+  }
+
+  ' Roda uma vez por dia em cada serviço e anonimiza a trilha vencida pelo prazo do RNF-6: 90 dias depois do AOBT do
+  ' turnaround (cada serviço lista os seus pela cópia local) ou, sem turnaround, 90 dias depois do registro.
+  abstract class RotinaAnonimizacao <<scheduler>> {
+    - auditoria: AuditoriaService
+    + executarDiariamente(): void
+    # {abstract} listarTurnaroundsVencidos(limite: DateTime): List<UUID>
+  }
+
+  class PublicadorAvisos <<publisher>> {
+    - repositorio: AvisoSaidaRepository
+    - origem: String
+    + registrar(envelope: EnvelopeAviso): void
+    + publicarPendentes(): void
+  }
+
+  abstract class ConsumidorAvisos <<consumer>> {
+    - repositorio: AvisoProcessadoRepository
+    + receber(envelope: EnvelopeAviso): void
+    # {abstract} tratar(envelope: EnvelopeAviso): void
+  }
+
+  comum.RegistroAuditoria ..> comum.AcaoAuditoria
+  comum.RegistroAuditoria ..> comum.TipoAutor
+  comum.AuditoriaService --> comum.RegistroAuditoriaRepository
+  comum.RotinaAnonimizacao --> comum.AuditoriaService
+  comum.PublicadorAvisos --> comum.AvisoSaidaRepository
+  comum.ConsumidorAvisos --> comum.AvisoProcessadoRepository
+  comum.RegistroAuditoriaRepository ..> comum.RegistroAuditoria
+  comum.AvisoSaidaRepository ..> comum.AvisoSaida
+  comum.AvisoProcessadoRepository ..> comum.AvisoProcessado
+  comum.AvisoSaida ..> contrato.EnvelopeAviso
+}
