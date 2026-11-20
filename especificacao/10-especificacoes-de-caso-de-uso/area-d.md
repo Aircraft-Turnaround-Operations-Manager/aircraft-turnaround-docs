@@ -641,10 +641,10 @@
 
 ### Fluxo de exceção E2 – Operador deixa de estar disponível (passo 4)
 
-*Condição:* um operador da lista inicia uma tarefa enquanto a lista está aberta.
+*Condição:* o operador escolhido inicia uma tarefa entre a exibição da lista e a confirmação da reatribuição.
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E2.1. O sistema retira o operador da lista; se ele já tinha sido escolhido, a confirmação é recusada no UC30 (E2). |
+|  | E2.1. A lista é a da consulta feita na abertura e não muda enquanto está aberta. Na confirmação, o sistema confere a disponibilidade do operador escolhido, recusa a reatribuição e exibe a lista consultada de novo, já sem esse operador (UC30, E2). |
 
 Fontes citadas: [2], [8], [9], [62], [69], [70] e [71], conforme a numeração de `pesquisa/fontes.md`.
