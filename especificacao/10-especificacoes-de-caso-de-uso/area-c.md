@@ -328,11 +328,11 @@
 |---|---|
 | **Nome do caso de uso** | UC26 – Consultar lista de alertas abertos |
 | **Ator(es)** | Coordenador de Turnaround |
-| **Descrição** | O Coordenador de Turnaround consulta a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, os dados do gatilho, a tarefa, o horário de emissão, o tempo decorrido e a classificação, e a partir dela registra a ação tomada para cada alerta. O registro da ação é o UC31. Atende ao RF-33 e à US033. |
+| **Descrição** | O Coordenador de Turnaround consulta a lista dos alertas abertos de todos os turnarounds, do mais antigo para o mais recente, com o tipo, os dados do gatilho, a tarefa, o horário de emissão, o tempo decorrido e a classificação, e a partir dela registra a ação tomada para cada alerta. O registro da ação é o UC31. Na aba "Encerrados hoje", consulta também o histórico dos alertas já encerrados no dia (A5). Atende ao RF-33 e à US033. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador. |
 | **Pós-condições** | a lista exibe todos os alertas abertos. A consulta não encerra nenhum alerta; o encerramento é feito pelo registro da ação (US038). |
 | **Regras de negócio** | **RN1.** A lista mostra os alertas abertos de todos os turnarounds, do mais antigo para o mais recente (RF-33).<br>**RN2.** Cada alerta mostra o horário de emissão, o tempo decorrido desde a emissão em minutos completos [3], o turnaround (matrícula e posição), o tipo e os dados do gatilho (UC25), a tarefa, a equipe e o operador responsável, quando houver, e a classificação "crítico" ou "não crítico" (RF-33).<br>**RN3.** A classificação segue a RN7 do UC25.<br>**RN4.** O tempo decorrido de um alerta crítico fica em destaque a partir de 2 minutos, que é o prazo da meta do objetivo 3 (pelo menos 90% dos alertas críticos com ação registrada em até 2 minutos).<br>**RN5.** O alerta fica na lista até o Coordenador de Turnaround registrar a ação tomada (US038); depois disso, sai da lista em até 5 segundos.<br>**RN6.** A lista se atualiza, sem recarregar a página, a cada alerta emitido (UC25) ou encerrado. |
-| **Protótipo(s) de tela** | Lista de alertas abertos, com a classificação, o tempo decorrido e a opção "Registrar ação".<br>![UC26 – lista de alertas](prototipos/uc-c5-lista-de-alertas.png) |
+| **Protótipo(s) de tela** | Lista de alertas abertos, com a classificação, o tempo decorrido e a opção "Registrar ação".<br>![UC26 – lista de alertas](prototipos/uc-c5-lista-de-alertas.png)<br>Aba "Encerrados hoje", com o histórico de cada alerta encerrado no dia.<br>![UC26 – alertas encerrados hoje](prototipos/uc-c5-lista-de-alertas-encerrados.png) |
 
 ### Fluxo básico
 
@@ -371,6 +371,14 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 |  | A4.1. O sistema inclui o alerta no fim da lista em até 5 segundos, sem recarregar a página. |
+
+### Fluxo alternativo A5 – Alertas encerrados hoje (passo 2)
+
+| Ações do ator | Ações do sistema |
+|---|---|
+| A5.1. O Coordenador de Turnaround seleciona a aba "Encerrados hoje". |  |
+|  | A5.2. O sistema exibe os alertas encerrados no dia, de todos os turnarounds, do mais recente para o mais antigo. Cada um mostra o horário de emissão, o turnaround, o tipo e os dados do gatilho, a classificação, a ação tomada, o usuário que a registrou, o horário do registro e o tempo de resposta, do horário do alerta ao registro da ação; por exemplo, o alerta de tarefa pronta não iniciada do PR-XMA emitido às 09:50:00, com a ação "reatribuir tarefa" registrada por Rafael Lima às 09:51:30, tempo de resposta de 1 minuto e 30 segundos (US038, critério 3; UC31, A4). |
+|  | A5.3. O alerta encerrado não tem a opção "Registrar ação". O caso de uso termina. |
 
 ### Fluxo de exceção E1 – Alerta já encerrado (passo 3)
 
