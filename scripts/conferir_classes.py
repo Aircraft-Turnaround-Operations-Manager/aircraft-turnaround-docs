@@ -10,6 +10,8 @@ O que confere (critérios de entregas/ra2-criterios-de-aceite.md, seção 3.2):
          controle do outro serviço; todo método de um «client» existe, com os mesmos parâmetros e retorno, num
          controle ligado a ele; o mesmo «dto» declarado em dois serviços tem os mesmos campos
   C13.6  toda tabela de negócio do Apêndice B tem classe no serviço, com um atributo por campo e tipo compatível;
+         e, no outro sentido, toda entidade de serviço tem tabela, e todo atributo dela tem campo (ou é a lista das
+         partes que apontam para ela);
          a chave estrangeira vira atributo do tipo da classe (sem o _id) ou a lista na classe do todo (composição);
          as tabelas associativas de dependência viram a lista `predecessoras`; o atributo de campo opcional
          (Obrigatório = Não) tem [0..1], e o de campo obrigatório não tem
@@ -37,7 +39,8 @@ SQL_UML = [('CHAR(36)', {'UUID'}), ('VARCHAR', {'String'}), ('CHAR', {'String'})
            ('INTEGER', {'Integer'}), ('BOOLEAN', {'Boolean'}), ('DATE', {'Date'}), ('TIMESTAMP', {'DateTime'})]
 
 problemas = []
-def erro(msg): problemas.append(msg)
+def erro(msg):
+    if msg not in problemas: problemas.append(msg)
 
 
 def ler_classes():
@@ -214,6 +217,13 @@ def conferir_modelo(classes):
                 if not c or not any(a[1] == 'predecessoras' and a[2] == f'List<{dona}>' for a in c['atributos']):
                     erro(f'{ns}.{tabela}: falta a lista predecessoras: List<{dona}> em {dona} (C13.6)')
                 tabelas += 1; continue
+            elif len(d['campos']) == 2 and all(x[2] == 'PK, FK' for x in d['campos']):
+                # associativa pura (N:N sem atributos próprios): vira a lista de um lado no outro
+                a, b = (re.search(r'Identificador de `(\w+)`', x[3]).group(1) for x in d['campos'])
+                ok = any(at[2] == f'List<{pascal(y)}>' for x, y in ((a, b), (b, a))
+                         for at in classes.get(f'{ns}.{pascal(x)}', {}).get('atributos', []))
+                if not ok: erro(f'{ns}.{tabela}: associativa sem a lista List<{pascal(b)}> em {pascal(a)} (ou o inverso) (C13.6)')
+                tabelas += 1; continue
             else:
                 chave = f'{ns}.{pascal(tabela)}'
                 if chave not in classes: erro(f'tabela {serv}.{tabela} sem a classe {chave} (C13.6)'); continue
@@ -252,7 +262,41 @@ def conferir_modelo(classes):
                         erro(f'{chave}.{camel(nome)}: {tipo} = {classes[alvo]["valores"]}, domínio = {valores} (C13.7)')
                 else:
                     erro(f'{chave}.{camel(nome)}: tipo {tipo} incompatível com {tipo_sql} (C13.6)')
+                if alvo and classes[alvo]['tipo'] == 'enum' and dominio_fechado(dom) is None:
+                    erro(f'{chave}.{camel(nome)}: {tipo} é enumeração, mas o domínio de {tabela}.{nome} '
+                         f'no Apêndice B é "{dom}" (C13.7)')
+    conferir_modelo_reverso(classes, ab)
     return tabelas
+
+
+def conferir_modelo_reverso(classes, ab):
+    """C13.6 no outro sentido: toda entidade de serviço tem tabela no Apêndice B, e todo atributo dela tem campo
+    (pelo nome, pela FK sem o _id ou como lista das partes que apontam para ela)."""
+    nsdo = {v: k for k, v in SERVICOS.items()}
+    tabela_de = {}
+    for serv, tabs in ab.items():
+        for tabela, d in tabs.items():
+            if not d['tecnica']: tabela_de[f'{nsdo[serv]}.{pascal(tabela)}'] = (tabela, d, tabs)
+    for chave, c in classes.items():
+        if c['est'] != 'entity' or c['ns'] not in SERVICOS or chave in TECNICAS.values(): continue
+        if chave not in tabela_de:
+            erro(f'{chave}: entidade sem tabela no Apêndice B (C13.6, classe → tabela)'); continue
+        tabela, d, tabs = tabela_de[chave]
+        campos = {x[0] for x in d['campos']}
+        for vis, nome, tipo, n in c['atributos']:
+            base = re.sub(r'\s*\[[0-9.*]+\]$', '', tipo)
+            if re.sub(r'([A-Z])', r'_\1', nome).lower() in campos: continue
+            if re.sub(r'([A-Z])', r'_\1', nome).lower() + '_id' in campos: continue
+            if nome == 'codigoAtraso' and 'codigo_atraso' in campos: continue
+            m = re.fullmatch(r'List<(\w+)>', base) or re.fullmatch(r'(\w+)', base)
+            if m and m.group(1) not in PRIMITIVOS:
+                parte = re.sub(r'([A-Z])', r'_\1', m.group(1)).lstrip('_').lower()
+                if nome == 'predecessoras' or (parte in tabs and any(f[0] == f'{tabela}_id' or
+                                                                   f'`{tabela}`' in f[3] for f in tabs[parte]['campos'])):
+                    continue
+                if any({f[0] for f in t['campos']} == {f'{tabela}_id', f'{parte}_id'} for t in tabs.values()):
+                    continue  # associativa pura entre as duas tabelas
+            erro(f'{chave}.{nome}: atributo sem campo em {tabela} no Apêndice B (C13.6, classe → tabela)')
 
 
 def conferir_estados(classes):

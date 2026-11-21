@@ -13,7 +13,7 @@ O modelo de dados descreve as tabelas que guardam o que os requisitos funcionais
 
 Os horários seguem a tomada de decisão colaborativa em aeroportos (A-CDM) [2]: horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário real de chegada à posição (AIBT), início real do atendimento em solo (ACGT), início real do embarque (ASBT), fim real do atendimento em solo (AEGT), horário real de prontidão (ARDT), horário real de saída da posição (AOBT), horário-alvo de prontidão (TOBT), planejado e vigente, e tempo mínimo de turnaround (MTTT). Os pontos de confirmação usam código de resposta rápida (QR Code) (ADR-0007).
 
-São 48 tabelas de negócio e 13 tabelas técnicas. Todos os 44 RFs aparecem em pelo menos uma tabela de negócio (seção 12.4).
+São 49 tabelas de negócio e 13 tabelas técnicas. Todos os 44 RFs aparecem em pelo menos uma tabela de negócio (seção 12.4).
 
 ## 12.1 Notação e convenções
 
@@ -67,6 +67,7 @@ Cada linha diz quais RFs gravam ou leem a tabela. As tabelas técnicas não aten
 | Cadastro e Planejamento | `tarefa_plano` | RF-2, RF-5, RF-6, RF-9 |
 | Cadastro e Planejamento | `dependencia_tarefa_plano` | RF-5, RF-8 |
 | Cadastro e Planejamento | `ponto_confirmacao_plano` | RF-6, RF-7 |
+| Cadastro e Planejamento | `usuario_vinculado` | RF-2 |
 | Execução em Solo | `turnaround` | RF-12, RF-14, RF-21, RF-36, RF-39, RF-40, RF-42, RF-44 |
 | Execução em Solo | `marco` | RF-12, RF-13, RF-20, RF-44 |
 | Execução em Solo | `correcao_aibt` | RF-13 |
@@ -111,8 +112,8 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 
 - **Usuário e acesso.** `usuario` guarda um perfil por pessoa, entre os quatro perfis do item 5 (ADR-0010). O Operador de Solo/Rampa tem equipe, e a Autoridade de Liberação tem companhia, porque só confirma turnarounds da companhia que representa, como diz o caso de uso (UC) 32. O usuário ativo é o que não tem `desativado_em`. `falha_login` e `sessao` atendem o bloqueio depois de cinco falhas e o fim da sessão por inatividade (RNF-5). `anonimizado_em` registra a rotina do RNF-6. O Cadastro é o único serviço que guarda nome de pessoa.
 - **Política de abastecimento.** `politica_abastecimento` guarda as versões da permissão de abastecimento com passageiros a bordo de cada companhia (RF-11, ADR-0005). Uma companhia sem versão tem a permissão "Não permitido".
-- **Modelo e plano.** O modelo de tarefas (`modelo_tarefa`, `tarefa_modelo` e as dependências e os pontos dele) é copiado para o plano do turnaround quando o modelo é aplicado (RF-6). O `plano` é 1:1 com o turnaround e guarda a versão da política vigente nesse momento. As tarefas do catálogo sob demanda vêm junto, marcadas em `sob_demanda`; `acionada` marca o serviço sob demanda já conhecido e incluído no plano antes da confirmação (RF-5, ADR-0014). A cópia dos pontos de QR Code é independente do modelo: mudar o modelo depois não muda o plano.
-- **Turnaround.** `turnaround` guarda os voos com as datas, porque não pode haver dois turnarounds para os mesmos voos e datas (RF-3). O TOBT planejado fica aqui e não muda; o vigente é do Exceções e Liberação. A cópia do `aobt` serve só para contar o prazo do RNF-6.
+- **Modelo e plano.** O modelo de tarefas (`modelo_tarefa`, `tarefa_modelo` e as dependências e os pontos dele) é copiado para o plano do turnaround quando o modelo é aplicado (RF-6). O `plano` é 1:1 com o turnaround e guarda a versão da política vigente nesse momento. A confirmação segue a ADR-0023, ponto 5: o plano passa a "Confirmação pendente", com a chave de idempotência e o conteúdo enviado, e só depois o envio vai à Execução em Solo; enquanto está pendente, o plano não aceita edição. As tarefas do catálogo sob demanda vêm junto, marcadas em `sob_demanda`; `acionada` marca o serviço sob demanda já conhecido e incluído no plano antes da confirmação (RF-5, ADR-0014). A cópia dos pontos de QR Code é independente do modelo: mudar o modelo depois não muda o plano.
+- **Turnaround.** `turnaround` guarda os voos com as datas, porque não pode haver dois turnarounds para os mesmos voos e datas (RF-3). O TOBT planejado fica aqui e não muda; o vigente é do Exceções e Liberação. A cópia do `aobt` serve só para contar o prazo do RNF-6, junto com `usuario_vinculado`, que guarda os usuários que tiveram tarefa ou registro no turnaround, recebidos no aviso de encerramento (ADR-0023, ponto 6).
 
 ### 12.5.2 Execução em Solo
 
@@ -124,6 +125,7 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 - **Registros feitos sem conexão.** `registro_tarefa`, `leitura_qr_code` e `correcao_aibt` têm a chave de envio `requisicao_id`, única, para que repetir a mesma requisição não grave de novo, e guardam o horário da ação separado do horário de recebimento (RNF-8, ADR-0018).
 - **Ordem dos avisos de tarefa.** `tarefa.versao` conta as mudanças da tarefa e vai em todo aviso de tarefa. O Monitoramento só aplica um aviso de versão maior que a última que recebeu; comparar pelo horário descartaria o registro feito sem conexão que chega depois.
 - **Códigos de atraso.** A tabela da ANAC tem 72 códigos de duas letras em 12 categorias [62]; cada carga cria uma versão, e as linhas de uma versão nunca mudam (RNF-22). O registro de pausa aponta para o código pela versão e pela sigla e, por isso, continua mostrando o código usado mesmo depois de uma nova versão.
+- **Plano recebido.** `chave_plano` guarda a chave do último plano recebido: o reenvio com a mesma chave recebe o mesmo resultado e não aplica o plano de novo (ADR-0023, ponto 5; RNF-20).
 - **Cópias para exibir.** Voos, matrícula, posição, TOBT vigente, ARDT e quem liberou são cópias, só para a tela de saída da posição (UC37).
 
 ### 12.5.3 Monitoramento
