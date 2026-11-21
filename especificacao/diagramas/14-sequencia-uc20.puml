@@ -1,0 +1,104 @@
+@startuml
+' UC20 – Registrar marcos do atendimento em solo (RF-20, US020; incluído pelo UC15, UC16 e UC18).
+' O Motor de Eventos é o comportamento automático do MarcoService (item 13, seção 13.1). Ele roda na mesma transação e com a
+' trava do registro aceito, chamado pelo TarefaService, sem passar pela fila (ADR-0018, pontos 4 e 5; item 13, seção 13.5.4).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc20.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+box "Execução em Solo" #FAFAFA
+  participant "MarcoService" as MS <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as TA
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passo 1: registro aceito no servidor ==
+note over ME, MS
+  Pré-condição: o TarefaService aceitou um registro de início (UC15), de conclusão (UC16)
+  ou de "Não aplicável" (UC18), com o turnaround travado (buscarComTrava). A pausa e a
+  retomada (UC17) não acionam o Motor de Eventos.
+  E1: o registro feito sem conexão chega pelo mesmo caminho e traz o horário da ação
+  guardado no celular (registro.horarioAcao), que é o horário do marco (RN4; RNF-8).
+  E2: o registro recusado no servidor é recusado antes do «include» (passo 6 do UC15,
+  UC16 ou UC18): o MarcoService não é chamado, e nenhum marco é gravado nem alterado.
+end note
+ME -> MS : registrarMarcos(turnaround, tarefa, registro)
+activate MS
+
+alt registro.tipo = "Início" (UC15)
+
+  == Passos 2 e 3: ACGT (RN1) ==
+  MS -> T : buscarMarco(tipo = "ACGT")
+  activate T
+  T --> MS : marco ou vazio
+  deactivate T
+  alt turnaround ainda sem ACGT (passo 2)
+    create entity "acgt: Marco" as M1
+    MS -> M1 : «create» Marco(tipo = "ACGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
+    note right of M1 : passo 3: entra em turnaround.marcos
+  else A2: ACGT já gravado
+    note right of MS : mantém o ACGT gravado e segue para o passo 4 (A2.1)
+  end
+
+  == Passo 4: embarque? (RN2, RN5) ==
+  MS -> TA : ehEmbarque()
+  activate TA
+  TA --> MS : sim / não
+  deactivate TA
+  alt A1: a tarefa iniciada é a de embarque
+    create entity "asbt: Marco" as M2
+    MS -> M2 : «create» Marco(tipo = "ASBT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
+  else não é o embarque
+    note right of MS : RN5: com o ACGT já gravado, o início que não é\no de embarque não grava nenhum marco
+  end
+
+else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
+  MS -> T : obrigatoriasPendentes()
+  activate T
+  T --> MS : tarefas obrigatórias fora de "Concluída" e "Não aplicável"
+  deactivate T
+  alt A3 (conclusão) ou A4 ("Não aplicável"): nenhuma pendente, e a tarefa do registro é obrigatória (RN3)
+    create entity "aegt: Marco" as M3
+    MS -> M3 : «create» Marco(tipo = "AEGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
+    note right of M3 : o AEGT novo substitui o anterior, se houver\n(Apêndice B.2.2; item 12, seção 12.5.2)
+  else A5: ainda há tarefa obrigatória pendente
+    note right of MS : nenhum marco é gravado (A5.1)
+  end
+end
+
+== Gravação e aviso de cada marco criado ==
+loop cada marco criado (ACGT, ASBT ou AEGT)
+  MS -> AU : registrarAutomatico(objeto = "marco", objetoId = marco.id, acao = "Inclusão", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = AEGT anterior ou vazio, valoresNovos = tipo e horário)
+  activate AU
+  AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+  AU --> MS : ok
+  deactivate AU
+  MS -> PUB : registrar(EnvelopeAviso.novo(tipo = "MarcoRegistrado", turnaroundId, autorId = vazio, causaId = registro.id, dados = tipo, horario, registroOrigemId))
+  activate PUB
+  PUB -> DB : INSERT aviso_saida (mesma transação)
+  PUB --> MS : ok
+  deactivate PUB
+end
+MS --> ME : List<Marco> (marcos criados, ou vazia)
+deactivate MS
+ref over ME, DB : UC15, UC16 ou UC18, mesma transação: o TarefaService chama TurnaroundRepository.salvar(turnaround),\nque grava os marcos com o registro: INSERT marco (tipo, horario = horário da ação, registrado_em,\nregistro_origem_id = registro.id; UNIQUE (turnaround_id, tipo)); a trava do turnaround é liberada no fim
+
+== Passo 5 e exibição ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica MarcoRegistrado
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ
+  O Monitoramento copia o marco (CopiaService.aplicarMarco)
+  e o mostra nos marcos do turnaround e na linha do tempo
+  (UC22 e UC23); a MarcoView da Execução em Solo lê os
+  marcos gravados (TurnaroundController.consultar).
+  E1.2: só os marcos gravados, com o horário da ação.
+end note
+@enduml

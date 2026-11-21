@@ -1,0 +1,183 @@
+@startuml
+' UC21 – Propagar estado das tarefas e do turnaround (RF-21, US021; incluído pelo UC12, UC15, UC16, UC18 e UC35).
+' O Motor de Eventos é o comportamento automático do PropagacaoService (item 13, seção 13.1). Ele roda na mesma transação e com a
+' trava de quem o inclui: ChegadaService (UC12), TarefaService (UC15, UC16, UC18) ou ReplanejamentoService (UC35), sem passar
+' pela fila (ADR-0018, pontos 4 e 5). Parte 1: registro de tarefa; parte 2: chegada e replanejamento.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc21.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+box "Execução em Solo" #FAFAFA
+  participant "PropagacaoService" as PS <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as SU
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passo 1: registro de tarefa aceito ==
+note over ME, PS
+  O TarefaService chama o PropagacaoService depois de gravar o registro na tarefa (UC15, UC16 ou UC18, passo 8).
+  E1: o registro recusado no servidor é recusado antes do «include»: nenhuma tarefa nem o turnaround muda de estado.
+  E2: o registro feito sem conexão que chega depois de outros é propagado quando chega; a mudança grava o horário
+  em que acontece (ocorrido_em) e o registro que a causou (causa_id), que guarda o horário da ação (RNF-8).
+  RN9: com o turnaround "Em exceção", a propagação entre as tarefas segue igual; a entrada e a saída de
+  "Em exceção" ficam no UC29 e no UC33.
+end note
+ME -> PS : propagarRegistro(turnaround, tarefa, registro)
+activate PS
+
+alt A1: registro.tipo = "Início" e turnaround.estado = "Em solo" (primeiro início; RN2)
+  PS -> T : mudarEstado(novo = "Operações em andamento", autorId = vazio, causaId = registro.id, momento)
+  activate T
+  T --> PS : HistoricoEstadoTurnaround
+  deactivate T
+  PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Em solo", valoresNovos = "Operações em andamento")
+  activate AU
+  AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+  deactivate AU
+  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo))
+  activate PUB
+  PUB -> DB : INSERT aviso_saida
+  deactivate PUB
+  note right of PS : A1.2: o novo estado aparece em até 5 s (RN8)
+else registro.tipo = "Conclusão" (passo 1) ou A3: "Não aplicável" (tarefa terminada; RN1)
+
+  == Passo 2: sucessoras da tarefa terminada (RN6) ==
+  note right of PS
+    As dependências vêm do plano recebido (dependencia_tarefa).
+    A5 (padrão, abastecimento com passageiros a bordo não permitido;
+    turnaround.permiteComPassageiros = não): o abastecimento é sucessora
+    do desembarque e predecessora do embarque.
+    A6 (permitido): essas duas dependências não existem, e o
+    abastecimento corre em paralelo (ADR-0005; RN7).
+  end note
+  loop cada sucessora: tarefa do turnaround que tem a tarefa terminada em predecessoras
+
+    == Passo 3 ==
+    alt E3: sucessora fora de "Aguardando" (por exemplo, já "Não aplicável")
+      note right of PS : não muda essa sucessora e segue para a próxima (E3.1)
+    else sucessora "Aguardando"
+      PS -> SU : predecessorasPendentes()
+      activate SU
+      SU --> PS : predecessoras fora de "Concluída" e "Não aplicável"
+      note right of SU : a predecessora do catálogo sob demanda não\nacionada (estado vazio) não segura a sucessora\n(Apêndice B.2.5; item 12, seção 12.5.2)
+      alt A2: ainda há predecessora pendente ("Aguardando", "Pronta", "Em execução" ou "Pausada")
+        note right of PS : a sucessora continua "Aguardando" (A2.1)
+      else todas "Concluída" ou "Não aplicável"
+
+        == Passo 4 ==
+        PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId = registro.id, momento)
+        SU --> PS : HistoricoEstadoTarefa (registrarMudanca() soma 1 em versao)
+        deactivate SU
+        PS -> AU : registrarAutomatico(objeto = "tarefa", objetoId = sucessora.id, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Aguardando", valoresNovos = "Pronta")
+        activate AU
+        AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+        deactivate AU
+        PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTarefaPropagado", turnaroundId, autorId = vazio, causaId = registro.id, dados = tarefaId, estadoAnterior, estadoNovo, versao))
+        activate PUB
+        PUB -> DB : INSERT aviso_saida
+        deactivate PUB
+        PS -> N : notificarTarefa(operadorId = sucessora.responsavelId, tarefa)
+        note right of N : passo 6: a sucessora aparece "Pronta" na lista\ndo responsável (UC14) em até 5 s, depois que\na transação grava (RN8)
+      end
+    end
+  end
+
+  == Passo 5: tarefas obrigatórias (RN3) ==
+  PS -> T : obrigatoriasPendentes()
+  activate T
+  T --> PS : obrigatórias fora de "Concluída" e "Não aplicável"
+  alt A4: nenhuma pendente e turnaround "Operações em andamento"
+    PS -> T : mudarEstado(novo = "Pronto para liberação", autorId = vazio, causaId = registro.id, momento)
+    T --> PS : HistoricoEstadoTurnaround
+    deactivate T
+    PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Operações em andamento", valoresNovos = "Pronto para liberação")
+    activate AU
+    AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+    deactivate AU
+    PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo))
+    activate PUB
+    PUB -> DB : INSERT aviso_saida
+    deactivate PUB
+    note right of PS : RN4: "Pronto para liberação" não é a liberação;\n"Liberado" só pela Autoridade de Liberação (UC32)
+  else ainda há obrigatória pendente
+    note right of PS : o turnaround continua "Operações em andamento" (passo 5);\nas tarefas não obrigatórias não seguram a passagem
+  end
+end
+PS --> ME : mudanças de estado (ou nenhuma)
+deactivate PS
+ref over ME, DB : Quem inclui o UC21 grava tudo na mesma transação: TurnaroundRepository.salvar(turnaround)\n→ UPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa (causa_id, ocorrido_em; RN5);\nUPDATE turnaround SET estado; INSERT historico_estado_turnaround. A trava é liberada no fim.
+
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica EstadoTarefaPropagado e EstadoTurnaroundAlterado
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ : o Monitoramento copia os estados\ne recalcula (UC24); o painel mostra\no novo estado em até 5 s (RN8)
+
+newpage UC21 – parte 2: chegada (A7) e replanejamento (A8)
+
+== A7: chegada da aeronave à posição (UC12; RN2) ==
+ME -> PS : propagarChegada(turnaround, causaId = marco AIBT)
+activate PS
+note right of PS : chamado pelo ChegadaService, na transação da chegada,\ndepois que o turnaround passa para "Em solo"
+loop cada tarefa do turnaround "Aguardando" e sem predecessora (por exemplo, calçar a aeronave)
+  PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId = marco AIBT, momento)
+  activate SU
+  SU --> PS : HistoricoEstadoTarefa
+  deactivate SU
+  PS -> AU : registrarAutomatico(objeto = "tarefa", objetoId = tarefa.id, acao = "Alteração", causaId = marco AIBT, gatilho = vazio, turnaroundId, valoresAnteriores = "Aguardando", valoresNovos = "Pronta")
+  activate AU
+  AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+  deactivate AU
+  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTarefaPropagado", turnaroundId, autorId = vazio, causaId = marco AIBT, dados = tarefaId, estadoAnterior, estadoNovo, versao))
+  activate PUB
+  PUB -> DB : INSERT aviso_saida
+  deactivate PUB
+  PS -> N : notificarTarefa(operadorId = tarefa.responsavelId, tarefa)
+end
+note right of PS : A7.2: as tarefas aparecem "Pronta" na lista\ndos responsáveis (UC14) em até 5 s
+PS --> ME : tarefas que ficaram "Pronta"
+deactivate PS
+ref over ME, DB : UC12, passo 5: ChegadaService → TurnaroundRepository.salvar(turnaround), na mesma transação
+
+== A8: inclusão de tarefa ou alteração de dependências no replanejamento (UC35; RN1) ==
+ME -> PS : reavaliarNaoIniciadas(turnaround, causaId = replanejamentoId)
+activate PS
+note right of PS : chamado pelo ReplanejamentoService (alterarDependencias ou\nacionarSobDemanda), na transação do pedido do Exceções e Liberação
+loop cada tarefa afetada ainda não iniciada (estaIniciada() = não)
+  PS -> SU : predecessorasPendentes()
+  activate SU
+  SU --> PS : predecessoras pendentes
+  alt sem predecessora pendente e estado "Aguardando" (ou acionada agora)
+    PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId = replanejamentoId, momento)
+    SU --> PS : HistoricoEstadoTarefa
+  else com predecessora pendente e estado "Pronta" (US021, critério 7)
+    PS -> SU : mudarEstado(novo = "Aguardando", autorId = vazio, causaId = replanejamentoId, momento)
+    SU --> PS : HistoricoEstadoTarefa
+  else o estado já é o que a regra pede
+    note right of PS : sem mudança
+  end
+  deactivate SU
+  opt houve mudança (A8.2; RN5)
+    PS -> AU : registrarAutomatico(objeto = "tarefa", objetoId = tarefa.id, acao = "Alteração", causaId = replanejamentoId, gatilho = vazio, turnaroundId, valoresAnteriores = estado anterior, valoresNovos = estado novo)
+    activate AU
+    AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+    deactivate AU
+    PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTarefaPropagado", turnaroundId, autorId = vazio, causaId = replanejamentoId, dados = tarefaId, estadoAnterior, estadoNovo, versao))
+    activate PUB
+    PUB -> DB : INSERT aviso_saida
+    deactivate PUB
+    PS -> N : notificarTarefa(operadorId = tarefa.responsavelId, tarefa)
+  end
+end
+note right of PS : A8.3: estados atualizados na lista dos responsáveis\ne no painel em até 5 s (RN8)
+PS --> ME : mudanças de estado
+deactivate PS
+ref over ME, DB : UC35 – Replanejar tarefas não iniciadas do turnaround: o ReplanejamentoService\ngrava com TurnaroundRepository.salvar(turnaround), na mesma transação
+@enduml
