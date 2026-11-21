@@ -70,6 +70,36 @@ opt A4: novo alerta com a lista aberta
   V --> CT : alerta no fim da lista em até 5 s, sem recarregar a página (RN6)
 end
 
+opt A5: Coordenador de Turnaround seleciona a aba "Encerrados hoje"
+  CT -> V : abrirEncerrados()
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/alertas?situacao=encerrado&dia=hoje", corpo, acaoDoUsuario = sim)
+  activate G
+  G -> C : listarEncerrados(dia, acesso)
+  activate C
+  C -> S : listarEncerrados(dia)
+  activate S
+  S -> AR : listarEncerrados(dia)
+  activate AR
+  AR -> DB : SELECT alerta, turnaround_monitorado\nWHERE encerrado_em no dia (horário local) ORDER BY encerrado_em DESC
+  AR --> S : alertas encerrados no dia, com a ação copiada\n(tipo_acao, acao_autor_id, acao_registrada_em)
+  deactivate AR
+  S --> C : alertas encerrados
+  deactivate S
+  C --> G : 200 alertas encerrados
+  deactivate C
+  G --> V : 200 alertas encerrados
+  deactivate G
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/nomes", corpo, acaoDoUsuario = não)
+  activate G
+  G -> UC : listarNomes(usuarioIds, acesso)
+  activate UC
+  UC --> G : nomes de quem registrou cada ação
+  deactivate UC
+  G --> V : 200 nomes
+  deactivate G
+  V --> CT : alertas encerrados no dia, do mais recente para o mais antigo: emissão, turnaround,\ntipo e dados do gatilho, classificação, ação, quem registrou, horário do registro e\ntempo de resposta (acao_registrada_em − emitido_em), sem "Registrar ação" (A5.2, A5.3)
+end
+
 opt A2: Coordenador de Turnaround seleciona o turnaround de um alerta
   ref over CT, V : UC23 – Consultar linha do tempo do turnaround
 end
