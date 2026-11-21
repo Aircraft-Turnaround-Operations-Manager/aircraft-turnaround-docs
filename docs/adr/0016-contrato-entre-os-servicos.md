@@ -34,7 +34,7 @@ Placar entre parênteses: votos da opção escolhida, de 4.
 
 - Um único site. Cada integrante faz as telas da sua área (4).
 - Framework: Angular (3; React teve 1).
-- Design System próprio, a partir dos protótipos do Figma (4).
+- Design System próprio, a partir dos protótipos do Figma (4). *A fonte das telas passou a ser o canvas de Design da [ADR-0024](0024-canvas-de-design-como-fonte-das-telas.md); o Figma ficou congelado.*
 - `Jcliz` monta a estrutura inicial do site (4).
 
 **2. Login e porta de entrada**

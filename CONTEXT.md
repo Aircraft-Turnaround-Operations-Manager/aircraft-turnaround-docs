@@ -80,6 +80,7 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D21 | **Matriz estendida** aos itens 12, 14 e 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste); complementa a D12 | [0021](docs/adr/0021-matriz-de-rastreabilidade-estendida.md) |
 | D22 | **Casos de teste com ID provisório por área** (CT-A001…) e renumeração única (CT-001…) por script na consolidação; complementa a D11 | [0022](docs/adr/0022-ids-provisorios-dos-casos-de-teste.md) |
 | D23 | **Interfaces da porta de entrada e do Cadastro e Planejamento:** token interno assinado lido por todos os serviços; consultas entre o Cadastro e a Execução em Solo; plano gravado como "confirmação pendente", com chave, antes do envio; prazo dos dados pessoais pelo aviso de encerramento; complementa a D16 | [0023](docs/adr/0023-interfaces-da-porta-de-entrada-e-do-cadastro.md) |
+| D24 | **Telas:** o canvas de Design "Protótipos de tela" é a fonte única do layout; o Figma fica congelado e o PNG do item 10 é exportado do canvas (proposta, aprovação do grupo no PR) | [0024](docs/adr/0024-canvas-de-design-como-fonte-das-telas.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
@@ -101,6 +102,7 @@ Os 5 min têm referência direta no setor (tolerância em torno do TOBT). Os 80%
 
 - **Mapa da pesquisa** (índices por item e por área, diagrama): [pesquisa/README.md](pesquisa/README.md)
 - **Decisões:** [docs/adr/README.md](docs/adr/README.md)
+- **Telas (protótipos):** [canvas "Protótipos de tela"](https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX) — fonte única do layout (ADR-0024; `AGENTS.md`, regra 11)
 - **Ideias em estudo** (fora da especificação, não são requisito): [docs/ideias.md](docs/ideias.md)
 - **Fontes:** [pesquisa/fontes.md](pesquisa/fontes.md)
 - **Plano e critérios do RA1:** [entregas/ra1-tarefas.md](entregas/ra1-tarefas.md), [entregas/ra1-criterios-de-aceite.md](entregas/ra1-criterios-de-aceite.md)
