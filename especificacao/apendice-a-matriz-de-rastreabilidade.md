@@ -298,7 +298,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US037-CA4 | — |
 | US038-CA1 | — |
 | US038-CA2 | — |
-| US038-CA3 | — |
+| US038-CA3 | CT-C094 |
 | US039-CA1 | — |
 | US039-CA2 | — |
 | US039-CA3 | — |
@@ -384,7 +384,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - US037-CA4 sem caso de teste (item 15)
 - US038-CA1 sem caso de teste (item 15)
 - US038-CA2 sem caso de teste (item 15)
-- US038-CA3 sem caso de teste (item 15)
 - US039-CA1 sem caso de teste (item 15)
 - US039-CA2 sem caso de teste (item 15)
 - US039-CA3 sem caso de teste (item 15)

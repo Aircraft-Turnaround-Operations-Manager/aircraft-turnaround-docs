@@ -281,12 +281,12 @@ namespace monitoramento {
     + abrir(turnaroundId: UUID): void
     + buscarTurnaround(texto: String): void
     + abrirCaminhoCritico(turnaroundId: UUID): void
-    + abrirHistoricoAlertas(turnaroundId: UUID): void
     + atualizar(turnaroundId: UUID): void
   }
 
   class ListaAlertasView <<boundary>> {
     + abrir(): void
+    + abrirEncerrados(): void
     + registrarAcao(alertaId: UUID): void
     + incluirAlerta(alerta: Alerta): void
     + retirarAlerta(alertaId: UUID): void
@@ -316,7 +316,7 @@ namespace monitoramento {
 
   class AlertaController <<control>> {
     + listarAbertos(acesso: Acesso): List<Alerta>
-    + listarDoTurnaround(turnaroundId: UUID, acesso: Acesso): List<Alerta>
+    + listarEncerrados(dia: Date, acesso: Acesso): List<Alerta>
     + consultar(alertaId: UUID, acesso: Acesso): Alerta
   }
 
@@ -372,7 +372,7 @@ namespace monitoramento {
     + verificarViabilidade(turnaroundId: UUID, momento: DateTime): Alerta
     + verificarHorarios(momento: DateTime): void
     + listarAbertos(): List<Alerta>
-    + listarDoTurnaround(turnaroundId: UUID): List<Alerta>
+    + listarEncerrados(dia: Date): List<Alerta>
     + consultar(alertaId: UUID): Alerta
     + encerrarPorAcao(turnaroundId: UUID, alertaId: UUID, acaoId: UUID, tipoAcao: TipoAcaoAlerta, autorId: UUID, registradaEm: DateTime): void
     - classificarCritico(alerta: Alerta, caminho: CaminhoCritico): Boolean
@@ -462,6 +462,7 @@ namespace monitoramento {
     + buscarPorId(id: UUID): Alerta
     + listarAbertos(): List<Alerta>
     + listarPorTurnaround(turnaroundId: UUID): List<Alerta>
+    + listarEncerrados(dia: Date): List<Alerta>
     + buscarAberto(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
     + buscarUltimo(turnaroundId: UUID, tipo: TipoAlerta, tarefaId: UUID): Alerta
     + listarCriticosDosTurnarounds(turnaroundIds: List<UUID>): List<Alerta>
@@ -508,7 +509,6 @@ namespace monitoramento {
   monitoramento.PainelView ..> monitoramento.LinhaDoTempoView
   monitoramento.PainelView ..> monitoramento.ListaAlertasView
   monitoramento.ListaAlertasView ..> monitoramento.LinhaDoTempoView
-  monitoramento.LinhaDoTempoView ..> monitoramento.AlertaController
   monitoramento.PainelNotificador .[norank].> monitoramento.PainelView
   monitoramento.PainelNotificador .[norank].> monitoramento.LinhaDoTempoView
   monitoramento.PainelNotificador .[norank].> monitoramento.ListaAlertasView
