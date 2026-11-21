@@ -223,8 +223,8 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A4.1. O Coordenador de Turnaround abre o histórico do alerta encerrado. |  |
-|  | A4.2. O sistema exibe o horário do alerta, o horário da ação, a ação e o usuário. |
+| A4.1. O Coordenador de Turnaround abre a aba "Encerrados hoje" da lista de alertas (UC26). |  |
+|  | A4.2. O sistema exibe os alertas encerrados no dia, do mais recente para o mais antigo, cada um com o horário do alerta, o horário da ação, a ação e o usuário (RN3; US038, critério 3). |
 
 ### Fluxo alternativo A5 – Desistência (passo 5)
 
