@@ -41,8 +41,12 @@ alt registro.tipo = "Início" (UC15)
     create entity "acgt: Marco" as M1
     MS -> M1 : «create» Marco(tipo = "ACGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
     note right of M1 : passo 3: entra em turnaround.marcos
-  else A2: ACGT já gravado
+  else A2: ACGT já gravado, com horário igual ou anterior ao registro.horarioAcao
     note right of MS : mantém o ACGT gravado e segue para o passo 4 (A2.1)
+  else E1.2: início feito sem conexão, com registro.horarioAcao anterior ao ACGT gravado (RN1)
+    create entity "acgtNovo: Marco" as M1N
+    MS -> M1N : «create» Marco(tipo = "ACGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
+    note right of M1N : substitui o ACGT anterior\n(UNIQUE (turnaround_id, tipo))
   end
 
   == Passo 4: embarque? (RN2, RN5) ==
@@ -65,7 +69,7 @@ else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
   alt A3 (conclusão) ou A4 ("Não aplicável"): nenhuma pendente, e a tarefa do registro é obrigatória (RN3)
     create entity "aegt: Marco" as M3
     MS -> M3 : «create» Marco(tipo = "AEGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
-    note right of M3 : o AEGT novo substitui o anterior, se houver\n(Apêndice B.2.2; item 12, seção 12.5.2)
+    note right of M3 : o AEGT novo substitui o anterior, se houver, por exemplo\ndepois de uma tarefa obrigatória incluída no replanejamento\n(RN3; Apêndice B.2.2; item 12, seção 12.5.2)
   else A5: ainda há tarefa obrigatória pendente
     note right of MS : nenhum marco é gravado (A5.1)
   end
@@ -73,7 +77,7 @@ end
 
 == Gravação e aviso de cada marco criado ==
 loop cada marco criado (ACGT, ASBT ou AEGT)
-  MS -> AU : registrarAutomatico(objeto = "marco", objetoId = marco.id, acao = "Inclusão", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = AEGT anterior ou vazio, valoresNovos = tipo e horário)
+  MS -> AU : registrarAutomatico(objeto = "marco", objetoId = marco.id, acao = "Inclusão" ou "Alteração" (troca do ACGT ou do AEGT), causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = marco anterior ou vazio, valoresNovos = tipo e horário)
   activate AU
   AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
   AU --> MS : ok
@@ -99,6 +103,6 @@ note right of MQ
   e o mostra nos marcos do turnaround e na linha do tempo
   (UC22 e UC23); a MarcoView da Execução em Solo lê os
   marcos gravados (TurnaroundController.consultar).
-  E1.2: só os marcos gravados, com o horário da ação.
+  E1.3: só os marcos gravados, com o horário da ação.
 end note
 @enduml
