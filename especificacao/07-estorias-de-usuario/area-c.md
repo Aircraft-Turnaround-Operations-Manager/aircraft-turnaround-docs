@@ -86,6 +86,7 @@
 | 1 | **DADO QUE:** Y é 3 minutos e a limpeza da cabine do PR-OKV, com início planejado 09:58, está "Pronta" desde 09:59 <br> **QUANDO:** às 10:03 a limpeza continua sem registro de início <br> **ENTÃO:** o sistema emite o alerta com o turnaround, a tarefa, a equipe, o Operador de Solo/Rampa responsável e 4 minutos de espera |
 | 2 | **DADO QUE:** Y é 3 minutos e o catering ficou "Pronta" às 09:50, com início planejado 10:00 <br> **QUANDO:** às 10:02 o catering continua sem registro de início <br> **ENTÃO:** o sistema não emite alerta, porque a espera conta a partir do início planejado, mais tarde que a entrada em "Pronta", e é de 2 minutos |
 | 3 | **DADO QUE:** Y é 3 minutos e a limpeza da cabine está "Pronta" desde 09:59 <br> **QUANDO:** o Operador de Solo/Rampa registra o início às 10:01 <br> **ENTÃO:** o sistema não emite alerta para essa tarefa |
+| 4 | **DADO QUE:** o alerta de tarefa pronta não iniciada da limpeza da cabine do PR-OKV, emitido às 10:03, teve a ação registrada às 10:04 (RF-38) <br> **QUANDO:** às 10:10 a limpeza continua "Pronta" sem registro de início <br> **ENTÃO:** o sistema não emite novo alerta para a limpeza, porque ela não saiu de "Pronta" e voltou a esse estado depois da ação |
 
 ## US028 – REQUISITO RF-28: Emitir alerta de projeção além de TOBT + 5
 
@@ -129,6 +130,7 @@
 | 1 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-XMA é 10:30 <br> **QUANDO:** às 10:10 o ASBT do PR-XMA não foi registrado <br> **ENTÃO:** o sistema emite o alerta crítico com o turnaround, o TOBT vigente e o estado da tarefa de embarque e das predecessoras dela |
 | 2 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-MBC é 10:30 <br> **QUANDO:** o ASBT do PR-MBC é registrado às 10:08 <br> **ENTÃO:** o sistema não emite o alerta de embarque não iniciado para o PR-MBC |
 | 3 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-XMA passa de 10:30 para 10:40 antes das 10:10 <br> **QUANDO:** às 10:10 o ASBT ainda não foi registrado <br> **ENTÃO:** o sistema não emite alerta às 10:10 e passa a verificar o ASBT às 10:20 |
+| 4 | **DADO QUE:** X é 20 minutos, o alerta de embarque não iniciado do PR-XMA, emitido às 10:10, teve a ação registrada (RF-38) e o ASBT continua sem registro <br> **QUANDO:** às 10:37 o TOBT vigente passa de 10:30 para 10:45 <br> **ENTÃO:** o sistema emite na hora um novo alerta de embarque não iniciado, com o TOBT vigente 10:45, porque o novo limite (10:25) já passou |
 
 ## US031 – REQUISITO RF-31: Emitir alerta de prontidão não registrada
 
@@ -143,6 +145,7 @@
 | 1 | **DADO QUE:** o TOBT vigente do PR-XMA é 10:30 e o turnaround está "Operações em andamento" <br> **QUANDO:** às 10:36:00 o ARDT não foi registrado <br> **ENTÃO:** o sistema emite o alerta crítico com o turnaround, o TOBT vigente, o estado do turnaround e as tarefas obrigatórias ainda não concluídas |
 | 2 | **DADO QUE:** o TOBT vigente do PR-XMA é 10:30 <br> **QUANDO:** às 10:35:59 o ARDT ainda não foi registrado <br> **ENTÃO:** o sistema ainda não emite o alerta, porque os minutos são contados completos [3] |
 | 3 | **DADO QUE:** o TOBT vigente do PR-XMA é 10:30 <br> **QUANDO:** a Autoridade de Liberação registra o ARDT às 10:33 <br> **ENTÃO:** o sistema não emite o alerta de prontidão não registrada para o PR-XMA |
+| 4 | **DADO QUE:** o alerta de prontidão não registrada do PR-XMA, emitido às 10:36, teve a ação registrada às 10:37 com o TOBT vigente atualizado de 10:30 para 10:45 (RF-38) <br> **QUANDO:** às 10:51:00 o ARDT continua sem registro <br> **ENTÃO:** o sistema emite um novo alerta crítico de prontidão não registrada, com o TOBT vigente 10:45 |
 
 ## US032 – REQUISITO RF-32: Exibir aviso de checagem em TOBT − 15
 
@@ -158,6 +161,8 @@
 | 2 | **DADO QUE:** o PR-TLD tem TOBT vigente 11:00 e já está "Pronto para liberação" <br> **QUANDO:** o relógio chega a 10:45 <br> **ENTÃO:** o sistema não exibe o aviso de checagem para o PR-TLD |
 | 3 | **DADO QUE:** o aviso de checagem do PR-YRB foi exibido <br> **QUANDO:** o Coordenador de Turnaround consulta a lista de alertas e o painel <br> **ENTÃO:** o aviso não aparece na lista de alertas e não muda a cor do PR-YRB no painel |
 | 4 | **DADO QUE:** o TOBT vigente do PR-YRB passa de 11:00 para 11:10 antes das 10:45 <br> **QUANDO:** o relógio chega a 10:45 <br> **ENTÃO:** o sistema não exibe o aviso às 10:45 e o exibe às 10:55 |
+| 5 | **DADO QUE:** o aviso de checagem do PR-TLD está aberto desde 10:35, sem checagem registrada <br> **QUANDO:** o turnaround entra em "Pronto para liberação" às 10:38 <br> **ENTÃO:** o sistema encerra o aviso sem autor, com o horário 10:38, e o retira da tela e da linha do tempo |
+| 6 | **DADO QUE:** a checagem do aviso do PR-YRB foi registrada às 10:47 <br> **QUANDO:** o TOBT vigente passa de 11:00 para 11:20 e o relógio chega a 11:05 <br> **ENTÃO:** o sistema não exibe outro aviso de checagem para o PR-YRB, porque cada turnaround tem um só aviso |
 
 ## US033 – REQUISITO RF-33: Consultar lista de alertas abertos
 
