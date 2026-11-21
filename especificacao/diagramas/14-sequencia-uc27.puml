@@ -16,6 +16,7 @@ box "Monitoramento" #FAFAFA
   control "AvisoChecagemController" as C
   participant "AvisoChecagemService" as S <<service>>
   entity "AvisoChecagem" as AV
+  entity "TurnaroundMonitorado" as TM
   participant "TurnaroundMonitoradoRepository" as TR <<repository>>
   participant "ProjecaoRepository" as PR <<repository>>
   participant "AvisoChecagemRepository" as AR <<repository>>
@@ -45,7 +46,7 @@ loop para cada turnaround com o relógio em TOBT vigente − 15 (RN1)
     S --> AG : não emite o aviso
   else A2.2: o turnaround já tem aviso (RN9: um por turnaround, mesmo com o TOBT vigente mudado depois)
     S --> AG : não emite outro aviso
-  else "Operações em andamento" ou "Em exceção", sem aviso (passo 2)
+  else estado antes de "Pronto para liberação" (inclusive sem AIBT), sem aviso (passo 2)
     S -> PR : buscarUltima(turnaroundId)
     activate PR
     PR -> DB : SELECT projecao, projecao_tarefa (a última)
@@ -94,8 +95,19 @@ else passo 6 (A2: também quando uma equipe informa atraso)
   S -> AR : buscarPorId(avisoId)
   activate AR
   AR -> DB : SELECT aviso_checagem WHERE id = avisoId
+  AR --> S : aviso (com o turnaround)
+  deactivate AR
+  S -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado (com trava)
+  TR --> S : turnaround
+  deactivate TR
+  S -> AR : buscarPorId(avisoId)
+  activate AR
+  AR -> DB : SELECT aviso_checagem WHERE id = avisoId (relido com a trava)
   AR --> S : aviso
   deactivate AR
+  note right of S : a trava do turnaround serializa a checagem com o\nencerramento do A4, que roda com a mesma trava
   S -> AV : estaEncerrado()
   activate AV
   AV --> S : sim / não
@@ -145,9 +157,18 @@ ME -> CO : tratar(envelope)
 activate CO
 CO -> CS : aplicarEstado(turnaroundId, estado = "Pronto para liberação", momento)
 activate CS
+CS -> TR : buscarComTrava(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+TR --> CS : turnaround
+deactivate TR
+CS -> TM : aplicarEstado(estado = "Pronto para liberação", momento)
+activate TM
+TM --> CS : ok
+deactivate TM
 CS -> TR : salvar(turnaround)
 activate TR
-TR -> DB : UPDATE turnaround_monitorado SET estado, pronto_para_liberacao_em
+TR -> DB : UPDATE turnaround_monitorado SET estado e, só se vazio,\npronto_para_liberacao_em (primeira entrada no estado; RF-34)
 TR --> CS : ok
 deactivate TR
 CS -> S : encerrarPorProntidao(turnaroundId, momento)

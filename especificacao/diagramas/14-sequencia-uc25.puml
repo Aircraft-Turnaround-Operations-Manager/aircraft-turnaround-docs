@@ -35,11 +35,21 @@ alt fluxo básico (RN3, viabilidade): alteração do EIBT ou do MTTT (UC10), abe
   CO -> CS : aplicarPrevisao(turnaroundId, eibt, mtttMin)
   activate CS
   note right of CS : na abertura, aplicarTurnaroundAberto(turnaround);\nno TOBT novo, aplicarTobtVigente(atualizacao):\nas duas também chamam verificarViabilidade
+  CS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+  TR --> CS : turnaround
+  deactivate TR
+  CS -> TR : salvar(turnaround)
+  activate TR
+  TR -> DB : UPDATE turnaround_monitorado SET eibt, mttt_min
+  TR --> CS : ok
+  deactivate TR
   CS -> AS : verificarViabilidade(turnaroundId, momento)
   activate AS
   AS -> TR : buscarComTrava(turnaroundId)
   activate TR
-  TR -> DB : SELECT turnaround_monitorado (com trava)
+  TR -> DB : SELECT turnaround_monitorado\n(trava já obtida pelo CopiaService, na mesma transação)
   TR --> AS : AIBT, EIBT, MTTT e TOBT vigente
   deactivate TR
   alt US029-CA3: AIBT já registrado

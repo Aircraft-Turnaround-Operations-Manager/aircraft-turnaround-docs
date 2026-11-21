@@ -105,6 +105,11 @@ end
 
 opt A4: turnaround passa para "Fora de bloco"
   ref over CS : aviso de estado do turnaround da Execução em Solo (UC37),\nconsumido pelo ConsumidorAvisosMonitoramento
+  CS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+  TR --> CS : turnaround
+  deactivate TR
   CS -> TM : aplicarEstado(estado = "Fora de bloco", momento)
   activate TM
   TM --> CS : ok

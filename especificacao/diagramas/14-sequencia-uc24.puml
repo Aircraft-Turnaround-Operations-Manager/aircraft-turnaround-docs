@@ -84,6 +84,18 @@ else A3: alteração do plano, do TOBT vigente ou do AIBT
     CO -> CS : aplicarMarco(turnaroundId, tipo = "AIBT", horario, causaId)
   end
   activate CS
+  CS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+  TR --> CS : turnaround
+  deactivate TR
+  opt replanejamento ou serviço sob demanda (aviso de tarefa)
+    CS -> TA : aceitaVersao(versao)
+    activate TA
+    TA --> CS : sim / não
+    deactivate TA
+    note right of CS : versão menor ou igual à versao_origem: o aviso é ignorado e\nnada segue, como no ramo do registro; a tarefa sob demanda\nainda desconhecida é criada com o que o aviso traz (item 12, seção 12.4)
+  end
   CS -> TR : salvar(turnaround)
   activate TR
   TR -> DB : UPDATE turnaround_monitorado (tobt_vigente ou aibt)\nou tarefa_monitorada (janela e dependências);\nINSERT atualizacao_tobt_monitorada na atualização do TOBT
