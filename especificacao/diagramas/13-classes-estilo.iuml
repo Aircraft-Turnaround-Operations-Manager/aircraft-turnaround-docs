@@ -1,0 +1,39 @@
+' Estilo e fontes comuns das vistas do item 13 (incluído por cada 13-classes-*.puml).
+' Cada vista começa sem nenhuma classe (remove *) e restaura só o pacote e as classes que mostra.
+skinparam style strictuml
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam classAttributeIconSize 0
+skinparam packageStyle folder
+skinparam nodesep 20
+skinparam ranksep 35
+' quebra as assinaturas longas para a figura caber melhor na página (letra legível no PDF)
+skinparam wrapWidth 250
+skinparam classBackgroundColor #FFFFFF
+skinparam classBorderColor #555555
+skinparam packageBackgroundColor #FAFAFA
+skinparam packageBorderColor #9E9E9E
+skinparam class {
+  BackgroundColor<<entity>> #FFFFFF
+  BackgroundColor<<enumeration>> #F3F6FA
+  BackgroundColor<<dto>> #FAFAF0
+  BackgroundColor<<boundary>> #F1F8E9
+  BackgroundColor<<control>> #E3F2FD
+  BackgroundColor<<resolver>> #E3F2FD
+  BackgroundColor<<service>> #FFF8E1
+  BackgroundColor<<repository>> #F3E5F5
+  BackgroundColor<<client>> #FBE9E7
+  BackgroundColor<<websocket>> #FBE9E7
+  BackgroundColor<<consumer>> #FBE9E7
+  BackgroundColor<<publisher>> #FBE9E7
+  BackgroundColor<<scheduler>> #FBE9E7
+  BackgroundColor<<gateway>> #ECEFF1
+}
+!include 13-classes-contrato.iuml
+!include 13-classes-cadastro.iuml
+!include 13-classes-execucao.iuml
+!include 13-classes-monitoramento.iuml
+!include 13-classes-excecoes.iuml
+!include 13-classes-ligacoes.iuml
+remove *

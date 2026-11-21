@@ -4,7 +4,7 @@ titulo: "Contexto do projeto — leia antes de qualquer tarefa"
 tipo: contexto
 status: vigente
 atualizado: 2026-10-10
-relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016]
+relacionados: [mapa-pesquisa, adr-indice, adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0021, adr-0022]
 ---
 # Contexto do projeto
 
@@ -77,6 +77,9 @@ Regra ([ADR-0008](docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md)): **toda*
 | D14 | **Serviços sob demanda:** catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround com o turnaround em andamento; o atraso conta na meta de 80% | [0014](docs/adr/0014-servicos-sob-demanda.md) |
 | D15 | **Quatro microsserviços:** Cadastro e Planejamento, Execução em Solo, Monitoramento, Exceções e Liberação; tarefa e estado do turnaround na Execução em Solo; só o dono do dado decide | [0015](docs/adr/0015-divisao-em-microsservicos.md) |
 | D16 | **Contrato entre os serviços** (votação do grupo, provisório): porta de entrada que consulta o Cadastro a cada ação; REST entre serviços; RabbitMQ com envelope comum dos avisos; horários em UTC; UUID; nomes em português | [0016](docs/adr/0016-contrato-entre-os-servicos.md) |
+| D21 | **Matriz estendida** aos itens 12, 14 e 15 (RF → tabelas; caso de uso → diagrama de sequência; critério de aceite → casos de teste); complementa a D12 | [0021](docs/adr/0021-matriz-de-rastreabilidade-estendida.md) |
+| D22 | **Casos de teste com ID provisório por área** (CT-A001…) e renumeração única (CT-001…) por script na consolidação; complementa a D11 | [0022](docs/adr/0022-ids-provisorios-dos-casos-de-teste.md) |
+| D23 | **Interfaces da porta de entrada e do Cadastro e Planejamento:** token interno assinado lido por todos os serviços; consultas entre o Cadastro e a Execução em Solo; plano gravado como "confirmação pendente", com chave, antes do envio; prazo dos dados pessoais pelo aviso de encerramento; complementa a D16 | [0023](docs/adr/0023-interfaces-da-porta-de-entrada-e-do-cadastro.md) |
 
 ## 6. Metas do item 1 (vigentes)
 
@@ -98,6 +101,7 @@ Os 5 min têm referência direta no setor (tolerância em torno do TOBT). Os 80%
 
 - **Mapa da pesquisa** (índices por item e por área, diagrama): [pesquisa/README.md](pesquisa/README.md)
 - **Decisões:** [docs/adr/README.md](docs/adr/README.md)
+- **Ideias em estudo** (fora da especificação, não são requisito): [docs/ideias.md](docs/ideias.md)
 - **Fontes:** [pesquisa/fontes.md](pesquisa/fontes.md)
 - **Plano e critérios do RA1:** [entregas/ra1-tarefas.md](entregas/ra1-tarefas.md), [entregas/ra1-criterios-de-aceite.md](entregas/ra1-criterios-de-aceite.md)
 - **Grafo:** `graphify-out/` (`GRAPH_REPORT.md`, `graph.html`, `graph.json`). **Antes de escrever ou revisar um item, consulte o grafo** pelos nós e termos-chave do item e leia o que se liga a eles nas outras áreas, ADRs e critérios; decida pelos arquivos (`AGENTS.md`, regra 6).

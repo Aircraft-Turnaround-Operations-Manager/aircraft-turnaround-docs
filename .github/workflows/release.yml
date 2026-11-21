@@ -1,0 +1,62 @@
+# Cria a release do GitHub a partir de uma tag vX.Y.Z.
+# Notas: a seção "## [X.Y.Z]" do CHANGELOG.md da main. Anexo: o PDF entregas/raN-especificacao-de-projeto.pdf
+# do commit da tag (N = versão principal), se existir.
+# Tag nova: dispara sozinho no push. Tag antiga (sem este arquivo no commit): rodar à mão em Actions,
+# "Release", "Run workflow", informando a tag.
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag já existente (ex.: v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Notas e PDF
+        run: |
+          set -euo pipefail
+          VERSAO="${TAG#v}"
+          git show "origin/${{ github.event.repository.default_branch }}:CHANGELOG.md" > changelog.md
+          awk -v v="$VERSAO" '
+            index($0, "## [" v "]") == 1 { achou = 1; print > "titulo.txt"; next }
+            achou && (/^## \[/ || /^\[[^]]+\]: /) { exit }
+            achou { print }
+          ' changelog.md > notas.md
+          if [ ! -s titulo.txt ]; then
+            echo "::error::Seção ## [$VERSAO] não encontrada no CHANGELOG.md da main."
+            exit 1
+          fi
+          DATA=$(sed -E 's/^## \[[^]]+\] - //' titulo.txt)
+          echo "TITULO=$TAG ($DATA)" >> "$GITHUB_ENV"
+          PDF="entregas/ra${VERSAO%%.*}-especificacao-de-projeto.pdf"
+          if git cat-file -e "$TAG:$PDF" 2>/dev/null; then
+            NOME="ra${VERSAO%%.*}-especificacao-de-projeto-$TAG.pdf"
+            git show "$TAG:$PDF" > "$NOME"
+            echo "ANEXO=$NOME" >> "$GITHUB_ENV"
+          fi
+
+      - name: Criar ou atualizar a release
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TITULO" --notes-file notas.md
+            if [ -n "${ANEXO:-}" ]; then gh release upload "$TAG" "$ANEXO" --clobber; fi
+          else
+            gh release create "$TAG" --verify-tag --title "$TITULO" --notes-file notas.md ${ANEXO:+"$ANEXO"}
+          fi

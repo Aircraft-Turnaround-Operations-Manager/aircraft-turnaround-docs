@@ -1,0 +1,34 @@
+@startuml
+' Item 13 — Execução das tarefas no solo. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+execucao.TurnaroundRepository -[hidden]down- execucao.CorrecaoAibtRepository
+execucao.LeituraQrCodeRepository -[hidden]down- execucao.PontoConfirmacaoRepository
+execucao.RegistroTarefaRepository -[hidden]down- execucao.TarefaDoOperador
+execucao.ListaTarefasNotificador -[hidden]down- execucao.CodigoAtrasoRepository
+restore execucao
+restore execucao.ChegadaView
+restore execucao.CorrecaoChegadaView
+restore execucao.ListaTarefasView
+restore execucao.TarefaView
+restore execucao.LeituraQrCodeView
+restore execucao.MarcoView
+restore execucao.FilaRegistrosSemConexao
+restore execucao.ChegadaController
+restore execucao.TarefaController
+restore execucao.LeituraQrCodeController
+restore execucao.CodigoAtrasoController
+restore execucao.ChegadaService
+restore execucao.TarefaService
+restore execucao.LeituraQrCodeService
+restore execucao.CodigoAtrasoService
+restore execucao.TurnaroundRepository
+restore execucao.TarefaRepository
+restore execucao.RegistroTarefaRepository
+restore execucao.CorrecaoAibtRepository
+restore execucao.PontoConfirmacaoRepository
+restore execucao.LeituraQrCodeRepository
+restore execucao.CodigoAtrasoRepository
+restore execucao.ListaTarefasNotificador
+restore execucao.TurnaroundController
+restore execucao.TarefaDoOperador
+@enduml

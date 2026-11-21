@@ -27,7 +27,7 @@
 | 3 | **DADO QUE:** a tarefa de limpeza da cabine está no estado "Pronta" <br> **QUANDO:** tento reatribuí-la a um operador de outra equipe ou a um operador da equipe de limpeza que tem tarefa em execução <br> **ENTÃO:** o sistema recusa a reatribuição, informa que o operador escolhido não é da mesma equipe ou não está disponível e a tarefa mantém o operador original |
 | 4 | **DADO QUE:** reatribuí uma tarefa enquanto o operador original estava sem conexão e ele registrou, no celular, o início dessa tarefa <br> **QUANDO:** a conexão do operador original volta e o registro é enviado ao servidor <br> **ENTÃO:** o sistema recusa o registro, a tarefa não muda de estado e o operador original recebe o aviso da recusa com o motivo, como define o RNF-8 |
 
-## US038 – REQUISITO RF-38: Registrar a ação tomada para cada alerta
+## US038 – REQUISITO RF-38: Registrar ação tomada para cada alerta
 
 **COMO:** Coordenador de Turnaround
 **POSSO:** registrar, para cada alerta recebido, a ação que tomei (reatribuir tarefa, replanejar, atualizar a previsão ou abrir exceção)
@@ -41,7 +41,7 @@
 | 2 | **DADO QUE:** um alerta está aberto <br> **QUANDO:** tento encerrá-lo sem escolher uma das ações <br> **ENTÃO:** o sistema recusa o encerramento, informa que a ação é obrigatória e o alerta continua aberto |
 | 3 | **DADO QUE:** recebi um alerta às 10:00 e registrei a ação às 10:01:30 <br> **QUANDO:** consulto o histórico do alerta <br> **ENTÃO:** o sistema exibe o horário do alerta, o horário da ação, a ação escolhida e o meu usuário, o que permite calcular o tempo de resposta de 1 minuto e 30 segundos |
 
-## US039 – REQUISITO RF-39: Confirmar a prontidão e liberar a aeronave
+## US039 – REQUISITO RF-39: Confirmar prontidão e liberar aeronave
 
 **COMO:** Autoridade de Liberação
 **POSSO:** confirmar a prontidão da aeronave de um turnaround no estado "Pronto para liberação", registrando o horário real de prontidão (ARDT) [2]
@@ -117,5 +117,6 @@
 | 1 | **DADO QUE:** a equipe de limpeza tem três operadores sem tarefa em execução, que concluíram a última tarefa há 25, 10 e 3 minutos <br> **QUANDO:** escolho reatribuir uma tarefa de limpeza da cabine <br> **ENTÃO:** o sistema lista os três operadores na ordem de 25, 10 e 3 minutos desde a última tarefa concluída, mostrando esse tempo ao lado de cada nome |
 | 2 | **DADO QUE:** a equipe de limpeza tem um operador com tarefa em execução e há operadores de outras equipes sem tarefa em execução <br> **QUANDO:** escolho reatribuir uma tarefa de limpeza da cabine <br> **ENTÃO:** a lista não mostra o operador com tarefa em execução nem os operadores de outras equipes |
 | 3 | **DADO QUE:** todos os operadores da equipe de catering têm tarefa em execução <br> **QUANDO:** escolho reatribuir uma tarefa de catering <br> **ENTÃO:** o sistema informa que não há operador disponível na equipe e a tarefa mantém o operador original |
+| 4 | **DADO QUE:** a equipe de limpeza tem, sem tarefa em execução, dois operadores que concluíram a última tarefa há 25 e 10 minutos e dois, Bruno e Ana, que ainda não concluíram nenhuma tarefa <br> **QUANDO:** escolho reatribuir uma tarefa de limpeza da cabine <br> **ENTÃO:** o sistema lista primeiro Ana e Bruno, com a indicação "ainda sem tarefa concluída", e depois os operadores de 25 e 10 minutos |
 
 Fontes citadas: [2], [8], [9] e [62], conforme a numeração de `pesquisa/fontes.md`.

@@ -1,3 +1,5 @@
+<!-- Área B, serviço Execução em Solo (ADR-0015): casos de teste dos casos de uso UC12 a UC21 e UC37 e das estórias US012 a US021 e US044, 47 critérios de aceite (issue #153). Formato em 00-item.md. -->
+
 ## Massa de teste da área B
 
 Os casos de teste da área B (Execução em Solo) seguem o método da planilha de casos de teste: cada fluxo dos casos de uso UC12 a UC21 e UC37 (item 10) vira pelo menos um cenário, e cada cenário aponta para o critério de aceite da estória que ele confere (item 7). Na coluna "Cenário", FP*n* é o passo *n* do fluxo básico, A*n*.*m* é o passo do fluxo alternativo e E*n*.*m* é o passo do fluxo de exceção. Na coluna "Estória e critério de aceite", US012-CA1 é o critério 1 da US012. Os identificadores CT-B*nnn* são provisórios da área B; a tarefa-mãe do item 15 (#147) dá a numeração única CT-*nnn*.

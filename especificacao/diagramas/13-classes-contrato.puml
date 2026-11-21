@@ -1,0 +1,39 @@
+@startuml
+' Item 13 — Contrato entre os serviços e infraestrutura comum. Vista gerada a partir das fontes 13-classes-*.iuml.
+!include 13-classes-estilo.iuml
+left to right direction
+restore cadastro
+restore comum
+restore contrato
+restore excecoes
+restore execucao
+restore monitoramento
+restore contrato.UUID
+restore contrato.EstadoTurnaround
+restore contrato.EstadoTarefa
+restore contrato.Perfil
+restore contrato.TipoAcaoAlerta
+restore contrato.Acesso
+restore contrato.EnvelopeAviso
+restore contrato.PortaDeEntrada
+restore comum.AcaoAuditoria
+restore comum.TipoAutor
+restore comum.RegistroAuditoria
+restore comum.AvisoSaida
+restore comum.AvisoProcessado
+restore comum.RegistroAuditoriaRepository
+restore comum.AvisoSaidaRepository
+restore comum.AvisoProcessadoRepository
+restore comum.AuditoriaService
+restore comum.RotinaAnonimizacao
+restore comum.PublicadorAvisos
+restore comum.ConsumidorAvisos
+restore cadastro.ConsumidorAvisosCadastro
+restore execucao.ConsumidorAvisosExecucao
+restore monitoramento.ConsumidorAvisosMonitoramento
+restore excecoes.ConsumidorAvisosExcecoes
+restore cadastro.RotinaAnonimizacaoCadastro
+restore execucao.RotinaAnonimizacaoExecucao
+restore monitoramento.RotinaAnonimizacaoMonitoramento
+restore excecoes.RotinaAnonimizacaoExcecoes
+@enduml
