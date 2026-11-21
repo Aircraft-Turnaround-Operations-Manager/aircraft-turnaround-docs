@@ -95,8 +95,8 @@ else o operador escreve a justificativa e confirma (passo 5)
             S --> C : recusa
             C --> G : 422 justificativa obrigatória
             G --> V : 422
-          else E2: tarefa já iniciada ou terminada ("Em execução", "Pausada", "Concluída" ou "Não aplicável"; RN1)
-            TA --> S : recusa: só tarefa não iniciada pode ser marcada
+          else E2: tarefa já iniciada ou terminada ("Em execução", "Pausada", "Concluída" ou "Não aplicável"),\nou turnaround sem a chegada registrada (RN1)
+            TA --> S : recusa: só tarefa não iniciada, com a chegada registrada, pode ser marcada
             S --> C : recusa com o estado atual
             C --> G : 409 estado atual da tarefa
             G --> V : 409

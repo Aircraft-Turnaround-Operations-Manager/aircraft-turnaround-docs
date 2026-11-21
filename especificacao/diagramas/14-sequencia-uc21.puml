@@ -92,11 +92,11 @@ else registro.tipo = "Conclusão" (passo 1) ou A3: "Não aplicável" (tarefa ter
   PS -> T : obrigatoriasPendentes()
   activate T
   T --> PS : obrigatórias fora de "Concluída" e "Não aplicável"
-  alt A4: nenhuma pendente e turnaround "Operações em andamento"
+  alt A4: nenhuma pendente, com o turnaround "Operações em andamento" ou, sem nenhum início, "Em solo" (RN3)
     PS -> T : mudarEstado(novo = "Pronto para liberação", autorId = vazio, causaId = registro.id, momento)
     T --> PS : HistoricoEstadoTurnaround
     deactivate T
-    PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Operações em andamento", valoresNovos = "Pronto para liberação")
+    PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = estado anterior, valoresNovos = "Pronto para liberação")
     activate AU
     AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
     deactivate AU
@@ -123,9 +123,14 @@ note right of MQ : o Monitoramento copia os estados\ne recalcula (UC24); o paine
 newpage UC21 – parte 2: chegada (A7) e replanejamento (A8)
 
 == A7: chegada da aeronave à posição (UC12; RN2) ==
-ME -> PS : propagarChegada(turnaround, causaId = marco AIBT)
+ME -> PS : propagarChegada(turnaround, causaId = marco AIBT ou plano)
 activate PS
-note right of PS : chamado pelo ChegadaService, na transação da chegada,\ndepois que o turnaround passa para "Em solo"
+note right of PS
+  chamado pelo ChegadaService, na transação da chegada,
+  depois que o turnaround passa para "Em solo"; ou pelo
+  TurnaroundService.receberPlano, quando o plano é substituído
+  depois da chegada e antes do primeiro início (RN2)
+end note
 loop cada tarefa do turnaround "Aguardando" e sem predecessora (por exemplo, calçar a aeronave)
   PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId = marco AIBT, momento)
   activate SU
@@ -144,7 +149,7 @@ end
 note right of PS : A7.2: as tarefas aparecem "Pronta" na lista\ndos responsáveis (UC14) em até 5 s
 PS --> ME : tarefas que ficaram "Pronta"
 deactivate PS
-ref over ME, DB : UC12, passo 5: ChegadaService → TurnaroundRepository.salvar(turnaround), na mesma transação
+ref over ME, DB : UC12, passo 5 (ou o plano substituído): ChegadaService ou TurnaroundService\n→ TurnaroundRepository.salvar(turnaround), na mesma transação
 
 == A8: inclusão de tarefa ou alteração de dependências no replanejamento (UC35; RN1) ==
 ME -> PS : reavaliarNaoIniciadas(turnaround, causaId = replanejamentoId)
