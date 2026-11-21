@@ -252,9 +252,10 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US026-CA2 | CT-C014, CT-C019 |
 | US026-CA3 | CT-C015 |
 | US026-CA4 | CT-C016, CT-C020, CT-C021 |
-| US027-CA1 | CT-C050, CT-C051, CT-C059, CT-C089 |
+| US027-CA1 | CT-C050, CT-C051, CT-C059 |
 | US027-CA2 | CT-C052 |
 | US027-CA3 | CT-C053 |
+| US027-CA4 | CT-C089 |
 | US028-CA1 | CT-C045 |
 | US028-CA2 | CT-C046 |
 | US028-CA3 | CT-C047, CT-C048 |
@@ -264,14 +265,18 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US029-CA3 | CT-C044 |
 | US030-CA1 | CT-C054 |
 | US030-CA2 | CT-C055 |
-| US030-CA3 | CT-C056, CT-C090 |
-| US031-CA1 | CT-C057, CT-C090 |
+| US030-CA3 | CT-C056 |
+| US030-CA4 | CT-C090 |
+| US031-CA1 | CT-C057 |
 | US031-CA2 | CT-C057 |
 | US031-CA3 | CT-C058 |
+| US031-CA4 | CT-C090 |
 | US032-CA1 | CT-C071, CT-C077 |
-| US032-CA2 | CT-C076, CT-C091 |
+| US032-CA2 | CT-C076 |
 | US032-CA3 | CT-C072 |
-| US032-CA4 | CT-C078, CT-C092 |
+| US032-CA4 | CT-C078 |
+| US032-CA5 | CT-C091 |
+| US032-CA6 | CT-C092 |
 | US033-CA1 | CT-C006, CT-C061, CT-C063, CT-C065, CT-C066, CT-C068, CT-C070 |
 | US033-CA2 | CT-C050, CT-C051, CT-C062 |
 | US033-CA3 | CT-C064, CT-C069 |
@@ -282,7 +287,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US034-CA4 | CT-C085 |
 | US034-CA5 | CT-C087 |
 | US035-CA1 | CT-C073, CT-C075 |
-| US035-CA2 | CT-C079, CT-C091 |
+| US035-CA2 | CT-C079 |
 | US035-CA3 | CT-C074 |
 | US036-CA1 | — |
 | US036-CA2 | — |
