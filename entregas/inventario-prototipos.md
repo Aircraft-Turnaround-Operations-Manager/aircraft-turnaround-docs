@@ -104,6 +104,15 @@ Página "Céu":
 
 Páginas "Pátio noturno" (1:49, tema azul-escuro) e "Sinalização" (1:50, tema preto e laranja): cada uma repete as duas seções do João, com os mesmos 19 nomes de frame (12 de celular e 7 web), ids 19:1119 a 19:3090 e 19:3248 a 19:5219. Nenhuma está no PDF. Página "Componentes" (3:2): logo e 37 ícones, sem telas.
 
+## 4. Canvas
+
+Todas as telas estão reconstruídas como markup editável no artefato de Design "Protótipos de tela — Aircraft Turnaround Orchestration System" (https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX, privado até ser compartilhado), com uma página por grupo e a origem no nome de cada artboard:
+
+- **43 telas do Figma (página "Céu")**, convertidas do código do Figma e comparadas, por render, com o frame. A única diferença que sobra é de renderização: deslocamentos de 1 a 2 px e a seta "→" mais larga na fonte mono.
+- **D-1 (UC20) e D-2 (UC32)** seguem o PNG e foram comparadas com ele.
+- **7 telas da área C (UC22 a UC28)**, desenhadas a partir dos PNGs do PDF e marcadas "FORA DO FIGMA — origem: commit 144bdd5" (UC23: 18a2ddb, v2). Fontes aproximadas: Inter e JetBrains Mono.
+- **Não reconstruídas:** as cópias de tema das páginas "Pátio noturno" e "Sinalização" e a v1 da linha do tempo, que está fora do PDF.
+
 ## Ligações
 
 - [Especificações de caso de uso — área A](../especificacao/10-especificacoes-de-caso-de-uso/area-a.md)
