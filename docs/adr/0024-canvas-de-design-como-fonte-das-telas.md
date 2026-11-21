@@ -18,7 +18,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 ## Contexto
 
 - A ADR-0016, ponto 1, votada pelos quatro integrantes, diz que o Design System próprio parte dos protótipos do Figma (arquivo `aircraft`).
-- Em 20/11/2026, um inventário comparou as 42 imagens de tela do PDF do RA1, que são as imagens de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/`, com os frames do Figma. O inventário está no commit `7f20aba`, da branch `prototipos/inventario-de-telas`. Resultado:
+- Em 20/11/2026, um inventário comparou as 42 imagens de tela do PDF do RA1, que são as imagens de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/`, com os frames do Figma. O resultado está no [inventário das telas](../../entregas/inventario-prototipos.md). Resultado:
   - 33 imagens são iguais ao Figma;
   - 2 divergem do Figma, porque foram melhoradas direto no PNG (UC20 e UC32);
   - 7 não existem no Figma: as telas da área C (UC22 a UC28), geradas localmente junto com o texto (commits `144bdd5` e `18a2ddb`).
@@ -57,5 +57,6 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 - **Contrato entre os serviços (ponto 1, telas):** [ADR-0016](0016-contrato-entre-os-servicos.md)
 - **Regra para quem escreve (pessoas e IAs):** [AGENTS.md](../../AGENTS.md), regra 11
 - **Especificações de caso de uso (item 10):** [00-item.md](../../especificacao/10-especificacoes-de-caso-de-uso/00-item.md)
+- **Inventário das telas (origem de cada uma):** [entregas/inventario-prototipos.md](../../entregas/inventario-prototipos.md)
 - **Índice das decisões:** [README.md](README.md)
 - **Contexto geral:** [CONTEXT.md](../../CONTEXT.md)
