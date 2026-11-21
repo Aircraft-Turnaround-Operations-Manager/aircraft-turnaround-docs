@@ -1,0 +1,175 @@
+@startuml
+' UC13 – Corrigir horário de chegada à posição (RF-13, US013; ADR-0013).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). A correção não muda estados (RN3) e,
+' fora de "Liberado", avisa o Monitoramento, que recalcula a projeção (UC24, A3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc13.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "CorrecaoChegadaView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as TC
+  control "ChegadaController" as C
+  participant "ChegadaService" as S <<service>>
+  entity "Turnaround" as T
+  participant "CorrecaoAibtRepository" as CR <<repository>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: AIBT atual e histórico ==
+CO -> V : abrir(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> TC : consultar(turnaroundId, acesso)
+activate TC
+ref over TC, DB : TurnaroundService.consultar(turnaroundId) → TurnaroundRepository.buscarPorId(turnaroundId):\nSELECT turnaround, marco (como no UC12, passos 1 e 2)
+TC --> G : 200 turnaround com o AIBT
+deactivate TC
+G --> V : 200
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}/correcoes-aibt", corpo = vazio, acaoDoUsuario = sim)
+G -> C : listarCorrecoes(turnaroundId, acesso)
+activate C
+C -> S : listarCorrecoes(turnaroundId)
+activate S
+S -> CR : listarPorTurnaround(turnaroundId)
+activate CR
+CR -> DB : SELECT correcao_aibt WHERE turnaround_id = turnaroundId ORDER BY corrigido_em
+CR --> S : correções
+deactivate CR
+S --> C : correções
+deactivate S
+C --> G : 200 correções
+deactivate C
+G --> V : 200
+deactivate G
+V --> CO : turnaround, AIBT atual e histórico de correções (passo 2)
+
+== Passos 3 a 5: correção ==
+alt A1: o coordenador cancela
+  V --> CO : mantém o AIBT e o histórico anteriores
+else o coordenador informa o horário com data, fuso e motivo e seleciona "Salvar correção" (passo 3)
+  CO -> V : salvarCorrecao(turnaroundId, aibtNovo, motivo)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/turnarounds/{turnaroundId}/correcoes-aibt", corpo = aibtNovo + motivo + requisicaoId, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+  alt E3: acesso revogado
+    G --> V : 401 acesso recusado, sem alterar dados
+  else acesso confirmado
+    G -> C : corrigirAibt(turnaroundId, aibtNovo, motivo, requisicaoId, acesso)
+    activate C
+    C -> S : corrigirAibt(turnaroundId, aibtNovo, motivo, requisicaoId, autorId = acesso.usuarioId)
+    activate S
+    S -> CR : buscarPorRequisicao(requisicaoId)
+    activate CR
+    CR -> DB : SELECT correcao_aibt WHERE requisicao_id = requisicaoId
+    CR --> S : correção ou vazio
+    deactivate CR
+    alt E4.2: mesma requisicaoId já gravada (nova tentativa depois de resposta perdida; RN4)
+      S --> C : a correção gravada na primeira vez, sem nova correção nem aviso
+      C --> G : 200 mesma resposta
+      G --> V : 200
+    else requisição nova
+      critical trava do turnaround até o fim da transação (ADR-0018); as condições são conferidas de novo ao salvar (RN4)
+        S -> TR : buscarComTrava(turnaroundId)
+        activate TR
+        TR -> DB : SELECT turnaround, marco ... FOR UPDATE
+        TR --> S : turnaround com os marcos
+        deactivate TR
+        S -> T : corrigirAibt(aibtNovo, motivo, autorId, requisicaoId, momento)
+        activate T
+
+        == Passo 4: verificações ==
+        alt E1: sem AIBT registrado, ou turnaround "Fora de bloco" (inclusive se encerrado durante a edição)
+          T --> S : recusa: sem chegada ou turnaround encerrado
+          S --> C : recusa
+          C --> G : 409 impedimento
+          G --> V : 409
+        else E2: motivo vazio, ou aibtNovo inválido ou futuro (RN2)
+          T --> S : recusa com o campo
+          S --> C : recusa
+          C --> G : 422 campo inválido
+          G --> V : 422
+        else correção aceita
+
+          == Passo 5: gravação, sem mudar estados (RN3) ==
+          note right of T
+            Cria a CorrecaoAibt (aibt_anterior, aibt_novo, motivo,
+            autor_id, corrigido_em, requisicao_id) e troca o horário
+            do Marco AIBT; o horário da correção não substitui o AIBT
+            (RN4). Turnaround e tarefas mantêm o estado.
+          end note
+          T --> S : correção
+          deactivate T
+          S -> TR : salvar(turnaround)
+          activate TR
+          TR -> DB : UPDATE marco SET horario = aibtNovo WHERE tipo = 'AIBT';\nINSERT correcao_aibt
+          alt E4: falha na gravação
+            TR --> S : erro; a transação é desfeita
+            S --> C : falha técnica
+            C --> G : 500
+            G --> V : 500
+          else gravado
+            TR --> S : ok
+            deactivate TR
+            S -> AU : registrar(objeto = "marco", objetoId = marco AIBT, acao = "Alteração", autorId, causaId = correcao.id, turnaroundId, valoresAnteriores = aibtAnterior, valoresNovos = aibtNovo e motivo)
+            activate AU
+            AU -> DB : INSERT registro_auditoria
+            AU --> S : ok
+            deactivate AU
+
+            == Passo 6: evento para o recálculo ==
+            opt turnaround ≠ "Liberado" (RN3)
+              S -> PUB : registrar(EnvelopeAviso.novo(tipo = "AibtCorrigido", turnaroundId, autorId, causaId = correcao.id, dados = correcaoId, aibtAnterior, aibtNovo, corrigidoEm))
+              activate PUB
+              PUB -> DB : INSERT aviso_saida (mesma transação)
+              PUB --> S : ok
+              deactivate PUB
+            end
+            S --> C : correção
+            C --> G : 201 correção
+            G --> V : 201
+          end
+        end
+      end
+    end
+    deactivate S
+    deactivate C
+  end
+  deactivate G
+
+  == Passo 7: resultado ==
+  alt 201 ou 200
+    V --> CO : AIBT atualizado e histórico, com o horário real e o da correção separados
+  else 409
+    V --> CO : E1: informa o impedimento e não salva
+  else 422
+    V --> CO : E2: indica o campo e volta ao passo 3 sem gravar
+  else 401
+    V --> CO : E3: a ação é recusada sem alterar dados
+  else E4: 500 ou resposta perdida
+    V --> CO : não anuncia sucesso sem a confirmação da gravação (E4.1);\na nova tentativa reenvia a mesma requisicaoId e cai no E4.2
+  end
+end
+deactivate V
+
+== Depois da gravação: aviso ao Monitoramento ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica AibtCorrigido
+alt E5: falha na entrega à mensageria
+  MQ --> PUB : sem confirmação
+  note right of PUB : aviso_saida continua com publicado_em vazio;\no próximo publicarPendentes() tenta de novo, sem repetir\na correção; quem recebe descarta o repetido (ADR-0016)
+else entregue
+  MQ --> PUB : confirmado
+  PUB -> DB : UPDATE aviso_saida SET publicado_em
+end
+deactivate PUB
+ref over MQ : UC24 – Recalcular projeção,\natraso e caminho crítico\n(A3: correção do AIBT)
+@enduml

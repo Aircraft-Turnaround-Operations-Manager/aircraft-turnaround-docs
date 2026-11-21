@@ -1,0 +1,172 @@
+@startuml
+' UC37 – Registrar saída da posição e encerrar turnaround (RF-44, US044).
+' Classes do item 13 (execucao, cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.2). O aviso de encerramento leva o
+' horário real de saída da posição (AOBT) e os usuários vinculados ao turnaround (ADR-0023, ponto 6).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc37.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "SaidaPosicaoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as C
+  participant "TurnaroundService" as S <<service>>
+  entity "Turnaround" as T
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+end box
+
+== Passos 1 e 2: turnaround liberado ==
+OP -> V : abrir(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+G -> C : consultar(turnaroundId, acesso)
+activate C
+C -> S : consultar(turnaroundId)
+activate S
+S -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround, marco WHERE turnaround.id = turnaroundId
+TR --> S : turnaround (aeronave, posição, estado, tobt_vigente, ardt, liberado_por_id)
+deactivate TR
+S --> C : turnaround
+deactivate S
+C --> G : 200 turnaround
+deactivate C
+G --> V : 200
+deactivate G
+V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/nomes", corpo = liberadoPorId, acaoDoUsuario = não)
+activate G
+G -> UC : listarNomes(usuarioIds = [liberadoPorId], acesso)
+activate UC
+UC --> G : 200 nome de quem confirmou a prontidão
+deactivate UC
+G --> V : 200
+deactivate G
+note right of V : TOBT, ARDT e quem liberou são cópias, só para exibir\n(item 12, seção 12.5.2); o nome vem do Cadastro
+V --> OP : aeronave, posição, "Liberado", TOBT, ARDT, quem confirmou\na prontidão e "Registrar saída da posição" (passo 2)
+
+== Passos 3 a 5: confirmação ==
+OP -> V : selecionar "Registrar saída da posição"
+V --> OP : pede a confirmação: aeronave, posição, horário que será gravado e a indicação\nde que a autorização de acionamento e de push-back foi recebida do ATC (passo 4; RN3)
+alt A1: o operador cancela a confirmação
+  V --> OP : fecha a confirmação sem gravar nada; o turnaround continua "Liberado"
+else o operador marca que a autorização foi recebida e confirma (passo 5)
+  OP -> V : registrarSaida(turnaroundId, autorizacaoRecebida = sim)
+  alt E4: sem conexão com a internet
+    V --> OP : informa que o registro não foi enviado, não grava o AOBT\ne mantém a confirmação aberta para nova tentativa (E4.1)
+  else com conexão
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/turnarounds/{turnaroundId}/saida", corpo = vazio, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+    G -> C : registrarSaida(turnaroundId, acesso)
+    activate C
+    C -> S : registrarSaida(turnaroundId, autorId = acesso.usuarioId)
+    activate S
+    critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+      S -> TR : buscarComTrava(turnaroundId)
+      activate TR
+      TR -> DB : SELECT turnaround, tarefa, registro_tarefa, marco ... FOR UPDATE
+      TR --> S : turnaround
+      deactivate TR
+      S -> T : registrarSaida(autorId, momento)
+      activate T
+
+      == Passo 6: verificação ==
+      alt E1: estado "Pronto para liberação" ou anterior, sem a confirmação da Autoridade de Liberação (RN1)
+        T --> S : recusa: turnaround ainda não liberado
+        S --> C : recusa com o estado atual
+        C --> G : 409 turnaround não liberado
+        G --> V : 409
+      else E2: estado "Fora de bloco" (outro operador registrou antes)
+        T --> S : recusa: saída já registrada
+        S -> T : buscarMarco(tipo = "AOBT")
+        T --> S : AOBT e autor
+        S --> C : recusa com o AOBT e quem registrou
+        C --> G : 409 saída já registrada
+        G --> V : 409
+      else estado = "Liberado"
+
+        == Passo 7: gravação do AOBT e encerramento ==
+        T -> T : mudarEstado(novo = "Fora de bloco", autorId, causaId = marco.id, momento)
+        note right of T
+          Cria o Marco AOBT: horario = horário do registro,
+          registrado_em, autor_id = operador (RN2).
+          Com "Fora de bloco", aceitaRegistros() passa a
+          responder "não" (RN4).
+        end note
+        T --> S : marco AOBT
+        S -> T : usuariosVinculados()
+        T --> S : usuários com tarefa ou registro no turnaround
+        deactivate T
+        S -> TR : salvar(turnaround)
+        activate TR
+        TR -> DB : INSERT marco (tipo = 'AOBT'), historico_estado_turnaround;\nUPDATE turnaround SET estado = 'Fora de bloco'
+        TR --> S : ok
+        deactivate TR
+        S -> AU : registrar(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", autorId, causaId = marco.id, turnaroundId, valoresAnteriores = "Liberado", valoresNovos = "Fora de bloco" e AOBT)
+        activate AU
+        AU -> DB : INSERT registro_auditoria
+        AU --> S : ok
+        deactivate AU
+        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TurnaroundEncerrado", turnaroundId, autorId, causaId = marco.id, dados = aobt, estadoNovo = "Fora de bloco", usuarioIds))
+        activate PUB
+        PUB -> DB : INSERT aviso_saida (mesma transação)
+        PUB --> S : ok
+        deactivate PUB
+        S --> C : marco AOBT
+        C --> G : 201 AOBT
+        G --> V : 201
+      end
+    end
+    deactivate S
+    deactivate C
+    deactivate G
+
+    == Passo 8: resultado ==
+    alt 201
+      V --> OP : turnaround "Fora de bloco", com o AOBT, sem nenhuma ação de registro
+    else 409 não liberado
+      V --> OP : E1: informa que o turnaround ainda não foi liberado; o AOBT não é gravado\ne o turnaround mantém o estado
+    else 409 saída já registrada
+      V --> OP : E2: informa que a saída já foi registrada, com o AOBT e quem registrou;\nnão grava outro registro
+    end
+  end
+end
+deactivate V
+
+== Depois da gravação: aviso de encerramento ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TurnaroundEncerrado
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ
+  Cadastro: TurnaroundService.aplicarEncerramento(turnaroundId,
+  aobt, usuarioIds), prazo do RNF-6 (ADR-0023, ponto 6);
+  Exceções e Liberação: aplicarAobt(turnaroundId, aobt);
+  Monitoramento: aplicarMarco(AOBT) e aplicarEstado, e o
+  turnaround sai do painel (UC22).
+end note
+
+== E3: registro de tarefa no turnaround encerrado (depois do passo 7) ==
+opt um operador tenta registrar início, pausa, conclusão ou "Não aplicável" de uma tarefa do turnaround
+  ref over OP, DB : UC15 a UC19, passo 6: o serviço chama Turnaround.aceitaRegistros(), que responde "não";\no registro é recusado com "turnaround encerrado" (409), e nada é gravado (RN4; E3.1)
+  note over OP, V : E3.2: o histórico continua disponível para consulta
+end
+
+== A2: consulta do turnaround encerrado (depois do passo 8) ==
+opt um usuário abre o turnaround "Fora de bloco"
+  OP -> V : abrir(turnaroundId)
+  ref over V, DB : Passos 1 e 2 acima: TurnaroundController.consultar(turnaroundId, acesso)
+  V --> OP : histórico de tarefas, marcos e decisões, sem nenhuma ação de registro (RN5)
+end
+@enduml

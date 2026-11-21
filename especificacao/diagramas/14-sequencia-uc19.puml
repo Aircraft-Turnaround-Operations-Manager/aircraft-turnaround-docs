@@ -1,0 +1,167 @@
+@startuml
+' UC19 – Confirmar execução da tarefa por QR Code (RF-19, US019; ADR-0007).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). A leitura vale só para a tarefa aberta
+' (RN2): o ponto é buscado na própria tarefa (Tarefa.buscarPonto). A leitura não conclui a tarefa (UC16) e não gera aviso.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc19.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "TarefaView" as TV
+boundary "LeituraQrCodeView" as V
+boundary "FilaRegistrosSemConexao" as FS
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "LeituraQrCodeController" as C
+  participant "LeituraQrCodeService" as S <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as TA
+  entity "PontoConfirmacao" as P
+  participant "LeituraQrCodeRepository" as LR <<repository>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+
+== Passos 1 a 4: pontos da tarefa e câmera ==
+ref over OP, TV : UC14 – Consultar lista de tarefas do operador (passos 3 e 4): detalhe da tarefa "Em execução"\ncom a lista de pontos ("confirmado" ou "a confirmar"), a contagem (por exemplo, "0 de 6 zonas") e "Ler QR Code"
+OP -> TV : selecionar "Ler QR Code"
+TV -> V : abrir(tarefaId)
+activate V
+alt E3: navegador sem permissão de câmera ou celular sem câmera
+  V --> OP : informa que a leitura precisa da câmera e como permitir o acesso no navegador;\nnenhum registro é gravado
+else câmera aberta (passo 4; RN7: pelo navegador, sem aplicativo)
+  V --> OP : câmera aberta
+
+  loop passos 5 a 8: cada ponto que falta confirmar
+    OP -> V : lerQrCode(tarefaId, identificador)
+    alt E4: sem conexão com a internet
+      V -> FS : guardar(usuarioId, tarefaId, tipo = "Leitura", dados = identificador, horarioAcao = relógio do celular em UTC, requisicaoId)
+      activate FS
+      FS --> V : guardado
+      deactivate FS
+      V --> OP : ponto "confirmado" com a marca "pendente de envio" (E4.1; RNF-8)
+    else com conexão
+      V -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/leituras", corpo = identificador + horarioAcao + requisicaoId, acaoDoUsuario = sim)
+      activate G
+      ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+      G -> C : registrarLeitura(tarefaId, identificador, horarioAcao, requisicaoId, acesso)
+      activate C
+      C -> S : registrarLeitura(tarefaId, identificador, horarioAcao, requisicaoId, autorId = acesso.usuarioId, equipeId = acesso.equipeId)
+      activate S
+
+      == Passo 6: verificações ==
+      S -> LR : buscarPorRequisicao(requisicaoId)
+      activate LR
+      LR -> DB : SELECT leitura_qr_code WHERE requisicao_id = requisicaoId
+      LR --> S : leitura ou vazio
+      deactivate LR
+      alt mesma requisicaoId já gravada (reenvio; RNF-8)
+        S --> C : o ponto confirmado na primeira vez
+        C --> G : 200 mesma resposta
+        G --> V : 200
+      else requisição nova
+        critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+          S -> TR : buscarPorTarefa(tarefaId)
+          activate TR
+          TR -> DB : SELECT turnaround por tarefa.turnaround_id
+          TR --> S : turnaroundId
+          S -> TR : buscarComTrava(turnaroundId)
+          TR -> DB : SELECT turnaround, tarefa, ponto_confirmacao, leitura_qr_code ... FOR UPDATE
+          TR --> S : turnaround com as tarefas e os pontos
+          deactivate TR
+          S -> T : aceitaRegistros()
+          activate T
+          T --> S : sim, se não "Fora de bloco"
+          S -> T : buscarTarefa(tarefaId)
+          T --> S : tarefa aberta
+          deactivate T
+          S -> TA : conferirResponsavel(autorId, equipeId)
+          activate TA
+          TA --> S : ok, ou recusa
+          alt E2: tarefa atribuída a outro operador, ou estado ≠ "Em execução" (RN1; por exemplo, pausada com a câmera aberta)
+            S --> C : recusa: a tarefa precisa estar em execução e atribuída a ele
+            C --> G : 409 tarefa fora de execução ou reatribuída
+            G --> V : 409
+          else "Em execução" e atribuída ao operador
+            S -> TA : buscarPonto(identificador)
+            TA --> S : ponto ou vazio
+            alt E1: o QR Code não é ponto da tarefa aberta (RN2)
+              S --> C : recusa: o QR Code não é ponto desta tarefa
+              C --> G : 422 QR Code de outro ponto
+              G --> V : 422
+            else ponto da tarefa
+              S -> P : estaConfirmado()
+              activate P
+              P --> S : sim / não
+              alt A2: ponto já confirmado
+                S --> C : ponto já confirmado; mantém a primeira leitura e não grava outra
+                C --> G : 200 ponto já confirmado
+                G --> V : 200
+              else ponto "a confirmar"
+
+                == Passo 7: gravação da leitura ==
+                S -> P : confirmar(autorId, horarioAcao, requisicaoId)
+                P --> S : leitura (autor, horário da ação, recebido_em, requisicaoId)
+                deactivate P
+                S -> TR : salvar(turnaround)
+                activate TR
+                TR -> DB : INSERT leitura_qr_code (ponto_id, autor_id, horario_acao,\nrecebido_em, requisicao_id)
+                TR --> S : ok
+                deactivate TR
+                S -> AU : registrar(objeto = "leitura_qr_code", objetoId = leitura.id, acao = "Inclusão", autorId, causaId = leitura.id, turnaroundId, valoresAnteriores = vazio, valoresNovos = ponto e horarioAcao)
+                activate AU
+                AU -> DB : INSERT registro_auditoria
+                AU --> S : ok
+                deactivate AU
+                S -> TA : pontosPendentes()
+                TA --> S : pontos que faltam
+                deactivate TA
+                S --> C : ponto confirmado e pontos que faltam
+                C --> G : 201 ponto confirmado
+                G --> V : 201
+              end
+            end
+          end
+        end
+        deactivate S
+        deactivate C
+      end
+      deactivate G
+      alt 201 ou 200
+        V --> OP : ponto "confirmado" e a contagem atualizada (por exemplo, "1 de 6 zonas");\nA2: "ponto já confirmado" e volta ao passo 5
+      else 422 ou 409
+        V --> OP : E1: "o QR Code não é ponto desta tarefa" e volta ao passo 5;\nE2: "a tarefa precisa estar em execução e atribuída a você"; nada é gravado
+      end
+    end
+    opt A1: o operador fecha a câmera antes de ler todos os pontos
+      V --> OP : mantém as leituras gravadas e mostra os pontos que faltam;\nao voltar à tarefa, o caso de uso continua no passo 2
+    end
+  end
+
+  == Passo 9 ==
+  V --> OP : "Todos os pontos confirmados" e a opção "Concluir"\n(UC16 – Registrar conclusão da tarefa)
+end
+deactivate V
+
+== E4: volta da conexão (RNF-8) ==
+opt E4.2 e E4.3: leitura guardada no celular
+  alt E4.3: a sessão expirou enquanto o celular estava sem conexão
+    FS --> OP : leva à autenticação; as leituras continuam guardadas no celular
+    ref over OP, FS : UC01 – Autenticar acesso do usuário (o mesmo operador)
+  end
+  FS -> FS : enviarPendentes(usuarioId)
+  activate FS
+  loop cada registro pendente, na ordem em que foi feito, em até 5 s
+    FS -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/leituras", corpo = identificador + horarioAcao do celular + requisicaoId, acaoDoUsuario = não)
+    ref over G, DB : Passos 6 e 7 acima, com o horário da ação guardado no celular;\no servidor confere as permissões atuais do operador (E4.3)
+    alt aceita (201 ou 200)
+      G --> FS : 201
+      FS --> OP : retira a marca "pendente de envio"
+    else E4.2: recusada (422 ou 409), sem alterar a tarefa
+      G --> FS : recusa com o motivo
+      FS --> OP : aviso da recusa com o motivo; o ponto volta para "a confirmar"
+    end
+  end
+  deactivate FS
+end
+@enduml
