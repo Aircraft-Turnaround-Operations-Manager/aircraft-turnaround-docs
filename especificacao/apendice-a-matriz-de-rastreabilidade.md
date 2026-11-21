@@ -106,16 +106,16 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC09 | — |
 | UC10 | — |
 | UC11 | — |
-| UC12 | — |
-| UC13 | — |
-| UC14 | — |
-| UC15 | — |
-| UC16 | — |
-| UC17 | — |
-| UC18 | — |
-| UC19 | — |
-| UC20 | — |
-| UC21 | — |
+| UC12 | 14-sequencia-uc12.png |
+| UC13 | 14-sequencia-uc13.png |
+| UC14 | 14-sequencia-uc14.png |
+| UC15 | 14-sequencia-uc15.png |
+| UC16 | 14-sequencia-uc16.png |
+| UC17 | 14-sequencia-uc17.png, 14-sequencia-uc17_001.png |
+| UC18 | 14-sequencia-uc18.png |
+| UC19 | 14-sequencia-uc19.png |
+| UC20 | 14-sequencia-uc20.png |
+| UC21 | 14-sequencia-uc21.png, 14-sequencia-uc21_001.png |
 | UC22 | — |
 | UC23 | — |
 | UC24 | — |
@@ -131,7 +131,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC34 | — |
 | UC35 | — |
 | UC36 | — |
-| UC37 | — |
+| UC37 | 14-sequencia-uc37.png |
 
 ### A.5 Critérios de aceite × casos de teste (item 15)
 
@@ -323,6 +323,32 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.6 Lacunas encontradas
 
+- UC01 sem diagrama de sequência (item 14)
+- UC02 sem diagrama de sequência (item 14)
+- UC03 sem diagrama de sequência (item 14)
+- UC04 sem diagrama de sequência (item 14)
+- UC05 sem diagrama de sequência (item 14)
+- UC06 sem diagrama de sequência (item 14)
+- UC07 sem diagrama de sequência (item 14)
+- UC08 sem diagrama de sequência (item 14)
+- UC09 sem diagrama de sequência (item 14)
+- UC10 sem diagrama de sequência (item 14)
+- UC11 sem diagrama de sequência (item 14)
+- UC22 sem diagrama de sequência (item 14)
+- UC23 sem diagrama de sequência (item 14)
+- UC24 sem diagrama de sequência (item 14)
+- UC25 sem diagrama de sequência (item 14)
+- UC26 sem diagrama de sequência (item 14)
+- UC27 sem diagrama de sequência (item 14)
+- UC28 sem diagrama de sequência (item 14)
+- UC29 sem diagrama de sequência (item 14)
+- UC30 sem diagrama de sequência (item 14)
+- UC31 sem diagrama de sequência (item 14)
+- UC32 sem diagrama de sequência (item 14)
+- UC33 sem diagrama de sequência (item 14)
+- UC34 sem diagrama de sequência (item 14)
+- UC35 sem diagrama de sequência (item 14)
+- UC36 sem diagrama de sequência (item 14)
 - US012-CA1 sem caso de teste (item 15)
 - US012-CA2 sem caso de teste (item 15)
 - US012-CA3 sem caso de teste (item 15)
