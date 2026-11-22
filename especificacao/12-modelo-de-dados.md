@@ -125,7 +125,7 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 - **Registros feitos sem conexão.** `registro_tarefa`, `leitura_qr_code` e `correcao_aibt` têm a chave de envio `requisicao_id`, única, para que repetir a mesma requisição não grave de novo, e guardam o horário da ação separado do horário de recebimento (RNF-8, ADR-0018).
 - **Ordem dos avisos de tarefa.** `tarefa.versao` conta as mudanças da tarefa e vai em todo aviso de tarefa. O Monitoramento só aplica um aviso de versão maior que a última que recebeu; comparar pelo horário descartaria o registro feito sem conexão que chega depois.
 - **Códigos de atraso.** A tabela da ANAC tem 72 códigos de duas letras em 12 categorias [62]; cada carga cria uma versão, e as linhas de uma versão nunca mudam (RNF-22). O registro de pausa aponta para o código pela versão e pela sigla e, por isso, continua mostrando o código usado mesmo depois de uma nova versão.
-- **Plano recebido.** `chave_plano` guarda a chave do último plano recebido: o reenvio com a mesma chave recebe o mesmo resultado e não aplica o plano de novo (ADR-0023, ponto 5; RNF-20).
+- **Plano recebido.** `chave_plano` guarda a chave do último plano recebido: o reenvio com a mesma chave recebe o mesmo resultado e não aplica o plano de novo (ADR-0023, ponto 5; RNF-20). Da política de abastecimento, o `turnaround` guarda só a permissão (`permite_com_passageiros`), porque é só dela que a trava do replanejamento precisa (RF-42). A versão vai junto no envio do plano, como pede o formato comum do RNF-4, e fica guardada no Cadastro (`plano.politica_id`).
 - **Cópias para exibir.** Voos, matrícula, posição, TOBT vigente, ARDT e quem liberou são cópias, só para a tela de saída da posição (UC37).
 
 ### 12.5.3 Monitoramento
