@@ -693,7 +693,7 @@ Cada cálculo da projeção de prontidão (RF-22 pede o registro). RFs: RF-22, R
 | `desvio_planejado_min` | `INTEGER` | — | Sim | Minutos | Projeção − TOBT planejado, com sinal |
 | `desvio_vigente_min` | `INTEGER` | — | Sim | Minutos | Projeção − TOBT vigente, com sinal |
 | `calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
-| `causa_tipo` | `VARCHAR(30)` | — | Sim | Início, Conclusão, Pausa, Retomada, Não aplicável, Chegada, Correção do AIBT, Replanejamento, Atualização do TOBT, Recálculo de minuto, Volta após falha | — |
+| `causa_tipo` | `VARCHAR(30)` | — | Sim | Início, Conclusão, Pausa, Retomada, Não aplicável, Chegada, Correção do AIBT, Plano confirmado, Replanejamento, Atualização do TOBT, Recálculo de minuto, Volta após falha | Plano confirmado: confirmação e nova confirmação do plano antes do início (RF-5) |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | causaId do aviso; vazio no recálculo de minuto |
 | `causa_tarefa_id` | `CHAR(36)` | FK | Não | Identificador de `tarefa_monitorada` | Para exibir a causa |
 
