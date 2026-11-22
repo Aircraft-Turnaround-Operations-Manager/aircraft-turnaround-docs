@@ -1,0 +1,211 @@
+@startuml
+' UC05 – Confirmar plano inicial do turnaround (RF-5, US005; RNF-2, RNF-4, RNF-20; ADR-0014, ADR-0015 regra 5,
+' ADR-0023 ponto 5). Estendido pelo UC08. Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12
+' (Apêndice B.1). O Cadastro grava o envio como "Confirmação pendente", com a chave, antes de pedir à Execução em Solo,
+' que é quem sabe se alguma tarefa já começou.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc05.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "PlanoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "PlanoController" as PC
+  participant "PlanoService" as S <<service>>
+  entity "Plano" as P
+  entity "TarefaPlano" as TP
+  participant "PlanoRepository" as PR <<repository>>
+  participant "UsuarioRepository" as UR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "RetomadaConfirmacaoPlano" as RT <<scheduler>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as ETC
+end box
+
+== Passos 1 e 2: planejamento ==
+CO -> V : abrir(turnaroundId)
+activate V
+note right of V : A1: o mesmo caminho abre um plano já confirmado\nque ainda não tem tarefa iniciada (A1.1)
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}/plano", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+G -> PC : consultar(turnaroundId, acesso)
+activate PC
+PC -> S : consultar(turnaroundId)
+activate S
+S -> PR : buscarPorTurnaround(turnaroundId)
+activate PR
+PR -> DB : SELECT plano, tarefa_plano, dependencia_tarefa_plano,\nponto_confirmacao_plano, politica_abastecimento
+PR --> S : plano
+deactivate PR
+S --> PC : plano
+deactivate S
+PC --> G : 200 plano
+deactivate PC
+loop cada equipe das tarefas
+  G -> PC : listarOperadoresAtivos(equipeId, acesso)
+  activate PC
+  PC -> S : listarOperadoresAtivos(equipeId)
+  activate S
+  S -> UR : listarAtivosPorEquipe(equipeId)
+  activate UR
+  UR -> DB : SELECT usuario WHERE equipe_id = equipeId AND desativado_em IS NULL
+  UR --> S : operadores ativos da equipe
+  deactivate UR
+  S --> PC : List<OperadorAtivo>
+  deactivate S
+  PC --> G : 200
+  deactivate PC
+end
+G --> V : 200
+deactivate G
+V --> CO : tarefas, equipes, tipos, obrigatoriedade, dependências e política,\ncom os operadores ativos da equipe de cada tarefa (passo 2)
+
+== Passos 3 e 4 ==
+alt A3: o coordenador cancela
+  V --> CO : preserva o plano anterior, sem gravar (A3.1)
+else o coordenador atribui operador e janela a cada tarefa, define a obrigatoriedade e seleciona "Confirmar plano"
+  opt A2: tarefas independentes com janelas sobrepostas e operadores distintos
+    note over CO, V : aceito se as demais validações forem satisfeitas (A2.2; RN3)
+  end
+  opt A4: serviço sob demanda já conhecido incluído do catálogo, com responsável, janela e dependências (RN6; ADR-0014)
+    note over CO, V : a tarefa vai marcada para acionamento e passa pelas mesmas validações (A4.3)
+  end
+  opt «extend» UC08: o coordenador ajusta as dependências
+    ref over CO, DB : UC08 – Definir dependências entre tarefas
+  end
+  CO -> V : confirmarPlano(turnaroundId, tarefas)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/turnarounds/{turnaroundId}/plano", corpo = tarefas, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> PC : confirmar(turnaroundId, tarefas, acesso)
+  activate PC
+  PC -> S : confirmar(turnaroundId, tarefas, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 5: verificações (RN1 a RN4, RN6) ==
+  critical trava do plano até o fim da transação (item 13, seção 13.2)
+    S -> PR : buscarComTrava(turnaroundId)
+    activate PR
+    PR -> DB : SELECT plano, tarefa_plano ... FOR UPDATE
+    PR --> S : plano
+    deactivate PR
+    S -> P : aceitaEdicao()
+    activate P
+    P --> S : não aceita se a confirmação anterior ainda está pendente
+    deactivate P
+    loop cada tarefa enviada
+      S -> UR : buscarPorId(responsavelId)
+      activate UR
+      UR -> DB : SELECT usuario WHERE id = responsavelId
+      UR --> S : operador (ativo? equipe?)
+      deactivate UR
+      opt A4: serviço sob demanda incluído
+        S -> TP : acionar()
+      end
+      S -> TP : atribuir(responsavel, inicio, fim)
+      S -> TP : definirObrigatoria(obrigatoria)
+    end
+    S -> P : tarefasSemResponsavel()
+    S -> S : conferirDependencias(plano)
+    S -> S : conferirPolitica(plano)
+    alt confirmação anterior ainda pendente
+      S --> PC : recusa: plano em confirmação
+      PC --> G : 409
+      G --> V : 409
+      V --> CO : informa que a confirmação anterior ainda está em andamento
+    else E1: tarefa sem operador ativo da equipe correspondente
+      S --> PC : recusa com as tarefas
+      PC --> G : 422
+      G --> V : 422
+      V --> CO : lista as tarefas sem operador ativo da equipe e não confirma (E1.1)
+    else E2: fim ≤ início, sucessora antes do fim da predecessora, ciclo ou sequência\nda política de abastecimento descumprida
+      S --> PC : recusa com o conflito
+      PC --> G : 422
+      G --> V : 422
+      V --> CO : indica o conflito e volta ao passo 3, sem alterar o último plano (E2.1)
+    else plano válido
+      S -> P : iniciarConfirmacao(chave, conteudo)
+      S -> PR : salvar(plano)
+      activate PR
+      PR -> DB : UPDATE plano SET situacao = 'Confirmação pendente', chave_confirmacao, envio_pendente
+      PR --> S : ok
+      deactivate PR
+    end
+  end
+
+  opt plano gravado como "Confirmação pendente"
+    == Passo 6: pedido à Execução em Solo, dona do estado das tarefas (ADR-0015, regra 5) ==
+    S -> S : enviarPlano(plano)
+    S -> EX : receberPlano(plano)
+    activate EX
+    EX -> ETC : receberPlano(plano)
+    activate ETC
+    alt E3: alguma tarefa começou durante a edição
+      ETC --> EX : 409 recusa: o plano já está em execução
+      EX --> S : recusa
+      S -> P : desfazerConfirmacao()
+      S -> PR : salvar(plano)
+      activate PR
+      PR -> DB : UPDATE plano SET situacao anterior, chave_confirmacao e envio_pendente vazios
+      deactivate PR
+      S --> PC : recusa
+      PC --> G : 409
+      G --> V : 409
+      V --> CO : recusa a alteração e preserva o plano em vigor; o replanejamento fica no UC35 (E3.1)
+    else E4: sem resposta ou queda do Cadastro depois do envio
+      ETC --> EX : sem resposta
+      deactivate ETC
+      EX --> S : falha técnica
+      deactivate EX
+      S --> PC : falha; o plano continua "Confirmação pendente"
+      PC --> G : 503
+      G --> V : 503
+      V --> CO : informa a falha (E4.1); o plano fica bloqueado para edição até a retomada
+      RT -> RT : executarAoIniciar()
+      activate RT
+      RT -> S : retomarConfirmacoes()
+      S -> PR : listarConfirmacaoPendente()
+      activate PR
+      PR -> DB : SELECT plano WHERE situacao = 'Confirmação pendente'
+      deactivate PR
+      S -> EX : receberPlano(plano com a mesma chave)
+      note right of EX : a Execução em Solo reconhece a chave e responde\no mesmo resultado, sem aplicar o plano de novo\n(RNF-20); segue como no aceite ou na recusa
+      deactivate RT
+      note over CO, V : a nova tentativa do coordenador consulta o plano atual (E4.2)
+    else aceito
+      ETC --> EX : 200
+      EX --> S : ok
+
+      == Plano e auditoria juntos (RN5; RNF-2) ==
+      S -> P : confirmar(autor, momento)
+      S -> PR : salvar(plano)
+      activate PR
+      PR -> DB : UPDATE plano SET situacao = 'Confirmado', confirmado_em, confirmado_por_id;\nUPDATE tarefa_plano SET responsavel_id, inicio_planejado, fim_planejado, obrigatoria, acionada
+      PR --> S : ok
+      deactivate PR
+      S -> AU : registrar(objeto = "plano", objetoId, acao = Alteração, autorId, causaId = chave, turnaroundId, valoresAnteriores, valoresNovos)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S -> PUB : registrar(EnvelopeAviso.novo(tipo = "PlanoConfirmado", turnaroundId, autorId, causaId = chave, dados = tarefas, janelas, responsáveis e dependências))
+      activate PUB
+      PUB -> DB : INSERT aviso_saida (mesma transação)
+      deactivate PUB
+      S --> PC : plano
+      PC --> G : 200 plano
+      G --> V : 200
+      V --> CO : confirmação, com 100% das tarefas atribuídas e nenhuma iniciada (passo 6)
+    end
+  end
+  deactivate S
+  deactivate PC
+  deactivate G
+end
+deactivate V
+note over PUB : publicarPendentes() leva o PlanoConfirmado ao Monitoramento\n(aplicarPlano), como no UC03
+@enduml

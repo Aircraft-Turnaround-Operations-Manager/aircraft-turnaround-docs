@@ -1,0 +1,126 @@
+@startuml
+' UC03 – Abrir turnaround da aeronave (RF-3, US003; RNF-2, RNF-4; ADR-0003, ADR-0015, ADR-0016).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). O Cadastro guarda só o TOBT
+' planejado; o vigente é do Exceções e Liberação, que o inicia igual ao planejado ao receber o aviso TurnaroundAberto.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc03.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "TurnaroundView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "CompanhiaController" as CC
+  control "TurnaroundController" as TC
+  participant "TurnaroundService" as S <<service>>
+  entity "Turnaround" as T
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: formulário ==
+CO -> V : abrir()
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/companhias", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+G -> CC : listar(acesso)
+activate CC
+CC -> DB : SELECT companhia
+CC --> G : 200 companhias
+deactivate CC
+G --> V : 200
+deactivate G
+V --> CO : voos e datas, companhia, aeronave, serviço, posição e referências de tempo
+
+== Passo 3 ==
+alt A2: o coordenador cancela
+  V --> CO : fecha o formulário sem criar cadastro (A2.2)
+else o coordenador preenche e seleciona "Abrir turnaround"
+  opt A1: partida e prontidão na data seguinte (virada do dia)
+    note over CO, V : as datas completas com fuso são enviadas como foram\ninformadas, sem recusar a virada do dia (A1.2; US003, critério 4)
+  end
+  CO -> V : salvarTurnaround(dados)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/turnarounds", corpo = dados com horários em UTC, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> TC : abrir(dados, acesso)
+  activate TC
+  TC -> S : abrir(dados, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 4: campos, formatos, MTTT positivo e duplicidade (RN1 a RN3) ==
+  S -> TR : buscarPorVoos(vooChegada, dataVooChegada, vooPartida, dataVooPartida)
+  activate TR
+  TR -> DB : SELECT turnaround WHERE voo_chegada, data_voo_chegada,\nvoo_partida e data_voo_partida iguais
+  TR --> S : turnaround existente ou vazio
+  deactivate TR
+  alt E1: campo obrigatório vazio, horário sem data ou fuso, ou MTTT ≤ 0
+    S --> TC : recusa com os campos
+    TC --> G : 422
+    G --> V : 422
+    V --> CO : indica os campos e volta ao passo 3, sem gravar (E1.1)
+  else E2 ou E3: já existe turnaround para os mesmos voos e datas (inclusive a nova tentativa depois de uma resposta perdida)
+    S --> TC : turnaround existente
+    TC --> G : 409 com o identificador existente
+    G --> V : 409
+    V --> CO : apresenta o identificador existente e não cria outro (E2.1, E3.1)
+  else dados válidos
+
+    == Passo 5: gravação (RN2, RN4) ==
+    S -> T : cria com tobtPlanejado fixo, sem AIBT e sem estado operacional
+    note right of T : abrir não registra a chegada (AIBT),\nnão entra em "Em solo" nem inicia\ntarefas; a chegada é o UC12 (RN4)
+    S -> TR : salvar(turnaround)
+    activate TR
+    TR -> DB : INSERT turnaround (companhia_id, voos e datas, tipo_aeronave, matricula,\ntipo_servico, posicao, sibt, sobt, eibt, tobt_planejado, mttt_min, criado_por_id, criado_em)
+    alt falha ao gravar
+      TR --> S : erro; a transação é desfeita
+      S --> TC : falha técnica
+      TC --> G : 500
+      G --> V : 500 ou sem resposta
+      V --> CO : não anuncia sucesso; a nova tentativa cai no E3
+    else gravado
+      TR --> S : ok
+      deactivate TR
+      S -> AU : registrar(objeto = "turnaround", objetoId, acao = Inclusão, autorId, causaId = vazio, turnaroundId, valoresAnteriores = vazio, valoresNovos = dados)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TurnaroundAberto", turnaroundId, autorId, causaId = turnaroundId, dados = voos, aeronave, posição, SIBT, SOBT, EIBT, TOBT planejado e MTTT))
+      activate PUB
+      PUB -> DB : INSERT aviso_saida (mesma transação)
+      deactivate PUB
+      S --> TC : turnaround
+      TC --> G : 201 turnaround
+      G --> V : 201
+
+      == Passo 6 ==
+      V --> CO : identificador e dados, com o acesso a "Aplicar modelo" (UC06)
+    end
+  end
+  deactivate S
+  deactivate TC
+  deactivate G
+end
+deactivate V
+
+== Depois da gravação: aviso aos outros serviços ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TurnaroundAberto
+alt falha na entrega
+  MQ --> PUB : sem confirmação
+  note right of PUB : aviso_saida continua pendente; a próxima\ntentativa publica de novo, e quem recebe\ndescarta o repetido (ADR-0016)
+else entregue
+  MQ --> PUB : confirmado
+  PUB -> DB : UPDATE aviso_saida SET publicado_em
+end
+deactivate PUB
+note over MQ
+  Monitoramento: aplicarTurnaroundAberto.
+  Exceções e Liberação: aplicarTurnaroundAberto,
+  com o TOBT vigente igual ao planejado (ADR-0003).
+end note
+@enduml

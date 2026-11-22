@@ -1,0 +1,92 @@
+@startuml
+' UC07 – Configurar pontos de confirmação das tarefas (RF-7, US007; RNF-2; ADR-0007). Estende o UC04.
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). A leitura do código de resposta
+' rápida (QR Code) fica no UC19 e o bloqueio da conclusão no UC16; editar o modelo não muda as cópias (RN2, RN3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc07.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ModeloTarefaView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "ModeloTarefaController" as MC
+  participant "ModeloTarefaService" as S <<service>>
+  entity "TarefaModelo" as TM
+  participant "ModeloTarefaRepository" as MR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+note over CO, V : «extend» do UC04: começa numa tarefa do modelo em criação ou já salvo
+
+== Passos 1 e 2 ==
+CO -> V : abrirTarefa(modeloId, tarefaModeloId)
+activate V
+V --> CO : pontos existentes e "Adicionar ponto"
+
+== Passos 3 e 4 ==
+alt A3: o coordenador cancela
+  V --> CO : a lista anterior é preservada (A3.1)
+else o coordenador ajusta a lista e seleciona "Salvar pontos"
+  opt A1: lista vazia
+    note over CO, V : a tarefa não exige confirmação por pontos (A1.2)
+  end
+  opt A2: remove um ponto
+    note over CO, V : o ponto sai do modelo; as cópias existentes não mudam (A2.1)
+  end
+  CO -> V : salvarPontos(modeloId, tarefaModeloId, pontos)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/modelos-tarefa/{modeloId}/tarefas/{tarefaModeloId}/pontos", corpo = pontos, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+  G -> MC : configurarPontos(modeloId, tarefaModeloId, pontos, acesso)
+  activate MC
+  MC -> S : configurarPontos(modeloId, tarefaModeloId, pontos, autorId = acesso.usuarioId)
+  activate S
+  S -> MR : buscarPorId(modeloId)
+  activate MR
+  MR -> DB : SELECT modelo_tarefa, tarefa_modelo, ponto_confirmacao_modelo WHERE modelo_tarefa.id = modeloId
+  MR --> S : modelo com a tarefa
+  deactivate MR
+
+  == Passo 5: campos e unicidade dentro da tarefa (RN1) ==
+  S -> TM : definirPontos(pontos)
+  activate TM
+  alt E1: nome ou identificador vazio, ou repetido na mesma tarefa
+    TM --> S : recusa com o ponto
+    S --> MC : recusa
+    MC --> G : 422
+    G --> V : 422
+    V --> CO : indica o ponto e não salva (E1.1)
+  else lista válida (o mesmo identificador em outra tarefa é aceito)
+    TM --> S : ok
+    deactivate TM
+
+    == Passo 6: gravação ==
+    S -> MR : salvar(modelo)
+    activate MR
+    MR -> DB : DELETE e INSERT ponto_confirmacao_modelo da tarefa (tarefa_modelo_id, identificador, nome)
+    alt E2: falha de gravação
+      MR --> S : erro; a transação é desfeita
+      S --> MC : falha técnica
+      MC --> G : 500
+      G --> V : 500
+      V --> CO : a configuração anterior permanece e o sistema permite nova tentativa (E2.1)
+    else gravado
+      MR --> S : ok
+      deactivate MR
+      S -> AU : registrar(objeto = "tarefa_modelo", objetoId = tarefaModeloId, acao = Alteração, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = pontos anteriores, valoresNovos = pontos)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> MC : TarefaModelo
+      MC --> G : 200
+      G --> V : 200
+      V --> CO : exibe os pontos exigidos; as cópias já aplicadas não mudam e nenhum ponto\né confirmado automaticamente (RN3); a leitura é o UC19
+    end
+  end
+  deactivate S
+  deactivate MC
+  deactivate G
+end
+deactivate V
+@enduml

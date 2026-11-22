@@ -1,0 +1,190 @@
+@startuml
+' UC09 – Gerenciar cadastro de equipes e especialidades (RF-9, US009; RNF-2; ADR-0010, ADR-0023 ponto 4).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). As tarefas pendentes de planos já
+' entregues são da Execução em Solo; as de planos ainda não confirmados, o Cadastro confere no próprio banco; o serviço do
+' catálogo ainda não acionado não conta (RN2).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc09.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Administrador\ndo Sistema" as AD
+boundary "EquipeView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "EquipeController" as EC
+  participant "EquipeService" as S <<service>>
+  entity "Equipe" as E
+  participant "EquipeRepository" as ER <<repository>>
+  participant "UsuarioRepository" as UR <<repository>>
+  participant "PlanoRepository" as PR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "TarefaController" as TC
+end box
+
+== Passos 1 e 2: lista e formulário ==
+AD -> V : abrir()
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/equipes", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Administrador do Sistema; RNF-1)
+G -> EC : listar(acesso)
+activate EC
+EC -> S : listar()
+activate S
+S -> ER : listar()
+activate ER
+ER -> DB : SELECT equipe
+ER --> S : equipes
+deactivate ER
+S --> EC : equipes
+deactivate S
+EC --> G : 200
+deactivate EC
+G --> V : 200
+deactivate G
+V --> AD : lista com nome, identificador e situação, e Nova equipe
+
+alt A3: o administrador cancela
+  V --> AD : cadastro anterior preservado (A3.1)
+else fluxo básico: Nova equipe (passos 3 a 5)
+  AD -> V : salvarEquipe(dados)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/equipes", corpo = nome + identificador, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> EC : criar(dados, acesso)
+  activate EC
+  EC -> S : criar(dados, autorId = acesso.usuarioId)
+  activate S
+  S -> ER : existeCodigo(codigo)
+  activate ER
+  ER -> DB : SELECT 1 FROM equipe WHERE codigo = codigo
+  ER --> S : sim ou não
+  deactivate ER
+  alt E1: nome vazio ou identificador duplicado
+    S --> EC : recusa com o campo
+    EC --> G : 422
+    G --> V : 422
+    V --> AD : indica o campo e não grava (E1.1)
+  else dados válidos
+    S -> ER : salvar(equipe)
+    activate ER
+    ER -> DB : INSERT equipe (codigo, nome, ativa = sim)
+    alt E3: falha de gravação
+      ER --> S : erro; cadastro e auditoria são desfeitos juntos
+      S --> EC : falha técnica
+      EC --> G : 500
+      G --> V : 500
+      V --> AD : informa a falha, sem confirmação parcial (E3.1)
+    else gravado
+      ER --> S : ok
+      deactivate ER
+      S -> AU : registrar(objeto = "equipe", objetoId, acao = Inclusão, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = vazio, valoresNovos = nome e identificador)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> EC : equipe
+      EC --> G : 201
+      G --> V : 201
+      V --> AD : equipe criada ativa, disponível para novos vínculos (passo 5)
+    end
+  end
+  deactivate S
+  deactivate EC
+  deactivate G
+else A1: Alterar o nome
+  AD -> V : salvarEquipe(dados com o nome novo)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/equipes/{equipeId}", corpo = nome, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> EC : alterar(equipeId, nome, acesso)
+  activate EC
+  EC -> S : alterar(equipeId, nome, autorId)
+  activate S
+  S -> ER : buscarPorId(equipeId)
+  activate ER
+  ER -> DB : SELECT equipe WHERE id = equipeId
+  ER --> S : equipe
+  deactivate ER
+  S -> E : renomear(nome)
+  S -> ER : salvar(equipe)
+  activate ER
+  ER -> DB : UPDATE equipe SET nome (mantém id, codigo e os vínculos)
+  ER --> S : ok (E1 se o nome estiver vazio; E3 se falhar)
+  deactivate ER
+  S -> AU : registrar(objeto = "equipe", objetoId = equipeId, acao = Alteração, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = nome anterior, valoresNovos = nome)
+  activate AU
+  AU -> DB : INSERT registro_auditoria
+  deactivate AU
+  S --> EC : equipe
+  deactivate S
+  EC --> G : 200
+  deactivate EC
+  G --> V : 200
+  deactivate G
+  V --> AD : nome atualizado, com identificador e vínculos preservados (A1.2)
+else A2: Desativar
+  AD -> V : desativarEquipe(equipeId)
+  V --> AD : pede confirmação
+  alt A3: o administrador cancela
+    V --> AD : cadastro anterior preservado (A3.1)
+  else confirma
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/equipes/{equipeId}/desativacao", corpo = vazio, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada
+    G -> EC : desativar(equipeId, acesso)
+    activate EC
+    EC -> S : desativar(equipeId, autorId)
+    activate S
+    S -> UR : listarAtivosPorEquipe(equipeId)
+    activate UR
+    UR -> DB : SELECT usuario WHERE equipe_id = equipeId AND desativado_em IS NULL
+    UR --> S : usuários ativos vinculados
+    deactivate UR
+    S -> EX : listarTarefasPendentesDaEquipe(equipeId)
+    activate EX
+    EX -> TC : listarTarefasPendentesDaEquipe(equipeId)
+    activate TC
+    TC --> EX : tarefas pendentes em turnarounds não encerrados
+    deactivate TC
+    EX --> S : List<TarefaResumo>
+    deactivate EX
+    S -> PR : listarTarefasNaoConfirmadasDaEquipe(equipeId)
+    activate PR
+    PR -> DB : SELECT tarefa_plano JOIN plano WHERE equipe_id = equipeId\nAND (sob_demanda = não OR acionada = sim) (plano não confirmado)
+    PR --> S : tarefas de planos não confirmados
+    deactivate PR
+    alt E2: há usuários ativos ou tarefas pendentes
+      S --> EC : recusa com os usuários e as tarefas
+      EC --> G : 409
+      G --> V : 409
+      V --> AD : lista os vínculos e recusa a desativação (E2.1); o administrador não\nreatribui tarefas aqui: isso é o UC30 (RN4)
+    else sem impedimento
+      S -> ER : buscarPorId(equipeId)
+      activate ER
+      ER -> DB : SELECT equipe WHERE id = equipeId
+      deactivate ER
+      S -> E : desativar()
+      S -> ER : salvar(equipe)
+      activate ER
+      ER -> DB : UPDATE equipe SET ativa = não (o histórico continua consultável)
+      ER --> S : ok
+      deactivate ER
+      S -> AU : registrar(objeto = "equipe", objetoId = equipeId, acao = Desativação, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = ativa, valoresNovos = desativada)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> EC : ok
+      EC --> G : 204
+      G --> V : 204
+      V --> AD : equipe desativada; não aceita novos vínculos (A2.2)
+    end
+    deactivate S
+    deactivate EC
+    deactivate G
+  end
+end
+deactivate V
+@enduml
