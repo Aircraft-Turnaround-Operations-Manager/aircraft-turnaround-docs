@@ -364,7 +364,7 @@ Turnaround em atendimento: dono do estado (ADR-0015). RFs: RF-12, RF-14, RF-21, 
 | `chave_plano` | `CHAR(36)` | — | Sim | UUID | Chave do último plano recebido; no reenvio com a mesma chave, responde o mesmo resultado sem aplicar de novo (ADR-0023, ponto 5) |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do Exceções e Liberação, só para exibir (UC37) |
 | `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado |
-| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia recebida na resposta da liberação, só para exibir |
+| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Recebido no pedido de liberação (horário da confirmação), só para exibir (UC37) |
 | `liberado_por_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia, só para exibir (UC37) |
 
 ### B.2.2 `marco`
@@ -634,7 +634,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `acgt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `asbt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `aegt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
-| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
+| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso do Exceções e Liberação; o alerta do RF-31 confere se foi registrado |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Também define o período do RF-34 |
 | `pronto_para_liberacao_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Primeira entrada no estado (RF-34); pode diferir do AEGT |
 | `tolerancia_prontidao_min` | `INTEGER` | — | Sim | Minutos | TOBT + 5 (RNF-21) |
