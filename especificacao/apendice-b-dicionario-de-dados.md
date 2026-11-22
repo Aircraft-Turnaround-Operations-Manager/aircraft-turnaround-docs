@@ -738,7 +738,7 @@ Alertas emitidos e encerrados (RF-27 a RF-31, RF-33); dados do gatilho por tipo.
 | `tipo` | `VARCHAR(30)` | — | Sim | Tarefa pronta não iniciada, Projeção além de TOBT + 5, Viabilidade, Embarque não iniciado, Prontidão não registrada | — |
 | `tarefa_id` | `CHAR(36)` | FK | Não | Identificador de `tarefa_monitorada` | RF-27 e RF-30 |
 | `critico` | `BOOLEAN` | — | Sim | Sim ou não | Classificação na emissão (RF-33; medida no RF-34) |
-| `ciclo` | `INTEGER` | — | Sim | Inteiro | Número da emissão; rearme do RF-28 |
+| `ciclo` | `INTEGER` | — | Sim | Inteiro | Número da emissão; rearme do RF-27 a RF-31 (UC25, RN9) |
 | `emitido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `minutos_espera` | `INTEGER` | — | Não | Inteiro | RF-27 |
 | `projecao_id` | `CHAR(36)` | FK | Não | Identificador de `projecao` | RF-28: projeção e desvio |
@@ -779,13 +779,13 @@ Aviso de TOBT − 15 e checagem com as equipes, um por turnaround (RF-32, RF-35)
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround_monitorado` | — |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | TOBT que gerou o aviso |
 | `emitido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
-| `encerrado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Horário da checagem (RF-35) |
+| `encerrado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Horário da checagem (RF-35) ou da entrada em "Pronto para liberação", sem autor (RF-32; UC27, RN8) |
 | `autor_checagem_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | — |
 
 **Restrições:**
 
 - UNIQUE (turnaround_id)
-- CHECK: encerrado_em e autor_checagem_id juntos
+- CHECK: autor_checagem_id exige encerrado_em
 
 ### B.3.11 `atualizacao_tobt_monitorada`
 
