@@ -72,12 +72,15 @@ namespace monitoramento {
     - antecedenciaEmbarqueMin: Integer
     - antecedenciaChecagemMin: Integer
     - prazoAcaoCriticaMin: Integer
+    - versaoOrigem: Integer
+    - previsaoOcorridoEm: DateTime
     - tarefas: List<TarefaMonitorada>
     ' as cinco tolerâncias e prazos acima vêm da configuração do serviço (RNF-21) em aplicarTurnaroundAberto
     + estaEmCalculo(): Boolean
     + tarefasObrigatorias(): List<TarefaMonitorada>
-    + aplicarMarco(tipo: MarcoMonitorado, horario: DateTime): void
-    + aplicarEstado(estado: EstadoTurnaround, momento: DateTime): void
+    + aceitaVersao(versao: Integer): Boolean
+    + aplicarMarco(tipo: MarcoMonitorado, horario: DateTime, versao: Integer): void
+    + aplicarEstado(estado: EstadoTurnaround, momento: DateTime, versao: Integer): void
     + corDoRisco(projecao: Projecao, alertaCriticoAberto: Boolean): CorRisco
   }
 
@@ -397,7 +400,8 @@ namespace monitoramento {
     + calcular(inicio: Date, fim: Date): RelatorioAderencia
   }
 
-  ' Ordem dos avisos: aplicarPlano não sobrescreve a tarefa que já recebeu aviso da Execução em Solo (versaoOrigem > 0),
+  ' Ordem dos avisos (item 12, seção 12.5.2): tarefa, estado e marcos pela versão; previsão e TOBT vigente pelo ocorridoEm.
+  ' aplicarPlano não sobrescreve a tarefa que já recebeu aviso da Execução em Solo (versaoOrigem > 0),
   ' e aplicarTarefa de tarefa desconhecida cria a cópia com o que o aviso traz (item 12, seção 12.4).
   class CopiaService <<service>> {
     - turnarounds: TurnaroundMonitoradoRepository
@@ -408,12 +412,12 @@ namespace monitoramento {
     - painel: PainelService
     - notificador: PainelNotificador
     + aplicarTurnaroundAberto(turnaround: TurnaroundMonitorado): void
-    + aplicarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer): void
+    + aplicarPrevisao(turnaroundId: UUID, eibt: DateTime, mtttMin: Integer, ocorridoEm: DateTime): void
     + aplicarPlano(turnaroundId: UUID, tarefas: List<TarefaMonitorada>): void
     + aplicarTarefa(turnaroundId: UUID, tarefa: TarefaMonitorada, versao: Integer, causa: CausaRecalculo, causaId: UUID): void
     + aplicarResponsavel(turnaroundId: UUID, tarefaId: UUID, responsavelId: UUID, versao: Integer): void
-    + aplicarMarco(turnaroundId: UUID, tipo: MarcoMonitorado, horario: DateTime, causaId: UUID): void
-    + aplicarEstado(turnaroundId: UUID, estado: EstadoTurnaround, momento: DateTime): void
+    + aplicarMarco(turnaroundId: UUID, tipo: MarcoMonitorado, horario: DateTime, versao: Integer, causaId: UUID): void
+    + aplicarEstado(turnaroundId: UUID, estado: EstadoTurnaround, momento: DateTime, versao: Integer): void
     + aplicarTobtVigente(atualizacao: AtualizacaoTobtMonitorada): void
   }
 

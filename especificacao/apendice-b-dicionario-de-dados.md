@@ -360,8 +360,10 @@ Turnaround em atendimento: dono do estado (ADR-0015). RFs: RF-12, RF-14, RF-21, 
 | `estado` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | Vazio até o AIBT |
 | `permite_com_passageiros` | `BOOLEAN` | — | Sim | Sim ou não | Política recebida com o plano; trava do RF-42 (regra 5) |
 | `plano_recebido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
+| `versao` | `INTEGER` | — | Sim | Inteiro | Conta as mudanças de estado e de marco do turnaround; vai nos avisos de estado e de marco para quem guarda cópia ordenar |
 | `chave_plano` | `CHAR(36)` | — | Sim | UUID | Chave do último plano recebido; no reenvio com a mesma chave, responde o mesmo resultado sem aplicar de novo (ADR-0023, ponto 5) |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do Exceções e Liberação, só para exibir (UC37) |
+| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado |
 | `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia recebida na resposta da liberação, só para exibir |
 | `liberado_por_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia, só para exibir (UC37) |
 
@@ -640,6 +642,8 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `antecedencia_embarque_min` | `INTEGER` | — | Sim | Minutos | X do RF-30 |
 | `antecedencia_checagem_min` | `INTEGER` | — | Sim | Minutos | 15 do RF-32 |
 | `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34 |
+| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor é ignorado |
+| `previsao_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `ocorridoEm` do último aviso de abertura ou de previsão aplicado; aviso mais antigo é ignorado |
 
 ### B.3.2 `tarefa_monitorada`
 
