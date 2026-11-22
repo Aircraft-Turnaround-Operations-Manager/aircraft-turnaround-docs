@@ -9,7 +9,7 @@ decisor: Eduardo Fabri
 itens_template: [12, 13, 14, 15]
 areas: [A, B, C, D]
 fontes: []
-relacionados: [adr-0016, adr-0015, adr-0017, adr-0018, adr-0020]
+relacionados: [adr-0016, adr-0015, adr-0017, adr-0018, adr-0019, adr-0020]
 ---
 # ADR-0023 — Interfaces da porta de entrada e do Cadastro e Planejamento com os outros serviços
 
@@ -30,12 +30,17 @@ relacionados: [adr-0016, adr-0015, adr-0017, adr-0018, adr-0020]
 4. **Consultas que o Cadastro faz à Execução em Solo.** Antes de desativar um operador ou uma equipe ou de trocar a equipe de um operador (RF-2 e RF-9), as tarefas pendentes nos planos já entregues; as dos planos ainda não confirmados o Cadastro confere no próprio banco. Antes de gravar o EIBT e o MTTT (RF-10; UC10, RN3), se a chegada já foi registrada. Se a Execução em Solo não responder, a ação é recusada como falha técnica (ADR-0016, ponto 3), e nada é gravado.
 5. **Confirmação do plano (RF-5; RNF-20).** O Cadastro grava o plano como "confirmação pendente", com uma chave de idempotência, e só então o envia à Execução em Solo. Com a resposta positiva, marca o plano como confirmado; com a recusa (por exemplo, tarefa já iniciada), volta ao plano anterior. Se cair depois do envio, a retomada reenvia o mesmo pedido com a mesma chave, e a Execução em Solo responde o mesmo resultado, como o pedido pendente da ADR-0020. Enquanto a confirmação está pendente, o plano não pode ser editado.
 6. **Prazo dos dados pessoais (RNF-6).** O Cadastro não conhece sozinho todos os turnarounds de um usuário, porque a reatribuição e os registros ficam na Execução em Solo. O prazo é calculado com o aviso de encerramento do turnaround (Fora de bloco), que a Execução em Solo publica com o horário real de saída da posição (AOBT) e os usuários que tiveram tarefa ou registro nele. O Cadastro grava esses vínculos e anonimiza cada usuário na data mais tardia entre 90 dias depois da desativação e 90 dias depois do AOBT de cada turnaround vinculado. O conteúdo desse aviso é da Execução em Solo e fica como pendência da área B.
+7. **Conexões em tempo real (WebSocket).** As telas que recebem mudanças em tempo real (a lista de tarefas do operador, os painéis do coordenador e a solicitação de atualização da previsão) abrem a conexão pela porta de entrada, como toda outra chamada do site; nenhum serviço fica exposto direto ao site ([pendência #228](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/228)).
+   - **Na abertura,** a porta de entrada confere o token de login e consulta o Cadastro (RNF-1), como numa ação, e repassa a conexão ao serviço com o token interno do ponto 1. O serviço confere o token e só então aceita a conexão.
+   - **Com a conexão aberta,** a porta de entrada consulta o Cadastro de novo a cada minuto. Se o usuário foi desativado (RNF-1) ou a sessão venceu por inatividade (RNF-5), ela fecha a conexão, e a tela volta para a autenticação. O token interno de cada mensagem ao serviço segue o ponto 1.
+   - **As mensagens que chegam à tela não renovam a sessão,** como as consultas automáticas do ponto 2; só as ações do usuário a renovam.
 
 ## Consequências
 
 - **Todos os serviços** conferem o token interno (ponto 1) e leem dele o usuário, o perfil, a equipe, a companhia, a sessão e se a chamada é ação do usuário. As ADRs 0018 e 0020 e a interação "Verificar o acesso na porta de entrada" do item 14 podem citar o ponto 1.
 - **Execução em Solo:** responde às consultas do ponto 4, consulta os operadores ativos no Cadastro (ponto 3), reconhece o reenvio do plano pela chave (ponto 5) e publica o aviso de encerramento com os usuários vinculados (ponto 6).
 - **Itens 12 e 13:** o plano do Cadastro ganha a situação "confirmação pendente" e a chave de idempotência (ponto 5), e o Cadastro grava os vínculos de usuário e turnaround (ponto 6). O item 13 supunha outra ordem entre gravar e enviar o plano ([#208](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/208), seção 13.5.2) e se ajusta a esta ADR.
+- **Serviços com tempo real (Execução em Solo, Monitoramento e Exceções e Liberação):** aceitam a conexão só pela porta de entrada e com o token interno (ponto 7). No item 13, a `PortaDeEntrada` também encaminha a abertura das conexões dos notificadores, e o item 14 mostra a abertura passando por ela.
 - A ADR-0017 continua sendo só a da tecnologia do Cadastro e Planejamento e aponta para esta.
 
 ---
