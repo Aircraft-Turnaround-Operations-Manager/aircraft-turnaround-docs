@@ -146,6 +146,7 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 - **Exceção.** `excecao` guarda a tarefa afetada, o código de atraso, a descrição, quem abriu e quem encerrou, com a solução (RF-36, RF-40). O estado anterior do turnaround é só para exibir: a volta ao estado é decidida pela Execução em Solo, pelo andamento das tarefas (RF-40).
 - **Ações.** `reatribuicao` e `replanejamento` guardam o motivo e o autor de cada ação (RF-37, RF-42); o motivo do replanejamento é obrigatório só na inclusão de serviço sob demanda (ADR-0014). Os valores anterior e novo da tarefa ficam na auditoria da Execução em Solo, que é a dona da tarefa. `acao_alerta` liga cada alerta a uma única ação, e cada ação a no máximo um alerta (RF-38).
 - **Liberação.** `liberacao` guarda o ARDT confirmado pela Autoridade de Liberação, um por turnaround (RF-39); a recusa não é gravada.
+- **Companhia do turnaround.** `turnaround_referencia.companhia_id` é a única cópia usada para decidir: confere se a Autoridade de Liberação é da companhia do turnaround (UC32). A ADR-0015, regra 1, proíbe decidir com cópia porque a cópia pode estar atrasada em relação ao dono. A companhia é gravada na abertura do turnaround (RF-3) e nenhum RF a muda (o RF-10 só muda EIBT e MTTT), então a cópia é sempre igual à original e não fica atrasada.
 - **Âncora local.** `excecao`, `reatribuicao`, `replanejamento` e `acao_alerta` têm `turnaround_id` como FK para `turnaround_referencia`, a âncora local do turnaround neste serviço, que também é a chave do log do RNF-24.
 
 ## 12.6 Tabelas técnicas
