@@ -3,7 +3,7 @@ id: adr-0024
 titulo: "ADR-0024 — Canvas de Design como fonte única das telas"
 tipo: decisao
 decisao: D24
-status: proposta
+status: aceita
 data: 2026-11-21
 decisor: Grupo (aprovação dos integrantes no pull request)
 itens_template: [10]
@@ -13,7 +13,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 ---
 # ADR-0024 — Canvas de Design como fonte única das telas
 
-- **Status:** proposta: passa a aceita quando os outros integrantes aprovarem o pull request · **Data:** 21/11/2026 · **Decisor:** grupo, pela aprovação do pull request · **Altera:** [ADR-0016](0016-contrato-entre-os-servicos.md), ponto 1 ("Design System próprio, a partir dos protótipos do Figma")
+- **Status:** aceita, pela aprovação do grupo no pull request [#229](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/229) · **Data:** 21/11/2026 · **Decisor:** grupo, pela aprovação do pull request · **Altera:** [ADR-0016](0016-contrato-entre-os-servicos.md), ponto 1 ("Design System próprio, a partir dos protótipos do Figma")
 
 ## Contexto
 
