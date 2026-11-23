@@ -647,7 +647,7 @@
 | **Descrição** | A cada início, conclusão ou marcação de "Não aplicável" aceito, o Motor de Eventos grava no turnaround os marcos do atendimento em solo, a partir do horário do registro do operador, sem que ninguém precise digitá-los: o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) e o fim real do atendimento em solo (AEGT) [2][4]. É incluído pelos casos de uso UC15, UC16 e UC18. Atende ao RF-20 e à US020. |
 | **Pré-condições** | 1. Um registro de início (UC15), de conclusão (UC16) ou de "Não aplicável" (UC18) de tarefa chegou ao servidor.<br>2. O turnaround tem, no modelo de tarefas, a tarefa de embarque e as tarefas obrigatórias identificadas. |
 | **Pós-condições** | os marcos que o registro determina estão gravados no turnaround, cada um com o horário e o registro de origem; os marcos que o registro não determina ficam como estavam. |
-| **Regras de negócio** | **RN1.** ACGT é o horário do primeiro início de tarefa no turnaround [2], isto é, o menor horário da ação entre os inícios registrados. O início feito sem conexão que chega depois do ACGT, com horário da ação anterior a ele, substitui o ACGT (RF-20; RNF-8).<br>**RN2.** ASBT é o horário do início da tarefa de embarque [2].<br>**RN3.** AEGT é o horário do registro que leva a última tarefa obrigatória pendente do turnaround a "Concluída" ou "Não aplicável" [4] (RF-20). Se uma tarefa obrigatória entrar no plano depois do AEGT, no replanejamento (UC35), e terminar, o AEGT é gravado de novo com o horário desse registro e substitui o anterior; a auditoria guarda o valor anterior (RF-20).<br>**RN4.** O horário de cada marco é o horário da ação do operador, inclusive no registro feito sem conexão, e não o horário de chegada ao servidor (RNF-8). [Inferência] É o que a régua do TOBT planejado + 5 minutos [2][3] (ADR-0001) precisa para medir a aderência.<br>**RN5.** O início de uma tarefa que não é a de embarque, com o ACGT já gravado, não grava nenhum marco (US020, critério 4).<br>**RN6.** [Fato] Os marcos e as siglas são os da tomada de decisão colaborativa em aeroportos (A-CDM) [2][4]; [Inferência] derivá-los dos registros de início, de conclusão e de "Não aplicável" é regra do projeto (RF-20). |
+| **Regras de negócio** | **RN1.** ACGT é o horário do primeiro início de tarefa no turnaround [2], isto é, o menor horário da ação entre os inícios registrados. O início feito sem conexão que chega depois do ACGT, com horário da ação anterior a ele, substitui o ACGT (RF-20; RNF-8).<br>**RN2.** ASBT é o horário do início da tarefa de embarque [2].<br>**RN3.** AEGT é gravado quando o registro leva a última tarefa obrigatória pendente do turnaround a "Concluída" ou "Não aplicável" [4], e o horário é o maior horário da ação entre os registros que levaram as tarefas obrigatórias a esses estados, com a referência a esse registro (RF-20). Com registros feitos sem conexão, o último a chegar pode ter horário da ação anterior ao de outra tarefa obrigatória já terminada; o fim real do atendimento é o mais tardio (RNF-8). Se uma tarefa obrigatória entrar no plano depois do AEGT, no replanejamento (UC35), e terminar, o AEGT é gravado de novo pela mesma regra e substitui o anterior; a auditoria guarda o valor anterior (RF-20).<br>**RN4.** O horário de cada marco é o horário da ação do operador, inclusive no registro feito sem conexão, e não o horário de chegada ao servidor (RNF-8). [Inferência] É o que a régua do TOBT planejado + 5 minutos [2][3] (ADR-0001) precisa para medir a aderência.<br>**RN5.** O início de uma tarefa que não é a de embarque, com o ACGT já gravado e horário da ação igual ou posterior a ele, não grava nenhum marco (US020, critério 4); com horário anterior, troca o ACGT (RN1).<br>**RN6.** [Fato] Os marcos e as siglas são os da tomada de decisão colaborativa em aeroportos (A-CDM) [2][4]; [Inferência] derivá-los dos registros de início, de conclusão e de "Não aplicável" é regra do projeto (RF-20). |
 | **Protótipo(s) de tela** | Marcos do turnaround (ACGT, ASBT e AEGT) com os horários gravados, no detalhe do turnaround.<br>![UC20 – marcos do turnaround](prototipos/uc-b7-marcos-do-turnaround.png) |
 
 ### Fluxo básico
@@ -683,7 +683,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A3.1. O Motor de Eventos grava o horário da ação como AEGT, com a referência ao registro. |  |
+| A3.1. O Motor de Eventos grava como AEGT o maior horário da ação entre os registros que levaram as tarefas obrigatórias a "Concluída" ou "Não aplicável", com a referência a esse registro (RN3). |  |
 |  | A3.2. O sistema exibe o AEGT nos marcos do turnaround, e o caso de uso termina. |
 
 ### Fluxo alternativo A4 – Última tarefa obrigatória marcada como "Não aplicável" (passo 1)
@@ -692,7 +692,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A4.1. O Motor de Eventos grava o horário da marcação como AEGT, com a referência ao registro. |  |
+| A4.1. O Motor de Eventos grava como AEGT o maior horário da ação entre os registros que levaram as tarefas obrigatórias a "Concluída" ou "Não aplicável", com a referência a esse registro (RN3). |  |
 |  | A4.2. O sistema exibe o AEGT nos marcos do turnaround, e o caso de uso termina. |
 
 ### Fluxo alternativo A5 – Conclusão ou "Não aplicável" que não é a última obrigatória (passo 1)

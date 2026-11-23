@@ -367,7 +367,7 @@ Marcos do A-CDM gravados pela Execução em Solo (RF-12, RF-20, RF-44). RFs: RF-
 
 **Restrições:**
 
-- UNIQUE (turnaround_id, tipo); um AEGT novo substitui o anterior
+- UNIQUE (turnaround_id, tipo); o início sem conexão com horário anterior troca o ACGT, e um AEGT novo substitui o anterior (RF-20)
 - CHECK: AIBT e AOBT com autor_id; ACGT, ASBT e AEGT com registro_origem_id
 
 ### B.2.3 `correcao_aibt`

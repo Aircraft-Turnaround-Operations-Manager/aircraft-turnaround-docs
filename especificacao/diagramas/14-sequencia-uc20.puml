@@ -58,7 +58,7 @@ alt registro.tipo = "Início" (UC15)
     create entity "asbt: Marco" as M2
     MS -> M2 : «create» Marco(tipo = "ASBT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
   else não é o embarque
-    note right of MS : RN5: com o ACGT já gravado, o início que não é\no de embarque não grava nenhum marco
+    note right of MS : RN5: com o ACGT já gravado, o início que não é o de\nembarque, com horário igual ou posterior, não grava nenhum marco
   end
 
 else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
@@ -68,8 +68,8 @@ else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
   deactivate T
   alt A3 (conclusão) ou A4 ("Não aplicável"): nenhuma pendente, e a tarefa do registro é obrigatória (RN3)
     create entity "aegt: Marco" as M3
-    MS -> M3 : «create» Marco(tipo = "AEGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
-    note right of M3 : o AEGT novo substitui o anterior, se houver, por exemplo\ndepois de uma tarefa obrigatória incluída no replanejamento\n(RN3; Apêndice B.2.2; item 12, seção 12.5.2)
+    MS -> M3 : «create» Marco(tipo = "AEGT", horario = maior horarioAcao, registradoEm = momento, registroOrigem = registro desse horário)
+    note right of M3 : horário = maior horário da ação entre os registros que levaram as\ntarefas obrigatórias a "Concluída" ou "Não aplicável" (tarefa.registros);\nsem conexão, o último a chegar pode não ser o mais tardio (RN3).\nO AEGT novo substitui o anterior, se houver, por exemplo depois de uma\ntarefa obrigatória incluída no replanejamento (Apêndice B.2.2; item 12, seção 12.5.2)
   else A5: ainda há tarefa obrigatória pendente
     note right of MS : nenhum marco é gravado (A5.1)
   end
