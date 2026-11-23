@@ -132,15 +132,15 @@ note right of PS
   depois da chegada e antes do primeiro início (RN2)
 end note
 loop cada tarefa do turnaround "Aguardando" e sem predecessora (por exemplo, calçar a aeronave)
-  PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId = marco AIBT, momento)
+  PS -> SU : mudarEstado(novo = "Pronta", autorId = vazio, causaId, momento)
   activate SU
   SU --> PS : HistoricoEstadoTarefa
   deactivate SU
-  PS -> AU : registrarAutomatico(objeto = "tarefa", objetoId = tarefa.id, acao = "Alteração", causaId = marco AIBT, gatilho = vazio, turnaroundId, valoresAnteriores = "Aguardando", valoresNovos = "Pronta")
+  PS -> AU : registrarAutomatico(objeto = "tarefa", objetoId = tarefa.id, acao = "Alteração", causaId, gatilho = vazio, turnaroundId, valoresAnteriores = "Aguardando", valoresNovos = "Pronta")
   activate AU
   AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
   deactivate AU
-  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTarefaPropagado", turnaroundId, autorId = vazio, causaId = marco AIBT, dados = tarefaId, estadoAnterior, estadoNovo, versao))
+  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTarefaPropagado", turnaroundId, autorId = vazio, causaId, dados = tarefaId, estadoAnterior, estadoNovo, versao))
   activate PUB
   PUB -> DB : INSERT aviso_saida
   deactivate PUB
