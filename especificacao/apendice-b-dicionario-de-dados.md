@@ -642,7 +642,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `antecedencia_embarque_min` | `INTEGER` | — | Sim | Minutos | X do RF-30 |
 | `antecedencia_checagem_min` | `INTEGER` | — | Sim | Minutos | 15 do RF-32 |
 | `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34 |
-| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor é ignorado |
+| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor ou igual é ignorado |
 | `previsao_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `ocorridoEm` do último aviso de abertura ou de previsão aplicado; aviso mais antigo é ignorado |
 
 ### B.3.2 `tarefa_monitorada`
@@ -673,7 +673,7 @@ Cópia da tarefa do plano para calcular e exibir; o catálogo só entra quando a
 | `codigo_versao` | `INTEGER` | — | Não | Inteiro | RNF-22 |
 | `codigo_atraso` | `CHAR(2)` | — | Não | Texto | — |
 | `codigo_descricao` | `VARCHAR(200)` | — | Não | Texto | Descrição gravada com o registro (RNF-22) |
-| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão da tarefa no último aviso aplicado; aviso com versão menor é ignorado |
+| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão da tarefa no último aviso aplicado; aviso com versão menor ou igual é ignorado |
 
 ### B.3.3 `dependencia_monitorada`
 
