@@ -86,7 +86,8 @@ tec('tecnica-acompanhamento', 'Painel, linha do tempo, alertas, checagem e indic
   'monitoramento.Painel', 'monitoramento.LinhaPainel', 'monitoramento.LinhaDoTempo', 'monitoramento.RelatorioAderencia', 'monitoramento.Indicador',
   'monitoramento.PainelNotificador', 'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.ProjecaoRepository',
   'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
-  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView'])
+  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView',
+  'cadastro.UsuarioController', 'cadastro.EquipeController'])
 tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o alerta', [
   'excecoes.ExcecaoView', 'excecoes.RegistroAcaoAlertaView', 'excecoes.AtualizacaoTobtView',
   'excecoes.ExcecaoController', 'excecoes.AtualizacaoTobtController', 'excecoes.CoordenadorNotificador',
