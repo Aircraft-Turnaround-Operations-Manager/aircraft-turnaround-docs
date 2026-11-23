@@ -15,9 +15,9 @@ Levantado em 20/11/2026 para montar um único canvas de Design com todas as tela
 
 ## Resumo
 
-- **PDF = pasta:** as 42 imagens do PDF são, uma a uma, os PNGs citados nos `area-*.md`. Só `uc-c2-linha-do-tempo.png` (v1) está na pasta e fora do PDF.
-- **33 telas do PDF idênticas ao Figma**, pixel a pixel.
-- **2 telas do PDF com divergência** em relação ao frame do Figma (`uc-b7`, `uc-d4-v2`).
+- **PDF e pasta:** as 42 imagens do PDF são as telas citadas nos `area-*.md`, uma a uma. Em 33 delas, o PNG da pasta é idêntico à imagem do PDF. As outras 9 foram exportadas de novo do Figma depois do PDF (28/10): 8 da área D, no commit 96e158e (14/11, nome completo do produto de volta), e a do UC11, nos commits dd276e5 e 0551eae (16/11 e 18/11). A comparação com o Figma abaixo usa a pasta em 20/11. Só `uc-c2-linha-do-tempo.png` (v1) está na pasta e fora do PDF.
+- **33 telas da pasta idênticas ao Figma**, pixel a pixel.
+- **2 telas da pasta com divergência** em relação ao frame do Figma (`uc-b7`, `uc-d4-v2`).
 - **7 telas do PDF sem frame no Figma**: toda a área C (UC22 a UC28). Mais a v1 da linha do tempo, fora do PDF.
 - **Frames do Figma fora do PDF:** 8 na página "Céu" e as cópias de tema das páginas "Pátio noturno" e "Sinalização".
 
@@ -56,7 +56,8 @@ Coluna "Figma": nome e id do frame na página "Céu". "Comparação": resultado 
 | uc-c2-linha-do-tempo-v2 | UC23 | area-c | 18a2ddb · 10/10 · rdsalves | **não existe no Figma** | — (D-3) |
 | uc-c3-recalculo-e-caminho-critico | UC24 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — |
 | uc-c4-alerta-emitido | UC25 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — |
-| uc-c5-lista-de-alertas | UC26 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — (aba "Encerrados hoje") |
+| uc-c5-lista-de-alertas | UC26 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — |
+| uc-c5-lista-de-alertas-encerrados | UC26 (A5) | area-c | 3c46ebc · 21/11 · rdsalves (#206, depois do inventário) | **não existe no Figma** | fora do PDF |
 | uc-c6-checagem-tobt-15 | UC27 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — |
 | uc-c7-indicadores-de-aderencia | UC28 | area-c | 144bdd5 · 08/10 · joao.correa | **não existe no Figma** | — |
 | uc-d1-abrir-excecao | UC29 | area-d | 0ce470e · 10/10 · rdsalves | uc-d1-abrir-excecao · 41:375 | idêntico |
@@ -75,21 +76,24 @@ Observações de origem:
 
 - `uc-a12` e `uc-a13` são do UC12 e do UC13, citados em `area-b.md`, mas os PNGs e os frames são do Eduardo (seção "Área A" do Figma). `uc-d9` é do UC37, citado em `area-b.md`, com PNG e frame do Rodrigo (seção "Área D").
 - As duas "v2" (`uc-c2-…-v2`, `uc-d4-…-v2`) entraram no commit de consolidação 18a2ddb, em 1586 × 992 px (escala ≈ 1,1 de 1440 × 900); as demais estão no tamanho do frame.
+- As 8 telas da área D com "idêntico" (todas menos `uc-d4-…-v2` e `uc-d9`) e a `uc-a11` mudaram depois do PDF: a coluna "Commit" mostra só o commit de entrada; os últimos são 96e158e (área D, 14/11) e 0551eae (UC11, 18/11).
 - Os autores do 144bdd5 (`joao.correa`, área C) e do 3c73d19 (João Pedro Cardoso de Liz, área B) são registros diferentes no git.
 
 ## 2. Divergências PNG × Figma
 
 | # | Tela | PNG (PDF) | Figma |
 |---|---|---|---|
-| D-1 | uc-b7-marcos-do-turnaround (UC20) | Logo da barra lateral: "Aircraft Turnaround Orchestration System", em três linhas. | "Aircraft Turnaround", em uma linha. Resto idêntico. |
+| D-1 | uc-b7-marcos-do-turnaround (UC20) | Logo da barra lateral: "Aircraft Turnaround Orchestration System", em três linhas. O PNG tem um só commit (3c73d19, 08/10) e nunca foi editado: veio de uma versão anterior do Figma, ainda com o nome completo. | "Aircraft Turnaround", em uma linha. Resto idêntico. |
 | D-2 | uc-d4-confirmar-prontidao (UC32) | "Tarefas obrigatórias" com 12 linhas; na coluna da direita, a 2ª linha é "Troca de mantas", com o selo "Não aplicável" e um traço no lugar do visto. | 12 linhas; no mesmo lugar está "Água potável e lavatório 13:41", que não aparece no PNG. O resto da lista e o cabeçalho "12 de 12 … 11 concluídas · 1 não aplicável (Troca de mantas…)" são iguais nos dois. Conferido por regiões no tamanho nativo do PNG (1586 × 992): é a única diferença. |
 | D-3 | uc-c2-linha-do-tempo (UC23), v1 × v2 | v2 (no PDF): a faixa dos marcos termina em "Marcos registrados". | v1 (fora do PDF): termina em "gravados pelo Motor de Eventos". Nenhuma das duas está no Figma; outras diferenças pequenas ficam para a reconstrução. |
 
-**Decisão do Rodrigo (20/11/2026):** nas divergências D-1, D-2 e D-3, o PNG é a fonte da verdade. As melhorias provavelmente foram feitas direto nos PNGs, sem passar pelo Figma. O canvas segue o PNG nessas telas (e, na D-3, a v2, que é a do PDF).
+**Decisão do Rodrigo (20/11/2026):** nas divergências D-1, D-2 e D-3, o PNG é a fonte da verdade. A D-2 foi feita direto no PNG, sem passar pelo Figma; a D-1 é um PNG de uma versão anterior do Figma. O canvas segue o PNG nessas telas (e, na D-3, a v2, que é a do PDF).
+
+**Nome do produto (23/11/2026):** em todas as telas do canvas, o nome é "Aircraft Turnaround Orchestration System", como pediram o João Pedro e o Eduardo no PR #229. As 13 telas da área A e as 7 telas extras do Figma tinham só "Aircraft Turnaround" e foram corrigidas.
 
 ## 3. Frames do Figma que não aparecem no PDF
 
-Página "Céu":
+Página "Céu". No canvas, estas 8 telas ficam marcadas como **histórico**: foram superadas pelas telas dos casos de uso.
 
 | Frame · id | Seção | O que mostra | Tela do PDF mais próxima |
 |---|---|---|---|
@@ -106,10 +110,11 @@ Páginas "Pátio noturno" (1:49, tema azul-escuro) e "Sinalização" (1:50, tema
 
 ## 4. Canvas
 
-Todas as telas estão reconstruídas como markup editável no artefato de Design "Protótipos de tela — Aircraft Turnaround Orchestration System" (https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX, privado até ser compartilhado), com uma página por grupo e a origem no nome de cada artboard:
+Todas as telas estão reconstruídas como markup editável no artefato de Design "Protótipos de tela — Aircraft Turnaround Orchestration System" (https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX), com uma página por grupo e a origem no nome de cada artboard. São 51 telas; o nome de cada artboard é o nome do PNG (`uc-c2-linha-do-tempo-v2`, `uc-d4-confirmar-prontidao-v2`):
 
 - **43 telas do Figma (página "Céu")**, convertidas do código do Figma e comparadas, por render, com o frame. A única diferença que sobra é de renderização: deslocamentos de 1 a 2 px e a seta "→" mais larga na fonte mono.
 - **D-1 (UC20) e D-2 (UC32)** seguem o PNG e foram comparadas com ele.
+- **Aba "Encerrados hoje" do UC26** (`uc-c5-lista-de-alertas-encerrados`), desenhada no canvas em 21/11/2026 pela decisão da #206.
 - **7 telas da área C (UC22 a UC28)**, desenhadas a partir dos PNGs do PDF e marcadas "FORA DO FIGMA — origem: commit 144bdd5" (UC23: 18a2ddb, v2). Fontes aproximadas: Inter e JetBrains Mono.
 - **Não reconstruídas:** as cópias de tema das páginas "Pátio noturno" e "Sinalização" e a v1 da linha do tempo, que está fora do PDF.
 

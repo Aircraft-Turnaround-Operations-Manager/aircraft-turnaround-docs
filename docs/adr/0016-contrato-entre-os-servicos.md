@@ -13,7 +13,7 @@ relacionados: [adr-0015]
 ---
 # ADR-0016 — Contrato comum entre os serviços
 
-- **Status:** aceita, como base provisória do RA2 · **Data:** 03/11/2026 · **Decisor:** grupo, por votação dos quatro integrantes
+- **Status:** aceita, como base provisória do RA2; ponto 1 alterado pela [ADR-0024](0024-canvas-de-design-como-fonte-das-telas.md) (a fonte das telas passou a ser o canvas de Design, e o Figma ficou congelado) · **Data:** 03/11/2026 · **Decisor:** grupo, por votação dos quatro integrantes
 
 ## Contexto
 
@@ -34,7 +34,7 @@ Placar entre parênteses: votos da opção escolhida, de 4.
 
 - Um único site. Cada integrante faz as telas da sua área (4).
 - Framework: Angular (3; React teve 1).
-- Design System próprio, a partir dos protótipos do Figma (4). *A fonte das telas passou a ser o canvas de Design da [ADR-0024](0024-canvas-de-design-como-fonte-das-telas.md); o Figma ficou congelado.*
+- Design System próprio, a partir dos protótipos do Figma (4).
 - `Jcliz` monta a estrutura inicial do site (4).
 
 **2. Login e porta de entrada**

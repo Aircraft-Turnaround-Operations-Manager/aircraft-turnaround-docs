@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-11-17
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0019, adr-0020, adr-0021, adr-0022, adr-0023, mapa-pesquisa]
+atualizado: 2026-11-23
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0019, adr-0020, adr-0021, adr-0022, adr-0023, adr-0024, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 

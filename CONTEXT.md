@@ -123,5 +123,5 @@ D8 (siglas) e D9 (nome do coordenador) valem para **todos** os itens. A coluna "
 | 7 — Estórias | [tolerâncias](pesquisa/topicos/tolerancias-e-indicadores.md) (regras T8, T11, T12), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D1, D3, D6, D7, D11, D12, D13, D14 |
 | 8 — RNFs | [insumos para RNFs](pesquisa/impacto/insumos-rnfs.md) | D1, D11, D12 |
 | 9 — Casos de uso | [papéis e atores](pesquisa/topicos/papeis-e-atores.md), [insumos para RFs](pesquisa/impacto/insumos-rfs.md) | D4, D10, D11 |
-| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11, D12, D13, D14 |
+| 10 — Especificações de caso de uso | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [códigos de atraso](pesquisa/topicos/codigos-de-atraso.md) | D1, D3, D4, D5, D6, D7, D10, D11, D12, D13, D14, D24 |
 | 11 — Diagrama de atividades | [atividades](pesquisa/topicos/atividades-e-dependencias.md), [caminho crítico](pesquisa/topicos/caminho-critico.md), [papéis](pesquisa/topicos/papeis-e-atores.md) | D4, D5 |

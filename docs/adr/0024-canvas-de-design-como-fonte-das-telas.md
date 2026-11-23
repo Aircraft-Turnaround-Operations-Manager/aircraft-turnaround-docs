@@ -18,12 +18,12 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 ## Contexto
 
 - A ADR-0016, ponto 1, votada pelos quatro integrantes, diz que o Design System próprio parte dos protótipos do Figma (arquivo `aircraft`).
-- Em 20/11/2026, um inventário comparou as 42 imagens de tela do PDF do RA1, que são as imagens de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/`, com os frames do Figma. O resultado está no [inventário das telas](../../entregas/inventario-prototipos.md). Resultado:
+- Em 20/11/2026, um inventário comparou as 42 imagens de tela citadas no item 10, as de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/`, com os frames do Figma. São as telas do PDF do RA1; 9 delas foram exportadas de novo do Figma depois do PDF (8 da área D e a do UC11). O resultado está no [inventário das telas](../../entregas/inventario-prototipos.md). Resultado:
   - 33 imagens são iguais ao Figma;
-  - 2 divergem do Figma, porque foram melhoradas direto no PNG (UC20 e UC32);
+  - 2 divergem do Figma: a do UC32 foi melhorada direto no PNG, e a do UC20 foi exportada de uma versão anterior do Figma, ainda com o nome completo do produto;
   - 7 não existem no Figma: as telas da área C (UC22 a UC28), geradas localmente junto com o texto (commits `144bdd5` e `18a2ddb`).
 - Com duas fontes que não batem, uma decisão de especificação chegou a ser tomada em cima de uma imagem que ninguém desenhou no Figma: a aba "Encerrados hoje" do UC26.
-- Na mesma data, todas as telas foram reconstruídas num canvas de Design no Claude, compartilhado com os quatro integrantes. São 43 telas do Figma, conferidas contra o frame, e as 7 que estavam fora dele, marcadas com a origem: [Protótipos de tela — Aircraft Turnaround Orchestration System](https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX).
+- Na mesma data, todas as telas foram reconstruídas num canvas de Design no Claude, compartilhado com os quatro integrantes. São 43 telas do Figma, conferidas contra o frame, e as 7 que estavam fora dele, marcadas com a origem. Em 21/11/2026 entrou a aba "Encerrados hoje" do UC26 (decisão da #206), e o canvas passou a 51 telas: [Protótipos de tela — Aircraft Turnaround Orchestration System](https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX).
 
 ## Opções consideradas
 
@@ -37,10 +37,11 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 
 1. **Fonte única.** O layout de toda tela do projeto está no canvas [Protótipos de tela — Aircraft Turnaround Orchestration System](https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX). Tela nova e ajuste de tela existente se fazem nele.
 2. **Figma congelado.** O arquivo `aircraft` do Figma deixa de ser atualizado e fica só como histórico do RA1.
-3. **Imagens do documento.** Cada PNG de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/` é a exportação de uma tela do canvas, com o mesmo nome. Ninguém gera imagem de tela na própria máquina. Quando uma tela muda no canvas, a imagem é exportada de novo, no mesmo pull request que muda o texto que a cita.
+3. **Imagens do documento.** Cada PNG de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/` é a exportação de uma tela do canvas, com o mesmo nome: a tela `uc-d4-confirmar-prontidao-v2` gera `uc-d4-confirmar-prontidao-v2.png`. Quem exporta é o integrante, pelo menu de exportação do canvas. Ninguém gera imagem de tela na própria máquina. Quando uma tela muda no canvas, a imagem é exportada de novo, no mesmo pull request que muda o texto que a cita.
 4. **Dono da tela.** Cada integrante muda as telas da sua área. Para mudar a tela de outra área, é preciso a concordância do dono da área, registrada na issue ou no pull request.
-5. **Origem marcada.** O título de cada tela no canvas diz o caso de uso e a origem. A legenda do canvas diz de onde veio cada grupo de telas.
+5. **Origem marcada.** O título de cada tela no canvas diz o caso de uso e a origem. A legenda do canvas diz de onde veio cada grupo de telas. As telas do Figma que não estão no item 10 ficam marcadas como histórico.
 6. **Design System.** O Design System próprio da ADR-0016, ponto 1, parte das telas do canvas, e não mais do Figma. O resto do ponto 1 não muda.
+7. **Nome do produto.** Todas as telas mostram o nome completo, "Aircraft Turnaround Orchestration System".
 
 ## Consequências
 
@@ -48,7 +49,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 - As telas continuam provisórias. Servem à especificação e não são a interface final, como já vale para os protótipos do RA1.
 - O canvas fica fora do repositório, então o histórico de cada mudança de tela fica no próprio canvas. No repositório ficam as imagens exportadas e o texto.
 - Quem não tem acesso ao canvas não consegue mudar telas. O acesso é dado pelo dono do canvas (Rodrigo Alves).
-- A ADR-0016, ponto 1, ganha a nota de que a fonte das telas mudou por esta ADR.
+- A linha Status da ADR-0016 registra que o ponto 1 foi alterado por esta ADR.
 
 ---
 
