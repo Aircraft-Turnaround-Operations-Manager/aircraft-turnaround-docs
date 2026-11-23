@@ -773,6 +773,7 @@ Alertas emitidos e encerrados (RF-27 a RF-31, RF-33); dados do gatilho por tipo.
 **Restrições:**
 
 - UNIQUE (turnaround_id, tipo, tarefa_id, ciclo)
+- Regra: `tarefa_id` fica vazio nos alertas do RF-28, do RF-29 e do RF-31. Num banco SQL, dois campos vazios contam como diferentes, e o UNIQUE acima, sozinho, não impede dois desses alertas com o mesmo turnaround, tipo e ciclo. No Monitoramento, o MongoDB guarda o campo vazio ou ausente como valor num índice único comum, sem `sparse` nem `partialFilterExpression`, e a chave vale também para esses alertas (ADR-0019).
 - Regra: campos do gatilho preenchidos conforme o tipo
 
 ### B.3.9 `alerta_tarefa`
