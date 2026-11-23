@@ -36,7 +36,9 @@ namespace execucao {
     - permiteComPassageiros: Boolean
     - planoRecebidoEm: DateTime
     - chavePlano: UUID
+    - versao: Integer
     - tobtVigente: DateTime [0..1]
+    - tobtVigenteOcorridoEm: DateTime [0..1]
     - ardt: DateTime [0..1]
     - liberadoPorId: UUID [0..1]
     - tarefas: List<Tarefa>
