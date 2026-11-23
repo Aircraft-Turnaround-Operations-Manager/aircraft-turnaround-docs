@@ -13,7 +13,7 @@ O modelo de dados descreve as tabelas que guardam o que os requisitos funcionais
 
 Os horários seguem a tomada de decisão colaborativa em aeroportos (A-CDM) [2]: horário programado de chegada à posição (SIBT), horário programado de saída da posição (SOBT), horário estimado de chegada à posição (EIBT), horário real de chegada à posição (AIBT), início real do atendimento em solo (ACGT), início real do embarque (ASBT), fim real do atendimento em solo (AEGT), horário real de prontidão (ARDT), horário real de saída da posição (AOBT), horário-alvo de prontidão (TOBT), planejado e vigente, e tempo mínimo de turnaround (MTTT). Os pontos de confirmação usam código de resposta rápida (QR Code) (ADR-0007).
 
-São 48 tabelas de negócio e 13 tabelas técnicas. Todos os 44 RFs aparecem em pelo menos uma tabela de negócio (seção 12.4).
+São 49 tabelas de negócio e 13 tabelas técnicas. Todos os 44 RFs aparecem em pelo menos uma tabela de negócio (seção 12.4).
 
 ## 12.1 Notação e convenções
 
@@ -22,7 +22,7 @@ São 48 tabelas de negócio e 13 tabelas técnicas. Todos os 44 RFs aparecem em 
 - **Identificadores:** identificador universal único (UUID), gerado pelo serviço dono do dado e guardado como `CHAR(36)` (ADR-0016). As exceções são as chaves naturais da tabela de códigos de atraso (`versao`, `codigo`).
 - **Nomes:** em português, sem acento, em minúsculas e no singular, separados por sublinhado (ADR-0016). O mesmo dado tem o mesmo nome em todo serviço (`aobt`, `responsavel_id`, `codigo_versao`, `tobt_vigente`). O autor de um registro se chama sempre `<papel>_id` (`autor_id`, `aberta_por_id`, `encerrada_por_id`, `criado_por_id`, `confirmado_por_id`). A tabela que copia uma entidade de outro serviço usa como PK o identificador dessa entidade (`turnaround_id`, `tarefa_id`); a tabela própria usa `id`.
 - **Estados:** os campos de estado usam os valores do `CONTEXT.md`, seção 3, com a mesma grafia. Turnaround: Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado e Fora de bloco. Tarefa: Aguardando, Pronta, Em execução, Pausada, Concluída e Não aplicável. Os demais domínios estão escritos uma vez no Apêndice B, com a grafia que os outros itens usam.
-- **Bancos de cada serviço:** as ADRs de tecnologia aceitas usam banco relacional na Execução em Solo (ADR-0018) e no Exceções e Liberação (ADR-0020). As do Cadastro e Planejamento e do Monitoramento ainda estão em revisão; se o Monitoramento usar banco de documentos, cada tabela dele vira uma coleção com os mesmos campos, e o modelo lógico continua valendo como referência (decisão B1).
+- **Bancos de cada serviço:** as ADRs de tecnologia usam banco relacional no Cadastro e Planejamento (ADR-0017), na Execução em Solo (ADR-0018) e no Exceções e Liberação (ADR-0020), e banco de documentos (MongoDB) no Monitoramento (ADR-0019). No Monitoramento, cada tabela vira uma coleção com os mesmos campos, e o modelo lógico continua valendo como referência (decisão B1).
 
 ## 12.2 Donos dos dados e cópias
 
@@ -35,7 +35,7 @@ Só o serviço dono decide sobre um dado; os outros guardam uma cópia, recebida
 | Estado do turnaround e da tarefa, responsável atual, marcos AIBT, ACGT, ASBT, AEGT e AOBT | Execução em Solo | Monitoramento, para projetar e exibir; o Cadastro e o Exceções e Liberação guardam só o AOBT, para o prazo de anonimização do requisito não funcional (RNF) 6 |
 | Tabela de códigos de atraso da Agência Nacional de Aviação Civil (ANAC) [62] | Execução em Solo (`tabela_codigo_atraso`, `codigo_atraso`) | Exceções e Liberação, que a usa na exceção (RF-36) |
 | Projeção de prontidão, caminho crítico e alertas | Monitoramento | Exceções e Liberação guarda a última projeção, para a solicitação de atualização do TOBT (RF-41) |
-| TOBT vigente, exceções, reatribuições, replanejamentos, ações sobre alertas e ARDT | Exceções e Liberação | Monitoramento (TOBT vigente e ação do alerta) e Execução em Solo (TOBT vigente e ARDT, só para exibir) |
+| TOBT vigente, exceções, reatribuições, replanejamentos, ações sobre alertas e ARDT | Exceções e Liberação | Monitoramento (TOBT vigente, ação do alerta e ARDT, este para o alerta de prontidão não registrada do RF-31) e Execução em Solo (TOBT vigente e ARDT, só para exibir) |
 | Usuários, nomes, perfis, equipes e companhias | Cadastro e Planejamento | Ninguém guarda nome de pessoa: os outros serviços guardam o identificador, e a tela busca o nome no Cadastro |
 
 **Identificadores compartilhados.** O UUID do turnaround nasce no Cadastro e é o mesmo nos quatro serviços. O UUID da tarefa nasce no plano (`tarefa_plano.id`) e é o mesmo na Execução em Solo (`tarefa.id`) e no Monitoramento (`tarefa_monitorada.tarefa_id`); o do ponto de QR Code segue a mesma regra. Assim, um aviso que cita a tarefa vale em qualquer serviço sem conversão (ADR-0016, ponto 7).
@@ -67,6 +67,7 @@ Cada linha diz quais RFs gravam ou leem a tabela. As tabelas técnicas não aten
 | Cadastro e Planejamento | `tarefa_plano` | RF-2, RF-5, RF-6, RF-9 |
 | Cadastro e Planejamento | `dependencia_tarefa_plano` | RF-5, RF-8 |
 | Cadastro e Planejamento | `ponto_confirmacao_plano` | RF-6, RF-7 |
+| Cadastro e Planejamento | `usuario_vinculado` | RF-2 |
 | Execução em Solo | `turnaround` | RF-12, RF-14, RF-21, RF-36, RF-39, RF-40, RF-42, RF-44 |
 | Execução em Solo | `marco` | RF-12, RF-13, RF-20, RF-44 |
 | Execução em Solo | `correcao_aibt` | RF-13 |
@@ -111,8 +112,8 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 
 - **Usuário e acesso.** `usuario` guarda um perfil por pessoa, entre os quatro perfis do item 5 (ADR-0010). O Operador de Solo/Rampa tem equipe, e a Autoridade de Liberação tem companhia, porque só confirma turnarounds da companhia que representa, como diz o caso de uso (UC) 32. O usuário ativo é o que não tem `desativado_em`. `falha_login` e `sessao` atendem o bloqueio depois de cinco falhas e o fim da sessão por inatividade (RNF-5). `anonimizado_em` registra a rotina do RNF-6. O Cadastro é o único serviço que guarda nome de pessoa.
 - **Política de abastecimento.** `politica_abastecimento` guarda as versões da permissão de abastecimento com passageiros a bordo de cada companhia (RF-11, ADR-0005). Uma companhia sem versão tem a permissão "Não permitido".
-- **Modelo e plano.** O modelo de tarefas (`modelo_tarefa`, `tarefa_modelo` e as dependências e os pontos dele) é copiado para o plano do turnaround quando o modelo é aplicado (RF-6). O `plano` é 1:1 com o turnaround e guarda a versão da política vigente nesse momento. As tarefas do catálogo sob demanda vêm junto, marcadas em `sob_demanda`; `acionada` marca o serviço sob demanda já conhecido e incluído no plano antes da confirmação (RF-5, ADR-0014). A cópia dos pontos de QR Code é independente do modelo: mudar o modelo depois não muda o plano.
-- **Turnaround.** `turnaround` guarda os voos com as datas, porque não pode haver dois turnarounds para os mesmos voos e datas (RF-3). O TOBT planejado fica aqui e não muda; o vigente é do Exceções e Liberação. A cópia do `aobt` serve só para contar o prazo do RNF-6.
+- **Modelo e plano.** O modelo de tarefas (`modelo_tarefa`, `tarefa_modelo` e as dependências e os pontos dele) é copiado para o plano do turnaround quando o modelo é aplicado (RF-6). O `plano` é 1:1 com o turnaround e guarda a versão da política vigente nesse momento. A confirmação segue a ADR-0023, ponto 5: o plano passa a "Confirmação pendente", com a chave de idempotência e o conteúdo enviado, e só depois o envio vai à Execução em Solo; enquanto está pendente, o plano não aceita edição. As tarefas do catálogo sob demanda vêm junto, marcadas em `sob_demanda`; `acionada` marca o serviço sob demanda já conhecido e incluído no plano antes da confirmação (RF-5, ADR-0014). A cópia dos pontos de QR Code é independente do modelo: mudar o modelo depois não muda o plano.
+- **Turnaround.** `turnaround` guarda os voos com as datas, porque não pode haver dois turnarounds para os mesmos voos e datas (RF-3). O TOBT planejado fica aqui e não muda; o vigente é do Exceções e Liberação. A cópia do `aobt` serve só para contar o prazo do RNF-6, junto com `usuario_vinculado`, que guarda os usuários que tiveram tarefa ou registro no turnaround, recebidos no aviso de encerramento (ADR-0023, ponto 6).
 
 ### 12.5.2 Execução em Solo
 
@@ -122,9 +123,10 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 - **Histórico.** `historico_estado_turnaround` e `historico_estado_tarefa` guardam cada mudança de estado com o autor (vazio quando é o Motor de Eventos) e o registro que a causou (RF-21).
 - **Marcos.** `marco` guarda AIBT, ACGT, ASBT, AEGT e AOBT, um de cada por turnaround. AIBT e AOBT têm o Operador de Solo/Rampa como autor (RF-12, RF-44); ACGT, ASBT e AEGT vêm do registro de tarefa que os gerou (RF-20). O horário desses três repete o `horario_acao` do registro de origem; a repetição é aceita porque o marco é lido sozinho pelas telas e pelo aviso ao Monitoramento. Se uma tarefa obrigatória for incluída depois de "Pronto para liberação", o novo AEGT substitui o anterior. `correcao_aibt` guarda cada correção do AIBT (RF-13, ADR-0013).
 - **Registros feitos sem conexão.** `registro_tarefa`, `leitura_qr_code` e `correcao_aibt` têm a chave de envio `requisicao_id`, única, para que repetir a mesma requisição não grave de novo, e guardam o horário da ação separado do horário de recebimento (RNF-8, ADR-0018).
-- **Ordem dos avisos de tarefa.** `tarefa.versao` conta as mudanças da tarefa e vai em todo aviso de tarefa. O Monitoramento só aplica um aviso de versão maior que a última que recebeu; comparar pelo horário descartaria o registro feito sem conexão que chega depois.
+- **Ordem dos avisos.** Quem guarda cópia não aplica um aviso mais velho por cima de um mais novo. O que nasce de registro de tarefa, que pode ter sido feito sem conexão e chegar depois com horário antigo, é ordenado por versão: `tarefa.versao` conta as mudanças da tarefa e vai em todo aviso de tarefa, e `turnaround.versao` conta as mudanças de estado e de marco do turnaround e vai nos avisos de estado e de marco; o Monitoramento só aplica um aviso de versão maior que a última que recebeu (`tarefa_monitorada.versao_origem`, `turnaround_monitorado.versao_origem`). O que tem um único autor, sempre conectado, é ordenado pelo `ocorridoEm` do aviso: a previsão (EIBT e MTTT) do Cadastro e o TOBT vigente do Exceções e Liberação (`turnaround_monitorado.previsao_ocorrido_em`, `turnaround.tobt_vigente_ocorrido_em` e, no Monitoramento, o `registrada_em` da última atualização em `atualizacao_tobt_monitorada`).
 - **Códigos de atraso.** A tabela da ANAC tem 72 códigos de duas letras em 12 categorias [62]; cada carga cria uma versão, e as linhas de uma versão nunca mudam (RNF-22). O registro de pausa aponta para o código pela versão e pela sigla e, por isso, continua mostrando o código usado mesmo depois de uma nova versão.
-- **Cópias para exibir.** Voos, matrícula, posição, TOBT vigente, ARDT e quem liberou são cópias, só para a tela de saída da posição (UC37).
+- **Plano recebido.** `chave_plano` guarda a chave do último plano recebido: o reenvio com a mesma chave recebe o mesmo resultado e não aplica o plano de novo (ADR-0023, ponto 5; RNF-20). Da política de abastecimento, o `turnaround` guarda só a permissão (`permite_com_passageiros`), porque é só dela que a trava do replanejamento precisa (RF-42). A versão vai junto no envio do plano, como pede o formato comum do RNF-4, e fica guardada no Cadastro (`plano.politica_id`).
+- **Cópias para exibir.** Voos, matrícula e posição são cópias para as telas do operador (UC12, UC14), para a consulta da liberação, que o Exceções e Liberação pede à Execução em Solo (UC32), e para a tela de saída da posição (UC37). TOBT vigente, ARDT e quem liberou são cópias só para a tela de saída da posição (UC37); o ARDT chega no pedido de liberação.
 
 ### 12.5.3 Monitoramento
 
@@ -144,6 +146,7 @@ Cada diagrama mostra as tabelas de negócio do serviço com as suas chaves estra
 - **Exceção.** `excecao` guarda a tarefa afetada, o código de atraso, a descrição, quem abriu e quem encerrou, com a solução (RF-36, RF-40). O estado anterior do turnaround é só para exibir: a volta ao estado é decidida pela Execução em Solo, pelo andamento das tarefas (RF-40).
 - **Ações.** `reatribuicao` e `replanejamento` guardam o motivo e o autor de cada ação (RF-37, RF-42); o motivo do replanejamento é obrigatório só na inclusão de serviço sob demanda (ADR-0014). Os valores anterior e novo da tarefa ficam na auditoria da Execução em Solo, que é a dona da tarefa. `acao_alerta` liga cada alerta a uma única ação, e cada ação a no máximo um alerta (RF-38).
 - **Liberação.** `liberacao` guarda o ARDT confirmado pela Autoridade de Liberação, um por turnaround (RF-39); a recusa não é gravada.
+- **Companhia do turnaround.** `turnaround_referencia.companhia_id` é a única cópia usada para decidir: confere se a Autoridade de Liberação é da companhia do turnaround (UC32). A ADR-0015, regra 1, proíbe decidir com cópia porque a cópia pode estar atrasada em relação ao dono. A companhia é gravada na abertura do turnaround (RF-3) e nenhum RF a muda (o RF-10 só muda EIBT e MTTT), então a cópia é sempre igual à original e não fica atrasada.
 - **Âncora local.** `excecao`, `reatribuicao`, `replanejamento` e `acao_alerta` têm `turnaround_id` como FK para `turnaround_referencia`, a âncora local do turnaround neste serviço, que também é a chave do log do RNF-24.
 
 ## 12.6 Tabelas técnicas
@@ -155,7 +158,7 @@ As tabelas técnicas não atendem RF: elas sustentam a troca de avisos, a audito
 | `registro_auditoria` | Todos | Trilha de quem fez o quê e quando: o autor, que é um usuário ou o Motor de Eventos, o registro ou gatilho por horário que causou a ação automática, os valores antes e depois e o turnaround, para o prazo de anonimização | RNF-2, RNF-6 |
 | `aviso_saida` | Todos | Avisos a publicar, gravados na mesma transação da mudança; `gravado_em` dá a ordem de publicação. O campo `origem` do envelope não é gravado, porque é sempre o nome do serviço | ADR-0016 |
 | `aviso_processado` | Todos | Avisos já recebidos, para descartar o repetido | ADR-0016 |
-| `pedido_pendente` | Exceções e Liberação | Pedido à Execução em Solo gravado antes da chamada e retomado depois de uma queda, com o autor, o horário da ação e a chave de idempotência | ADR-0020, RNF-20 |
+| `pedido_pendente` | Exceções e Liberação | Pedido à Execução em Solo (exceção, reatribuição, replanejamento e liberação) gravado antes da chamada e retomado depois de uma queda, com o autor, o horário da ação e a chave de idempotência; na retomada, o serviço pergunta à Execução em Solo, pela chave, se o pedido foi aplicado | ADR-0020, RNF-20 |
 
 A ADR-0018 fala em duas tabelas técnicas na Execução em Solo, as de avisos; a terceira, `registro_auditoria`, é a trilha do RNF-2, que todos os serviços têm.
 
