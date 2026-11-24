@@ -524,6 +524,7 @@ namespace cadastro {
     - vooPartida: String
     - matricula: String
     - posicao: String
+    - tobtPlanejado: DateTime
     - permiteComPassageiros: Boolean
     - politicaVersao: Integer [0..1]
     - tarefas: List<TarefaPlanejada>
