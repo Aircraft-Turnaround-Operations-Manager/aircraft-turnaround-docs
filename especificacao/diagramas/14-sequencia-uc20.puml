@@ -78,7 +78,7 @@ loop cada marco criado (ACGT, ASBT ou AEGT)
   AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
   AU --> MS : ok
   deactivate AU
-  MS -> PUB : registrar(EnvelopeAviso.novo(tipo = "MarcoRegistrado", turnaroundId, autorId = vazio, causaId = registro.id, dados = tipo, horario, registroOrigemId))
+  MS -> PUB : registrar(EnvelopeAviso.novo(tipo = "MarcoRegistrado", turnaroundId, autorId = vazio, causaId = registro.id, dados = tipo, horario, registroOrigemId, versao))
   activate PUB
   PUB -> DB : INSERT aviso_saida (mesma transação)
   PUB --> MS : ok

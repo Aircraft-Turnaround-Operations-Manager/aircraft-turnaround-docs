@@ -117,7 +117,7 @@ else o operador marca que a autorização foi recebida e confirma (passo 5)
         AU -> DB : INSERT registro_auditoria
         AU --> S : ok
         deactivate AU
-        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TurnaroundEncerrado", turnaroundId, autorId, causaId = marco.id, dados = aobt, estadoNovo = "Fora de bloco", usuarioIds))
+        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TurnaroundEncerrado", turnaroundId, autorId, causaId = marco.id, dados = aobt, estadoNovo = "Fora de bloco", usuarioIds, versao))
         activate PUB
         PUB -> DB : INSERT aviso_saida (mesma transação)
         PUB --> S : ok

@@ -126,7 +126,7 @@ else o coordenador informa o horário com data, fuso e motivo e seleciona "Salva
 
             == Passo 6: evento para o recálculo ==
             opt turnaround ≠ "Liberado" (RN3)
-              S -> PUB : registrar(EnvelopeAviso.novo(tipo = "AibtCorrigido", turnaroundId, autorId, causaId = correcao.id, dados = correcaoId, aibtAnterior, aibtNovo, corrigidoEm))
+              S -> PUB : registrar(EnvelopeAviso.novo(tipo = "AibtCorrigido", turnaroundId, autorId, causaId = correcao.id, dados = correcaoId, aibtAnterior, aibtNovo, corrigidoEm, versao))
               activate PUB
               PUB -> DB : INSERT aviso_saida (mesma transação)
               PUB --> S : ok

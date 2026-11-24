@@ -13,17 +13,17 @@ Todo registro que muda uma tarefa ou o turnaround segue o mesmo caminho, mostrad
 
 O Motor de Eventos, ator do UC20 e do UC21, não é uma classe: é o comportamento automático do `MarcoService` e do `PropagacaoService` (ADR-0015, regra 7; item 13, seção 13.1). Ele não passa pela fila. Quem o inclui o chama na mesma transação e com a mesma trava: o `TarefaService` (UC15, UC16 e UC18), o `ChegadaService` (UC12) e o `ReplanejamentoService` (UC35, da área D) (ADR-0018, pontos 4 e 5). Por isso, o diagrama do UC20 e o do UC21 começam com o Motor de Eventos chamando o serviço e terminam num `ref` à gravação feita por quem os inclui. Nos diagramas que incluem, `«include»` aparece como fragmento `ref` ao UC20 e ao UC21. A área B não tem `«extend»`.
 
-Os avisos que a Execução em Solo publica usam o envelope comum da ADR-0016 (`EnvelopeAviso`) e levam o identificador do que causou a mudança (`causaId`). Todo aviso de tarefa leva a `versao` da tarefa, para quem recebe descartar o aviso mais antigo que chegar depois. Os nomes são estes:
+Os avisos que a Execução em Solo publica usam o envelope comum da ADR-0016 (`EnvelopeAviso`) e levam o identificador do que causou a mudança (`causaId`). Todo aviso de tarefa leva a `versao` da tarefa, e todo aviso de estado ou de marco do turnaround leva a `versao` do turnaround, que sobe a cada mudança de estado ou de marco. Assim, quem guarda cópia descarta o aviso mais antigo que chegar depois, inclusive o que nasce de um registro feito sem conexão (item 12, seção 12.5.2, "Ordem dos avisos"). Os nomes são estes:
 
 | Aviso | Quando | Dados | Quem recebe (item 13) |
 |---|---|---|---|
-| `ChegadaRegistrada` | UC12: o operador registra o horário real de chegada à posição (AIBT) | AIBT, horário do registro e estado "Em solo" | Monitoramento (`aplicarMarco`, `aplicarEstado`) |
-| `AibtCorrigido` | UC13: o Coordenador de Turnaround corrige o AIBT, com o turnaround fora de "Liberado" | AIBT anterior e novo, horário da correção | Monitoramento, que recalcula a projeção (UC24, A3) |
+| `ChegadaRegistrada` | UC12: o operador registra o horário real de chegada à posição (AIBT) | AIBT, horário do registro, estado "Em solo" e `versao` do turnaround | Monitoramento (`aplicarMarco`, `aplicarEstado`) |
+| `AibtCorrigido` | UC13: o Coordenador de Turnaround corrige o AIBT, com o turnaround fora de "Liberado" | AIBT anterior e novo, horário da correção e `versao` do turnaround | Monitoramento, que recalcula a projeção (UC24, A3) |
 | `TarefaIniciada`, `TarefaConcluida`, `TarefaPausada`, `TarefaRetomada`, `TarefaMarcadaNaoAplicavel` | UC15 a UC18: o registro do operador é aceito | tarefa, registro, estado novo, `versao` e horário da ação; na pausa, também a justificativa e o código de atraso | Monitoramento (`aplicarTarefa`) |
 | `EstadoTarefaPropagado` | UC21: uma tarefa muda de estado pela propagação | tarefa, estado anterior e novo, `versao` | Monitoramento (`aplicarTarefa`) |
-| `EstadoTurnaroundAlterado` | UC21: o turnaround passa para "Operações em andamento" ou "Pronto para liberação" | estado anterior e novo | Monitoramento (`aplicarEstado`) |
-| `MarcoRegistrado` | UC20: o Motor de Eventos grava o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) ou o fim real do atendimento em solo (AEGT) | tipo, horário e registro de origem | Monitoramento (`aplicarMarco`) |
-| `TurnaroundEncerrado` | UC37: o operador registra o horário real de saída da posição (AOBT) | AOBT, estado "Fora de bloco" e os usuários vinculados ao turnaround | Cadastro e Planejamento (`aplicarEncerramento`, prazo dos dados pessoais; ADR-0023, ponto 6), Exceções e Liberação (`aplicarAobt`) e Monitoramento (`aplicarMarco`, `aplicarEstado`) |
+| `EstadoTurnaroundAlterado` | UC21: o turnaround passa para "Operações em andamento" ou "Pronto para liberação" | estado anterior e novo e `versao` do turnaround | Monitoramento (`aplicarEstado`) |
+| `MarcoRegistrado` | UC20: o Motor de Eventos grava o início real do atendimento em solo (ACGT), o início real do embarque (ASBT) ou o fim real do atendimento em solo (AEGT) | tipo, horário, registro de origem e `versao` do turnaround | Monitoramento (`aplicarMarco`) |
+| `TurnaroundEncerrado` | UC37: o operador registra o horário real de saída da posição (AOBT) | AOBT, estado "Fora de bloco", os usuários vinculados ao turnaround e `versao` do turnaround | Cadastro e Planejamento (`aplicarEncerramento`, prazo dos dados pessoais; ADR-0023, ponto 6), Exceções e Liberação (`aplicarAobt`) e Monitoramento (`aplicarMarco`, `aplicarEstado`) |
 
 O horário-alvo de prontidão (TOBT) vigente e o horário real de prontidão (ARDT) aparecem só como cópias, para exibir (item 12, seção 12.5.2). Quem os grava é o Exceções e Liberação.
 

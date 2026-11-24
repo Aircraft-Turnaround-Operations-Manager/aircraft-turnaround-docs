@@ -127,7 +127,7 @@ else o operador informa o horário observado e seleciona "Registrar" (passo 3)
             AU -> DB : INSERT registro_auditoria
             AU --> S : ok
             deactivate AU
-            S -> PUB : registrar(EnvelopeAviso.novo(tipo = "ChegadaRegistrada", turnaroundId, autorId, causaId = marco.id, dados = aibt, registradoEm, estadoNovo = "Em solo"))
+            S -> PUB : registrar(EnvelopeAviso.novo(tipo = "ChegadaRegistrada", turnaroundId, autorId, causaId = marco.id, dados = aibt, registradoEm, estadoNovo = "Em solo", versao))
             activate PUB
             PUB -> DB : INSERT aviso_saida (mesma transação)
             PUB --> S : ok

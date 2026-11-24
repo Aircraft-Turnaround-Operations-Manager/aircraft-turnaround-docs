@@ -40,7 +40,7 @@ alt A1: registro.tipo = "Início" e turnaround.estado = "Em solo" (primeiro iní
   activate AU
   AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
   deactivate AU
-  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo))
+  PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo, versao))
   activate PUB
   PUB -> DB : INSERT aviso_saida
   deactivate PUB
@@ -100,7 +100,7 @@ else registro.tipo = "Conclusão" (passo 1) ou A3: "Não aplicável" (tarefa ter
     activate AU
     AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
     deactivate AU
-    PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo))
+    PS -> PUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId = vazio, causaId = registro.id, dados = estadoAnterior, estadoNovo, versao))
     activate PUB
     PUB -> DB : INSERT aviso_saida
     deactivate PUB
