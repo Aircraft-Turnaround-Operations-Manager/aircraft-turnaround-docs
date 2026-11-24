@@ -1,1244 +1,1256 @@
 {
   "AGENTS.md": {
-    "mtime": 1795401329.5486412,
-    "seen": 1795401727.5649745,
-    "ast_hash": "c4f22f4d3a872f4a406e6de9fc5b65bc",
-    "semantic_hash": "c4f22f4d3a872f4a406e6de9fc5b65bc"
+    "mtime": 1795486396.820049,
+    "seen": 1795486638.5429733,
+    "ast_hash": "22260c5af9a4ea7eae5b753b1bccb7e1",
+    "semantic_hash": "22260c5af9a4ea7eae5b753b1bccb7e1"
   },
   "CLAUDE.md": {
-    "mtime": 1795401329.5496423,
-    "seen": 1795401727.5649767,
+    "mtime": 1795486396.8220513,
+    "seen": 1795486638.542975,
     "ast_hash": "5c24644a54eae7e0af3d7e1db45a1a58",
     "semantic_hash": "5c24644a54eae7e0af3d7e1db45a1a58"
   },
   "CONTEXT.md": {
-    "mtime": 1795401329.5506408,
-    "seen": 1795401727.564978,
-    "ast_hash": "6995596465564d4b9ea1fd2c5f6975cd",
-    "semantic_hash": "6995596465564d4b9ea1fd2c5f6975cd"
+    "mtime": 1795486396.8220513,
+    "seen": 1795486638.542976,
+    "ast_hash": "f01550765a8380abc8961dc38e55c299",
+    "semantic_hash": "f01550765a8380abc8961dc38e55c299"
   },
   "README.md": {
-    "mtime": 1795401329.5506408,
-    "seen": 1795401727.5649788,
+    "mtime": 1795486396.8240497,
+    "seen": 1795486638.5429769,
     "ast_hash": "725d03129954643e4e0eaef44ffa1ce2",
     "semantic_hash": "725d03129954643e4e0eaef44ffa1ce2"
   },
   "docs/adr/0001-referencia-horario-tobt-mais-5-min.md": {
-    "mtime": 1795401329.5526414,
-    "seen": 1795401727.56498,
+    "mtime": 1795486396.8261795,
+    "seen": 1795486638.5429778,
     "ast_hash": "fb7e7eae2b21111291895c679d3591b0",
     "semantic_hash": "fb7e7eae2b21111291895c679d3591b0"
   },
   "docs/adr/0002-metas-percentuais-80.md": {
-    "mtime": 1795401329.5526414,
-    "seen": 1795401727.5649812,
+    "mtime": 1795486396.8261795,
+    "seen": 1795486638.5429788,
     "ast_hash": "0e53d3201a6875f46650cdc0121d02c4",
     "semantic_hash": "0e53d3201a6875f46650cdc0121d02c4"
   },
   "docs/adr/0003-atualizar-previsao-na-antecipacao.md": {
-    "mtime": 1795401329.5541472,
-    "seen": 1795401727.5649822,
+    "mtime": 1795486396.8273263,
+    "seen": 1795486638.54298,
     "ast_hash": "2cb64a3b003e8383cc9121cfba859599",
     "semantic_hash": "2cb64a3b003e8383cc9121cfba859599"
   },
   "docs/adr/0004-quatro-atores-e-autoridade-de-liberacao.md": {
-    "mtime": 1795401329.5541472,
-    "seen": 1795401727.5649834,
+    "mtime": 1795486396.8283267,
+    "seen": 1795486638.542981,
     "ast_hash": "9332472f120bde5c09a802504a1994c8",
     "semantic_hash": "9332472f120bde5c09a802504a1994c8"
   },
   "docs/adr/0005-abastecimento-com-passageiros-configuravel.md": {
-    "mtime": 1795401329.5541472,
-    "seen": 1795401727.5649843,
+    "mtime": 1795486396.8283267,
+    "seen": 1795486638.5429816,
     "ast_hash": "2d12a1d14c9f5cf50f1e0f057c95876e",
     "semantic_hash": "2d12a1d14c9f5cf50f1e0f057c95876e"
   },
   "docs/adr/0006-codigos-de-atraso-tabela-anac.md": {
-    "mtime": 1795401329.5557506,
-    "seen": 1795401727.5649855,
+    "mtime": 1795486396.8293264,
+    "seen": 1795486638.5429826,
     "ast_hash": "f358655da2f4907d40f2822135c9b529",
     "semantic_hash": "f358655da2f4907d40f2822135c9b529"
   },
   "docs/adr/0007-dados-do-operador-e-qr-code.md": {
-    "mtime": 1795401329.5557506,
-    "seen": 1795401727.5649867,
+    "mtime": 1795486396.8303273,
+    "seen": 1795486638.5429838,
     "ast_hash": "409b96db64bff1588186e52d98fc4e92",
     "semantic_hash": "409b96db64bff1588186e52d98fc4e92"
   },
   "docs/adr/0008-siglas-a-cdm-com-nome-em-portugues.md": {
-    "mtime": 1795401329.5557506,
-    "seen": 1795401727.5649877,
+    "mtime": 1795486396.8303273,
+    "seen": 1795486638.5429845,
     "ast_hash": "d7ad0a5d04fb6f5959fb8f9097c6abe2",
     "semantic_hash": "d7ad0a5d04fb6f5959fb8f9097c6abe2"
   },
   "docs/adr/0009-nome-coordenador-de-turnaround.md": {
-    "mtime": 1795401329.5567577,
-    "seen": 1795401727.5649886,
+    "mtime": 1795486396.8313277,
+    "seen": 1795486638.5429854,
     "ast_hash": "42e6008fc628f33c74be511ae8011e2c",
     "semantic_hash": "42e6008fc628f33c74be511ae8011e2c"
   },
   "docs/adr/README.md": {
-    "mtime": 1795401329.5647569,
-    "seen": 1795401727.5650032,
-    "ast_hash": "2b4b14585bf0be5e766a776311f95767",
-    "semantic_hash": "2b4b14585bf0be5e766a776311f95767"
+    "mtime": 1795486396.8413534,
+    "seen": 1795486638.5430014,
+    "ast_hash": "1bf2da4ba6bdd6b28e3cf6122ea336e5",
+    "semantic_hash": "1bf2da4ba6bdd6b28e3cf6122ea336e5"
   },
   "docs/agents/domain.md": {
-    "mtime": 1795401329.565756,
-    "seen": 1795401727.5650046,
+    "mtime": 1795486396.8423617,
+    "seen": 1795486638.5430021,
     "ast_hash": "2c5f2c5f8b714234251bc55dbfdc0da0",
     "semantic_hash": "2c5f2c5f8b714234251bc55dbfdc0da0"
   },
   "docs/agents/issue-tracker.md": {
-    "mtime": 1795401329.5667582,
-    "seen": 1795401727.5650055,
+    "mtime": 1795486396.843365,
+    "seen": 1795486638.5430033,
     "ast_hash": "744b02931f517ab68b446e8b3c757bdb",
     "semantic_hash": "744b02931f517ab68b446e8b3c757bdb"
   },
   "docs/agents/triage-labels.md": {
-    "mtime": 1795401329.5667582,
-    "seen": 1795401727.5650063,
+    "mtime": 1795486396.843365,
+    "seen": 1795486638.5430045,
     "ast_hash": "85409347dbf487c8a25c9dac59708b83",
     "semantic_hash": "85409347dbf487c8a25c9dac59708b83"
   },
   "entregas/ra1-criterios-de-aceite.md": {
-    "mtime": 1795401329.5697584,
-    "seen": 1795401727.5650089,
+    "mtime": 1795486396.847881,
+    "seen": 1795486638.5430071,
     "ast_hash": "a3e088308d3219b3bf3f94c5e112dae9",
     "semantic_hash": "a3e088308d3219b3bf3f94c5e112dae9"
   },
   "entregas/ra1-tarefas.md": {
-    "mtime": 1795401329.598306,
-    "seen": 1795401727.5650134,
+    "mtime": 1795486396.8813572,
+    "seen": 1795486638.543012,
     "ast_hash": "8e18a443de8d53fe05c947041848aba0",
     "semantic_hash": "8e18a443de8d53fe05c947041848aba0"
   },
   "especificacao/01-3-objetivos.md": {
-    "mtime": 1795401329.6023042,
-    "seen": 1795401727.5650177,
+    "mtime": 1795486396.887362,
+    "seen": 1795486638.5430157,
     "ast_hash": "c7c35f02c1596cb78964d09f13e6428f",
     "semantic_hash": "c7c35f02c1596cb78964d09f13e6428f"
   },
   "especificacao/02-e-nao-e-faz-nao-faz.md": {
-    "mtime": 1795401329.6023042,
-    "seen": 1795401727.5650187,
+    "mtime": 1795486396.888364,
+    "seen": 1795486638.5430167,
     "ast_hash": "bbab911d458d353333ce301de51cadf5",
     "semantic_hash": "bbab911d458d353333ce301de51cadf5"
   },
   "especificacao/03-visao-do-produto.md": {
-    "mtime": 1795401329.6033044,
-    "seen": 1795401727.5650194,
+    "mtime": 1795486396.8893664,
+    "seen": 1795486638.5430176,
     "ast_hash": "3b9b2e3166ac73e290bca9dc06969217",
     "semantic_hash": "3b9b2e3166ac73e290bca9dc06969217"
   },
   "especificacao/04-mapeamento-de-negocios.md": {
-    "mtime": 1795401329.6033044,
-    "seen": 1795401727.5650203,
+    "mtime": 1795486396.8893664,
+    "seen": 1795486638.543019,
     "ast_hash": "71d35fe77cd74a8462ea15d3c0dadade",
     "semantic_hash": "71d35fe77cd74a8462ea15d3c0dadade"
   },
   "especificacao/05-atores-usuarios.md": {
-    "mtime": 1795401329.604303,
-    "seen": 1795401727.5650218,
+    "mtime": 1795486396.8903642,
+    "seen": 1795486638.5430202,
     "ast_hash": "7f8d206822e97c269886cb703dff8c3b",
     "semantic_hash": "7f8d206822e97c269886cb703dff8c3b"
   },
   "especificacao/06-requisitos-funcionais/00-item.md": {
-    "mtime": 1795401329.604303,
-    "seen": 1795401727.5650227,
+    "mtime": 1795486396.8913612,
+    "seen": 1795486638.5430212,
     "ast_hash": "9961340baf922853ccc6df512d957707",
     "semantic_hash": "9961340baf922853ccc6df512d957707"
   },
   "especificacao/06-requisitos-funcionais/area-a.md": {
-    "mtime": 1795401329.6053164,
-    "seen": 1795401727.5650237,
+    "mtime": 1795486396.8923624,
+    "seen": 1795486638.5430224,
     "ast_hash": "9920d90668e43cd66f6c57a9cb5f6950",
     "semantic_hash": "9920d90668e43cd66f6c57a9cb5f6950"
   },
   "especificacao/06-requisitos-funcionais/area-b.md": {
-    "mtime": 1795401329.6053164,
-    "seen": 1795401727.565025,
+    "mtime": 1795486396.8933618,
+    "seen": 1795486638.5430236,
     "ast_hash": "bf3ada9664ec2894fefed5b7ef0794e3",
     "semantic_hash": "bf3ada9664ec2894fefed5b7ef0794e3"
   },
   "especificacao/06-requisitos-funcionais/area-c.md": {
-    "mtime": 1795401329.6063058,
-    "seen": 1795401727.565026,
+    "mtime": 1795486396.8943617,
+    "seen": 1795486638.5430243,
     "ast_hash": "9f8518d701e05ecd58149c303dde05c8",
     "semantic_hash": "9f8518d701e05ecd58149c303dde05c8"
   },
   "especificacao/06-requisitos-funcionais/area-d.md": {
-    "mtime": 1795401329.6063058,
-    "seen": 1795401727.5650272,
+    "mtime": 1795486396.8943617,
+    "seen": 1795486638.5430255,
     "ast_hash": "329fd40cfee5db8b2d1990799ae6a02b",
     "semantic_hash": "329fd40cfee5db8b2d1990799ae6a02b"
   },
   "especificacao/07-estorias-de-usuario/00-item.md": {
-    "mtime": 1795401329.6073062,
-    "seen": 1795401727.5650284,
+    "mtime": 1795486396.8953617,
+    "seen": 1795486638.5430264,
     "ast_hash": "6bb3d41193207e31bc1bbdca77f4d742",
     "semantic_hash": "6bb3d41193207e31bc1bbdca77f4d742"
   },
   "especificacao/07-estorias-de-usuario/area-a.md": {
-    "mtime": 1795401329.6083102,
-    "seen": 1795401727.5650294,
+    "mtime": 1795486396.8963645,
+    "seen": 1795486638.5430272,
     "ast_hash": "070271debcdd3498af3b69902fdfa194",
     "semantic_hash": "070271debcdd3498af3b69902fdfa194"
   },
   "especificacao/07-estorias-de-usuario/area-b.md": {
-    "mtime": 1795401329.6083102,
-    "seen": 1795401727.5650303,
+    "mtime": 1795486396.8973622,
+    "seen": 1795486638.543028,
     "ast_hash": "bf32b3f8963279d4d25f2dbe397f16aa",
     "semantic_hash": "bf32b3f8963279d4d25f2dbe397f16aa"
   },
   "especificacao/07-estorias-de-usuario/area-c.md": {
-    "mtime": 1795401329.6083102,
-    "seen": 1795401727.5650315,
+    "mtime": 1795486396.8983605,
+    "seen": 1795486638.543029,
     "ast_hash": "9f0e251765f5fa39566c8ce027bd0398",
     "semantic_hash": "9f0e251765f5fa39566c8ce027bd0398"
   },
   "especificacao/07-estorias-de-usuario/area-d.md": {
-    "mtime": 1795401329.6093037,
-    "seen": 1795401727.5650325,
+    "mtime": 1795486396.8993647,
+    "seen": 1795486638.54303,
     "ast_hash": "5598ccf728b6f6c0fed8d689a4d4a052",
     "semantic_hash": "5598ccf728b6f6c0fed8d689a4d4a052"
   },
   "especificacao/08-requisitos-nao-funcionais/00-item.md": {
-    "mtime": 1795401329.6093037,
-    "seen": 1795401727.5650334,
+    "mtime": 1795486396.900363,
+    "seen": 1795486638.5430312,
     "ast_hash": "a5e425fd9fed7ff73841a0e11f644a64",
     "semantic_hash": "a5e425fd9fed7ff73841a0e11f644a64"
   },
   "especificacao/08-requisitos-nao-funcionais/area-a.md": {
-    "mtime": 1795401329.6103039,
-    "seen": 1795401727.5650344,
+    "mtime": 1795486396.900363,
+    "seen": 1795486638.5430324,
     "ast_hash": "bc0fb1b97895dd52a5c4536fd4c2818f",
     "semantic_hash": "bc0fb1b97895dd52a5c4536fd4c2818f"
   },
   "especificacao/08-requisitos-nao-funcionais/area-b.md": {
-    "mtime": 1795401329.6103039,
-    "seen": 1795401727.5650353,
+    "mtime": 1795486396.9019904,
+    "seen": 1795486638.5430331,
     "ast_hash": "99b6eb73ec400f542be5072fe302ae26",
     "semantic_hash": "99b6eb73ec400f542be5072fe302ae26"
   },
   "especificacao/08-requisitos-nao-funcionais/area-c.md": {
-    "mtime": 1795401329.6113057,
-    "seen": 1795401727.5650363,
-    "ast_hash": "dc7bc19f36b6885470a0b460f6852bea",
-    "semantic_hash": "dc7bc19f36b6885470a0b460f6852bea"
+    "mtime": 1795486396.9019904,
+    "seen": 1795486638.543034,
+    "ast_hash": "9245931b526c3bc0bc803b516d18abb8",
+    "semantic_hash": "9245931b526c3bc0bc803b516d18abb8"
   },
   "especificacao/08-requisitos-nao-funcionais/area-d.md": {
-    "mtime": 1795401329.6113057,
-    "seen": 1795401727.5650373,
+    "mtime": 1795486396.9019904,
+    "seen": 1795486638.5430348,
     "ast_hash": "c66d9ed7dcc582dfe087f9bfe8f77f80",
     "semantic_hash": "c66d9ed7dcc582dfe087f9bfe8f77f80"
   },
   "especificacao/09-diagrama-geral-de-casos-de-uso.md": {
-    "mtime": 1795401329.6113057,
-    "seen": 1795401727.5650384,
+    "mtime": 1795486396.9037547,
+    "seen": 1795486638.5430357,
     "ast_hash": "b55434d98c3d91214baf84c6f8db0bf8",
     "semantic_hash": "b55434d98c3d91214baf84c6f8db0bf8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/00-item.md": {
-    "mtime": 1795401329.6123044,
-    "seen": 1795401727.56504,
+    "mtime": 1795486396.9047606,
+    "seen": 1795486638.5430367,
     "ast_hash": "19c358f65b8782a3e90132a108a549a2",
     "semantic_hash": "19c358f65b8782a3e90132a108a549a2"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-a.md": {
-    "mtime": 1795401329.613303,
-    "seen": 1795401727.565041,
+    "mtime": 1795486396.905764,
+    "seen": 1795486638.5430377,
     "ast_hash": "ab7d55afb4dd75d6f9cb1b1a8b665464",
     "semantic_hash": "ab7d55afb4dd75d6f9cb1b1a8b665464"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-b.md": {
-    "mtime": 1795401329.613303,
-    "seen": 1795401727.5650423,
+    "mtime": 1795486396.9067655,
+    "seen": 1795486638.5430386,
     "ast_hash": "54ed6d59d1d731a928a204218b5f56f2",
     "semantic_hash": "54ed6d59d1d731a928a204218b5f56f2"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-c.md": {
-    "mtime": 1795401329.6143172,
-    "seen": 1795401727.5650432,
+    "mtime": 1795486396.9077628,
+    "seen": 1795486638.5430396,
     "ast_hash": "7499815ab6e88839e812ddd44d723487",
     "semantic_hash": "7499815ab6e88839e812ddd44d723487"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/area-d.md": {
-    "mtime": 1795401329.6163037,
-    "seen": 1795401727.5650442,
+    "mtime": 1795486396.9097643,
+    "seen": 1795486638.5430405,
     "ast_hash": "fc0525cac4e596fdf724068c159eb954",
     "semantic_hash": "fc0525cac4e596fdf724068c159eb954"
   },
   "especificacao/11-diagrama-de-atividades.md": {
-    "mtime": 1795401329.7078197,
-    "seen": 1795401727.5650454,
+    "mtime": 1795486397.0214984,
+    "seen": 1795486638.5430415,
     "ast_hash": "d4dd52f08c826d9b29ae707212ff8498",
     "semantic_hash": "d4dd52f08c826d9b29ae707212ff8498"
   },
   "pesquisa/README.md": {
-    "mtime": 1795401330.0256033,
-    "seen": 1795401727.5650613,
+    "mtime": 1795486397.4003863,
+    "seen": 1795486638.5430555,
     "ast_hash": "5377b12258a3c9b772e8464d4a1b5cfb",
     "semantic_hash": "5377b12258a3c9b772e8464d4a1b5cfb"
   },
   "pesquisa/fontes.md": {
-    "mtime": 1795401330.0256033,
-    "seen": 1795401727.5650623,
+    "mtime": 1795486397.4003863,
+    "seen": 1795486638.5430565,
     "ast_hash": "3fa1fd54d5ecdf802873471a90140b8d",
     "semantic_hash": "3fa1fd54d5ecdf802873471a90140b8d"
   },
   "pesquisa/impacto/impacto-por-item.md": {
-    "mtime": 1795401330.0266051,
-    "seen": 1795401727.5650635,
+    "mtime": 1795486397.4015174,
+    "seen": 1795486638.5430574,
     "ast_hash": "58550342cb5415056a1570bb889a857b",
     "semantic_hash": "58550342cb5415056a1570bb889a857b"
   },
   "pesquisa/impacto/insumos-rfs.md": {
-    "mtime": 1795401330.027604,
-    "seen": 1795401727.5650642,
+    "mtime": 1795486397.4027362,
+    "seen": 1795486638.5430584,
     "ast_hash": "daafd7d58afce1b60d75d0d72d2adc74",
     "semantic_hash": "daafd7d58afce1b60d75d0d72d2adc74"
   },
   "pesquisa/impacto/insumos-rnfs.md": {
-    "mtime": 1795401330.027604,
-    "seen": 1795401727.5650651,
+    "mtime": 1795486397.4027362,
+    "seen": 1795486638.543059,
     "ast_hash": "49a4143ebc971a8724ef5fda892068dd",
     "semantic_hash": "49a4143ebc971a8724ef5fda892068dd"
   },
   "pesquisa/impacto/metricas-item-1.md": {
-    "mtime": 1795401330.0286052,
-    "seen": 1795401727.5650663,
+    "mtime": 1795486397.4027362,
+    "seen": 1795486638.5430603,
     "ast_hash": "ce3d8e5fcf9dc7a90cdece90e068e63f",
     "semantic_hash": "ce3d8e5fcf9dc7a90cdece90e068e63f"
   },
   "pesquisa/similares/README.md": {
-    "mtime": 1795401330.0296047,
-    "seen": 1795401727.565067,
+    "mtime": 1795486397.404247,
+    "seen": 1795486638.543061,
     "ast_hash": "4b66aa95c27a206ce63d5e4c3f19d7de",
     "semantic_hash": "4b66aa95c27a206ce63d5e4c3f19d7de"
   },
   "pesquisa/similares/adb-safegate.md": {
-    "mtime": 1795401330.0306041,
-    "seen": 1795401727.5650678,
+    "mtime": 1795486397.404247,
+    "seen": 1795486638.543062,
     "ast_hash": "69ce9a17e5ea7ab8276a77866fc38cd2",
     "semantic_hash": "69ce9a17e5ea7ab8276a77866fc38cd2"
   },
   "pesquisa/similares/assaia.md": {
-    "mtime": 1795401330.0306041,
-    "seen": 1795401727.5650687,
+    "mtime": 1795486397.404247,
+    "seen": 1795486638.543063,
     "ast_hash": "ac3281591b004460809d99ba3a8907b5",
     "semantic_hash": "ac3281591b004460809d99ba3a8907b5"
   },
   "pesquisa/similares/inform-groundstar.md": {
-    "mtime": 1795401330.0316126,
-    "seen": 1795401727.5650702,
+    "mtime": 1795486397.4060433,
+    "seen": 1795486638.543064,
     "ast_hash": "718fb0650ab4d51455b25f8bd4f09f1a",
     "semantic_hash": "718fb0650ab4d51455b25f8bd4f09f1a"
   },
   "pesquisa/similares/lacunas-e-diferencial.md": {
-    "mtime": 1795401330.0326035,
-    "seen": 1795401727.565071,
+    "mtime": 1795486397.4070523,
+    "seen": 1795486638.543065,
     "ast_hash": "d4727da76221e8040187775a71872647",
     "semantic_hash": "d4727da76221e8040187775a71872647"
   },
   "pesquisa/similares/matriz-comparativa.md": {
-    "mtime": 1795401330.0326035,
-    "seen": 1795401727.5650718,
+    "mtime": 1795486397.4070523,
+    "seen": 1795486638.5430663,
     "ast_hash": "918f6a93b05953131c6d686422d17bbb",
     "semantic_hash": "918f6a93b05953131c6d686422d17bbb"
   },
   "pesquisa/similares/sita.md": {
-    "mtime": 1795401330.0336034,
-    "seen": 1795401727.5650725,
+    "mtime": 1795486397.4080613,
+    "seen": 1795486638.5430675,
     "ast_hash": "5273b1dcfcf5124ece4ac09628002c9a",
     "semantic_hash": "5273b1dcfcf5124ece4ac09628002c9a"
   },
   "pesquisa/similares/veovo.md": {
-    "mtime": 1795401330.0336034,
-    "seen": 1795401727.5650737,
+    "mtime": 1795486397.4080613,
+    "seen": 1795486638.5430682,
     "ast_hash": "cddf5f320446fa7e01e531c35dd87140",
     "semantic_hash": "cddf5f320446fa7e01e531c35dd87140"
   },
   "pesquisa/topicos/a-cdm.md": {
-    "mtime": 1795401330.034603,
-    "seen": 1795401727.5650744,
+    "mtime": 1795486397.409059,
+    "seen": 1795486638.5430691,
     "ast_hash": "e700f6c0dbb947a801d6fe328d4455e6",
     "semantic_hash": "e700f6c0dbb947a801d6fe328d4455e6"
   },
   "pesquisa/topicos/atividades-e-dependencias.md": {
-    "mtime": 1795401330.034603,
-    "seen": 1795401727.5650756,
+    "mtime": 1795486397.409059,
+    "seen": 1795486638.5430703,
     "ast_hash": "862b66dd2573bf4a00810e7046ac7114",
     "semantic_hash": "862b66dd2573bf4a00810e7046ac7114"
   },
   "pesquisa/topicos/caminho-critico.md": {
-    "mtime": 1795401330.034603,
-    "seen": 1795401727.5650766,
+    "mtime": 1795486397.410061,
+    "seen": 1795486638.543071,
     "ast_hash": "31532e0d432d84d8fa42501592324651",
     "semantic_hash": "31532e0d432d84d8fa42501592324651"
   },
   "pesquisa/topicos/codigos-de-atraso.md": {
-    "mtime": 1795401330.035603,
-    "seen": 1795401727.5650775,
+    "mtime": 1795486397.410061,
+    "seen": 1795486638.543072,
     "ast_hash": "4251df13ba3b362dde12b68c2fb51a2a",
     "semantic_hash": "4251df13ba3b362dde12b68c2fb51a2a"
   },
   "pesquisa/topicos/marcos-e-horarios.md": {
-    "mtime": 1795401330.035603,
-    "seen": 1795401727.5650783,
+    "mtime": 1795486397.4110608,
+    "seen": 1795486638.5430727,
     "ast_hash": "c848ba01ce22ba7d647d932e16a156fb",
     "semantic_hash": "c848ba01ce22ba7d647d932e16a156fb"
   },
   "pesquisa/topicos/papeis-e-atores.md": {
-    "mtime": 1795401330.036605,
-    "seen": 1795401727.5650792,
+    "mtime": 1795486397.4110608,
+    "seen": 1795486638.5430737,
     "ast_hash": "e64ee5e5b37b2a3882bae45286be3271",
     "semantic_hash": "e64ee5e5b37b2a3882bae45286be3271"
   },
   "pesquisa/topicos/previsibilidade-vs-velocidade.md": {
-    "mtime": 1795401330.036605,
-    "seen": 1795401727.5650804,
+    "mtime": 1795486397.412058,
+    "seen": 1795486638.5430744,
     "ast_hash": "b6985cceb9369c5d665bfe57c87860ee",
     "semantic_hash": "b6985cceb9369c5d665bfe57c87860ee"
   },
   "pesquisa/topicos/referencias-iata.md": {
-    "mtime": 1795401330.0376027,
-    "seen": 1795401727.5650811,
+    "mtime": 1795486397.412058,
+    "seen": 1795486638.5430753,
     "ast_hash": "80cadd9f14a47e91c4b1d26c84b23edf",
     "semantic_hash": "80cadd9f14a47e91c4b1d26c84b23edf"
   },
   "pesquisa/topicos/tolerancias-e-indicadores.md": {
-    "mtime": 1795401330.0386038,
-    "seen": 1795401727.565084,
+    "mtime": 1795486397.4140582,
+    "seen": 1795486638.543078,
     "ast_hash": "d972e40bcca5383101c408c68e408b63",
     "semantic_hash": "d972e40bcca5383101c408c68e408b63"
   },
   "docs/adr/0010-administrador-usuario-e-equipe-do-operador.md": {
-    "mtime": 1795401329.5567577,
-    "seen": 1795401727.5649898,
+    "mtime": 1795486396.831833,
+    "seen": 1795486638.5429864,
     "ast_hash": "335e7fe3eddff9b2829a0ad8eff957b0",
     "semantic_hash": "335e7fe3eddff9b2829a0ad8eff957b0"
   },
   "especificacao/diagramas/04-bpmn-to-be.png": {
-    "mtime": 1795401329.7408257,
-    "seen": 1795401727.5651426,
+    "mtime": 1795486397.064187,
+    "seen": 1795486638.543124,
     "ast_hash": "1ad9379ca8248a239bd75807493a1a60",
     "semantic_hash": "1ad9379ca8248a239bd75807493a1a60"
   },
   "docs/adr/0011-minimo-por-integrante-e-numeracao-provisoria.md": {
-    "mtime": 1795401329.5577576,
-    "seen": 1795401727.5649908,
+    "mtime": 1795486396.831833,
+    "seen": 1795486638.5429878,
     "ast_hash": "88ca60db1e235c8288399082fca07723",
     "semantic_hash": "88ca60db1e235c8288399082fca07723"
   },
   "scripts/gerar_matriz_rastreabilidade.py": {
-    "mtime": 1795401330.0426042,
-    "seen": 1795401727.5649598,
+    "mtime": 1795486397.4160573,
+    "seen": 1795486638.54296,
     "ast_hash": "642c8174249dc728702383ec5512d5a7",
     "semantic_hash": "642c8174249dc728702383ec5512d5a7"
   },
   "docs/adr/0012-matriz-de-rastreabilidade.md": {
-    "mtime": 1795401329.5577576,
-    "seen": 1795401727.5649915,
+    "mtime": 1795486396.8328383,
+    "seen": 1795486638.5429885,
     "ast_hash": "1069abd285a7dbffaa00e1f3891ebfc2",
     "semantic_hash": "1069abd285a7dbffaa00e1f3891ebfc2"
   },
   "especificacao/apendice-a-matriz-de-rastreabilidade.md": {
-    "mtime": 1795401329.7188208,
-    "seen": 1795401727.5650585,
-    "ast_hash": "4b2c60c30e7b285225a28b14d5305ccb",
-    "semantic_hash": "4b2c60c30e7b285225a28b14d5305ccb"
+    "mtime": 1795486397.0331764,
+    "seen": 1795486638.5430532,
+    "ast_hash": "cb4f6a434cbe7ffd70b7ee53047847ac",
+    "semantic_hash": "cb4f6a434cbe7ffd70b7ee53047847ac"
   },
   "docs/adr/0013-chegada-registrada-pelo-operador.md": {
-    "mtime": 1795401329.5577576,
-    "seen": 1795401727.5649924,
+    "mtime": 1795486396.8328383,
+    "seen": 1795486638.5429895,
     "ast_hash": "8a8b71aeb1c01bb3852daf5e39ce0148",
     "semantic_hash": "8a8b71aeb1c01bb3852daf5e39ce0148"
   },
   "docs/adr/0014-servicos-sob-demanda.md": {
-    "mtime": 1795401329.5587566,
-    "seen": 1795401727.5649936,
+    "mtime": 1795486396.8328383,
+    "seen": 1795486638.5429907,
     "ast_hash": "a021f6cd395d63805a8634203d2840e2",
     "semantic_hash": "a021f6cd395d63805a8634203d2840e2"
   },
   "pesquisa/topicos/servicos-sob-demanda.md": {
-    "mtime": 1795401330.0386038,
-    "seen": 1795401727.5650828,
+    "mtime": 1795486397.413057,
+    "seen": 1795486638.5430768,
     "ast_hash": "88000ae2afedae937af50e73466782bd",
     "semantic_hash": "88000ae2afedae937af50e73466782bd"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b1-detalhe-da-tarefa.png": {
-    "mtime": 1795401329.6383035,
-    "seen": 1795401727.5650995,
+    "mtime": 1795486396.937477,
+    "seen": 1795486638.5430913,
     "ast_hash": "50d376ead05df1109ecae2ecab531266",
     "semantic_hash": "50d376ead05df1109ecae2ecab531266"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b1-lista-de-tarefas.png": {
-    "mtime": 1795401329.639315,
-    "seen": 1795401727.5651002,
+    "mtime": 1795486396.9394777,
+    "seen": 1795486638.543092,
     "ast_hash": "4ce2c4332326ed86040bdcaf45da4a4e",
     "semantic_hash": "4ce2c4332326ed86040bdcaf45da4a4e"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b2-iniciar-tarefa.png": {
-    "mtime": 1795401329.6403048,
-    "seen": 1795401727.5651014,
+    "mtime": 1795486396.9404788,
+    "seen": 1795486638.5430927,
     "ast_hash": "d4ef158c0e4b42bc63baf4f14d017a46",
     "semantic_hash": "d4ef158c0e4b42bc63baf4f14d017a46"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b3-concluir-tarefa.png": {
-    "mtime": 1795401329.6403048,
-    "seen": 1795401727.565102,
+    "mtime": 1795486396.9414792,
+    "seen": 1795486638.5430937,
     "ast_hash": "832fc3cedf5c14e8cbd4a6b44dff782c",
     "semantic_hash": "832fc3cedf5c14e8cbd4a6b44dff782c"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b4-pausar-tarefa.png": {
-    "mtime": 1795401329.641304,
-    "seen": 1795401727.5651035,
+    "mtime": 1795486396.9424782,
+    "seen": 1795486638.5430946,
     "ast_hash": "b0307be7c100110e87b1562e63e66dd3",
     "semantic_hash": "b0307be7c100110e87b1562e63e66dd3"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b4-retomar-tarefa.png": {
-    "mtime": 1795401329.6423044,
-    "seen": 1795401727.5651045,
+    "mtime": 1795486396.9434805,
+    "seen": 1795486638.5430956,
     "ast_hash": "94be34ace7ffa379ef8e6cef792d8a43",
     "semantic_hash": "94be34ace7ffa379ef8e6cef792d8a43"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b5-nao-aplicavel.png": {
-    "mtime": 1795401329.6433146,
-    "seen": 1795401727.5651052,
+    "mtime": 1795486396.945477,
+    "seen": 1795486638.5430963,
     "ast_hash": "1ec424bab15dc9975d411ddc6c6b5a62",
     "semantic_hash": "1ec424bab15dc9975d411ddc6c6b5a62"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b6-leitura-qr-code.png": {
-    "mtime": 1795401329.6433146,
-    "seen": 1795401727.565106,
+    "mtime": 1795486396.945477,
+    "seen": 1795486638.543097,
     "ast_hash": "49c59b3295118476d251c5d988f472e8",
     "semantic_hash": "49c59b3295118476d251c5d988f472e8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b6-pontos-da-tarefa.png": {
-    "mtime": 1795401329.6443026,
-    "seen": 1795401727.5651069,
+    "mtime": 1795486396.947478,
+    "seen": 1795486638.5430984,
     "ast_hash": "db26389416c049fe33c27e9f85844583",
     "semantic_hash": "db26389416c049fe33c27e9f85844583"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b7-marcos-do-turnaround.png": {
-    "mtime": 1795401329.6473064,
-    "seen": 1795401727.5651078,
+    "mtime": 1795486396.949486,
+    "seen": 1795486638.5430992,
     "ast_hash": "932df79b1e1ac1edf9e2ee207d01df4f",
     "semantic_hash": "932df79b1e1ac1edf9e2ee207d01df4f"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-b8-propagacao-de-estado.png": {
-    "mtime": 1795401329.6483035,
-    "seen": 1795401727.5651088,
+    "mtime": 1795486396.9504857,
+    "seen": 1795486638.5431,
     "ast_hash": "b54d1041576ebd025a82d296c44e6ccf",
     "semantic_hash": "b54d1041576ebd025a82d296c44e6ccf"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d1-abrir-excecao.png": {
-    "mtime": 1795401329.6753078,
-    "seen": 1795401727.5651274,
+    "mtime": 1795486396.9831388,
+    "seen": 1795486638.5431097,
     "ast_hash": "71cbc1f036ef17653bf3fa91d73756c3",
     "semantic_hash": "71cbc1f036ef17653bf3fa91d73756c3"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d2-reatribuir-tarefa.png": {
-    "mtime": 1795401329.67831,
-    "seen": 1795401727.565128,
+    "mtime": 1795486396.9861412,
+    "seen": 1795486638.5431104,
     "ast_hash": "fb3d40e59add3346f8d95411538e46d5",
     "semantic_hash": "fb3d40e59add3346f8d95411538e46d5"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d3-registrar-acao-do-alerta.png": {
-    "mtime": 1795401329.681309,
-    "seen": 1795401727.5651293,
+    "mtime": 1795486396.9891622,
+    "seen": 1795486638.5431113,
     "ast_hash": "25eeacb23aa94feadc86df6f867f5b42",
     "semantic_hash": "25eeacb23aa94feadc86df6f867f5b42"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d5-encerrar-excecao.png": {
-    "mtime": 1795401329.69582,
-    "seen": 1795401727.565131,
+    "mtime": 1795486397.0074613,
+    "seen": 1795486638.5431132,
     "ast_hash": "c98d2d03271e06f5e26389ea4b57e80c",
     "semantic_hash": "c98d2d03271e06f5e26389ea4b57e80c"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d6-atualizar-tobt.png": {
-    "mtime": 1795401329.6988194,
-    "seen": 1795401727.5651321,
+    "mtime": 1795486397.0104618,
+    "seen": 1795486638.543114,
     "ast_hash": "f00da6ec4788e7216728070deebb3dee",
     "semantic_hash": "f00da6ec4788e7216728070deebb3dee"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-acionar-servico-sob-demanda.png": {
-    "mtime": 1795401329.7018206,
-    "seen": 1795401727.565133,
+    "mtime": 1795486397.0139768,
+    "seen": 1795486638.543115,
     "ast_hash": "76ea4f4b6c4f2acfc66a9fa3ffffdcb9",
     "semantic_hash": "76ea4f4b6c4f2acfc66a9fa3ffffdcb9"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d7-replanejar-tarefas.png": {
-    "mtime": 1795401329.7038205,
-    "seen": 1795401727.5651338,
+    "mtime": 1795486397.0164943,
+    "seen": 1795486638.5431159,
     "ast_hash": "3ebafc7c02f80fea6a9b6733b3f7e22e",
     "semantic_hash": "3ebafc7c02f80fea6a9b6733b3f7e22e"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d8-operadores-disponiveis.png": {
-    "mtime": 1795401329.705819,
-    "seen": 1795401727.5651348,
+    "mtime": 1795486397.0195007,
+    "seen": 1795486638.5431166,
     "ast_hash": "5562596a8b648efda3c510c6ad233faa",
     "semantic_hash": "5562596a8b648efda3c510c6ad233faa"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d9-registrar-saida-da-posicao.png": {
-    "mtime": 1795401329.7068195,
-    "seen": 1795401727.565136,
+    "mtime": 1795486397.0204997,
+    "seen": 1795486638.5431173,
     "ast_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad",
     "semantic_hash": "0d5a50eb0b5088ad5f43d19391a9e3ad"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-celular.png": {
-    "mtime": 1795401329.617305,
-    "seen": 1795401727.5650847,
+    "mtime": 1795486396.911764,
+    "seen": 1795486638.5430787,
     "ast_hash": "2e9ef27bf10525dac2df4ab935f49e9d",
     "semantic_hash": "2e9ef27bf10525dac2df4ab935f49e9d"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a1-autenticar-web.png": {
-    "mtime": 1795401329.6183038,
-    "seen": 1795401727.565086,
+    "mtime": 1795486396.912764,
+    "seen": 1795486638.5430794,
     "ast_hash": "c58c19c2270916623ca75e2907b64849",
     "semantic_hash": "c58c19c2270916623ca75e2907b64849"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a10-atualizar-previsao.png": {
-    "mtime": 1795401329.6203043,
-    "seen": 1795401727.565087,
+    "mtime": 1795486396.915762,
+    "seen": 1795486638.54308,
     "ast_hash": "897406621e7c47f7e789ca65f116fe0c",
     "semantic_hash": "897406621e7c47f7e789ca65f116fe0c"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a11-politica-de-abastecimento.png": {
-    "mtime": 1795401329.6213038,
-    "seen": 1795401727.5650883,
+    "mtime": 1795486396.9167614,
+    "seen": 1795486638.5430813,
     "ast_hash": "4c46c4ecca37068a77af8bada7e5d29a",
     "semantic_hash": "4c46c4ecca37068a77af8bada7e5d29a"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a12-registrar-chegada.png": {
-    "mtime": 1795401329.6223037,
-    "seen": 1795401727.565089,
+    "mtime": 1795486396.9178197,
+    "seen": 1795486638.543082,
     "ast_hash": "42f7f089a0e0103d6ac509f17cca3e41",
     "semantic_hash": "42f7f089a0e0103d6ac509f17cca3e41"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a13-corrigir-chegada.png": {
-    "mtime": 1795401329.6243048,
-    "seen": 1795401727.5650904,
+    "mtime": 1795486396.9209833,
+    "seen": 1795486638.543083,
     "ast_hash": "0876c1f7557ce8e1f725f62077f2173e",
     "semantic_hash": "0876c1f7557ce8e1f725f62077f2173e"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a2-gerenciar-usuarios.png": {
-    "mtime": 1795401329.6263041,
-    "seen": 1795401727.5650914,
+    "mtime": 1795486396.9229922,
+    "seen": 1795486638.5430837,
     "ast_hash": "5b352efae451edad1d1a704e8470dac4",
     "semantic_hash": "5b352efae451edad1d1a704e8470dac4"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a3-abrir-turnaround.png": {
-    "mtime": 1795401329.6273124,
-    "seen": 1795401727.565092,
+    "mtime": 1795486396.9239893,
+    "seen": 1795486638.5430846,
     "ast_hash": "f4968b0ba1a419fcc2d236b0f86cd770",
     "semantic_hash": "f4968b0ba1a419fcc2d236b0f86cd770"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a4-criar-modelo.png": {
-    "mtime": 1795401329.6283069,
-    "seen": 1795401727.565093,
+    "mtime": 1795486396.9261334,
+    "seen": 1795486638.5430856,
     "ast_hash": "ac5b065f19077f4d5e62d8af20214ab9",
     "semantic_hash": "ac5b065f19077f4d5e62d8af20214ab9"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a5-confirmar-plano.png": {
-    "mtime": 1795401329.6303039,
-    "seen": 1795401727.5650945,
+    "mtime": 1795486396.9284813,
+    "seen": 1795486638.5430863,
     "ast_hash": "03b52bbc610d90229e59a3e211b53c8f",
     "semantic_hash": "03b52bbc610d90229e59a3e211b53c8f"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a6-aplicar-modelo.png": {
-    "mtime": 1795401329.632306,
-    "seen": 1795401727.5650957,
+    "mtime": 1795486396.930481,
+    "seen": 1795486638.543087,
     "ast_hash": "f8f241893c2a4dc326f6a73a7ea8bc05",
     "semantic_hash": "f8f241893c2a4dc326f6a73a7ea8bc05"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a7-pontos-de-confirmacao.png": {
-    "mtime": 1795401329.6343038,
-    "seen": 1795401727.5650966,
+    "mtime": 1795486396.9334774,
+    "seen": 1795486638.5430882,
     "ast_hash": "723e3df10a8787645ba33a1c8ec5a8c7",
     "semantic_hash": "723e3df10a8787645ba33a1c8ec5a8c7"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a8-definir-dependencias.png": {
-    "mtime": 1795401329.6363049,
-    "seen": 1795401727.5650976,
+    "mtime": 1795486396.9354765,
+    "seen": 1795486638.543089,
     "ast_hash": "513af8623a20c8524968425a4bfaf8e8",
     "semantic_hash": "513af8623a20c8524968425a4bfaf8e8"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a9-gerenciar-equipes.png": {
-    "mtime": 1795401329.637304,
-    "seen": 1795401727.5650985,
+    "mtime": 1795486396.937477,
+    "seen": 1795486638.54309,
     "ast_hash": "67789d6d4eb59ead30c9d8eb78505272",
     "semantic_hash": "67789d6d4eb59ead30c9d8eb78505272"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c1-painel-de-turnarounds.png": {
-    "mtime": 1795401329.6503081,
-    "seen": 1795401727.5651183,
+    "mtime": 1795486396.9526167,
+    "seen": 1795486638.5431008,
     "ast_hash": "7c8a9c4346ab5c512bce4e6f2a6a5c06",
     "semantic_hash": "7c8a9c4346ab5c512bce4e6f2a6a5c06"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c2-linha-do-tempo.png": {
-    "mtime": 1795401329.6643102,
-    "seen": 1795401727.5651202,
+    "mtime": 1795486396.9691315,
+    "seen": 1795486638.5431027,
     "ast_hash": "c7e27f697d68e4d6028c498e21609fc3",
     "semantic_hash": "c7e27f697d68e4d6028c498e21609fc3"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c3-recalculo-e-caminho-critico.png": {
-    "mtime": 1795401329.666309,
-    "seen": 1795401727.565121,
+    "mtime": 1795486396.9711325,
+    "seen": 1795486638.5431037,
     "ast_hash": "c9b5ae01d4b567cced53272e93f56c53",
     "semantic_hash": "c9b5ae01d4b567cced53272e93f56c53"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c4-alerta-emitido.png": {
-    "mtime": 1795401329.6673088,
-    "seen": 1795401727.5651221,
+    "mtime": 1795486396.973139,
+    "seen": 1795486638.5431044,
     "ast_hash": "6a2d637cb3945802edac05c01686989b",
     "semantic_hash": "6a2d637cb3945802edac05c01686989b"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c5-lista-de-alertas.png": {
-    "mtime": 1795401329.6703079,
-    "seen": 1795401727.5651245,
+    "mtime": 1795486396.976139,
+    "seen": 1795486638.5431068,
     "ast_hash": "a0266dff39d85022ae3650538134772d",
     "semantic_hash": "a0266dff39d85022ae3650538134772d"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c6-checagem-tobt-15.png": {
-    "mtime": 1795401329.67133,
-    "seen": 1795401727.5651255,
+    "mtime": 1795486396.9791386,
+    "seen": 1795486638.5431077,
     "ast_hash": "210a7ae190dc6000869559f6288d66b7",
     "semantic_hash": "210a7ae190dc6000869559f6288d66b7"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c7-indicadores-de-aderencia.png": {
-    "mtime": 1795401329.6733031,
-    "seen": 1795401727.5651267,
+    "mtime": 1795486396.9801397,
+    "seen": 1795486638.543109,
     "ast_hash": "d1bdc30147839910568ddd0881270404",
     "semantic_hash": "d1bdc30147839910568ddd0881270404"
   },
   "scripts/gerar_docx.py": {
-    "mtime": 1795401330.0416062,
-    "seen": 1795401727.5649586,
+    "mtime": 1795486397.4160573,
+    "seen": 1795486638.5429585,
     "ast_hash": "b89571af161c5200a38fd522a954bf1d",
     "semantic_hash": "b89571af161c5200a38fd522a954bf1d"
   },
   "scripts/gerar_pdf_conferencia.py": {
-    "mtime": 1795401330.0436046,
-    "seen": 1795401727.5649624,
+    "mtime": 1795486397.4180593,
+    "seen": 1795486638.5429618,
     "ast_hash": "3a779fba8b4ead802fa68358f0ea4c3c",
     "semantic_hash": "3a779fba8b4ead802fa68358f0ea4c3c"
   },
   "scripts/renumerar_ids.py": {
-    "mtime": 1795401330.046604,
-    "seen": 1795401727.564968,
+    "mtime": 1795486397.4200602,
+    "seen": 1795486638.5429676,
     "ast_hash": "96172123dda9ce3e200e0af002a720e8",
     "semantic_hash": "96172123dda9ce3e200e0af002a720e8"
   },
   "scripts/verificar_revisao.py": {
-    "mtime": 1795401330.0486052,
-    "seen": 1795401727.5649714,
+    "mtime": 1795486397.4210572,
+    "seen": 1795486638.5429704,
     "ast_hash": "140784dc31c1bf8df6378edf34ef8be9",
     "semantic_hash": "140784dc31c1bf8df6378edf34ef8be9"
   },
   "entregas/ra1-item-10-verificacao.md": {
-    "mtime": 1795401329.5963123,
-    "seen": 1795401727.5650096,
+    "mtime": 1795486396.877356,
+    "seen": 1795486638.543008,
     "ast_hash": "ac7385db9dcdfece74a5ceb84d80993e",
     "semantic_hash": "ac7385db9dcdfece74a5ceb84d80993e"
   },
   "entregas/ra1-renumeracao.md": {
-    "mtime": 1795401329.5973077,
-    "seen": 1795401727.5650108,
+    "mtime": 1795486396.8783557,
+    "seen": 1795486638.5430088,
     "ast_hash": "de1e98f342d262f4ca7c7bfab963cfc6",
     "semantic_hash": "de1e98f342d262f4ca7c7bfab963cfc6"
   },
   "entregas/ra1-t11-verificacao.md": {
-    "mtime": 1795401329.5973077,
-    "seen": 1795401727.5650117,
+    "mtime": 1795486396.879356,
+    "seen": 1795486638.5430098,
     "ast_hash": "d0847fed4d3034182b2d1f1f7dc018f5",
     "semantic_hash": "d0847fed4d3034182b2d1f1f7dc018f5"
   },
   "entregas/ra1-t12-verificacao.md": {
-    "mtime": 1795401329.598306,
-    "seen": 1795401727.5650125,
+    "mtime": 1795486396.880357,
+    "seen": 1795486638.5430105,
     "ast_hash": "174b061465a103118ac8e22e091cae4c",
     "semantic_hash": "174b061465a103118ac8e22e091cae4c"
   },
   "especificacao/00-declaracao-de-uso-de-ia.md": {
-    "mtime": 1795401329.601303,
-    "seen": 1795401727.5650165,
+    "mtime": 1795486396.885357,
+    "seen": 1795486638.5430148,
     "ast_hash": "627bd3f86a122709e1b5144701f70f05",
     "semantic_hash": "627bd3f86a122709e1b5144701f70f05"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c2-linha-do-tempo-v2.png": {
-    "mtime": 1795401329.662304,
-    "seen": 1795401727.5651193,
+    "mtime": 1795486396.9661326,
+    "seen": 1795486638.543102,
     "ast_hash": "b52eedcd473ae3363bf384287530bd50",
     "semantic_hash": "b52eedcd473ae3363bf384287530bd50"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-d4-confirmar-prontidao-v2.png": {
-    "mtime": 1795401329.6938202,
-    "seen": 1795401727.56513,
+    "mtime": 1795486397.0044632,
+    "seen": 1795486638.5431123,
     "ast_hash": "66b2b1e9a689a2a2415b1b499c21ba96",
     "semantic_hash": "66b2b1e9a689a2a2415b1b499c21ba96"
   },
   "especificacao/diagramas/09-casos-de-uso.png": {
-    "mtime": 1795401329.758351,
-    "seen": 1795401727.5651433,
+    "mtime": 1795486397.0831895,
+    "seen": 1795486638.5431247,
     "ast_hash": "6f6bbbfb1b75b9a92cd18d010e809c2f",
     "semantic_hash": "6f6bbbfb1b75b9a92cd18d010e809c2f"
   },
   "especificacao/diagramas/11-atividades-paralelas.png": {
-    "mtime": 1795401329.7654274,
-    "seen": 1795401727.5651443,
+    "mtime": 1795486397.09019,
+    "seen": 1795486638.5431254,
     "ast_hash": "b0c7daea7116edb50d34ef54808a5871",
     "semantic_hash": "b0c7daea7116edb50d34ef54808a5871"
   },
   "especificacao/diagramas/11-atividades.png": {
-    "mtime": 1795401329.7749426,
-    "seen": 1795401727.5651453,
+    "mtime": 1795486397.1003764,
+    "seen": 1795486638.5431266,
     "ast_hash": "4352226ac85c159bb97338f59deda61f",
     "semantic_hash": "4352226ac85c159bb97338f59deda61f"
   },
   "especificacao/diagramas/11-monitoramento.png": {
-    "mtime": 1795401329.785453,
-    "seen": 1795401727.5651462,
+    "mtime": 1795486397.1134977,
+    "seen": 1795486638.5431275,
     "ast_hash": "8200b9fb6de8031d32098dc5753f5b79",
     "semantic_hash": "8200b9fb6de8031d32098dc5753f5b79"
   },
   "especificacao/diagramas/11-registro-tarefa.png": {
-    "mtime": 1795401329.7929676,
-    "seen": 1795401727.5651472,
+    "mtime": 1795486397.1215048,
+    "seen": 1795486638.5431283,
     "ast_hash": "929bfca5298c597fe692f727d310b1c6",
     "semantic_hash": "929bfca5298c597fe692f727d310b1c6"
   },
   "scripts/exportar_drawio.py": {
-    "mtime": 1795401330.0406032,
-    "seen": 1795401727.5649555,
+    "mtime": 1795486397.415059,
+    "seen": 1795486638.542956,
     "ast_hash": "d9f27247db7c4847969859f2898dfdd6",
     "semantic_hash": "d9f27247db7c4847969859f2898dfdd6"
   },
   "scripts/exportar_bpmn.mjs": {
-    "mtime": 1795401330.0396037,
-    "seen": 1795401727.564953,
+    "mtime": 1795486397.415059,
+    "seen": 1795486638.542954,
     "ast_hash": "75bec89994ba2a8c6cdc44f1701cad22",
     "semantic_hash": "75bec89994ba2a8c6cdc44f1701cad22"
   },
   "scripts/package.json": {
-    "mtime": 1795401330.046604,
-    "seen": 1795401727.5649672,
+    "mtime": 1795486397.4200602,
+    "seen": 1795486638.5429666,
     "ast_hash": "06b5e08d7c80681ef4126459a6c9027e",
     "semantic_hash": "06b5e08d7c80681ef4126459a6c9027e"
   },
   "scripts/verificar_bpmn.py": {
-    "mtime": 1795401330.0476048,
-    "seen": 1795401727.5649693,
+    "mtime": 1795486397.4200602,
+    "seen": 1795486638.5429683,
     "ast_hash": "d91acbe480924d591831d5c61acb0dd5",
     "semantic_hash": "d91acbe480924d591831d5c61acb0dd5"
   },
   "especificacao/diagramas/04-bpmn-to-be-alerta.png": {
-    "mtime": 1795401329.7208195,
-    "seen": 1795401727.5651367,
+    "mtime": 1795486397.0382383,
+    "seen": 1795486638.5431182,
     "ast_hash": "e3a5ed40957ba6c680a04a2a87c30043",
     "semantic_hash": "e3a5ed40957ba6c680a04a2a87c30043"
   },
   "especificacao/diagramas/04-bpmn-to-be-geral.png": {
-    "mtime": 1795401329.728819,
-    "seen": 1795401727.5651374,
+    "mtime": 1795486397.047186,
+    "seen": 1795486638.5431192,
     "ast_hash": "62ac7cd1ca3eed8b4ea2b77532d4feee",
     "semantic_hash": "62ac7cd1ca3eed8b4ea2b77532d4feee"
   },
   "especificacao/diagramas/04-bpmn-to-be-monitoramento.png": {
-    "mtime": 1795401329.7308185,
-    "seen": 1795401727.5651383,
+    "mtime": 1795486397.050186,
+    "seen": 1795486638.5431201,
     "ast_hash": "b313878b0bd83a1ee425d0d43ab25681",
     "semantic_hash": "b313878b0bd83a1ee425d0d43ab25681"
   },
   "especificacao/diagramas/04-bpmn-to-be-previsao.png": {
-    "mtime": 1795401329.731819,
-    "seen": 1795401727.5651393,
+    "mtime": 1795486397.0521877,
+    "seen": 1795486638.543121,
     "ast_hash": "e96155ee6c940b09a9c6c1f7e030f461",
     "semantic_hash": "e96155ee6c940b09a9c6c1f7e030f461"
   },
   "especificacao/diagramas/04-bpmn-to-be-tarefas-em-solo.png": {
-    "mtime": 1795401329.734821,
-    "seen": 1795401727.5651402,
+    "mtime": 1795486397.0551846,
+    "seen": 1795486638.5431223,
     "ast_hash": "699e9dd4b358e4d1b569aeefcbc60955",
     "semantic_hash": "699e9dd4b358e4d1b569aeefcbc60955"
   },
   "especificacao/diagramas/04-bpmn-to-be-tobt-15.png": {
-    "mtime": 1795401329.7368207,
-    "seen": 1795401727.5651414,
+    "mtime": 1795486397.0571866,
+    "seen": 1795486638.543123,
     "ast_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d",
     "semantic_hash": "eec8994c6a3ebd782e68e2f5f16a9e5d"
   },
   "scripts/marcos_nos_diagramas.py": {
-    "mtime": 1795401330.0446043,
-    "seen": 1795401727.564964,
+    "mtime": 1795486397.419059,
+    "seen": 1795486638.5429637,
     "ast_hash": "8304b8c1a69292f412e6f1e3c5b91420",
     "semantic_hash": "8304b8c1a69292f412e6f1e3c5b91420"
   },
   "scripts/medir_svg.mjs": {
-    "mtime": 1795401330.046604,
-    "seen": 1795401727.5649662,
+    "mtime": 1795486397.419059,
+    "seen": 1795486638.5429657,
     "ast_hash": "6710e2c28c9f1aa0644d8f1577cacba3",
     "semantic_hash": "6710e2c28c9f1aa0644d8f1577cacba3"
   },
   "scripts/verificar_drawio.py": {
-    "mtime": 1795401330.0486052,
-    "seen": 1795401727.5649703,
+    "mtime": 1795486397.4210572,
+    "seen": 1795486638.5429692,
     "ast_hash": "b8f49df3ec633b36ca5c115b953d54a6",
     "semantic_hash": "b8f49df3ec633b36ca5c115b953d54a6"
   },
   "docs/adr/0015-divisao-em-microsservicos.md": {
-    "mtime": 1795401329.5597591,
-    "seen": 1795401727.5649946,
+    "mtime": 1795486396.8338451,
+    "seen": 1795486638.5429914,
     "ast_hash": "c6262ccb364e84e31a09b39a6c42adbd",
     "semantic_hash": "c6262ccb364e84e31a09b39a6c42adbd"
   },
   "docs/adr/0016-contrato-entre-os-servicos.md": {
-    "mtime": 1795401329.5597591,
-    "seen": 1795401727.5649955,
-    "ast_hash": "3c7e81b29b311de53ea3b8f318b485a1",
-    "semantic_hash": "3c7e81b29b311de53ea3b8f318b485a1"
+    "mtime": 1795486396.834846,
+    "seen": 1795486638.542992,
+    "ast_hash": "26e49d110b8122e2d29c77d04fb8511b",
+    "semantic_hash": "26e49d110b8122e2d29c77d04fb8511b"
   },
   "entregas/ra2-criterios-de-aceite.md": {
-    "mtime": 1795401329.599303,
-    "seen": 1795401727.5650146,
+    "mtime": 1795486396.8833566,
+    "seen": 1795486638.5430129,
     "ast_hash": "a33bf8a5c80f03127dfc340574c4d93f",
     "semantic_hash": "a33bf8a5c80f03127dfc340574c4d93f"
   },
   "entregas/ra2-tarefas.md": {
-    "mtime": 1795401329.6003041,
-    "seen": 1795401727.5650153,
+    "mtime": 1795486396.8843567,
+    "seen": 1795486638.5430138,
     "ast_hash": "92e51706f53a0d7aa0321aa46083758c",
     "semantic_hash": "92e51706f53a0d7aa0321aa46083758c"
   },
   "scripts/exportar_plantuml.py": {
-    "mtime": 1795401330.0406032,
-    "seen": 1795401727.5649567,
+    "mtime": 1795486397.415059,
+    "seen": 1795486638.5429575,
     "ast_hash": "c383f35ff17da03da593f625d43e10a3",
     "semantic_hash": "c383f35ff17da03da593f625d43e10a3"
   },
   "scripts/verificar_sprints.py": {
-    "mtime": 1795401330.0496051,
-    "seen": 1795401727.5649724,
+    "mtime": 1795486397.4210572,
+    "seen": 1795486638.5429711,
     "ast_hash": "74f133efd4dc255d405e251e2a34de2f",
     "semantic_hash": "74f133efd4dc255d405e251e2a34de2f"
   },
   ".github/workflows/release.yml": {
-    "mtime": 1795401329.546641,
-    "seen": 1795401727.5649734,
+    "mtime": 1795486396.81805,
+    "seen": 1795486638.5429723,
     "ast_hash": "4730edffb8c6b2e1290b36ac5f29d5dd",
     "semantic_hash": "4730edffb8c6b2e1290b36ac5f29d5dd"
   },
   "CHANGELOG.md": {
-    "mtime": 1795401329.5496423,
-    "seen": 1795401727.5649755,
-    "ast_hash": "5e222016f1414b728e4521a5d350c7aa",
-    "semantic_hash": "5e222016f1414b728e4521a5d350c7aa"
+    "mtime": 1795486396.8210497,
+    "seen": 1795486638.5429742,
+    "ast_hash": "c4a0de5d29ced27c2a232e87e2645ee6",
+    "semantic_hash": "c4a0de5d29ced27c2a232e87e2645ee6"
   },
   "docs/adr/0018-tecnologia-execucao-em-solo.md": {
-    "mtime": 1795401329.5617568,
-    "seen": 1795401727.5649977,
+    "mtime": 1795486396.8358443,
+    "seen": 1795486638.542994,
     "ast_hash": "440e60f85ec2b3798441625a76ef0db7",
     "semantic_hash": "440e60f85ec2b3798441625a76ef0db7"
   },
   "docs/adr/0020-tecnologia-excecoes-e-liberacao.md": {
-    "mtime": 1795401329.5627563,
-    "seen": 1795401727.5649996,
+    "mtime": 1795486396.837846,
+    "seen": 1795486638.5429962,
     "ast_hash": "99f07e38eb3cfef65e1139adf4e4b572",
     "semantic_hash": "99f07e38eb3cfef65e1139adf4e4b572"
   },
   "docs/adr/0021-matriz-de-rastreabilidade-estendida.md": {
-    "mtime": 1795401329.5627563,
-    "seen": 1795401727.5650005,
+    "mtime": 1795486396.837846,
+    "seen": 1795486638.542997,
     "ast_hash": "9a121c488444ef5da2b006ad40f7732b",
     "semantic_hash": "9a121c488444ef5da2b006ad40f7732b"
   },
   "docs/adr/0022-ids-provisorios-dos-casos-de-teste.md": {
-    "mtime": 1795401329.5637562,
-    "seen": 1795401727.5650015,
+    "mtime": 1795486396.8388472,
+    "seen": 1795486638.542998,
     "ast_hash": "8eeb046ad62f2690e27ef2132d9c262e",
     "semantic_hash": "8eeb046ad62f2690e27ef2132d9c262e"
   },
   "especificacao/12-modelo-de-dados.md": {
-    "mtime": 1795401329.7088206,
-    "seen": 1795401727.5650463,
+    "mtime": 1795486397.0225003,
+    "seen": 1795486638.5430424,
     "ast_hash": "376b9ac77ec2b45ec651f175f0b0ee24",
     "semantic_hash": "376b9ac77ec2b45ec651f175f0b0ee24"
   },
   "especificacao/13-diagrama-de-classes.md": {
-    "mtime": 1795401329.709821,
-    "seen": 1795401727.565047,
+    "mtime": 1795486397.0235016,
+    "seen": 1795486638.5430434,
     "ast_hash": "40a7cb0dee8723a6ef55c9c06ac1c221",
     "semantic_hash": "40a7cb0dee8723a6ef55c9c06ac1c221"
   },
   "especificacao/14-diagramas-de-sequencia/00-item.md": {
-    "mtime": 1795401329.7108212,
-    "seen": 1795401727.5650482,
+    "mtime": 1795486397.0244987,
+    "seen": 1795486638.543044,
     "ast_hash": "e254e9c3a655ec5cddb6a9a1e3737338",
     "semantic_hash": "e254e9c3a655ec5cddb6a9a1e3737338"
   },
   "especificacao/14-diagramas-de-sequencia/area-a.md": {
-    "mtime": 1795401329.711822,
-    "seen": 1795401727.5650494,
+    "mtime": 1795486397.0244987,
+    "seen": 1795486638.543045,
     "ast_hash": "0455a1dfae639f07c2fcbe91c83f3e82",
     "semantic_hash": "0455a1dfae639f07c2fcbe91c83f3e82"
   },
   "especificacao/14-diagramas-de-sequencia/area-b.md": {
-    "mtime": 1795401329.711822,
-    "seen": 1795401727.5650504,
+    "mtime": 1795486397.0255008,
+    "seen": 1795486638.543046,
     "ast_hash": "46073840d0820c0c5ccd82163b1d8f16",
     "semantic_hash": "46073840d0820c0c5ccd82163b1d8f16"
   },
   "especificacao/14-diagramas-de-sequencia/area-c.md": {
-    "mtime": 1795401329.7128212,
-    "seen": 1795401727.5650513,
+    "mtime": 1795486397.0266724,
+    "seen": 1795486638.543047,
     "ast_hash": "3bdc1b992edb3279c78b78bf8a993aa7",
     "semantic_hash": "3bdc1b992edb3279c78b78bf8a993aa7"
   },
   "especificacao/14-diagramas-de-sequencia/area-d.md": {
-    "mtime": 1795401329.7128212,
-    "seen": 1795401727.5650525,
+    "mtime": 1795486397.0266724,
+    "seen": 1795486638.5430477,
     "ast_hash": "378b69a007daceadb6e108fd7ff84bb0",
     "semantic_hash": "378b69a007daceadb6e108fd7ff84bb0"
   },
   "especificacao/15-casos-de-teste/00-item.md": {
-    "mtime": 1795401329.7138205,
-    "seen": 1795401727.5650532,
+    "mtime": 1795486397.0276732,
+    "seen": 1795486638.5430486,
     "ast_hash": "48b38e03b5e9810e55e979cb084e83cf",
     "semantic_hash": "48b38e03b5e9810e55e979cb084e83cf"
   },
   "especificacao/15-casos-de-teste/area-a.md": {
-    "mtime": 1795401329.7148216,
-    "seen": 1795401727.5650542,
+    "mtime": 1795486397.0286732,
+    "seen": 1795486638.5430498,
     "ast_hash": "37c5eca91249d63f315619cad48945dd",
     "semantic_hash": "37c5eca91249d63f315619cad48945dd"
   },
   "especificacao/15-casos-de-teste/area-b.md": {
-    "mtime": 1795401329.715821,
-    "seen": 1795401727.565055,
+    "mtime": 1795486397.029672,
+    "seen": 1795486638.5430505,
     "ast_hash": "4ebad4ff153383390c23a6b88e2c10fc",
     "semantic_hash": "4ebad4ff153383390c23a6b88e2c10fc"
   },
   "especificacao/15-casos-de-teste/area-c.md": {
-    "mtime": 1795401329.7168255,
-    "seen": 1795401727.5650563,
+    "mtime": 1795486397.0306768,
+    "seen": 1795486638.5430512,
     "ast_hash": "b909a3708997eae3003e2449e6b74915",
     "semantic_hash": "b909a3708997eae3003e2449e6b74915"
   },
   "especificacao/15-casos-de-teste/area-d.md": {
-    "mtime": 1795401329.7168255,
-    "seen": 1795401727.5650573,
+    "mtime": 1795486397.0316708,
+    "seen": 1795486638.543052,
     "ast_hash": "5d33ad335a1e7328cf1c831cbf181efe",
     "semantic_hash": "5d33ad335a1e7328cf1c831cbf181efe"
   },
   "especificacao/apendice-b-dicionario-de-dados.md": {
-    "mtime": 1795401329.7198207,
-    "seen": 1795401727.5650597,
+    "mtime": 1795486397.0341854,
+    "seen": 1795486638.5430539,
     "ast_hash": "98b787649964ecf4c43182ba32249881",
     "semantic_hash": "98b787649964ecf4c43182ba32249881"
   },
   "pesquisa/topicos/service-blueprint.md": {
-    "mtime": 1795401330.0376027,
-    "seen": 1795401727.565082,
+    "mtime": 1795486397.412058,
+    "seen": 1795486638.543076,
     "ast_hash": "64178716951576dabda34914d1095105",
     "semantic_hash": "64178716951576dabda34914d1095105"
   },
   "especificacao/diagramas/14-sequencia-uc32.png": {
-    "mtime": 1795401329.9444885,
-    "seen": 1795401727.565167,
+    "mtime": 1795486397.2984638,
+    "seen": 1795486638.5431476,
     "ast_hash": "3f53b224b917eefde39d15f7b30fe697",
     "semantic_hash": "3f53b224b917eefde39d15f7b30fe697"
   },
   "scripts/gerar_modelo_de_dados.py": {
-    "mtime": 1795401330.0436046,
-    "seen": 1795401727.564961,
+    "mtime": 1795486397.4170575,
+    "seen": 1795486638.542961,
     "ast_hash": "b8768230a9f0056d321390216b0e1c8b",
     "semantic_hash": "b8768230a9f0056d321390216b0e1c8b"
   },
   "especificacao/diagramas/12-modelo-de-dados-cadastro.png": {
-    "mtime": 1795401329.8119678,
-    "seen": 1795401727.5651479,
+    "mtime": 1795486397.139906,
+    "seen": 1795486638.5431292,
     "ast_hash": "48285f65a1b0b3b33fbcddc6a1ba8a7c",
     "semantic_hash": "48285f65a1b0b3b33fbcddc6a1ba8a7c"
   },
   "especificacao/diagramas/12-modelo-de-dados-excecoes.png": {
-    "mtime": 1795401329.8249688,
-    "seen": 1795401727.5651488,
+    "mtime": 1795486397.1534128,
+    "seen": 1795486638.5431302,
     "ast_hash": "72e81d63c4c42658246fe7c96ada82da",
     "semantic_hash": "72e81d63c4c42658246fe7c96ada82da"
   },
   "especificacao/diagramas/12-modelo-de-dados-execucao.png": {
-    "mtime": 1795401329.838968,
-    "seen": 1795401727.5651498,
+    "mtime": 1795486397.1665292,
+    "seen": 1795486638.5431309,
     "ast_hash": "97bd45423a0afc5c9e46d64ec32435b9",
     "semantic_hash": "97bd45423a0afc5c9e46d64ec32435b9"
   },
   "especificacao/diagramas/12-modelo-de-dados-monitoramento.png": {
-    "mtime": 1795401329.85497,
-    "seen": 1795401727.5651505,
+    "mtime": 1795486397.1824324,
+    "seen": 1795486638.5431318,
     "ast_hash": "0ddefb1353289bc5f4ee2646ab3cada6",
     "semantic_hash": "0ddefb1353289bc5f4ee2646ab3cada6"
   },
   "especificacao/diagramas/12-modelo-de-dados-visao-geral.png": {
-    "mtime": 1795401329.8609676,
-    "seen": 1795401727.5651515,
+    "mtime": 1795486397.1894383,
+    "seen": 1795486638.543133,
     "ast_hash": "f4f60a40293f1dd19e6103e27dc3844b",
     "semantic_hash": "f4f60a40293f1dd19e6103e27dc3844b"
   },
   "docs/ideias.md": {
-    "mtime": 1795401329.5667582,
-    "seen": 1795401727.5650077,
+    "mtime": 1795486396.8443642,
+    "seen": 1795486638.5430052,
     "ast_hash": "6e7251d8bc61697db3de83a88c3ced12",
     "semantic_hash": "6e7251d8bc61697db3de83a88c3ced12"
   },
   "especificacao/apendice-c-blueprint-do-turnaround.md": {
-    "mtime": 1795401329.7198207,
-    "seen": 1795401727.5650604,
+    "mtime": 1795486397.0351844,
+    "seen": 1795486638.5430548,
     "ast_hash": "3fd2362a372c402ab1bee7d1d5ca73a3",
     "semantic_hash": "3fd2362a372c402ab1bee7d1d5ca73a3"
   },
   "especificacao/diagramas/apendice-c-blueprint.png": {
-    "mtime": 1795401329.9514897,
-    "seen": 1795401727.565168,
+    "mtime": 1795486397.3083262,
+    "seen": 1795486638.5431483,
     "ast_hash": "1d60ede6d860533894fac2262f377af6",
     "semantic_hash": "1d60ede6d860533894fac2262f377af6"
   },
   "docs/adr/0017-tecnologia-cadastro-e-planejamento.md": {
-    "mtime": 1795401329.5607574,
-    "seen": 1795401727.5649967,
+    "mtime": 1795486396.8358443,
+    "seen": 1795486638.542993,
     "ast_hash": "85737a7e3ba5b8db62c515f64a6bb2f4",
     "semantic_hash": "85737a7e3ba5b8db62c515f64a6bb2f4"
   },
   "docs/adr/0019-tecnologia-monitoramento.md": {
-    "mtime": 1795401329.5617568,
-    "seen": 1795401727.5649986,
+    "mtime": 1795486396.8368435,
+    "seen": 1795486638.542995,
     "ast_hash": "50579e83305233ff0ccc90f237a4763b",
     "semantic_hash": "50579e83305233ff0ccc90f237a4763b"
   },
   "docs/adr/0023-interfaces-da-porta-de-entrada-e-do-cadastro.md": {
-    "mtime": 1795401329.5647569,
-    "seen": 1795401727.5650022,
+    "mtime": 1795486396.8398464,
+    "seen": 1795486638.5429988,
     "ast_hash": "820b2fe8a5a01114b7d910ab6d08aa24",
     "semantic_hash": "820b2fe8a5a01114b7d910ab6d08aa24"
   },
   "scripts/conferir_classes.py": {
-    "mtime": 1795401330.0396037,
-    "seen": 1795401727.5649483,
+    "mtime": 1795486397.4140582,
+    "seen": 1795486638.5429492,
     "ast_hash": "f902da12592a486e6c57d15249dd523f",
     "semantic_hash": "f902da12592a486e6c57d15249dd523f"
   },
   "scripts/gerar_vistas_classes.py": {
-    "mtime": 1795401330.0446043,
-    "seen": 1795401727.564963,
-    "ast_hash": "a3d8ff805cd63462473046dcb9bc9ac5",
-    "semantic_hash": "a3d8ff805cd63462473046dcb9bc9ac5"
+    "mtime": 1795486397.4180593,
+    "seen": 1795486638.5429628,
+    "ast_hash": "6ec23753049573447c537a4fb4140f7e",
+    "semantic_hash": "6ec23753049573447c537a4fb4140f7e"
   },
   "scripts/medir_figuras_pdf.py": {
-    "mtime": 1795401330.045603,
-    "seen": 1795401727.564965,
+    "mtime": 1795486397.419059,
+    "seen": 1795486638.5429647,
     "ast_hash": "f40378cd0a08278a00087e4b984fbb1e",
     "semantic_hash": "f40378cd0a08278a00087e4b984fbb1e"
   },
   "especificacao/diagramas/13-classes-contrato.png": {
-    "mtime": 1795401329.8669677,
-    "seen": 1795401727.5651522,
+    "mtime": 1795486397.1954393,
+    "seen": 1795486638.5431337,
     "ast_hash": "15dc26b149297a817c0b3113162e5bc8",
     "semantic_hash": "15dc26b149297a817c0b3113162e5bc8"
   },
   "especificacao/diagramas/13-classes-negocio-cadastro.png": {
-    "mtime": 1795401329.8749766,
-    "seen": 1795401727.5651534,
+    "mtime": 1795486397.204709,
+    "seen": 1795486638.5431347,
     "ast_hash": "881f3a54b2fb402b5eabee49d34148ec",
     "semantic_hash": "881f3a54b2fb402b5eabee49d34148ec"
   },
   "especificacao/diagramas/13-classes-negocio-excecoes.png": {
-    "mtime": 1795401329.8779743,
-    "seen": 1795401727.5651543,
+    "mtime": 1795486397.208709,
+    "seen": 1795486638.5431354,
     "ast_hash": "9c0b7f080e8d14d82bc2dd527aeb25ca",
     "semantic_hash": "9c0b7f080e8d14d82bc2dd527aeb25ca"
   },
   "especificacao/diagramas/13-classes-negocio-execucao.png": {
-    "mtime": 1795401329.881976,
-    "seen": 1795401727.565155,
+    "mtime": 1795486397.2127104,
+    "seen": 1795486638.5431364,
     "ast_hash": "ca1d10189562bba7056f44bc222c83f4",
     "semantic_hash": "ca1d10189562bba7056f44bc222c83f4"
   },
   "especificacao/diagramas/13-classes-negocio-monitoramento.png": {
-    "mtime": 1795401329.8849757,
-    "seen": 1795401727.5651557,
+    "mtime": 1795486397.2190223,
+    "seen": 1795486638.5431373,
     "ast_hash": "6f97fde5392b152e59dd62d0eea0635a",
     "semantic_hash": "6f97fde5392b152e59dd62d0eea0635a"
   },
   "especificacao/diagramas/13-classes-pedidos-pendentes.png": {
-    "mtime": 1795401329.8879752,
-    "seen": 1795401727.5651572,
+    "mtime": 1795486397.2221868,
+    "seen": 1795486638.543138,
     "ast_hash": "65da79ce7458391e4f3012fd0a5f3359",
     "semantic_hash": "65da79ce7458391e4f3012fd0a5f3359"
   },
   "especificacao/diagramas/13-classes-tecnica-acesso.png": {
-    "mtime": 1795401329.8924878,
-    "seen": 1795401727.565158,
+    "mtime": 1795486397.2274086,
+    "seen": 1795486638.5431387,
     "ast_hash": "bfe82d982a6fb9a0cb2743b2bac56844",
     "semantic_hash": "bfe82d982a6fb9a0cb2743b2bac56844"
   },
   "especificacao/diagramas/13-classes-tecnica-acompanhamento.png": {
-    "mtime": 1795401329.8984866,
-    "seen": 1795401727.5651588,
-    "ast_hash": "4713ba76e1c85d1321b0957f8d7ec468",
-    "semantic_hash": "4713ba76e1c85d1321b0957f8d7ec468"
+    "mtime": 1795486397.234695,
+    "seen": 1795486638.54314,
+    "ast_hash": "641779896a92615b63f9048e124c749d",
+    "semantic_hash": "641779896a92615b63f9048e124c749d"
   },
   "especificacao/diagramas/13-classes-tecnica-excecoes.png": {
-    "mtime": 1795401329.904487,
-    "seen": 1795401727.5651598,
+    "mtime": 1795486397.242213,
+    "seen": 1795486638.5431406,
     "ast_hash": "3cf497963e5768636d96e6c3b8a440d6",
     "semantic_hash": "3cf497963e5768636d96e6c3b8a440d6"
   },
   "especificacao/diagramas/13-classes-tecnica-execucao.png": {
-    "mtime": 1795401329.9114876,
-    "seen": 1795401727.5651605,
+    "mtime": 1795486397.252409,
+    "seen": 1795486638.5431414,
     "ast_hash": "b6baecb52ee50270b7dcc5cdd18478d4",
     "semantic_hash": "b6baecb52ee50270b7dcc5cdd18478d4"
   },
   "especificacao/diagramas/13-classes-tecnica-liberacao.png": {
-    "mtime": 1795401329.917485,
-    "seen": 1795401727.5651615,
+    "mtime": 1795486397.2609198,
+    "seen": 1795486638.5431423,
     "ast_hash": "d9e8c2880491b83ee9e8632b8a4f3b21",
     "semantic_hash": "d9e8c2880491b83ee9e8632b8a4f3b21"
   },
   "especificacao/diagramas/13-classes-tecnica-marcos-propagacao.png": {
-    "mtime": 1795401329.9204865,
-    "seen": 1795401727.5651622,
+    "mtime": 1795486397.2649229,
+    "seen": 1795486638.5431433,
     "ast_hash": "6631c1c3cb46cc905fd5db32a3878e97",
     "semantic_hash": "6631c1c3cb46cc905fd5db32a3878e97"
   },
   "especificacao/diagramas/13-classes-tecnica-planejamento.png": {
-    "mtime": 1795401329.9274852,
-    "seen": 1795401727.565163,
+    "mtime": 1795486397.273925,
+    "seen": 1795486638.543144,
     "ast_hash": "7cde35cb1c0530a051ff8b8d4799ba13",
     "semantic_hash": "7cde35cb1c0530a051ff8b8d4799ba13"
   },
   "especificacao/diagramas/13-classes-tecnica-reatribuicao-replanejamento.png": {
-    "mtime": 1795401329.9334822,
-    "seen": 1795401727.565164,
+    "mtime": 1795486397.2829514,
+    "seen": 1795486638.543145,
     "ast_hash": "1f8d9e6e81dd044ed1d86c0f651f30ed",
     "semantic_hash": "1f8d9e6e81dd044ed1d86c0f651f30ed"
   },
   "especificacao/diagramas/13-classes-tecnica-recalculo-alertas.png": {
-    "mtime": 1795401329.9374814,
-    "seen": 1795401727.565165,
+    "mtime": 1795486397.287951,
+    "seen": 1795486638.5431457,
     "ast_hash": "7870cb83af500c451f5e2125761d2375",
     "semantic_hash": "7870cb83af500c451f5e2125761d2375"
   },
   "especificacao/diagramas/13-classes-visao-geral.png": {
-    "mtime": 1795401329.940483,
-    "seen": 1795401727.565166,
+    "mtime": 1795486397.2929518,
+    "seen": 1795486638.5431466,
     "ast_hash": "3a9831b1d35d24c78a2ac7239d812ff9",
     "semantic_hash": "3a9831b1d35d24c78a2ac7239d812ff9"
   },
   "especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-c5-lista-de-alertas-encerrados.png": {
-    "mtime": 1795401329.6693072,
-    "seen": 1795401727.5651233,
+    "mtime": 1795486396.9751382,
+    "seen": 1795486638.5431058,
     "ast_hash": "f12c39e11ec51e524265b89b073caeec",
     "semantic_hash": "f12c39e11ec51e524265b89b073caeec"
+  },
+  "docs/adr/0024-canvas-de-design-como-fonte-das-telas.md": {
+    "mtime": 1795486396.8408468,
+    "seen": 1795486638.543,
+    "ast_hash": "99238311905b9c555a990036aae9fa15",
+    "semantic_hash": "99238311905b9c555a990036aae9fa15"
+  },
+  "entregas/inventario-prototipos.md": {
+    "mtime": 1795486396.847881,
+    "seen": 1795486638.5430062,
+    "ast_hash": "85b755ac229de81159123852e61e6639",
+    "semantic_hash": "85b755ac229de81159123852e61e6639"
   }
 }
