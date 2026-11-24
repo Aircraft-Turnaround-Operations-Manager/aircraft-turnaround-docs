@@ -101,6 +101,8 @@ else o operador informa o horário observado e seleciona "Registrar" (passo 3)
             registrado_em = momento, autor_id = operador
             (RN1: o AIBT e o horário do registro são
             campos distintos). Estado anterior vazio.
+            O marco e o estado novos somam 1 em
+            turnaround.versao (item 12, seção 12.5.2).
           end note
           T --> S : marco AIBT
           deactivate T
@@ -113,7 +115,7 @@ else o operador informa o horário observado e seleciona "Registrar" (passo 3)
           deactivate PS
           S -> TR : salvar(turnaround)
           activate TR
-          TR -> DB : INSERT marco (tipo = 'AIBT'), historico_estado_turnaround;\nUPDATE turnaround SET estado = 'Em solo';\nUPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa
+          TR -> DB : INSERT marco (tipo = 'AIBT'), historico_estado_turnaround;\nUPDATE turnaround SET estado = 'Em solo', versao;\nUPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa
           alt E4: falha na gravação
             TR --> S : erro; a transação é desfeita (nada gravado)
             S --> C : falha técnica

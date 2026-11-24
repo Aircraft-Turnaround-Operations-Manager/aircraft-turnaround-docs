@@ -34,7 +34,7 @@ activate PS
 alt A1: registro.tipo = "Início" e turnaround.estado = "Em solo" (primeiro início; RN2)
   PS -> T : mudarEstado(novo = "Operações em andamento", autorId = vazio, causaId = registro.id, momento)
   activate T
-  T --> PS : HistoricoEstadoTurnaround
+  T --> PS : HistoricoEstadoTurnaround (mudarEstado() soma 1 em turnaround.versao)
   deactivate T
   PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Em solo", valoresNovos = "Operações em andamento")
   activate AU
@@ -94,7 +94,7 @@ else registro.tipo = "Conclusão" (passo 1) ou A3: "Não aplicável" (tarefa ter
   T --> PS : obrigatórias fora de "Concluída" e "Não aplicável"
   alt A4: nenhuma pendente e turnaround "Operações em andamento"
     PS -> T : mudarEstado(novo = "Pronto para liberação", autorId = vazio, causaId = registro.id, momento)
-    T --> PS : HistoricoEstadoTurnaround
+    T --> PS : HistoricoEstadoTurnaround (mudarEstado() soma 1 em turnaround.versao)
     deactivate T
     PS -> AU : registrarAutomatico(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = "Operações em andamento", valoresNovos = "Pronto para liberação")
     activate AU
@@ -111,7 +111,7 @@ else registro.tipo = "Conclusão" (passo 1) ou A3: "Não aplicável" (tarefa ter
 end
 PS --> ME : mudanças de estado (ou nenhuma)
 deactivate PS
-ref over ME, DB : Quem inclui o UC21 grava tudo na mesma transação: TurnaroundRepository.salvar(turnaround)\n→ UPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa (causa_id, ocorrido_em; RN5);\nUPDATE turnaround SET estado; INSERT historico_estado_turnaround. A trava é liberada no fim.
+ref over ME, DB : Quem inclui o UC21 grava tudo na mesma transação: TurnaroundRepository.salvar(turnaround)\n→ UPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa (causa_id, ocorrido_em; RN5);\nUPDATE turnaround SET estado, versao; INSERT historico_estado_turnaround. A trava é liberada no fim.
 
 PUB -> PUB : publicarPendentes()
 activate PUB

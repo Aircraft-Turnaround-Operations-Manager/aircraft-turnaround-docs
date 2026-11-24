@@ -589,6 +589,7 @@ namespace execucao {
   execucao.ChegadaView ..> execucao.ChegadaController
   execucao.ChegadaView ..> execucao.TurnaroundController
   execucao.CorrecaoChegadaView ..> execucao.ChegadaController
+  execucao.CorrecaoChegadaView ..> execucao.TurnaroundController
   execucao.ListaTarefasView ..> execucao.TarefaController
   execucao.ListaTarefasView ..> execucao.TarefaView
   execucao.TarefaView ..> execucao.TarefaController

@@ -40,7 +40,7 @@ alt registro.tipo = "Início" (UC15)
   alt turnaround ainda sem ACGT (passo 2)
     create entity "acgt: Marco" as M1
     MS -> M1 : «create» Marco(tipo = "ACGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
-    note right of M1 : passo 3: entra em turnaround.marcos
+    note right of M1 : passo 3: entra em turnaround.marcos e soma 1 em turnaround.versao
   else A2: ACGT já gravado
     note right of MS : mantém o ACGT gravado e segue para o passo 4 (A2.1)
   end
@@ -53,6 +53,7 @@ alt registro.tipo = "Início" (UC15)
   alt A1: a tarefa iniciada é a de embarque
     create entity "asbt: Marco" as M2
     MS -> M2 : «create» Marco(tipo = "ASBT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
+    note right of M2 : soma 1 em turnaround.versao
   else não é o embarque
     note right of MS : RN5: com o ACGT já gravado, o início que não é\no de embarque não grava nenhum marco
   end
@@ -65,7 +66,7 @@ else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
   alt A3 (conclusão) ou A4 ("Não aplicável"): nenhuma pendente, e a tarefa do registro é obrigatória (RN3)
     create entity "aegt: Marco" as M3
     MS -> M3 : «create» Marco(tipo = "AEGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
-    note right of M3 : o AEGT novo substitui o anterior, se houver\n(Apêndice B.2.2; item 12, seção 12.5.2)
+    note right of M3 : soma 1 em turnaround.versao; o AEGT novo substitui o anterior, se houver\n(Apêndice B.2.2; item 12, seção 12.5.2)
   else A5: ainda há tarefa obrigatória pendente
     note right of MS : nenhum marco é gravado (A5.1)
   end
@@ -86,7 +87,7 @@ loop cada marco criado (ACGT, ASBT ou AEGT)
 end
 MS --> ME : List<Marco> (marcos criados, ou vazia)
 deactivate MS
-ref over ME, DB : UC15, UC16 ou UC18, mesma transação: o TarefaService chama TurnaroundRepository.salvar(turnaround),\nque grava os marcos com o registro: INSERT marco (tipo, horario = horário da ação, registrado_em,\nregistro_origem_id = registro.id; UNIQUE (turnaround_id, tipo)); a trava do turnaround é liberada no fim
+ref over ME, DB : UC15, UC16 ou UC18, mesma transação: o TarefaService chama TurnaroundRepository.salvar(turnaround),\nque grava os marcos com o registro: INSERT marco (tipo, horario = horário da ação, registrado_em,\nregistro_origem_id = registro.id; UNIQUE (turnaround_id, tipo)) e UPDATE turnaround SET versao; a trava do turnaround é liberada no fim
 
 == Passo 5 e exibição ==
 PUB -> PUB : publicarPendentes()
