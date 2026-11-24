@@ -1,0 +1,307 @@
+@startuml
+' UC17 – Pausar e retomar execução da tarefa (RF-17, US017). Parte 1: pausa (passos 1 a 7); parte 2: retomada (passos 8 a 11).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). A pausa e a retomada não incluem o UC20
+' nem o UC21: a tarefa "Pausada" não conta como terminada (RN5).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc17.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "TarefaView" as V
+boundary "FilaRegistrosSemConexao" as FS
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "CodigoAtrasoController" as CC
+  participant "CodigoAtrasoService" as CS <<service>>
+  control "TarefaController" as C
+  participant "TarefaService" as S <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as TA
+  participant "CodigoAtrasoRepository" as CR <<repository>>
+  participant "RegistroTarefaRepository" as RR <<repository>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 a 5: pausa ==
+ref over OP, V : UC14 – Consultar lista de tarefas do operador (passos 3 e 4):\ndetalhe da tarefa "Em execução" com a opção "Pausar"
+OP -> V : selecionar "Pausar"
+activate V
+V --> OP : formulário de pausa: justificativa e "Há impedimento?" = "Não" (passo 4)
+alt A2: o operador cancela o formulário
+  V --> OP : fecha o formulário sem gravar nada; a tarefa continua "Em execução"
+else o operador confirma
+  opt A1: o operador responde "Sim" a "Há impedimento?" (RN3; ADR-0006)
+    V -> G : encaminhar(sessaoId, rota = "GET /v1/codigos-atraso/vigente", corpo = vazio, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+    G -> CC : consultarVigente(acesso)
+    activate CC
+    CC -> CS : consultarVigente()
+    activate CS
+    CS -> CR : buscarVigente()
+    activate CR
+    CR -> DB : SELECT tabela_codigo_atraso, codigo_atraso WHERE vigente
+    CR --> CS : versão vigente com os 72 códigos
+    deactivate CR
+    CS --> CC : tabela
+    deactivate CS
+    CC --> G : 200 tabela
+    deactivate CC
+    G --> V : 200
+    deactivate G
+    V --> OP : códigos da ANAC agrupados pelas 12 categorias, com busca por sigla ou descrição (A1.2)
+    OP -> V : escolhe um código (A1.3)
+  end
+  OP -> V : pausar(tarefaId, justificativa, impedimento, codigoVersao, codigoAtraso)
+  alt E4: sem conexão com a internet
+    V -> FS : guardar(usuarioId, tarefaId, tipo = "Pausa", dados = justificativa e código, horarioAcao = relógio do celular em UTC, requisicaoId)
+    activate FS
+    FS --> V : guardado
+    deactivate FS
+    V --> OP : tarefa "Pausada" com a marca "pendente de envio" (E4.1; RNF-8)
+  else com conexão
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/pausa", corpo = justificativa + impedimento + código + horarioAcao + requisicaoId, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+    G -> C : pausar(tarefaId, justificativa, impedimento, codigoVersao, codigoAtraso, horarioAcao, requisicaoId, acesso)
+    activate C
+    C -> S : pausar(tarefaId, justificativa, impedimento, codigoVersao, codigoAtraso, horarioAcao, requisicaoId, autorId, equipeId)
+    activate S
+
+    == Passo 6: verificações ==
+    S -> RR : buscarPorRequisicao(requisicaoId)
+    activate RR
+    RR -> DB : SELECT registro_tarefa WHERE requisicao_id = requisicaoId
+    RR --> S : registro ou vazio
+    deactivate RR
+    alt mesma requisicaoId já gravada (reenvio; RNF-8)
+      S --> C : o registro gravado na primeira vez
+      C --> G : 200 mesma resposta
+      G --> V : 200
+    else requisição nova
+      opt impedimento = sim e código informado
+        S -> CR : buscarCodigo(codigoVersao, codigoAtraso)
+        activate CR
+        CR -> DB : SELECT codigo_atraso WHERE versao, codigo
+        CR --> S : código (sigla, categoria e descrição)
+        deactivate CR
+      end
+      critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+        S -> TR : buscarPorTarefa(tarefaId)
+        activate TR
+        TR -> DB : SELECT turnaround por tarefa.turnaround_id
+        TR --> S : turnaroundId
+        S -> TR : buscarComTrava(turnaroundId)
+        TR -> DB : SELECT turnaround, tarefa ... FOR UPDATE
+        TR --> S : turnaround com as tarefas
+        deactivate TR
+        S -> T : aceitaRegistros()
+        activate T
+        T --> S : sim, se não "Fora de bloco"
+        S -> T : buscarTarefa(tarefaId)
+        T --> S : tarefa
+        deactivate T
+        S -> TA : conferirResponsavel(autorId, equipeId)
+        activate TA
+        TA --> S : ok, ou recusa (turnaround encerrado ou tarefa de outro operador: 409 ou 403)
+        S -> TA : pausar(justificativa, impedimento, codigoAtraso, autorId, horarioAcao, requisicaoId)
+        alt E1: justificativa vazia (RN2)
+          TA --> S : recusa: falta a justificativa
+          S --> C : recusa
+          C --> G : 422 justificativa obrigatória
+          G --> V : 422
+        else E2: impedimento = sim sem código (RN3)
+          TA --> S : recusa: falta o código do impedimento
+          S --> C : recusa
+          C --> G : 422 código obrigatório
+          G --> V : 422
+        else E3: estado ≠ "Em execução" (RN1)
+          TA --> S : recusa com o estado exigido
+          S --> C : recusa com o estado atual
+          C --> G : 409 estado atual da tarefa
+          G --> V : 409
+        else "Em execução", com justificativa (e código, se houver impedimento)
+
+          == Passo 7: gravação da pausa ==
+          TA -> TA : mudarEstado(novo = "Pausada", autorId, causaId = registro.id, momento)
+          note right of TA
+            Cria o RegistroTarefa (tipo "Pausa", justificativa,
+            codigo_versao e codigo_atraso no impedimento,
+            horario_acao, recebido_em, autor_id, requisicao_id);
+            registrarMudanca() soma 1 em tarefa.versao.
+          end note
+          TA --> S : registro
+          deactivate TA
+          S -> TR : salvar(turnaround)
+          activate TR
+          TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao
+          TR --> S : ok
+          deactivate TR
+          S -> AU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = registro.id, turnaroundId, valoresAnteriores = "Em execução", valoresNovos = "Pausada" + justificativa + código)
+          activate AU
+          AU -> DB : INSERT registro_auditoria
+          AU --> S : ok
+          deactivate AU
+          S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TarefaPausada", turnaroundId, autorId, causaId = registro.id, dados = tarefaId, registroId, estado, versao, horarioAcao, justificativa, codigoVersao, codigoAtraso))
+          activate PUB
+          PUB -> DB : INSERT aviso_saida (mesma transação)
+          PUB --> S : ok
+          deactivate PUB
+          S --> C : registro
+          C --> G : 201 registro
+          G --> V : 201
+        end
+      end
+      deactivate S
+      deactivate C
+    end
+    deactivate G
+    alt 201 ou 200
+      V --> OP : "Pausada", a justificativa, o código (sigla e descrição, A1.4) e a opção "Retomar"
+    else 422 ou 409
+      V --> OP : E1: pede a justificativa (volta ao passo 5); E2: pede o código (volta ao A1.3);\nE3: estado exigido e estado atual; a tarefa mantém o estado
+    end
+  end
+end
+deactivate V
+S -> N : notificarTarefa(operadorId, tarefa)
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TarefaPausada
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ
+  O Monitoramento recalcula (UC24) e mostra a
+  justificativa e o código ao Coordenador de
+  Turnaround (RN7; UC25 e UC31).
+end note
+opt A3: o operador não retoma no momento
+  note over OP, V : a tarefa continua "Pausada" e aparece assim na lista (UC14);\no caso de uso termina no passo 7 e recomeça no passo 8
+end
+
+newpage UC17 – parte 2: retomada
+
+== Passos 8 a 10: retomada ==
+OP -> V : retomar(tarefaId)
+activate V
+V --> OP : pede a confirmação da retomada (passo 9)
+OP -> V : confirmar
+alt E4: sem conexão com a internet
+  V -> FS : guardar(usuarioId, tarefaId, tipo = "Retomada", dados = vazio, horarioAcao = relógio do celular em UTC, requisicaoId)
+  activate FS
+  FS --> V : guardado
+  deactivate FS
+  V --> OP : tarefa "Em execução" com a marca "pendente de envio" (E4.1)
+else com conexão
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/retomada", corpo = horarioAcao + requisicaoId, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+  G -> C : retomar(tarefaId, horarioAcao, requisicaoId, acesso)
+  activate C
+  C -> S : retomar(tarefaId, horarioAcao, requisicaoId, autorId, equipeId)
+  activate S
+
+  == Passo 11: verificação e gravação ==
+  S -> RR : buscarPorRequisicao(requisicaoId)
+  activate RR
+  RR -> DB : SELECT registro_tarefa WHERE requisicao_id = requisicaoId
+  RR --> S : registro ou vazio
+  deactivate RR
+  alt mesma requisicaoId já gravada (reenvio; RNF-8)
+    S --> C : o registro gravado na primeira vez
+    C --> G : 200 mesma resposta
+    G --> V : 200
+  else requisição nova
+    critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+      S -> TR : buscarPorTarefa(tarefaId)
+      activate TR
+      TR -> DB : SELECT turnaround por tarefa.turnaround_id
+      TR --> S : turnaroundId
+      S -> TR : buscarComTrava(turnaroundId)
+      TR -> DB : SELECT turnaround, tarefa ... FOR UPDATE
+      TR --> S : turnaround com as tarefas
+      deactivate TR
+      S -> T : aceitaRegistros()
+      activate T
+      T --> S : sim, se não "Fora de bloco"
+      S -> T : buscarTarefa(tarefaId)
+      T --> S : tarefa
+      deactivate T
+      S -> TA : conferirResponsavel(autorId, equipeId)
+      activate TA
+      TA --> S : ok, ou recusa (turnaround encerrado ou tarefa de outro operador: 409 ou 403)
+      S -> TA : retomar(autorId, horarioAcao, requisicaoId)
+      alt E3: estado ≠ "Pausada" (RN1)
+        TA --> S : recusa com o estado exigido
+        S --> C : recusa com o estado atual
+        C --> G : 409 estado atual da tarefa
+        G --> V : 409
+      else estado = "Pausada"
+        TA -> TA : mudarEstado(novo = "Em execução", autorId, causaId = registro.id, momento)
+        note right of TA : RegistroTarefa tipo "Retomada";\nregistrarMudanca() soma 1 em tarefa.versao
+        TA --> S : registro
+        deactivate TA
+        S -> TR : salvar(turnaround)
+        activate TR
+        TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao
+        TR --> S : ok
+        deactivate TR
+        S -> AU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = registro.id, turnaroundId, valoresAnteriores = "Pausada", valoresNovos = "Em execução" e horarioAcao)
+        activate AU
+        AU -> DB : INSERT registro_auditoria
+        AU --> S : ok
+        deactivate AU
+        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TarefaRetomada", turnaroundId, autorId, causaId = registro.id, dados = tarefaId, registroId, estado, versao, horarioAcao))
+        activate PUB
+        PUB -> DB : INSERT aviso_saida (mesma transação)
+        PUB --> S : ok
+        deactivate PUB
+        S --> C : registro
+        C --> G : 201 registro
+        G --> V : 201
+      end
+    end
+    deactivate S
+    deactivate C
+  end
+  deactivate G
+  alt 201 ou 200
+    V --> OP : "Em execução" no detalhe (passo 11)
+  else 409
+    V --> OP : E3: estado exigido e estado atual da tarefa
+  end
+end
+deactivate V
+S -> N : notificarTarefa(operadorId, tarefa)
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TarefaRetomada
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+
+== E4: volta da conexão (RNF-8), na pausa e na retomada ==
+opt E4.2 e E4.3: registro guardado no celular
+  alt E4.3: a sessão expirou enquanto o celular estava sem conexão
+    FS --> OP : leva à autenticação; os registros continuam guardados no celular
+    ref over OP, FS : UC01 – Autenticar acesso do usuário (o mesmo operador)
+  end
+  FS -> FS : enviarPendentes(usuarioId)
+  activate FS
+  loop cada registro pendente, na ordem em que foi feito, em até 5 s
+    FS -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/pausa" ou ".../retomada", corpo = dados + horarioAcao do celular + requisicaoId, acaoDoUsuario = não)
+    ref over G, DB : Passo 6 (pausa) ou 11 (retomada), com o horário da ação guardado no celular;\no servidor confere as permissões atuais do operador (E4.3)
+    alt aceito (201 ou 200)
+      G --> FS : 201
+      FS --> OP : retira a marca "pendente de envio"
+    else E4.2: recusado (422, 409 ou 403), sem alterar a tarefa
+      G --> FS : recusa com o motivo
+      FS --> OP : aviso da recusa com o motivo
+    end
+  end
+  deactivate FS
+end
+@enduml
