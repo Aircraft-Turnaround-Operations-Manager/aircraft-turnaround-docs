@@ -41,8 +41,10 @@ alt registro.tipo = "Início" (UC15)
     create entity "acgt: Marco" as M1
     MS -> M1 : «create» Marco(tipo = "ACGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
     note right of M1 : passo 3: entra em turnaround.marcos e soma 1 em turnaround.versao
-  else A2: ACGT já gravado
+  else A2: ACGT já gravado, com horário igual ou anterior ao registro.horarioAcao
     note right of MS : mantém o ACGT gravado e segue para o passo 4 (A2.1)
+  else E1.2: início feito sem conexão, com registro.horarioAcao anterior ao ACGT gravado (RN1)
+    note right of MS : troca o ACGT gravado, sem criar outro marco (UNIQUE (turnaround_id, tipo)), e soma 1 em turnaround.versao:\no mesmo marco recebe horario = registro.horarioAcao e registroOrigem = registro\n(UPDATE marco); a auditoria guarda o horário anterior (E1.2)
   end
 
   == Passo 4: embarque? (RN2, RN5) ==
@@ -55,7 +57,7 @@ alt registro.tipo = "Início" (UC15)
     MS -> M2 : «create» Marco(tipo = "ASBT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
     note right of M2 : soma 1 em turnaround.versao
   else não é o embarque
-    note right of MS : RN5: com o ACGT já gravado, o início que não é\no de embarque não grava nenhum marco
+    note right of MS : RN5: com o ACGT já gravado, o início que não é o de\nembarque, com horário igual ou posterior, não grava nenhum marco
   end
 
 else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
@@ -65,16 +67,16 @@ else registro.tipo = "Conclusão" (UC16) ou "Não aplicável" (UC18)
   deactivate T
   alt A3 (conclusão) ou A4 ("Não aplicável"): nenhuma pendente, e a tarefa do registro é obrigatória (RN3)
     create entity "aegt: Marco" as M3
-    MS -> M3 : «create» Marco(tipo = "AEGT", horario = registro.horarioAcao, registradoEm = momento, registroOrigem = registro)
-    note right of M3 : soma 1 em turnaround.versao; o AEGT novo substitui o anterior, se houver\n(Apêndice B.2.2; item 12, seção 12.5.2)
+    MS -> M3 : «create» Marco(tipo = "AEGT", horario = maior horarioAcao, registradoEm = momento, registroOrigem = registro desse horário)
+    note right of M3 : soma 1 em turnaround.versao; horário = maior horário da ação entre os registros que levaram as\ntarefas obrigatórias a "Concluída" ou "Não aplicável" (tarefa.registros);\nsem conexão, o último a chegar pode não ser o mais tardio (RN3).\nSe já houver AEGT, por exemplo depois de uma tarefa obrigatória incluída\nno replanejamento, o mesmo marco recebe o horário e o registro novos (UPDATE) (Apêndice B.2.2; item 12, seção 12.5.2)
   else A5: ainda há tarefa obrigatória pendente
     note right of MS : nenhum marco é gravado (A5.1)
   end
 end
 
 == Gravação e aviso de cada marco criado ==
-loop cada marco criado (ACGT, ASBT ou AEGT)
-  MS -> AU : registrarAutomatico(objeto = "marco", objetoId = marco.id, acao = "Inclusão", causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = AEGT anterior ou vazio, valoresNovos = tipo e horário)
+loop cada marco criado ou trocado (ACGT, ASBT ou AEGT)
+  MS -> AU : registrarAutomatico(objeto = "marco", objetoId = marco.id, acao = "Inclusão" ou "Alteração" (troca do ACGT ou do AEGT), causaId = registro.id, gatilho = vazio, turnaroundId, valoresAnteriores = marco anterior ou vazio, valoresNovos = tipo e horário)
   activate AU
   AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
   AU --> MS : ok
@@ -87,7 +89,7 @@ loop cada marco criado (ACGT, ASBT ou AEGT)
 end
 MS --> ME : List<Marco> (marcos criados, ou vazia)
 deactivate MS
-ref over ME, DB : UC15, UC16 ou UC18, mesma transação: o TarefaService chama TurnaroundRepository.salvar(turnaround),\nque grava os marcos com o registro: INSERT marco (tipo, horario = horário da ação, registrado_em,\nregistro_origem_id = registro.id; UNIQUE (turnaround_id, tipo)) e UPDATE turnaround SET versao; a trava do turnaround é liberada no fim
+ref over ME, DB : UC15, UC16 ou UC18, mesma transação: o TarefaService chama TurnaroundRepository.salvar(turnaround),\nque grava os marcos com o registro: INSERT marco (tipo, horario = horário da ação, registrado_em,\nregistro_origem_id = registro.id; UNIQUE (turnaround_id, tipo)) ou, na troca do ACGT ou do AEGT,\nUPDATE do marco existente, e UPDATE turnaround SET versao; a trava do turnaround é liberada no fim
 
 == Passo 5 e exibição ==
 PUB -> PUB : publicarPendentes()
@@ -100,6 +102,6 @@ note right of MQ
   e o mostra nos marcos do turnaround e na linha do tempo
   (UC22 e UC23); a MarcoView da Execução em Solo lê os
   marcos gravados (TurnaroundController.consultar).
-  E1.2: só os marcos gravados, com o horário da ação.
+  E1.3: só os marcos gravados, com o horário da ação.
 end note
 @enduml
