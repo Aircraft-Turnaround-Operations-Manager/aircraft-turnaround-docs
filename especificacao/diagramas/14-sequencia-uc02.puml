@@ -158,13 +158,13 @@ else A1: Alterar (A1.1 a A1.4)
       activate EX
       EX -> TC : listarTarefasPendentesDoOperador(usuarioId)
       activate TC
-      TC --> EX : tarefas fora de "Concluída" e "Não aplicável" em turnarounds não encerrados
+      TC --> EX : tarefas em "Aguardando", "Pronta", "Em execução" ou "Pausada" em turnarounds\nnão encerrados; o item do catálogo não acionado (estado vazio) não conta
       deactivate TC
       EX --> S : List<TarefaResumo>
       deactivate EX
       S -> PR : listarTarefasNaoConfirmadasDoResponsavel(usuarioId)
       activate PR
-      PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId AND acionada ou não sob_demanda (plano ainda não confirmado)
+      PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId\nAND (sob_demanda = não OR acionada = sim) (plano não confirmado)
       PR --> S : tarefas de planos não confirmados (o catálogo não acionado não conta)
       deactivate PR
     end
@@ -198,71 +198,76 @@ else A1: Alterar (A1.1 a A1.4)
   end
   deactivate G
 
-else A2: Desativar (A2.1, A2.2)
-  AD -> V : desativarUsuario(usuarioId)
-  V --> AD : pede confirmação
-  alt A3: o administrador cancela
-    V --> AD : volta à lista sem gravar (A3.1)
-  else confirmada
-    V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/{usuarioId}/desativacao", corpo = vazio, acaoDoUsuario = sim)
-    activate G
-    ref over G : Verificar acesso na porta de entrada
-    alt E2: acesso revogado
-      G --> V : 401, sem alterar dados (E2.1)
-    else acesso confirmado
-      G -> UC : desativar(usuarioId, acesso)
-      activate UC
-      UC -> S : desativar(usuarioId, autorId)
-      activate S
-      S -> UR : buscarPorId(usuarioId)
-      activate UR
-      UR -> DB : SELECT usuario WHERE id = usuarioId
-      UR --> S : usuário
-      deactivate UR
-      opt Operador de Solo/Rampa (RN3)
-        S -> EX : listarTarefasPendentesDoOperador(usuarioId)
-        activate EX
-        EX -> TC : listarTarefasPendentesDoOperador(usuarioId)
-        activate TC
-        TC --> EX : tarefas pendentes em turnarounds não encerrados
-        deactivate TC
-        EX --> S : List<TarefaResumo>
-        deactivate EX
-        S -> PR : listarTarefasNaoConfirmadasDoResponsavel(usuarioId)
-        activate PR
-        PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId (plano não confirmado)
-        PR --> S : tarefas
-        deactivate PR
-      end
-      alt E4: operador com tarefa pendente
-        S --> UC : recusa com as tarefas
-        UC --> G : 409
-        G --> V : 409
-        V --> AD : lista as tarefas a reatribuir; o usuário continua ativo (E4.2); o sistema não reatribui sozinho
-      else sem impedimento
-        S -> US : desativar(momento)
-        S -> UR : salvar(usuario)
-        activate UR
-        UR -> DB : UPDATE usuario SET desativado_em = momento (o histórico e os vínculos ficam)
-        UR --> S : ok
-        deactivate UR
-        S -> AU : registrar(objeto = "usuario", objetoId, acao = Desativação, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = ativo, valoresNovos = desativado)
-        activate AU
-        AU -> DB : INSERT registro_auditoria
-        deactivate AU
-        S --> UC : ok
-        UC --> G : 204
-        G --> V : 204
-        V --> AD : usuário desativado; a próxima entrada ou ação dele é recusada,\nmesmo com sessão aberta (interação auxiliar; RNF-1)
-      end
-      deactivate S
-      deactivate UC
-    end
-    deactivate G
-  end
-
 else A3: o administrador cancela o cadastro ou a alteração (passo 4)
   V --> AD : volta à lista sem gravar (A3.1)
 end
+deactivate V
+
+newpage Diagrama de Sequência do UC02 (parte 2: desativar)
+
+== A2: Desativar (passo 1) ==
+activate V
+AD -> V : desativarUsuario(usuarioId)
+V --> AD : pede confirmação
+alt A3: o administrador cancela
+  V --> AD : volta à lista sem gravar (A3.1)
+else confirmada
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/{usuarioId}/desativacao", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  alt E2: acesso revogado
+    G --> V : 401, sem alterar dados (E2.1)
+  else acesso confirmado
+    G -> UC : desativar(usuarioId, acesso)
+    activate UC
+    UC -> S : desativar(usuarioId, autorId)
+    activate S
+    S -> UR : buscarPorId(usuarioId)
+    activate UR
+    UR -> DB : SELECT usuario WHERE id = usuarioId
+    UR --> S : usuário
+    deactivate UR
+    opt Operador de Solo/Rampa (RN3)
+      S -> EX : listarTarefasPendentesDoOperador(usuarioId)
+      activate EX
+      EX -> TC : listarTarefasPendentesDoOperador(usuarioId)
+      activate TC
+      TC --> EX : tarefas em "Aguardando", "Pronta", "Em execução" ou "Pausada" em turnarounds\nnão encerrados; o item do catálogo não acionado (estado vazio) não conta
+      deactivate TC
+      EX --> S : List<TarefaResumo>
+      deactivate EX
+      S -> PR : listarTarefasNaoConfirmadasDoResponsavel(usuarioId)
+      activate PR
+      PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId\nAND (sob_demanda = não OR acionada = sim) (plano não confirmado)
+      PR --> S : tarefas
+      deactivate PR
+    end
+    alt E4: operador com tarefa pendente
+      S --> UC : recusa com as tarefas
+      UC --> G : 409
+      G --> V : 409
+      V --> AD : lista as tarefas a reatribuir; o usuário continua ativo (E4.2); o sistema não reatribui sozinho
+    else sem impedimento
+      S -> US : desativar(momento)
+      S -> UR : salvar(usuario)
+      activate UR
+      UR -> DB : UPDATE usuario SET desativado_em = momento (o histórico e os vínculos ficam)
+      UR --> S : ok
+      deactivate UR
+      S -> AU : registrar(objeto = "usuario", objetoId, acao = Desativação, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = ativo, valoresNovos = desativado)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> UC : ok
+      UC --> G : 204
+      G --> V : 204
+      V --> AD : usuário desativado; a próxima entrada ou ação dele é recusada,\nmesmo com sessão aberta (interação auxiliar; RNF-1)
+    end
+    deactivate S
+    deactivate UC
+  end
+  deactivate G
+end
+
 deactivate V
 @enduml

@@ -78,7 +78,8 @@ else sessão aberta
     AC --> G : 200 Acesso
     deactivate AC
     note over G
-      Gera o token interno assinado (JWT de 60 s) com o usuário,
+      Gera o token interno assinado, um token JSON assinado (JWT)
+      de 60 s, com o usuário,
       o perfil, a equipe, a companhia, a sessão e se a chamada
       é ação do usuário (ADR-0023, ponto 1).
     end note
@@ -97,7 +98,7 @@ end
 deactivate G
 
 == Conexão em tempo real: lista do operador e painéis (ADR-0023, ponto 7) ==
-V -> G : abre a conexão WebSocket da tela
+V -> G : abrirConexao(sessaoId, rota)
 activate G
 ref over G, DB : a mesma conferência acima, com acaoDoUsuario = não
 G -> SC : repassa a conexão com o token interno

@@ -98,47 +98,46 @@ else o coordenador atribui operador e janela a cada tarefa, define a obrigatorie
     activate P
     P --> S : não aceita se a confirmação anterior ainda está pendente
     deactivate P
-    loop cada tarefa enviada
-      S -> UR : buscarPorId(responsavelId)
-      activate UR
-      UR -> DB : SELECT usuario WHERE id = responsavelId
-      UR --> S : operador (ativo? equipe?)
-      deactivate UR
-      opt A4: serviço sob demanda incluído
-        S -> TP : acionar()
+    alt E4.2: confirmação anterior ainda pendente (a resposta da Execução em Solo não chegou)
+      note right of S : as mudanças novas não são aplicadas: o passo 6 reenvia\no envio pendente (envioPendente) com a mesma chave
+    else plano editável
+      loop cada tarefa enviada
+        S -> UR : buscarPorId(responsavelId)
+        activate UR
+        UR -> DB : SELECT usuario WHERE id = responsavelId
+        UR --> S : operador (ativo? equipe?)
+        deactivate UR
+        opt A4: serviço sob demanda incluído
+          S -> TP : acionar()
+        end
+        S -> TP : atribuir(responsavel, inicio, fim)
+        S -> TP : definirObrigatoria(obrigatoria)
       end
-      S -> TP : atribuir(responsavel, inicio, fim)
-      S -> TP : definirObrigatoria(obrigatoria)
-    end
-    S -> P : tarefasSemResponsavel()
-    S -> S : conferirDependencias(plano)
-    S -> S : conferirPolitica(plano)
-    alt confirmação anterior ainda pendente
-      S --> PC : recusa: plano em confirmação
-      PC --> G : 409
-      G --> V : 409
-      V --> CO : informa que a confirmação anterior ainda está em andamento
-    else E1: tarefa sem operador ativo da equipe correspondente
-      S --> PC : recusa com as tarefas
-      PC --> G : 422
-      G --> V : 422
-      V --> CO : lista as tarefas sem operador ativo da equipe e não confirma (E1.1)
-    else E2: fim ≤ início, sucessora antes do fim da predecessora, ciclo ou sequência\nda política de abastecimento descumprida
-      S --> PC : recusa com o conflito
-      PC --> G : 422
-      G --> V : 422
-      V --> CO : indica o conflito e volta ao passo 3, sem alterar o último plano (E2.1)
-    else plano válido
-      S -> P : iniciarConfirmacao(chave, conteudo)
-      S -> PR : salvar(plano)
-      activate PR
-      PR -> DB : UPDATE plano SET situacao = 'Confirmação pendente', chave_confirmacao, envio_pendente
-      PR --> S : ok
-      deactivate PR
+      S -> P : tarefasSemResponsavel()
+      S -> S : conferirDependencias(plano)
+      S -> S : conferirPolitica(plano)
+      alt E1: tarefa sem operador ativo da equipe correspondente
+        S --> PC : recusa com as tarefas
+        PC --> G : 422
+        G --> V : 422
+        V --> CO : lista as tarefas sem operador ativo da equipe e não confirma (E1.1)
+      else E2: fim ≤ início, sucessora antes do fim da predecessora, ciclo ou sequência\nda política de abastecimento descumprida
+        S --> PC : recusa com o conflito
+        PC --> G : 422
+        G --> V : 422
+        V --> CO : indica o conflito e volta ao passo 3, sem alterar o último plano (E2.1)
+      else plano válido
+        S -> P : iniciarConfirmacao(chave, conteudo)
+        S -> PR : salvar(plano)
+        activate PR
+        PR -> DB : UPDATE plano SET situacao = 'Confirmação pendente', chave_confirmacao, envio_pendente
+        PR --> S : ok
+        deactivate PR
+      end
     end
   end
 
-  opt plano gravado como "Confirmação pendente"
+  opt plano gravado como "Confirmação pendente" ou reenvio do envio pendente (E4.2)
     == Passo 6: pedido à Execução em Solo, dona do estado das tarefas (ADR-0015, regra 5) ==
     S -> S : enviarPlano(plano)
     S -> EX : receberPlano(plano)
@@ -157,26 +156,27 @@ else o coordenador atribui operador e janela a cada tarefa, define a obrigatorie
       PC --> G : 409
       G --> V : 409
       V --> CO : recusa a alteração e preserva o plano em vigor; o replanejamento fica no UC35 (E3.1)
-    else E4: sem resposta ou queda do Cadastro depois do envio
-      ETC --> EX : sem resposta
+    else E4: sem resposta da Execução em Solo, ou queda do Cadastro depois do envio
+      note over EX, ETC : sem resposta dentro do prazo
       deactivate ETC
       EX --> S : falha técnica
       deactivate EX
       S --> PC : falha; o plano continua "Confirmação pendente"
       PC --> G : 503
       G --> V : 503
-      V --> CO : informa a falha (E4.1); o plano fica bloqueado para edição até a retomada
-      RT -> RT : executarAoIniciar()
-      activate RT
-      RT -> S : retomarConfirmacoes()
-      S -> PR : listarConfirmacaoPendente()
-      activate PR
-      PR -> DB : SELECT plano WHERE situacao = 'Confirmação pendente'
-      deactivate PR
-      S -> EX : receberPlano(plano com a mesma chave)
-      note right of EX : a Execução em Solo reconhece a chave e responde\no mesmo resultado, sem aplicar o plano de novo\n(RNF-20); segue como no aceite ou na recusa
-      deactivate RT
-      note over CO, V : a nova tentativa do coordenador consulta o plano atual (E4.2)
+      V --> CO : informa a falha (E4.1); a nova tentativa do coordenador reenvia o mesmo envio,\ncom a mesma chave (E4.2), sem esperar o Cadastro reiniciar
+      opt o Cadastro caiu depois do envio
+        RT -> RT : executarAoIniciar()
+        activate RT
+        RT -> S : retomarConfirmacoes()
+        S -> PR : listarConfirmacaoPendente()
+        activate PR
+        PR -> DB : SELECT plano WHERE situacao = 'Confirmação pendente'
+        deactivate PR
+        S -> EX : receberPlano(plano com a mesma chave)
+        deactivate RT
+      end
+      note right of EX : no reenvio, a Execução em Solo reconhece a chave e responde\no mesmo resultado, sem aplicar o plano de novo (RNF-20);\nsegue como no aceite ou na recusa
     else aceito
       ETC --> EX : 200
       EX --> S : ok

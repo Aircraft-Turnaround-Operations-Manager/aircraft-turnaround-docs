@@ -147,7 +147,7 @@ else A2: Desativar
     activate EX
     EX -> TC : listarTarefasPendentesDaEquipe(equipeId)
     activate TC
-    TC --> EX : tarefas pendentes em turnarounds não encerrados
+    TC --> EX : tarefas em "Aguardando", "Pronta", "Em execução" ou "Pausada" em turnarounds\nnão encerrados; o item do catálogo não acionado (estado vazio) não conta
     deactivate TC
     EX --> S : List<TarefaResumo>
     deactivate EX

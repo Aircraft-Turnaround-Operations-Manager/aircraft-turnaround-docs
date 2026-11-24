@@ -1,0 +1,181 @@
+@startuml
+' UC12 – Registrar chegada da aeronave à posição (RF-12, US012; ADR-0013; inclui o UC21).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). A propagação (UC21) roda na mesma
+' transação da chegada (ADR-0018, pontos 4 e 5); o evento do passo 6 que pode falhar (E5) é o aviso aos outros serviços.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc12.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "ChegadaView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as TC
+  participant "TurnaroundService" as TS <<service>>
+  control "ChegadaController" as C
+  participant "ChegadaService" as S <<service>>
+  entity "Turnaround" as T
+  participant "PropagacaoService" as PS <<service>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: dados da chegada ==
+OP -> V : abrir(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+G -> TC : consultar(turnaroundId, acesso)
+activate TC
+TC -> TS : consultar(turnaroundId)
+activate TS
+TS -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround, marco WHERE turnaround.id = turnaroundId
+TR --> TS : turnaround (aeronave, posição, voos, estado e marcos)
+deactivate TR
+TS --> TC : turnaround
+deactivate TS
+TC --> G : 200 turnaround
+deactivate TC
+G --> V : 200
+deactivate G
+V --> OP : aeronave, posição, voos e o campo do horário real com data e fuso (passo 2)
+
+== Passos 3 a 6: registro ==
+alt A1: o operador cancela
+  V --> OP : fecha sem gravar a chegada
+else o operador informa o horário observado e seleciona "Registrar" (passo 3)
+  OP -> V : registrarChegada(turnaroundId, aibt)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/turnarounds/{turnaroundId}/chegada", corpo = aibt com data e fuso, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+  alt E3: acesso revogado (sessão encerrada ou usuário inativo)
+    G --> V : 401 acesso recusado, sem alterar dados nem estados
+  else acesso confirmado
+    G -> C : registrarChegada(turnaroundId, aibt, acesso)
+    activate C
+    C -> S : registrarChegada(turnaroundId, aibt, autorId = acesso.usuarioId)
+    activate S
+    critical trava do turnaround até o fim da transação: chegadas simultâneas esperam uma pela outra (RN2; ADR-0018)
+      S -> TR : buscarComTrava(turnaroundId)
+      activate TR
+      TR -> DB : SELECT turnaround, tarefa, dependencia_tarefa, marco ... FOR UPDATE
+      TR --> S : turnaround com as tarefas e os marcos, ou vazio
+      deactivate TR
+      alt E3: plano inicial não confirmado (o turnaround só existe aqui depois do plano; ADR-0015, regra 5)
+        S --> C : recusa: plano não confirmado
+        C --> G : 409 plano não confirmado
+        G --> V : 409
+      else turnaround com plano recebido
+        S -> T : registrarChegada(aibt, autorId, momento)
+        activate T
+
+        == Passo 4: verificações (Turnaround.registrarChegada; item 13, seção 13.5.3) ==
+        alt E1: aibt inválido ou futuro (RN1)
+          T --> S : recusa: horário inválido ou futuro
+          S --> C : recusa
+          C --> G : 422 horário inválido ou futuro
+          G --> V : 422
+        else E2: chegada já registrada (RN2, RN4)
+          T --> S : recusa: chegada já registrada
+          S -> T : buscarMarco(tipo = "AIBT")
+          T --> S : marco AIBT existente (horário, registrado_em, autor)
+          S --> C : recusa com o registro existente
+          C --> G : 409 chegada já registrada
+          G --> V : 409
+        else E3: operador sem tarefa atribuída nesse turnaround (RN2; ADR-0010)
+          T --> S : recusa: sem vínculo com o turnaround
+          S --> C : recusa
+          C --> G : 403 sem tarefa atribuída
+          G --> V : 403
+        else chegada aceita
+
+          == Passo 5: gravação do AIBT e do estado "Em solo" ==
+          T -> T : mudarEstado(novo = "Em solo", autorId, causaId = marco.id, momento)
+          note right of T
+            Cria o Marco AIBT: horario = aibt,
+            registrado_em = momento, autor_id = operador
+            (RN1: o AIBT e o horário do registro são
+            campos distintos). Estado anterior vazio.
+            O marco e o estado novos somam 1 em
+            turnaround.versao (item 12, seção 12.5.2).
+          end note
+          T --> S : marco AIBT
+          deactivate T
+
+          == «include» UC21 (RN3) ==
+          S -> PS : propagarChegada(turnaround, causaId = marco.id)
+          activate PS
+          ref over PS : UC21 – Propagar estado das tarefas e do turnaround\n(A7: cada tarefa sem predecessora passa para "Pronta")
+          PS --> S : tarefas que ficaram "Pronta"
+          deactivate PS
+          S -> TR : salvar(turnaround)
+          activate TR
+          TR -> DB : INSERT marco (tipo = 'AIBT'), historico_estado_turnaround;\nUPDATE turnaround SET estado = 'Em solo', versao;\nUPDATE tarefa SET estado, versao; INSERT historico_estado_tarefa
+          alt E4: falha na gravação
+            TR --> S : erro; a transação é desfeita (nada gravado)
+            S --> C : falha técnica
+            C --> G : 500
+            G --> V : 500
+          else gravado
+            TR --> S : ok
+            deactivate TR
+            S -> AU : registrar(objeto = "marco", objetoId = marco.id, acao = "Inclusão", autorId, causaId = marco.id, turnaroundId, valoresAnteriores = vazio, valoresNovos = AIBT e registrado_em)
+            activate AU
+            AU -> DB : INSERT registro_auditoria
+            AU --> S : ok
+            deactivate AU
+            S -> PUB : registrar(EnvelopeAviso.novo(tipo = "ChegadaRegistrada", turnaroundId, autorId, causaId = marco.id, dados = aibt, registradoEm, estadoNovo = "Em solo", versao))
+            activate PUB
+            PUB -> DB : INSERT aviso_saida (mesma transação)
+            PUB --> S : ok
+            deactivate PUB
+            S --> C : marco AIBT
+            C --> G : 201 AIBT e horário do registro
+            G --> V : 201
+          end
+        end
+      end
+    end
+    deactivate S
+    deactivate C
+  end
+  deactivate G
+
+  == Passo 6: resultado ==
+  alt 201
+    V --> OP : o horário real (AIBT) e o horário do registro, separados
+  else 422
+    V --> OP : E1: indica o campo e volta ao passo 3 sem gravar
+  else 409 chegada já registrada
+    V --> OP : E2: apresenta o registro existente; não cria outro nem repete a propagação
+  else 401, 403 ou 409 plano não confirmado
+    V --> OP : E3: a ação é recusada sem alterar dados ou estados
+  else E4: 500 ou resposta perdida
+    V --> OP : não anuncia sucesso sem a confirmação da gravação (E4.1)
+    V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+    ref over G, DB : Passos 1 e 2 acima: TurnaroundController.consultar(turnaroundId, acesso)
+    G --> V : 200 turnaround com os marcos
+    V --> OP : E4.2: com AIBT, mostra o registro existente; sem AIBT, permite repetir o passo 3
+  end
+end
+deactivate V
+
+== Depois da gravação: aviso aos outros serviços ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica ChegadaRegistrada (e EstadoTarefaPropagado das tarefas que ficaram "Pronta")
+alt E5: falha na entrega à mensageria
+  MQ --> PUB : sem confirmação
+  note right of PUB : aviso_saida continua com publicado_em vazio, e o próximo\npublicarPendentes() tenta de novo;\no registro e a propagação não se repetem, e quem recebe\ndescarta o aviso repetido (aviso_processado; ADR-0016)
+else entregue
+  MQ --> PUB : confirmado
+  PUB -> DB : UPDATE aviso_saida SET publicado_em
+end
+deactivate PUB
+note right of MQ : o Monitoramento copia o AIBT\ne recalcula (UC24)
+@enduml

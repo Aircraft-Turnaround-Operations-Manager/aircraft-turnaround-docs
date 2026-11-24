@@ -67,6 +67,7 @@ namespace contrato {
   class PortaDeEntrada <<gateway>> {
     - rotas: List<String>
     + encaminhar(sessaoId: UUID, rota: String, corpo: String, acaoDoUsuario: Boolean): String
+    + abrirConexao(sessaoId: UUID, rota: String): void
     + entrar(identificadorAcesso: String, senha: String): String
     + sair(sessaoId: UUID): void
     - verificarAcesso(sessaoId: UUID, acaoDoUsuario: Boolean): Acesso

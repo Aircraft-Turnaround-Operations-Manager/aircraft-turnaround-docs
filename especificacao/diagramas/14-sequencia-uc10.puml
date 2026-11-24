@@ -112,7 +112,7 @@ else o coordenador altera um ou os dois campos e seleciona "Salvar previsão"
         activate AU
         AU -> DB : INSERT registro_auditoria
         deactivate AU
-        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "PrevisaoAtualizada", turnaroundId, autorId, causaId = turnaroundId, dados = eibt e mtttMin))
+        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "PrevisaoAtualizada", turnaroundId, autorId, causaId = vazio, dados = eibt e mtttMin))
         activate PUB
         PUB -> DB : INSERT aviso_saida (mesma transação)
         deactivate PUB
