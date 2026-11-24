@@ -118,7 +118,7 @@ else o operador confirma (passo 5)
             deactivate PS
             S -> TR : salvar(turnaround)
             activate TR
-            TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao;\nINSERT marco e historico_estado_turnaround, se houver
+            TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao;\nINSERT marco e historico_estado_turnaround\ne UPDATE turnaround SET estado, versao, se houver
             TR --> S : ok
             deactivate TR
             S -> AU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = registro.id, turnaroundId, valoresAnteriores = "Pronta", valoresNovos = "Em execução" e horarioAcao)

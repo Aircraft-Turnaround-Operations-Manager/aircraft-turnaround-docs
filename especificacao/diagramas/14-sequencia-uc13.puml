@@ -109,7 +109,7 @@ else o coordenador informa o horário com data, fuso e motivo e seleciona "Salva
           deactivate T
           S -> TR : salvar(turnaround)
           activate TR
-          TR -> DB : UPDATE marco SET horario = aibtNovo WHERE tipo = 'AIBT';\nINSERT correcao_aibt
+          TR -> DB : UPDATE marco SET horario = aibtNovo WHERE tipo = 'AIBT';\nUPDATE turnaround SET versao (o marco mudou); INSERT correcao_aibt
           alt E4: falha na gravação
             TR --> S : erro; a transação é desfeita
             S --> C : falha técnica
@@ -126,7 +126,7 @@ else o coordenador informa o horário com data, fuso e motivo e seleciona "Salva
 
             == Passo 6: evento para o recálculo ==
             opt turnaround ≠ "Liberado" (RN3)
-              S -> PUB : registrar(EnvelopeAviso.novo(tipo = "AibtCorrigido", turnaroundId, autorId, causaId = correcao.id, dados = correcaoId, aibtAnterior, aibtNovo, corrigidoEm))
+              S -> PUB : registrar(EnvelopeAviso.novo(tipo = "AibtCorrigido", turnaroundId, autorId, causaId = correcao.id, dados = correcaoId, aibtAnterior, aibtNovo, corrigidoEm, versao))
               activate PUB
               PUB -> DB : INSERT aviso_saida (mesma transação)
               PUB --> S : ok
