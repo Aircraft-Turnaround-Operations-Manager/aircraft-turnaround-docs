@@ -1,77 +1,83 @@
-# Graph Report - grafo-31  (2026-11-22)
+# Graph Report - grafo-32  (2026-11-23)
 
 ## Corpus Check
-- Large corpus: 207 files · ~1,175,976 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder.
+- Large corpus: 209 files · ~1,182,488 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder.
 
 ## Summary
-- 1452 nodes · 9700 edges · 31 communities (29 shown, 2 thin omitted)
-- Extraction: 74% EXTRACTED · 26% INFERRED · 0% AMBIGUOUS · INFERRED: 2554 edges (avg confidence: 0.85)
+- 1471 nodes · 9873 edges · 36 communities (34 shown, 2 thin omitted)
+- Extraction: 74% EXTRACTED · 26% INFERRED · 0% AMBIGUOUS · INFERRED: 2615 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2dd426c4`
+- Built from commit: `216c649e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Monitoramento: alertas, projeção, TOBT e casos de teste da área C
 - Cadastro e Planejamento: área A e casos de teste
-- Execução em Solo e Exceções e Liberação, Motor de Eventos e estados
-- Classes da Execução em Solo e das Exceções e Liberação (item 13)
+- Classes das Exceções e Liberação (item 13)
+- Serviços sob demanda, pesquisa e QR Code (ADR-0007)
 - BPMN TO BE (item 4)
 - Classes do Cadastro e Planejamento e figuras do item 13
+- Especificações de caso de uso (item 10) e matriz de rastreabilidade
 - Classes do Monitoramento e do Motor de Eventos (item 13)
-- Pesquisa, fontes e similares de mercado
-- Tecnologia dos serviços (ADR-0018 e 0020) e arquitetura do item 13
+- Coordenador de Turnaround, ação sobre alertas e objetivo 3
+- Pesquisa, fontes, similares e A-CDM
+- Área A: casos de uso, serviços sob demanda (ADR-0014) e BPMN
+- CHANGELOG, itens 12 e 13 e scripts de conferência
+- Protótipos de tela (ADR-0024 e inventário) e estados da tarefa
 - Contrato entre os serviços (ADR-0016) e auditoria
-- CHANGELOG e scripts de conferência (itens 13 e 14)
-- Microsserviços (ADR-0015) e Apêndice B
-- Itens 6, 7, 8 e 10 e versões do CHANGELOG
-- CONTEXT, README e critérios de aceite do RA2
-- Matriz de rastreabilidade (Apêndice A) e scripts de verificação
-- Modelo de dados (item 12), Cadastro (ADR-0017) e B.1
-- Mapa da pesquisa: atividades, marcos e QR Code (ADR-0007)
-- Área D: especificações de caso de uso e códigos de atraso (ANAC)
-- Serviços sob demanda (pesquisa)
+- Classes da execução das tarefas no solo (item 13)
+- TOBT, alertas de risco e verificação (UC25)
+- Arquitetura dos serviços (ADR-0015, 0020 e 0024) e do item 13
+- Execução em Solo (ADR-0018), Operador de Solo/Rampa e sprints
+- Documento final, item 15 e ADR-0022
+- TOBT planejado (ADR-0001), abertura e atualização do TOBT
+- Tarefa na Execução em Solo e Apêndice B.2
+- Casos de teste da área C e indicadores (UC28)
+- Motor de Eventos, propagação e marcos (UC20, UC21)
 - Atores (itens 5 e 9) e ADR-0010
-- Documento final (gerar_docx.py) e sprints
-- Mapa da pesquisa e fichas dos similares
+- Modelo de dados (item 12), Cadastro (ADR-0017) e B.1
+- Quadro É / Não é e PDF de conferência
+- Estados do turnaround e liberação (RF-39)
+- Linha do tempo do turnaround (UC23)
+- Recálculo da projeção (UC24) e dados de teste da área C
+- Exceções do turnaround e códigos de atraso (UC29)
+- Checagem com as equipes (UC27)
+- Critérios de aceite, README e regras gerais
+- Notação dos itens 12 e 13 e identificadores
+- Script do modelo de dados e figuras do item 12
 - Monitoramento: ADR-0019 e tabelas do serviço
-- Quadro É / Não é e escopo
-- Item 15 (casos de teste) e ADR-0022
-- Diagrama de atividades (item 11) e manual do A-CDM
-- Revisão do RA1 e PDF de conferência
-- A-CDM, marcos e siglas
-- Referências da IATA
 
 ## God Nodes (most connected - your core abstractions)
-1. `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205)` - 164 edges
+1. `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205); ADR-0024 (canvas de Design como fonte única das telas) e inventário das telas (#229), RNF-13 com RF-12, RF-14 e RF-21 e chegadas na carga (#226), vista 13.5.5 com a busca dos nomes no Cadastro (#217)` - 169 edges
 2. `Área A — Casos de teste do serviço Cadastro e Planejamento (UC01 a UC11, US001 a US011, 51 critérios de aceite, 111 casos de teste CT-A001 a CT-A111)` - 141 edges
 3. `Serviço Execução em Solo (RF-12 a RF-21 e RF-44)` - 130 edges
 4. `Dados de teste da área C (usuários, turnarounds PR-XMA a PR-AXC, base histórica H01 a H13, parâmetros Y, X e TOBT − 15)` - 127 edges
-5. `Dados de teste da área A (usuários, equipes, companhias, modelos MOD-A320-*, turnarounds TA-1 a TA-4, plano P-1)` - 125 edges
-6. `Coordenador de Turnaround` - 125 edges
+5. `Coordenador de Turnaround` - 125 edges
+6. `Dados de teste da área A (usuários, equipes, companhias, modelos MOD-A320-*, turnarounds TA-1 a TA-4, plano P-1)` - 125 edges
 7. `12 Modelo de dados (49 tabelas de negócio e 13 técnicas nos quatro serviços da ADR-0015; tabela Serviço | Tabela | RFs atendidos com os 44 RFs; visão geral e modelo lógico por serviço; dicionário no Apêndice B)` - 112 edges
 8. `Área C — Casos de teste do serviço Monitoramento (UC22 a UC28, US022 a US035, 57 critérios de aceite, 94 casos de teste CT-C001 a CT-C094)` - 111 edges
 9. `Serviço Exceções e Liberação (RF-36 a RF-43)` - 107 edges
-10. `Serviço Cadastro e Planejamento (RF-1 a RF-11)` - 104 edges
+10. `Serviço Cadastro e Planejamento (RF-1 a RF-11)` - 105 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `RF-20 — Registrar marcos do atendimento em solo` --references--> `marcos_nos_diagramas.py — para cada marco (AIBT, ACGT, ASBT, AEGT, ARDT, AOBT) lista os RFs que o definem e os passos de diagrama (.bpmn e .drawio) que o citam, com a partição e a situação (vazio, dispara, grava ou conferir)`  [INFERRED]
-  especificacao/06-requisitos-funcionais/area-b.md → scripts/marcos_nos_diagramas.py
-- `RF-20 — Registrar marcos do atendimento em solo` --references--> `situacao() — classifica o passo: vazio (partição é ator de RF do marco), dispara (Operador registra o que o Motor de Eventos deriva, RF-20), grava (Motor de Eventos grava o registro de um ator) ou conferir`  [INFERRED]
-  especificacao/06-requisitos-funcionais/area-b.md → scripts/marcos_nos_diagramas.py
-- `Administrador do Sistema` --semantically_similar_to--> `Administrador do Sistema (item 5)`  [INFERRED] [semantically similar]
-  CONTEXT.md → especificacao/05-atores-usuarios.md
-- `Administrador do Sistema` --conceptually_related_to--> `Figura 13-classes-contrato.png — Contrato entre os serviços e infraestrutura comum (UUID, enumerações, Acesso, EnvelopeAviso; auditoria, avisos, consumidores e rotinas de anonimização herdadas)`  [INFERRED]
-  CONTEXT.md → especificacao/diagramas/13-classes-contrato.png
-- `ADR-0014 — Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround` --conceptually_related_to--> `Seleção da ação sobre o alerta: reatribuir, replanejar, atualizar previsão ou abrir exceção`  [INFERRED]
-  docs/adr/0014-servicos-sob-demanda.md → especificacao/diagramas/11-monitoramento.png
+- `TOBT planejado (fixo, régua da meta)` --conceptually_related_to--> `Protótipo UC-A5 — confirmar plano inicial (tela de computador)`  [INFERRED]
+  docs/adr/0003-atualizar-previsao-na-antecipacao.md → especificacao/10-especificacoes-de-caso-de-uso/prototipos/uc-a5-confirmar-plano.png
+- `TOBT vigente (última previsão informada)` --conceptually_related_to--> `Diagrama de classes — exceções, atualização do TOBT e ação sobre o alerta (vista técnica 13.5.6)`  [INFERRED]
+  docs/adr/0003-atualizar-previsao-na-antecipacao.md → especificacao/diagramas/13-classes-tecnica-excecoes.png
+- `Ramp checkpoints TOBT-15 and TOBT-3` --conceptually_related_to--> `Subprocesso de evento: Checagem em TOBT − 15 min`  [INFERRED]
+  pesquisa/topicos/atividades-e-dependencias.md → especificacao/diagramas/04-bpmn-to-be.png
+- `Ramp checkpoints TOBT-15 and TOBT-3` --conceptually_related_to--> `Diagrama BPMN TO BE — vista do subprocesso de evento Checagem em TOBT − 15 min (04-bpmn-to-be-tobt-15.png)`  [INFERRED]
+  pesquisa/topicos/atividades-e-dependencias.md → especificacao/diagramas/04-bpmn-to-be-tobt-15.png
+- `Turnaround critical path` --conceptually_related_to--> `Subprocesso: Executar as tarefas em solo (início "Atendimento iniciado", fim "Tarefas em solo concluídas")`  [INFERRED]
+  pesquisa/topicos/caminho-critico.md → especificacao/diagramas/04-bpmn-to-be.png
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
+- **ADR-0024: sete pontos da decisão sobre o canvas como fonte única das telas** — docs_adr_0024_canvas_de_design_como_fonte_das_telas_adr_0024, docs_adr_0024_canvas_de_design_como_fonte_das_telas_fonte_unica, docs_adr_0024_canvas_de_design_como_fonte_das_telas_figma_congelado, docs_adr_0024_canvas_de_design_como_fonte_das_telas_png_exportado_do_canvas, docs_adr_0024_canvas_de_design_como_fonte_das_telas_dono_da_tela, docs_adr_0024_canvas_de_design_como_fonte_das_telas_origem_marcada, docs_adr_0024_canvas_de_design_como_fonte_das_telas_design_system_a_partir_do_canvas, docs_adr_0024_canvas_de_design_como_fonte_das_telas_nome_do_produto [EXTRACTED 1.00]
 - **ADRs de tecnologia dos quatro serviços (T04: ADRs 0017 a 0020)** — entregas_ra2_tarefas_t04_tecnologia_por_servico, docs_adr_0017_tecnologia_cadastro_e_planejamento_adr_0017, docs_adr_0018_tecnologia_execucao_em_solo_adr_0018, docs_adr_0019_tecnologia_monitoramento_adr_0019, docs_adr_0020_tecnologia_excecoes_e_liberacao_adr_0020 [EXTRACTED 1.00]
 - **Casos de uso da área A (Cadastro e Planejamento): UC01 a UC11** — especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a1, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a2, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a3, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a4, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a5, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a6, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a7, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a8, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a9, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a10, especificacao_10_especificacoes_de_caso_de_uso_area_a_uc_a11 [EXTRACTED 1.00]
 - **Estórias da área A: US001 a US011** — especificacao_07_estorias_de_usuario_area_a_us_a1, especificacao_07_estorias_de_usuario_area_a_us_a2, especificacao_07_estorias_de_usuario_area_a_us_a3, especificacao_07_estorias_de_usuario_area_a_us_a4, especificacao_07_estorias_de_usuario_area_a_us_a5, especificacao_07_estorias_de_usuario_area_a_us_a6, especificacao_07_estorias_de_usuario_area_a_us_a7, especificacao_07_estorias_de_usuario_area_a_us_a8, especificacao_07_estorias_de_usuario_area_a_us_a9, especificacao_07_estorias_de_usuario_area_a_us_a10, especificacao_07_estorias_de_usuario_area_a_us_a11, especificacao_07_estorias_de_usuario_area_a_area_a [EXTRACTED 1.00]
@@ -123,6 +129,7 @@
 - **Tabelas técnicas iguais nos quatro serviços (auditoria, avisos a publicar, avisos processados)** — especificacao_apendice_b_dicionario_de_dados_registro_auditoria_tecnica, especificacao_apendice_b_dicionario_de_dados_avisos_saida_e_processados, especificacao_apendice_b_dicionario_de_dados_b1_cadastro_e_planejamento, especificacao_apendice_b_dicionario_de_dados_b2_execucao_em_solo, especificacao_apendice_b_dicionario_de_dados_b3_monitoramento, especificacao_apendice_b_dicionario_de_dados_b4_excecoes_e_liberacao [EXTRACTED 1.00]
 - **Five market similars compared in matrix 3.3** — pesquisa_similares_assaia_assaia_apronai_turnaroundcontrol, pesquisa_similares_inform_groundstar_inform_groundstar, pesquisa_similares_adb_safegate_adb_safegate_safedock_apron_manager, pesquisa_similares_veovo_veovo_acdm, pesquisa_similares_sita_sita_airport_management_cdm, pesquisa_similares_matriz_comparativa_capacidades_do_nucleo [EXTRACTED 1.00]
 - **Seis pontos das interfaces da porta de entrada e do Cadastro (ADR-0023)** — docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_adr_0023, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_token_interno_assinado, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_acao_do_usuario_x_consulta_automatica, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_consultas_oferecidas_pelo_cadastro, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_consultas_do_cadastro_a_execucao_em_solo, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_confirmacao_pendente_do_plano, docs_adr_0023_interfaces_da_porta_de_entrada_e_do_cadastro_prazo_dos_dados_pessoais [EXTRACTED 1.00]
+- **Inventário das telas: idênticas, fora do Figma, divergências D-1 a D-3 e canvas** — entregas_inventario_prototipos_telas_identicas_ao_figma, entregas_inventario_prototipos_telas_fora_do_figma, entregas_inventario_prototipos_divergencia_d1, entregas_inventario_prototipos_divergencia_d2, entregas_inventario_prototipos_divergencia_d3, entregas_inventario_prototipos_canvas [EXTRACTED 1.00]
 - **Plano de sprints do RA2: priorização, sprints preparatórias, dependências simuladas e quadro de sprints** — especificacao_06_requisitos_funcionais_00_item_priorizacao_em_sprints, especificacao_06_requisitos_funcionais_00_item_sprints_1_e_2_preparatorias, especificacao_06_requisitos_funcionais_00_item_dependencias_simuladas, especificacao_06_requisitos_funcionais_00_item_quadro_de_sprints_ra2, especificacao_06_requisitos_funcionais_00_item_item [EXTRACTED 1.00]
 - **Marcos A-CDM gravados pela Execução em Solo** — docs_adr_0015_divisao_em_microsservicos_execucao_em_solo, context_aibt, context_acgt, context_asbt, context_aegt, context_aobt [EXTRACTED 1.00]
 - **Oito momentos do blueprint do turnaround (Apêndice C)** — especificacao_apendice_c_blueprint_do_turnaround_momento_1_antes_da_chegada, especificacao_apendice_c_blueprint_do_turnaround_momento_2_chegada, especificacao_apendice_c_blueprint_do_turnaround_momento_3_tarefas_em_andamento, especificacao_apendice_c_blueprint_do_turnaround_momento_4_reatribuir_ou_replanejar, especificacao_apendice_c_blueprint_do_turnaround_momento_5_excecao, especificacao_apendice_c_blueprint_do_turnaround_momento_6_ultima_tarefa, especificacao_apendice_c_blueprint_do_turnaround_momento_7_liberacao, especificacao_apendice_c_blueprint_do_turnaround_momento_8_saida [EXTRACTED 1.00]
@@ -144,140 +151,160 @@
 - **Ciclo de vida da exceção e bloqueio da liberação (RF-36, RF-40, RF-39)** — especificacao_06_requisitos_funcionais_area_d_rf_d1, especificacao_06_requisitos_funcionais_area_d_rf_d5, especificacao_06_requisitos_funcionais_area_d_rf_d4 [INFERRED 0.95]
 - **Reatribuição de tarefa entre operadores da mesma equipe (RF-37, RF-43)** — especificacao_06_requisitos_funcionais_area_d_rf_d2, especificacao_06_requisitos_funcionais_area_d_rf_d8 [INFERRED 0.95]
 
-## Communities (31 total, 2 thin omitted)
+## Communities (36 total, 2 thin omitted)
 
-### Community 0 - "Monitoramento: alertas, projeção, TOBT e casos de teste da área C"
-Cohesion: 0.05
-Nodes (222): TOBT (Horário-alvo de prontidão), ADR-0001 — TOBT planejado + 5 min, ADR-0003 — Atualizar previsão na antecipação, Aviso de antecipação >= 5 min, TOBT planejado (fixo, régua da meta), TOBT vigente (última previsão informada), Alerta sem duplicação: chave única com turnaround, tipo, tarefa e ciclo (UNIQUE do B.3.8), válida também nos alertas sem tarefa pelo índice único do MongoDB; nova emissão só por fato novo (RF-27 a RF-31, UC25 RN9), Gatilhos por horário: próximo instante-limite indexado (campo físico, fora do modelo lógico do item 12) e conferido a cada segundo; X, Y, TOBT + 5 e TOBT − 15 como parâmetros (RNF-21) (+214 more)
+### Community 0 - "Cadastro e Planejamento: área A e casos de teste"
+Cohesion: 0.07
+Nodes (144): Administrador do Sistema, Usuário (ator abstrato), Catálogo de serviços sob demanda no modelo de tarefas (tarefas "sob demanda" com tipo de atividade, equipe e duração planejada; fora do plano até serem acionadas), Divisão por área dos itens 14 e 15 (37 UCs, 44 estórias, 188 critérios no total; área A com 51, área C com 57, área D com 33), Dependências entre serviços com dados simulados (16), no formato do contrato combinado na sprint 2, RF-1 — Autenticar acesso do usuário, RF-10 — Atualizar referências de previsão do turnaround, RF-11 — Configurar política de abastecimento (+136 more)
 
-### Community 1 - "Cadastro e Planejamento: área A e casos de teste"
-Cohesion: 0.05
-Nodes (190): Administrador do Sistema, MTTT (Tempo mínimo de turnaround), Usuário (ator abstrato), EASA CAT.OP.MPA.195, ANAC RBAC 91.102(g), Leitura de QR Code pelo celular, ADR-0014 — Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround, O atraso causado por serviço sob demanda conta na meta de 80% do objetivo 1 (ADR-0001 e ADR-0002 não mudam) (+182 more)
+### Community 1 - "Classes das Exceções e Liberação (item 13)"
+Cohesion: 0.09
+Nodes (98): ARDT (Horário real de prontidão), Autoridade de Liberação, Metas do item 1 (80%, TOBT + 5 min, 5 s, 0 liberações indevidas), Serviço Exceções e Liberação (RF-36 a RF-43), Fluxo de liberação entre serviços (ARDT gravado com resposta positiva), Pedido (comando) com resposta em chamada direta, Pedidos à Execução em Solo (exceção, reatribuição, replanejamento e liberação) gravados como pendentes antes da chamada, com a chave do registro, e retomados pela chave depois de uma queda (RNF-20); tabela técnica de pedidos pendentes, D-2 — uc-d4-confirmar-prontidao-v2 (UC32): linha "Troca de mantas / Não aplicável" no PNG no lugar de "Água potável e lavatório" do Figma; PNG é a fonte da verdade (+90 more)
 
-### Community 2 - "Execução em Solo e Exceções e Liberação, Motor de Eventos e estados"
+### Community 2 - "Serviços sob demanda, pesquisa e QR Code (ADR-0007)"
 Cohesion: 0.06
-Nodes (174): ACGT (Início real do atendimento em solo), AEGT (Fim real do atendimento em solo), AIBT (Horário real de chegada à posição), AOBT (Horário real de saída da posição), ASBT (Início real do embarque), Estados da tarefa (Aguardando ... Concluída, Pausada, Não aplicável), Estados do turnaround (Em solo ... Fora de bloco, Em exceção), Motor de Eventos (+166 more)
+Nodes (87): ADR-0004 — Quatro atores e Autoridade de Liberação, ADR-0007 — Dados do operador e QR Code, ADR-0008 — Siglas A-CDM com nome em português, ADR-0009 — Nome Coordenador de Turnaround, P1: desvios percebidos tarde e propagados (atraso reacionário 46%, 67,9% das partidas em até 15 min), Confirmação da limpeza da cabine por leitura de QR Code no celular do operador, ANAC — Resolução nº 280/2013 (assistência especial ao PNAE) [78], ANVISA — RDC nº 1.038/2026 (segurança sanitária em aeroportos e aeronaves) [76] (+79 more)
 
-### Community 3 - "Classes da Execução em Solo e das Exceções e Liberação (item 13)"
+### Community 3 - "BPMN TO BE (item 4)"
 Cohesion: 0.06
-Nodes (133): ARDT (Horário real de prontidão), Autoridade de Liberação, Metas do item 1 (80%, TOBT + 5 min, 5 s, 0 liberações indevidas), ADR-0006 — Códigos de atraso tabela ANAC, IATA AHM 730, IATA AHM 732, ANAC Portaria nº 55/2026, Serviço Exceções e Liberação (RF-36 a RF-43) (+125 more)
+Nodes (88): Diagrama de atividades: 17 decisões binárias, 1 seleção com 4 guardas, 2 laços, 4 partições, 4 nós iniciais e 7 finais, Correções da revisão independente: eventos condicionais no BPMN, propagação após replanejamento, loadsheet após embarque e bagagem, norma ISO/IEC no item 8, Fontes editáveis do BPMN: 04-bpmn-to-be.bpmn (processo principal + vistas por subprocesso) e 04-bpmn-to-be-geral.bpmn (visão geral), Vistas do mesmo modelo BPMN: visão geral com tudo aberto + processo principal e uma vista por subprocesso (prioridade de leitura na tela), Diagrama BPMN TO BE do turnaround — processo principal (04-bpmn-to-be.png), Diagrama BPMN TO BE — vista do subprocesso de evento Tratamento de alerta de risco (04-bpmn-to-be-alerta.png), Evento de mensagem: Autorização de acionamento e push-back recebida (do ATC), Evento de fim: Tarefas em solo concluídas (subprocesso Executar as tarefas em solo) (+80 more)
 
-### Community 4 - "BPMN TO BE (item 4)"
-Cohesion: 0.06
-Nodes (109): [1.1.1] - 2026-10-28 — Ajustes do RA1 depois da nota, sem novo envio (PDF do commit 3ed270c, base do RA2), ADR-0005 — Abastecimento com passageiros configurável, Diagrama de atividades: 17 decisões binárias, 1 seleção com 4 guardas, 2 laços, 4 partições, 4 nós iniciais e 7 finais, Correções da revisão independente: eventos condicionais no BPMN, propagação após replanejamento, loadsheet após embarque e bagagem, norma ISO/IEC no item 8, Fluxo de trabalho 1.3: cada diagrama com a fonte editável versionada junto da imagem; BPMN do item 4 em BPMN 2.0 (.bpmn), Leitura do diagrama: caminho principal (abertura, viabilidade, AIBT, posicionar ponte ou escada e iniciar o atendimento, subprocesso "Executar as tarefas em solo", fechamento de portas, verificação de pendências, ARDT, AOBT), Leitura do diagrama: eventos e mensagens (chegada, autorização do ATC, marcos e eventos condicionais de desembarque/abastecimento concluído, temporizador TOBT − 15 min), Fontes editáveis do BPMN: 04-bpmn-to-be.bpmn (processo principal + vistas por subprocesso) e 04-bpmn-to-be-geral.bpmn (visão geral) (+101 more)
+### Community 4 - "Classes do Cadastro e Planejamento e figuras do item 13"
+Cohesion: 0.11
+Nodes (77): Serviço Cadastro e Planejamento (RF-1 a RF-11), Login próprio no Cadastro (token emitido pelo Cadastro), Ponto 5: plano gravado como "confirmação pendente" com chave de idempotência antes do envio à Execução em Solo; reenvio com a mesma chave na retomada (RNF-20), Ponto 4: Cadastro consulta a Execução em Solo antes de desativar operador ou equipe (tarefas pendentes) e antes de gravar EIBT e MTTT (chegada registrada); sem resposta, ação recusada, Ponto 1: token interno assinado (JWT de 60 s, chave privada da porta de entrada) com usuário, perfil, equipe, companhia, sessão e se é ação do usuário; cada serviço confere com a chave pública, contrato.Acesso «dto» (contrato entre os serviços), cadastro.AcessoController «control» (Cadastro e Planejamento), cadastro.AutenticacaoController «control» (Cadastro e Planejamento) (+69 more)
 
-### Community 5 - "Classes do Cadastro e Planejamento e figuras do item 13"
-Cohesion: 0.12
-Nodes (72): Serviço Cadastro e Planejamento (RF-1 a RF-11), Ponto 5: plano gravado como "confirmação pendente" com chave de idempotência antes do envio à Execução em Solo; reenvio com a mesma chave na retomada (RNF-20), contrato.Acesso «dto» (contrato entre os serviços), cadastro.AcessoController «control» (Cadastro e Planejamento), cadastro.AutenticacaoController «control» (Cadastro e Planejamento), cadastro.AutenticacaoService «service» (Cadastro e Planejamento), cadastro.AutenticacaoView «boundary» (Cadastro e Planejamento), cadastro.Companhia «entity» (Cadastro e Planejamento) (+64 more)
+### Community 5 - "Especificações de caso de uso (item 10) e matriz de rastreabilidade"
+Cohesion: 0.15
+Nodes (61): CHANGELOG.md — Histórico de alterações (Keep a Changelog 1.1.0; versão principal = entrega de RA), [1.0.0] - 2026-10-10 — Primeira tentativa do RA1, itens 1 a 11 (PDF do commit fd1a508), [1.1.0] - 2026-10-23 — Segunda tentativa do RA1, nota 5,0/5,0 (PDF do commit 2c03d49), A-CDM (Tomada de decisão colaborativa em aeroportos), Aircraft Turnaround Orchestration System, ADR-0011 — Mínimo de 4 por integrante, sem máximo; numeração provisória por área, IDs provisórios por área (RF-A1…, US-A1… com o número do RF, RNF-A1…, UC-A1…), Renumeração única no início do T12 (script, áreas A, B, C, D; correspondência em entregas/ra1-renumeracao.md) (+53 more)
 
 ### Community 6 - "Classes do Monitoramento e do Motor de Eventos (item 13)"
+Cohesion: 0.16
+Nodes (56): Serviço Monitoramento (RF-22 a RF-35), Painéis: WebSocket para mudanças e GraphQL para consulta, Painel e linha do tempo lidos por GraphQL (Strawberry) e mudanças por WebSocket no painel, linha do tempo e lista de alertas (RNF-11), monitoramento.AgendadorMinuto «scheduler» (Monitoramento), monitoramento.Alerta «entity» (Monitoramento), monitoramento.AlertaController «control» (Monitoramento), monitoramento.AlertaRepository «repository» (Monitoramento), monitoramento.AlertaService «service» (Monitoramento) (+48 more)
+
+### Community 7 - "Coordenador de Turnaround, ação sobre alertas e objetivo 3"
+Cohesion: 0.12
+Nodes (53): Alerta de risco ao horario planejado, Caminho critico, Liberacao da aeronave, Metrica: alertas em 5 s, 90% acoes em 2 min, 0 liberacoes com pendencia, Objetivo 3: Antecipar desvios e assegurar liberacao segura, Projecao de conclusao, Bloqueio de liberacao com tarefa obrigatoria pendente ou excecao, Replanejamento e redistribuicao de recursos (+45 more)
+
+### Community 8 - "Pesquisa, fontes, similares e A-CDM"
+Cohesion: 0.07
+Nodes (48): Domain Docs, Usar o vocabulário do glossário do CONTEXT.md, Benefício-chave: aeronave pronta para liberação no TOBT, desvios tratados durante a operação, Categoria-segmento: software de gestão de turnaround / operações de solo, Cliente-alvo: empresas de handling e companhias aéreas (responsáveis pelo TOBT), Diferencial-chave: grafo de tarefas com caminho crítico, bloqueio da liberação, registro pelo operador com QR Code, régua TOBT + 5 min, E4: andamento registrado pelo Operador de Solo/Rampa no celular, inclusive QR Code, sem infraestrutura no pátio, Item 3 Visao do Produto (+40 more)
+
+### Community 9 - "Área A: casos de uso, serviços sob demanda (ADR-0014) e BPMN"
+Cohesion: 0.16
+Nodes (42): ADR-0005 — Abastecimento com passageiros configurável, EASA CAT.OP.MPA.195, ANAC RBAC 91.102(g), ADR-0014 — Serviços sob demanda: catálogo no modelo de tarefas, acionado pelo Coordenador de Turnaround, T11 — Verificação do diagrama de atividades (#12), com anexo técnico das vistas, C11.1–C11.7 atendidos (fluxo principal, alternativos, guardas, fork/join, partições, notação, legibilidade), Item 11 de entrega só com título, subtítulos e imagens; explicações em anexo técnico interno, Area A: Abertura e configuracao do turnaround (+34 more)
+
+### Community 10 - "CHANGELOG, itens 12 e 13 e scripts de conferência"
+Cohesion: 0.13
+Nodes (42): [Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205); ADR-0024 (canvas de Design como fonte única das telas) e inventário das telas (#229), RNF-13 com RF-12, RF-14 e RF-21 e chegadas na carga (#226), vista 13.5.5 com a busca dos nomes no Cadastro (#217), Caso de uso → diagrama de sequência: tabela A.4, pelas legendas do item 14 (C14.1), B9: blueprint do turnaround como apêndice (Apêndice C), só na versão com a correção da ADR-0015, Item 13 - Diagrama de classes (C13.1 a C13.10), Item 14 - Diagramas de sequência, 37 (C14.1 a C14.8; 124 fluxos alternativos e 121 de exceção depois da aba "Encerrados hoje" do UC26, #206, e do UC25 A6 e UC27 A4, #189), T02 Testar a ferramenta dos diagramas de sequência, T12 Modelo de dados, T13 Diagrama de classes (C13.1 a C13.7, C13.9 e C13.10; C13.8 passa à T14) (+34 more)
+
+### Community 11 - "Protótipos de tela (ADR-0024 e inventário) e estados da tarefa"
+Cohesion: 0.14
+Nodes (37): Estados da tarefa (Aguardando ... Concluída, Pausada, Não aplicável), Diferencial DF5 (QR Code por assento/fileira/zona), Leitura de QR Code pelo celular, 8 frames da página "Céu" fora do PDF (login, sem conexão, painel do turno, abrir turnaround, tratar alerta, liberações, usuários) e cópias de tema "Pátio noturno" e "Sinalização", marcados como histórico, 33 telas da pasta idênticas ao frame do Figma (áreas A, B e D), Atualizacao por dispositivo movel / QR code, Estados da tarefa: Aguardando, Pronta, Em execucao, Concluida, Pausada, Nao aplicavel, RF-15 — Registrar início da tarefa (+29 more)
+
+### Community 12 - "Contrato entre os serviços (ADR-0016) e auditoria"
 Cohesion: 0.15
-Nodes (58): Serviço Monitoramento (RF-22 a RF-35), Painéis: WebSocket para mudanças e GraphQL para consulta, WebSocket estendido à lista de tarefas do operador (RF-14) para os 5 s do RNF-11, Painel e linha do tempo lidos por GraphQL (Strawberry) e mudanças por WebSocket no painel, linha do tempo e lista de alertas (RNF-11), monitoramento.AgendadorMinuto «scheduler» (Monitoramento), monitoramento.Alerta «entity» (Monitoramento), monitoramento.AlertaController «control» (Monitoramento), monitoramento.AlertaRepository «repository» (Monitoramento) (+50 more)
+Nodes (41): ADR-0016 Contrato comum entre os serviços (D16), Envelope comum dos avisos (id, tipo, versao, causaId, dados), RabbitMQ (filas duráveis, uma por serviço), Tabelas técnicas do Cadastro: avisos a publicar (saída) na mesma transação do dado e avisos processados (repetido ignorado), Tabelas técnicas da Execução em Solo: avisos a publicar (saída) e avisos processados, na mesma transação da mudança, Coleções técnicas de avisos a publicar e de avisos processados (índice único), na mesma transação das mudanças (RNF-20), docs/ideias.md — Ideias em estudo (fora da especificação; nada aqui é requisito, decisão ou compromisso), Visão 3D interativa do turnaround (segunda visão, não a interface principal; sem RF; prova de conceito com Three.js no Angular) (+33 more)
 
-### Community 7 - "Pesquisa, fontes e similares de mercado"
-Cohesion: 0.10
-Nodes (39): Benefício-chave: aeronave pronta para liberação no TOBT, desvios tratados durante a operação, Categoria-segmento: software de gestão de turnaround / operações de solo, Diferencial-chave: grafo de tarefas com caminho crítico, bloqueio da liberação, registro pelo operador com QR Code, régua TOBT + 5 min, E2: turnaround dentro do planejado, medido pela régua TOBT planejado + 5 min, Item 3 Visao do Produto, P1: desvios percebidos tarde e propagados (atraso reacionário 46%, 67,9% das partidas em até 15 min), P2: TOBT pouco confiável (menos de 60% de acerto em 5 min), P3: atividades paralelas sem visão compartilhada; coordenação por rádio falha (+31 more)
+### Community 13 - "Classes da execução das tarefas no solo (item 13)"
+Cohesion: 0.16
+Nodes (41): Marcos (RF-20) e propagação do estado (RF-21) na mesma transação do registro do operador, sem passar pela fila; o aviso só leva o resultado (item 13, seção 13.5.4), execucao.AtribuicaoService «service» (Execução em Solo), comum.AuditoriaService «service» (infraestrutura comum), execucao.ChegadaController «control» (Execução em Solo), execucao.ChegadaService «service» (Execução em Solo), execucao.ChegadaView «boundary» (Execução em Solo), execucao.CodigoAtrasoController «control» (Execução em Solo), execucao.CodigoAtrasoRepository «repository» (Execução em Solo) (+33 more)
 
-### Community 8 - "Tecnologia dos serviços (ADR-0018 e 0020) e arquitetura do item 13"
-Cohesion: 0.18
-Nodes (31): Camadas de referência Controller -> Service -> Repository, Porta de entrada única (Spring Cloud Gateway), Convenção de nomes em português (PascalCase, camelCase, snake_case), Horários ISO 8601 em UTC (Z), Login próprio no Cadastro (token emitido pelo Cadastro), REST com JSON sobre HTTPS, versão /v1 e OpenAPI, Identificadores UUID v4 gerados pelo dono do dado, Java 21, Spring Boot 4 e PostgreSQL 16 (Spring Security, Spring Data JPA, Spring AMQP, Bean Validation, springdoc-openapi, Flyway, Actuator) (+23 more)
-
-### Community 9 - "Contrato entre os serviços (ADR-0016) e auditoria"
-Cohesion: 0.18
-Nodes (35): ADR-0016 Contrato comum entre os serviços (D16), Envelope comum dos avisos (id, tipo, versao, causaId, dados), RabbitMQ (filas duráveis, uma por serviço), Tabelas técnicas do Cadastro: avisos a publicar (saída) na mesma transação do dado e avisos processados (repetido ignorado), Tabelas técnicas da Execução em Solo: avisos a publicar (saída) e avisos processados, na mesma transação da mudança, Coleções técnicas de avisos a publicar e de avisos processados (índice único), na mesma transação das mudanças (RNF-20), RNF-2 — Trilha de auditoria das alterações de dados e estados em todos os RFs (objeto, ação, autor, data e horário com fuso, valores anteriores e novos), sem edição pelos perfis humanos (Segurança: responsabilização e integridade), RNF-6 — Autoria identificável na trilha de auditoria por 90 dias após "Fora de bloco" (RF-44) e anonimização automática em até 24 h depois do prazo (Segurança: confidencialidade e responsabilização) (+27 more)
-
-### Community 10 - "CHANGELOG e scripts de conferência (itens 13 e 14)"
-Cohesion: 0.15
-Nodes (32): [Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205), Caso de uso → diagrama de sequência: tabela A.4, pelas legendas do item 14 (C14.1), Item 13 - Diagrama de classes (C13.1 a C13.10), Item 14 - Diagramas de sequência, 37 (C14.1 a C14.8; 124 fluxos alternativos e 121 de exceção depois da aba "Encerrados hoje" do UC26, #206, e do UC25 A6 e UC27 A4, #189), T02 Testar a ferramenta dos diagramas de sequência, T13 Diagrama de classes (C13.1 a C13.7, C13.9 e C13.10; C13.8 passa à T14), T14 Diagramas de sequência (tarefa-mãe, 4 sub-issues; C14.1 a C14.8 e C13.8), 13.7 Conferência: conferir_classes.py contra os critérios (com --sequencia contra o item 14, C13.8) e gerar_vistas_classes.py para gerar as vistas (+24 more)
-
-### Community 11 - "Microsserviços (ADR-0015) e Apêndice B"
-Cohesion: 0.15
-Nodes (31): ADR-0015 Quatro microsserviços (D15), Tipos do item 12 no MongoDB: validador $jsonSchema por coleção e tabela de conversão dos tipos SQL padrão (decisão B1), B6: dicionário de dados no Apêndice B, Item 12 - Modelo de dados (C12.1 a C12.10), T12 Modelo de dados, Apêndice B — Dicionário de dados (62 tabelas do item 12, serviço a serviço: tipo, chave PK/FK, obrigatoriedade, domínio e restrições de cada campo), B.2 Execução em Solo — dicionário de 15 tabelas (12 de negócio, 3 técnicas), B.4 Exceções e Liberação — dicionário de 14 tabelas (10 de negócio, 4 técnicas) (+23 more)
-
-### Community 12 - "Itens 6, 7, 8 e 10 e versões do CHANGELOG"
-Cohesion: 0.15
-Nodes (25): CHANGELOG.md — Histórico de alterações (Keep a Changelog 1.1.0; versão principal = entrega de RA), [1.0.0] - 2026-10-10 — Primeira tentativa do RA1, itens 1 a 11 (PDF do commit fd1a508), [1.1.0] - 2026-10-23 — Segunda tentativa do RA1, nota 5,0/5,0 (PDF do commit 2c03d49), A-CDM (Tomada de decisão colaborativa em aeroportos), Aircraft Turnaround Orchestration System, ADR-0011 — Mínimo de 4 por integrante, sem máximo; numeração provisória por área, docs/ideias.md — Ideias em estudo (fora da especificação; nada aqui é requisito, decisão ou compromisso), Visão 3D interativa do turnaround (segunda visão, não a interface principal; sem RF; prova de conceito com Three.js no Angular) (+17 more)
-
-### Community 13 - "CONTEXT, README e critérios de aceite do RA2"
-Cohesion: 0.11
-Nodes (21): AGENTS.md - regras para assistentes de IA, scripts/marcos_nos_diagramas.py, Pendência cruzada entre áreas (rótulo pendencia-cruzada), CONTEXT.md - contexto do projeto, Decisões vigentes D1 a D16 e D21 a D23, O que ler para cada item (tabela da seção 9), Índice das decisões (ADRs 0001 a 0023), Checklist de consistência cruzada K.1 a K.13 (RA1) (+13 more)
-
-### Community 14 - "Matriz de rastreabilidade (Apêndice A) e scripts de verificação"
-Cohesion: 0.23
-Nodes (24): IDs provisórios por área (RF-A1…, US-A1… com o número do RF, RNF-A1…, UC-A1…), Renumeração única no início do T12 (script, áreas A, B, C, D; correspondência em entregas/ra1-renumeracao.md), ADR-0012 — Matriz de rastreabilidade como apêndice gerado; sem tabelas de base nos arquivos de área, Regras para o cruzamento: a estória traz o RF no título; o caso de uso cita os RFs que atende; o RNF cita os RFs a que se aplica (ID, faixa ou "todos os RFs"), Tabelas "Base" removidas dos arquivos de área; ficam as citações [n] e a linha "Fontes citadas", ADR-0021 Matriz de rastreabilidade estendida aos itens 12, 14 e 15 (D21), Lacunas na A.6 ("Nenhuma." na entrega, K.12); verificar_revisao.py exige 0 lacunas, RF → tabelas: coluna "Tabelas (item 12)" na A.1 (C12.2) (+16 more)
-
-### Community 15 - "Modelo de dados (item 12), Cadastro (ADR-0017) e B.1"
-Cohesion: 0.36
-Nodes (25): ADR-0017 Tecnologia do serviço Cadastro e Planejamento: Java 21, Spring Boot e PostgreSQL (D17), Restrições de unicidade (RF-2, RF-3, RF-7, RF-9) e plano gravado junto com a auditoria (valores anteriores e novos em jsonb) numa só transação, Ponto 6: prazo dos dados pessoais pelo aviso de encerramento (Fora de bloco) com AOBT e usuários vinculados; anonimização na data mais tardia de 90 dias (RNF-6), 12 Modelo de dados (49 tabelas de negócio e 13 técnicas nos quatro serviços da ADR-0015; tabela Serviço | Tabela | RFs atendidos com os 44 RFs; visão geral e modelo lógico por serviço; dicionário no Apêndice B), cadastro.companhia — companhias aéreas, cadastro.dependencia_tarefa_modelo — dependências entre tarefas do modelo, cadastro.dependencia_tarefa_plano — dependências entre tarefas do plano, cadastro.equipe — equipes ou especialidades do Operador de Solo/Rampa (+17 more)
-
-### Community 16 - "Mapa da pesquisa: atividades, marcos e QR Code (ADR-0007)"
-Cohesion: 0.22
-Nodes (22): ADR-0002 — Metas percentuais 80%, ADR-0004 — Quatro atores e Autoridade de Liberação, ADR-0007 — Dados do operador e QR Code, ADR-0008 — Siglas A-CDM com nome em português, ADR-0009 — Nome Coordenador de Turnaround, Impacto por item do template (4.2), BPMN TO BE inputs (events, gateways, lanes), Insumos para os RFs, por area (4.3) (+14 more)
-
-### Community 17 - "Área D: especificações de caso de uso e códigos de atraso (ANAC)"
-Cohesion: 0.28
-Nodes (22): Area B: Execucao de tarefas pelo operador, Area D: Replanejamento e liberacao, Marcos do turnaround: in-block, início do atendimento, início do embarque, fim do atendimento, pronto para liberação, off-block, Replanejamento e redistribuicao de recursos, Fora do sistema: ATC, tripulação e centro de operações do aeroporto não são atores, Requisitos funcionais — chegada à posição, execução das tarefas pelo operador, marcos, propagação de estados e saída da posição (RF-12 a RF-21 e RF-44), Requisitos funcionais — exceções, reatribuição, ação sobre o alerta, replanejamento e liberação (RF-36 a RF-43), RF-43 — Consultar operadores disponíveis da equipe (+14 more)
-
-### Community 18 - "Serviços sob demanda (pesquisa)"
+### Community 14 - "TOBT, alertas de risco e verificação (UC25)"
 Cohesion: 0.17
-Nodes (21): Heathrow pontualidade "verde" (>=79%), Airport Improvement - INFORM GroundStar TeamWork [46], ANAC — Resolução nº 280/2013 (assistência especial ao PNAE) [78], ANVISA — RDC nº 1.038/2026 (segurança sanitária em aeroportos e aeronaves) [76], EPG — Ground Handling System [97], Genève Aéroport — A-CDM Procedures LSGG [92], Hamburg Airport — Quality Charter, assistência a PRM (2008) [82], Airport Authority Hong Kong — A-CDM Operations Guidelines v2.0 (2018) [93] (+13 more)
+Nodes (40): MTTT (Tempo mínimo de turnaround), TOBT (Horário-alvo de prontidão), Alerta sem duplicação: chave única com turnaround, tipo, tarefa e ciclo (UNIQUE do B.3.8), válida também nos alertas sem tarefa pelo índice único do MongoDB; nova emissão só por fato novo (RF-27 a RF-31, UC25 RN9), Gatilhos por horário: próximo instante-limite indexado (campo físico, fora do modelo lógico do item 12) e conferido a cada segundo; X, Y, TOBT + 5 e TOBT − 15 como parâmetros (RNF-21), RF-31 — Emitir alerta de prontidão não registrada, RF-28 — Emitir alerta de projeção além de TOBT + 5, RF-29 — Verificar viabilidade do turnaround, RF-30 — Emitir alerta de embarque não iniciado (+32 more)
 
-### Community 19 - "Atores (itens 5 e 9) e ADR-0010"
-Cohesion: 0.23
-Nodes (19): ADR-0010 — Administrador do Sistema, ator abstrato Usuário e equipe do operador como dado, Issue tracker: GitHub, GitHub Issues via gh CLI, Wayfinding (map issue + child tickets), Triage Labels, Vocabulário de triage (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), Quebra de Tarefas RA1, Divisão por áreas funcionais A–D (IDs provisórios por área, mínimo 4 de cada, sem máximo) (+11 more)
+### Community 15 - "Arquitetura dos serviços (ADR-0015, 0020 e 0024) e do item 13"
+Cohesion: 0.12
+Nodes (26): AGENTS.md - regras para assistentes de IA, CONTEXT.md - contexto do projeto, Decisões vigentes D1 a D16 e D21 a D24, O que ler para cada item (tabela da seção 9), ADR-0015 Quatro microsserviços (D15), Aviso (evento) pela mensageria, Porta de entrada única (Spring Cloud Gateway), Site único em Angular com Design System próprio (+18 more)
 
-### Community 20 - "Documento final (gerar_docx.py) e sprints"
-Cohesion: 0.23
-Nodes (18): Ajustes do RA1: título ARO dos RFs (C00.1 a C00.10), T00 Título ARO dos RFs e troca de área, T01 Sprints do item 6 pelas dependências entre RFs, gerar_docx.py — monta o .docx final a partir do template do professor e dos Markdown de especificacao/ (itens 1–15 e apêndices A e B), blocos() — converte Markdown em blocos (títulos, parágrafos, listas, imagens, tabelas), com caminhos de imagem resolvidos a partir do .md de origem, carregar() — carrega os arquivos de um item e aplica a regra do item (6 e 8 tabela única; 7 estórias em ordem; 10, 14 e 15 seções em ordem e fontes unidas), estorias() — item 7: cada estória vira uma tabela no formato do template, fontes_unidas() — junta as linhas "Fontes citadas" das áreas (+10 more)
+### Community 16 - "Execução em Solo (ADR-0018), Operador de Solo/Rampa e sprints"
+Cohesion: 0.19
+Nodes (34): AIBT (Horário real de chegada à posição), Operador de Solo/Rampa, ADR-0013 — Chegada à posição registrada direto pelo operador, sem confirmação, Correção do AIBT pelo Coordenador de Turnaround (motivo, valor anterior e novo, autor e horário; até "Fora de bloco"; dispara o recálculo da projeção), Recusas do registro do AIBT (operador sem tarefa atribuída, horário futuro, chegada já registrada, plano inicial não confirmado), ADR-0018 Tecnologia do serviço Execução em Solo: Java, Spring Boot e PostgreSQL (D18), WebSocket estendido à lista de tarefas do operador (RF-14) para os 5 s do RNF-11, Objetivo 2: Sincronizar equipes, recursos e atividades paralelas (+26 more)
 
-### Community 21 - "Mapa da pesquisa e fichas dos similares"
-Cohesion: 0.22
-Nodes (18): Ficha - ADB SAFEGATE, ADB SAFEGATE Safedock + Apron Manager, Ficha - Assaia, Ficha - INFORM GroundStar, INFORM GroundStar (TurnManager, TeamWork), Lacunas e diferencial possivel (3.4), DF3 operator-entered data, no fixed sensors/cameras, Observed gaps in similar products (+10 more)
+### Community 17 - "Documento final, item 15 e ADR-0022"
+Cohesion: 0.10
+Nodes (32): Troca de área: RF-12, RF-13, RF-44 para a área B, Critério de aceite (USnnn-CAn) → casos de teste: tabela A.5, pela planilha do item 15 (C15.2), ADR-0022 IDs provisórios dos casos de teste por área e renumeração única na consolidação (D22), IDs provisórios dos casos de teste por área (CT-A001, CT-B001, CT-C001, CT-D001), Renumeração única CT-001… por script no início da T16, na ordem dos casos de uso (UC01 a UC37); correspondência em entregas/ra2-renumeracao.md, T13 — Consolidar em PDF e enviar no Canvas, Ajustes do RA1: título ARO dos RFs (C00.1 a C00.10), Checklist de consistência cruzada K.1 a K.12 (RA2) (+24 more)
 
-### Community 22 - "Monitoramento: ADR-0019 e tabelas do serviço"
-Cohesion: 0.47
-Nodes (16): ADR-0019 Tecnologia do serviço Monitoramento: Python, FastAPI e MongoDB (D19), Recálculo do turnaround na transação do consumo do aviso; trava do item 13 (buscarComTrava) feita pela revisão do documento, campo só físico; cópia da tarefa pela versão do último aviso aplicado (versao_origem, B.3.2), monitoramento.alerta_tarefa — tarefas citadas no alerta, com o estado na emissão, monitoramento.atualizacao_tobt_monitorada — cópia das atualizações do TOBT vigente, monitoramento.aviso_checagem — aviso de TOBT − 15 e checagem com as equipes, um por turnaround, monitoramento.caminho_critico — cada mudança do caminho crítico, com o caminho anterior, monitoramento.caminho_critico_tarefa — tarefas do caminho crítico em ordem, monitoramento.dependencia_monitorada — cópia das dependências entre tarefas (+8 more)
+### Community 18 - "TOBT planejado (ADR-0001), abertura e atualização do TOBT"
+Cohesion: 0.20
+Nodes (30): ADR-0001 — TOBT planejado + 5 min, ADR-0002 — Metas percentuais 80%, Heathrow pontualidade "verde" (>=79%), ADR-0003 — Atualizar previsão na antecipação, Aviso de antecipação >= 5 min, TOBT planejado (fixo, régua da meta), TOBT vigente (última previsão informada), O atraso causado por serviço sob demanda conta na meta de 80% do objetivo 1 (ADR-0001 e ADR-0002 não mudam) (+22 more)
 
-### Community 23 - "Quadro É / Não é e escopo"
+### Community 19 - "Tarefa na Execução em Solo e Apêndice B.2"
 Cohesion: 0.21
-Nodes (10): Instrumento de apoio à decisão do Coordenador de Turnaround e da Autoridade de Liberação, Registro da causa de atraso/exceção com código da tabela da ANAC, Fora de escopo: malha aerea, slots, ATC, escalas, financeiro, visao computacional/sensores, Não define o turnaround programado nem o MTTT (dados de entrada), Não é A-CDM completo, sequenciador de partidas (TSAT) nem AODB, Não é registro posterior da operação, Não libera a aeronave automaticamente nem se sobrepõe à Autoridade de Liberação, Orquestracao operacional em tempo real (+2 more)
+Nodes (32): ASBT (Início real do embarque), Serviço Execução em Solo (RF-12 a RF-21 e RF-44), Chave de envio (requisicaoId) do celular: registro repetido devolve a primeira resposta (RNF-8, sem duplicação), execucao.correcao_aibt — correções do AIBT pelo Coordenador de Turnaround (ADR-0013), execucao.dependencia_tarefa — dependências entre tarefas para a propagação de estado, execucao.historico_estado_tarefa — histórico das mudanças de estado da tarefa, execucao.leitura_qr_code — leituras de QR Code, com chave de envio requisicao_id, execucao.ponto_confirmacao — pontos de QR Code da tarefa (+24 more)
 
-### Community 24 - "Item 15 (casos de teste) e ADR-0022"
-Cohesion: 0.26
-Nodes (12): Critério de aceite (USnnn-CAn) → casos de teste: tabela A.5, pela planilha do item 15 (C15.2), ADR-0022 IDs provisórios dos casos de teste por área e renumeração única na consolidação (D22), IDs provisórios dos casos de teste por área (CT-A001, CT-B001, CT-C001, CT-D001), Renumeração única CT-001… por script no início da T16, na ordem dos casos de uso (UC01 a UC37); correspondência em entregas/ra2-renumeracao.md, Checklist de consistência cruzada K.1 a K.12 (RA2), Item 15 - Casos de teste, 188 critérios (C15.1 a C15.8), T15 Casos de teste, 188 critérios de aceite (tarefa-mãe, 4 sub-issues; T15-A com 51, T15-C com 57), T16 Revisão cruzada e verificação independente (+4 more)
+### Community 20 - "Casos de teste da área C e indicadores (UC28)"
+Cohesion: 0.21
+Nodes (31): Metrica: 100% tarefas com responsavel, painel atualizado em ate 5 s, Painel operacional, RF-34 — Consultar indicadores de aderência, RF-25 — Acompanhar painel dos turnarounds, US034 — Consultar indicadores de aderência (5 critérios de aceite), US025 — Acompanhar painel dos turnarounds (4 critérios de aceite), RNF-14 — Abertura das telas de monitoramento: painel (RF-25) em 3 s, linha do tempo (RF-26) e lista de alertas (RF-33) em 2 s, indicadores (RF-34) em 5 s (Eficiência de desempenho: comportamento no tempo), RNF-17 — A cor não é a única forma de transmitir informação: diferença em minutos, rótulos escritos e rótulo "Crítico" (RF-24 a RF-26, RF-33) (Usabilidade: acessibilidade) (+23 more)
 
-### Community 25 - "Diagrama de atividades (item 11) e manual do A-CDM"
-Cohesion: 0.29
-Nodes (12): T11 — Verificação do diagrama de atividades (#12), com anexo técnico das vistas, C11.1–C11.7 atendidos (fluxo principal, alternativos, guardas, fork/join, partições, notação, legibilidade), Item 11 de entrega só com título, subtítulos e imagens; explicações em anexo técnico interno, T12: X.1–X.10, C01–C11 e K.1–K.13 atendidos, Item 11 — Diagrama de atividades (quatro vistas: 11.1 ciclo de vida, 11.2 execução paralela, 11.3 registro de tarefa, 11.4 eventos e alertas), Diagrama de atividades 11.4 — Eventos, alertas e intervenções (11-monitoramento.png), Diagrama de atividades 11.3 — Registro de uma tarefa (11-registro-tarefa.png), Airport CDM Implementation Manual v5.0 (ACI/EUROCONTROL/IATA) [4] (+4 more)
+### Community 21 - "Motor de Eventos, propagação e marcos (UC20, UC21)"
+Cohesion: 0.19
+Nodes (30): [1.1.1] - 2026-10-28 — Ajustes do RA1 depois da nota, sem novo envio (PDF do commit 3ed270c, base do RA2), AEGT (Fim real do atendimento em solo), Motor de Eventos, D-1 — uc-b7-marcos-do-turnaround (UC20): PNG com o nome completo do produto, de versão anterior do Figma; PNG é a fonte da verdade, RF-20 — Registrar marcos do atendimento em solo, US020 — Registrar marcos do atendimento em solo (5 critérios de aceite), UC18 — Marcar tarefa como "Não aplicável", UC20 — Registrar marcos do atendimento em solo (+22 more)
 
-### Community 26 - "Revisão do RA1 e PDF de conferência"
-Cohesion: 0.40
-Nodes (10): T12 — Revisão cruzada e verificação independente (#13), PDF de conferência: 206 páginas, sumário automático, declaração de IA, diagramas em folhas próprias, Quadro 3 Objetivos, gerar_pdf_conferencia.py — gera o PDF de conferência da revisão T12 (ReportLab), cell() — célula de tabela com texto e imagens, Doc — documento com entradas do sumário a cada título de nível 1, figure() — página própria dimensionada para cada diagrama, fmt() — converte negrito, itálico e links em marcação ReportLab (+2 more)
+### Community 22 - "Atores (itens 5 e 9) e ADR-0010"
+Cohesion: 0.17
+Nodes (27): ADR-0010 — Administrador do Sistema, ator abstrato Usuário e equipe do operador como dado, Issue tracker: GitHub, GitHub Issues via gh CLI, Wayfinding (map issue + child tickets), Triage Labels, Vocabulário de triage (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), Item 10 × diagrama do item 9: 37 nomes, 39 associações de atores, 10 include e 8 extend, Quebra de Tarefas RA1 (+19 more)
 
-### Community 27 - "A-CDM, marcos e siglas"
-Cohesion: 0.25
-Nodes (6): Domain Docs, Usar o vocabulário do glossário do CONTEXT.md, EUROCONTROL A-CDM concept page [1], A-CDM (Airport Collaborative Decision Making), GRU first A-CDM airport in Brazil (2020), 16 A-CDM milestones
+### Community 23 - "Modelo de dados (item 12), Cadastro (ADR-0017) e B.1"
+Cohesion: 0.32
+Nodes (27): ADR-0017 Tecnologia do serviço Cadastro e Planejamento: Java 21, Spring Boot e PostgreSQL (D17), Senha com BCrypt e sal individual; token de login assinado emitido pelo Cadastro e conferido na porta de entrada; consulta de situação e perfil a cada ação, Restrições de unicidade (RF-2, RF-3, RF-7, RF-9) e plano gravado junto com a auditoria (valores anteriores e novos em jsonb) numa só transação, Ponto 6: prazo dos dados pessoais pelo aviso de encerramento (Fora de bloco) com AOBT e usuários vinculados; anonimização na data mais tardia de 90 dias (RNF-6), RNF-3 — Comunicação por HTTPS em todos os RFs e senhas guardadas com sal individual, nunca em texto legível (RF-1/RF-2) (Segurança: confidencialidade e autenticidade), 12 Modelo de dados (49 tabelas de negócio e 13 técnicas nos quatro serviços da ADR-0015; tabela Serviço | Tabela | RFs atendidos com os 44 RFs; visão geral e modelo lógico por serviço; dicionário no Apêndice B), cadastro.companhia — companhias aéreas, cadastro.dependencia_tarefa_modelo — dependências entre tarefas do modelo (+19 more)
 
-### Community 28 - "Referências da IATA"
-Cohesion: 0.83
-Nodes (4): Referencias da IATA sobre ground handling (P1.9), IATA Airport Handling Manual (AHM), IATA Ground Operations Manual (IGOM), ISAGO safety audit
+### Community 24 - "Quadro É / Não é e PDF de conferência"
+Cohesion: 0.12
+Nodes (24): PDF de conferência: 206 páginas, sumário automático, declaração de IA, diagramas em folhas próprias, Instrumento de apoio à decisão do Coordenador de Turnaround e da Autoridade de Liberação, Area B: Execucao de tarefas pelo operador, Area D: Replanejamento e liberacao, Registro da causa de atraso/exceção com código da tabela da ANAC, Fora de escopo: malha aerea, slots, ATC, escalas, financeiro, visao computacional/sensores, Marcos do turnaround: in-block, início do atendimento, início do embarque, fim do atendimento, pronto para liberação, off-block, Não define o turnaround programado nem o MTTT (dados de entrada) (+16 more)
+
+### Community 25 - "Estados do turnaround e liberação (RF-39)"
+Cohesion: 0.27
+Nodes (25): ACGT (Início real do atendimento em solo), AOBT (Horário real de saída da posição), Estados do turnaround (Em solo ... Fora de bloco, Em exceção), Um pedido de cada vez por turnaround: trava da linha do turnaround (SELECT ... FOR UPDATE) na transação, Pirâmide de testes do serviço e das telas da área D (xUnit, Testcontainers, WireMock.Net, Vitest, Playwright) com cobertura em página HTML, RF-39 — Confirmar prontidão e liberar aeronave, RF-40 — Encerrar exceção do turnaround, RF-44 — Registrar saída da posição e encerrar turnaround (+17 more)
+
+### Community 26 - "Linha do tempo do turnaround (UC23)"
+Cohesion: 0.18
+Nodes (26): D-3 — uc-c2-linha-do-tempo (UC23), v1 × v2: faixa dos marcos termina em "Marcos registrados" (v2, do PDF); nenhuma no Figma, Telas sem frame no Figma: as 7 da área C (UC22 a UC28, commits 144bdd5 e 18a2ddb), a v1 da linha do tempo e a aba "Encerrados hoje" do UC26 (#206), RF-26 — Consultar linha do tempo do turnaround, US026 — Consultar linha do tempo do turnaround (4 critérios de aceite), RNF-15 — Linha do tempo (RF-26) a 1 clique do painel (RF-25) e registro da ação de um alerta (RF-33, RF-38) em no máximo 2 cliques, sem digitar (Usabilidade: operabilidade), RNF-16 — Teste de usabilidade: 4 de cada 5 participantes, sem treinamento, concluem cada tarefa (RF-24 a RF-26, RF-33) em até 30 s (Usabilidade: apreensibilidade), UC23 — Consultar linha do tempo do turnaround, Protótipo UC-C1 — painel de turnarounds (tela de computador) (+18 more)
+
+### Community 27 - "Recálculo da projeção (UC24) e dados de teste da área C"
+Cohesion: 0.31
+Nodes (24): RF-22 — Recalcular projeção de prontidão, RF-23 — Calcular atraso e impacto das tarefas, RF-24 — Identificar caminho crítico do turnaround, US022 — Recalcular projeção de prontidão (5 critérios de aceite), US023 — Calcular atraso e impacto das tarefas (4 critérios de aceite), US024 — Identificar caminho crítico do turnaround (3 critérios de aceite), UC24 — Recalcular projeção, atraso e caminho crítico, CT-C023 — Recalcular a projeção com o registro de início da limpeza (+16 more)
+
+### Community 28 - "Exceções do turnaround e códigos de atraso (UC29)"
+Cohesion: 0.30
+Nodes (20): ADR-0006 — Códigos de atraso tabela ANAC, IATA AHM 730, IATA AHM 732, ANAC Portaria nº 55/2026, Parâmetros na configuração (5 min da atualização do TOBT, 2 min do alerta crítico; RNF-21) e códigos de atraso da ANAC versionados em arquivo (RNF-22), RF-17 — Pausar e retomar execução da tarefa, RF-36 — Abrir exceção do turnaround com código de atraso, US017 — Pausar e retomar execução da tarefa (5 critérios de aceite) (+12 more)
+
+### Community 29 - "Checagem com as equipes (UC27)"
+Cohesion: 0.27
+Nodes (21): Leitura do diagrama: eventos e mensagens (chegada, autorização do ATC, marcos e eventos condicionais de desembarque/abastecimento concluído, temporizador TOBT − 15 min), RF-32 — Exibir aviso de checagem em TOBT − 15, RF-35 — Registrar checagem com as equipes, US032 — Exibir aviso de checagem em TOBT − 15 (6 critérios de aceite), US035 — Registrar checagem com as equipes (3 critérios de aceite), UC27 — Registrar checagem com as equipes em TOBT − 15, Protótipo UC-C6 — checagem em TOBT − 15 (tela de computador), monitoramento.aviso_checagem — aviso de TOBT − 15 e checagem com as equipes, um por turnaround (+13 more)
+
+### Community 30 - "Critérios de aceite, README e regras gerais"
+Cohesion: 0.15
+Nodes (15): scripts/marcos_nos_diagramas.py, Pendência cruzada entre áreas (rótulo pendencia-cruzada), Checklist de consistência cruzada K.1 a K.13 (RA1), Critérios por item C01.1 a C11.7 e pesos da rubrica, Critérios de aceite do RA1 (itens 1 a 11), Regra dos 4 por integrante (mínimo 16), Regras gerais X.1 a X.10, Critérios de aceite do RA2 (itens 12 a 15) (+7 more)
+
+### Community 31 - "Notação dos itens 12 e 13 e identificadores"
+Cohesion: 0.27
+Nodes (16): Camadas de referência Controller -> Service -> Repository, Convenção de nomes em português (PascalCase, camelCase, snake_case), Horários ISO 8601 em UTC (Z), REST com JSON sobre HTTPS, versão /v1 e OpenAPI, Identificadores UUID v4 gerados pelo dono do dado, Java 21, Spring Boot 4 e PostgreSQL 16 (Spring Security, Spring Data JPA, Spring AMQP, Bean Validation, springdoc-openapi, Flyway, Actuator), Java 21, Spring Boot 4 e PostgreSQL 18 (Flyway; JUnit 5 com Testcontainers), Python 3.14, FastAPI com Pydantic 2 e MongoDB 8.0 em replica set (Strawberry GraphQL, aio-pika, PyMongo assíncrono, structlog; pytest com Testcontainers) (+8 more)
+
+### Community 32 - "Script do modelo de dados e figuras do item 12"
+Cohesion: 0.30
+Nodes (15): Diagrama — Modelo de dados: visão geral (quatro serviços e dependências «identificador»), gerar_modelo_de_dados.py — gera os diagramas do item 12 (visão geral e um por serviço) a partir do Apêndice B e confere a coerência (C12.2, C12.10), caixa() — desenha a tabela na notação dos slides (título, região da PK, coluna PK/FK, obrigatório em negrito), celulas() — divide uma linha de tabela Markdown em células, conferir() — confere item 12 × Apêndice B (mesmas tabelas de negócio), PK em toda tabela, referência existente, nenhuma FK entre serviços e .drawio igual ao Apêndice B, diagrama_servico() — diagrama de um serviço: tabelas de negócio pelo dot, tabelas técnicas sem FK numa moldura à parte (ADR-0016, ADR-0018, ADR-0020; seção 12.6), cardinalidades 1/0..1 e n/0..1, dot_layout() — chama o Graphviz (dot -Tjson, splines=ortho) e devolve posições, pontos das linhas e molduras dos serviços, Drawio — monta o .drawio: espalha pontas no mesmo lado da caixa, posiciona cardinalidades, mede problemas (linha em caixa, rente, colada, rótulo tocando, cruzamentos) e dá a nota (+7 more)
+
+### Community 33 - "Monitoramento: ADR-0019 e tabelas do serviço"
+Cohesion: 0.47
+Nodes (12): ADR-0019 Tecnologia do serviço Monitoramento: Python, FastAPI e MongoDB (D19), Recálculo do turnaround na transação do consumo do aviso; trava do item 13 (buscarComTrava) feita pela revisão do documento, campo só físico; cópia da tarefa pela versão do último aviso aplicado (versao_origem, B.3.2), monitoramento.atualizacao_tobt_monitorada — cópia das atualizações do TOBT vigente, monitoramento.caminho_critico — cada mudança do caminho crítico, com o caminho anterior, monitoramento.caminho_critico_tarefa — tarefas do caminho crítico em ordem, monitoramento.dependencia_monitorada — cópia das dependências entre tarefas, monitoramento.projecao — cada cálculo da projeção de prontidão, com a causa e os desvios em relação aos dois TOBT, monitoramento.projecao_tarefa — projeção, atraso e impacto de cada tarefa em cada recálculo (+4 more)
 
 ## Knowledge Gaps
-- **17 isolated node(s):** `EASA CAT.OP.MPA.195`, `Heathrow pontualidade "verde" (>=79%)`, `Doc — documento com entradas do sumário a cada título de nível 1`, `Item 10: 37 especificações (A13, B8, C7, D9), 42 protótipos, 119 fluxos alternativos e 122 de exceção`, `IATA AHM 732` (+12 more)
+- **15 isolated node(s):** `EASA CAT.OP.MPA.195`, `Áreas funcionais A a D por integrante`, `Regra dos 4 por integrante (mínimo 16)`, `Base de conhecimento em três camadas (decisões, pesquisa, resumo)`, `Heathrow pontualidade "verde" (>=79%)` (+10 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 22 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205)` connect `CHANGELOG e scripts de conferência (itens 13 e 14)` to `Monitoramento: alertas, projeção, TOBT e casos de teste da área C`, `Cadastro e Planejamento: área A e casos de teste`, `Execução em Solo e Exceções e Liberação, Motor de Eventos e estados`, `Classes da Execução em Solo e das Exceções e Liberação (item 13)`, `BPMN TO BE (item 4)`, `Classes do Cadastro e Planejamento e figuras do item 13`, `Classes do Monitoramento e do Motor de Eventos (item 13)`, `Tecnologia dos serviços (ADR-0018 e 0020) e arquitetura do item 13`, `Contrato entre os serviços (ADR-0016) e auditoria`, `Microsserviços (ADR-0015) e Apêndice B`, `Itens 6, 7, 8 e 10 e versões do CHANGELOG`, `CONTEXT, README e critérios de aceite do RA2`, `Matriz de rastreabilidade (Apêndice A) e scripts de verificação`, `Modelo de dados (item 12), Cadastro (ADR-0017) e B.1`, `Área D: especificações de caso de uso e códigos de atraso (ANAC)`, `Atores (itens 5 e 9) e ADR-0010`, `Documento final (gerar_docx.py) e sprints`, `Monitoramento: ADR-0019 e tabelas do serviço`, `Item 15 (casos de teste) e ADR-0022`?**
-  _High betweenness centrality (0.095) - this node is a cross-community bridge._
-- **Why does `Serviço Execução em Solo (RF-12 a RF-21 e RF-44)` connect `Execução em Solo e Exceções e Liberação, Motor de Eventos e estados` to `Cadastro e Planejamento: área A e casos de teste`, `Classes da Execução em Solo e das Exceções e Liberação (item 13)`, `Classes do Cadastro e Planejamento e figuras do item 13`, `Tecnologia dos serviços (ADR-0018 e 0020) e arquitetura do item 13`, `Contrato entre os serviços (ADR-0016) e auditoria`, `CHANGELOG e scripts de conferência (itens 13 e 14)`, `Microsserviços (ADR-0015) e Apêndice B`, `Matriz de rastreabilidade (Apêndice A) e scripts de verificação`, `Modelo de dados (item 12), Cadastro (ADR-0017) e B.1`, `Documento final (gerar_docx.py) e sprints`, `Monitoramento: ADR-0019 e tabelas do serviço`, `Item 15 (casos de teste) e ADR-0022`?**
-  _High betweenness centrality (0.054) - this node is a cross-community bridge._
-- **Why does `Dados de teste da área A (usuários, equipes, companhias, modelos MOD-A320-*, turnarounds TA-1 a TA-4, plano P-1)` connect `Cadastro e Planejamento: área A e casos de teste` to `Monitoramento: alertas, projeção, TOBT e casos de teste da área C`, `Execução em Solo e Exceções e Liberação, Motor de Eventos e estados`, `Classes da Execução em Solo e das Exceções e Liberação (item 13)`, `BPMN TO BE (item 4)`, `Contrato entre os serviços (ADR-0016) e auditoria`, `Mapa da pesquisa: atividades, marcos e QR Code (ADR-0007)`, `Área D: especificações de caso de uso e códigos de atraso (ANAC)`, `Atores (itens 5 e 9) e ADR-0010`, `Diagrama de atividades (item 11) e manual do A-CDM`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Are the 14 inferred relationships involving `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205)` (e.g. with `[1.1.1] - 2026-10-28 — Ajustes do RA1 depois da nota, sem novo envio (PDF do commit 3ed270c, base do RA2)` and `T12 Modelo de dados`) actually correct?**
-  _`[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205)` has 14 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205); ADR-0024 (canvas de Design como fonte única das telas) e inventário das telas (#229), RNF-13 com RF-12, RF-14 e RF-21 e chegadas na carga (#226), vista 13.5.5 com a busca dos nomes no Cadastro (#217)` connect `CHANGELOG, itens 12 e 13 e scripts de conferência` to `Cadastro e Planejamento: área A e casos de teste`, `Classes das Exceções e Liberação (item 13)`, `Classes do Cadastro e Planejamento e figuras do item 13`, `Especificações de caso de uso (item 10) e matriz de rastreabilidade`, `Classes do Monitoramento e do Motor de Eventos (item 13)`, `Coordenador de Turnaround, ação sobre alertas e objetivo 3`, `Área A: casos de uso, serviços sob demanda (ADR-0014) e BPMN`, `Protótipos de tela (ADR-0024 e inventário) e estados da tarefa`, `Contrato entre os serviços (ADR-0016) e auditoria`, `Classes da execução das tarefas no solo (item 13)`, `TOBT, alertas de risco e verificação (UC25)`, `Arquitetura dos serviços (ADR-0015, 0020 e 0024) e do item 13`, `Execução em Solo (ADR-0018), Operador de Solo/Rampa e sprints`, `Documento final, item 15 e ADR-0022`, `TOBT planejado (ADR-0001), abertura e atualização do TOBT`, `Tarefa na Execução em Solo e Apêndice B.2`, `Casos de teste da área C e indicadores (UC28)`, `Motor de Eventos, propagação e marcos (UC20, UC21)`, `Atores (itens 5 e 9) e ADR-0010`, `Modelo de dados (item 12), Cadastro (ADR-0017) e B.1`, `Estados do turnaround e liberação (RF-39)`, `Recálculo da projeção (UC24) e dados de teste da área C`, `Exceções do turnaround e códigos de atraso (UC29)`, `Checagem com as equipes (UC27)`, `Script do modelo de dados e figuras do item 12`, `Monitoramento: ADR-0019 e tabelas do serviço`?**
+  _High betweenness centrality (0.106) - this node is a cross-community bridge._
+- **Why does `Serviço Cadastro e Planejamento (RF-1 a RF-11)` connect `Classes do Cadastro e Planejamento e figuras do item 13` to `Script do modelo de dados e figuras do item 12`, `Classes das Exceções e Liberação (item 13)`, `Cadastro e Planejamento: área A e casos de teste`, `Especificações de caso de uso (item 10) e matriz de rastreabilidade`, `Classes do Monitoramento e do Motor de Eventos (item 13)`, `Área A: casos de uso, serviços sob demanda (ADR-0014) e BPMN`, `CHANGELOG, itens 12 e 13 e scripts de conferência`, `Contrato entre os serviços (ADR-0016) e auditoria`, `TOBT, alertas de risco e verificação (UC25)`, `Arquitetura dos serviços (ADR-0015, 0020 e 0024) e do item 13`, `Execução em Solo (ADR-0018), Operador de Solo/Rampa e sprints`, `Documento final, item 15 e ADR-0022`, `Modelo de dados (item 12), Cadastro (ADR-0017) e B.1`, `Estados do turnaround e liberação (RF-39)`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._
+- **Why does `Coordenador de Turnaround` connect `Coordenador de Turnaround, ação sobre alertas e objetivo 3` to `Cadastro e Planejamento: área A e casos de teste`, `Serviços sob demanda, pesquisa e QR Code (ADR-0007)`, `BPMN TO BE (item 4)`, `Especificações de caso de uso (item 10) e matriz de rastreabilidade`, `Classes do Monitoramento e do Motor de Eventos (item 13)`, `Pesquisa, fontes, similares e A-CDM`, `Área A: casos de uso, serviços sob demanda (ADR-0014) e BPMN`, `Protótipos de tela (ADR-0024 e inventário) e estados da tarefa`, `Contrato entre os serviços (ADR-0016) e auditoria`, `TOBT, alertas de risco e verificação (UC25)`, `Arquitetura dos serviços (ADR-0015, 0020 e 0024) e do item 13`, `Execução em Solo (ADR-0018), Operador de Solo/Rampa e sprints`, `TOBT planejado (ADR-0001), abertura e atualização do TOBT`, `Casos de teste da área C e indicadores (UC28)`, `Atores (itens 5 e 9) e ADR-0010`, `Quadro É / Não é e PDF de conferência`, `Estados do turnaround e liberação (RF-39)`, `Linha do tempo do turnaround (UC23)`, `Recálculo da projeção (UC24) e dados de teste da área C`, `Exceções do turnaround e códigos de atraso (UC29)`, `Checagem com as equipes (UC27)`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+- **Are the 14 inferred relationships involving `[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205); ADR-0024 (canvas de Design como fonte única das telas) e inventário das telas (#229), RNF-13 com RF-12, RF-14 e RF-21 e chegadas na carga (#226), vista 13.5.5 com a busca dos nomes no Cadastro (#217)` (e.g. with `[1.1.1] - 2026-10-28 — Ajustes do RA1 depois da nota, sem novo envio (PDF do commit 3ed270c, base do RA2)` and `T12 Modelo de dados`) actually correct?**
+  _`[Não publicado] — RA2 em andamento: Apêndice C (blueprint, #184), docs/ideias.md (visão 3D, #181), blueprint na pesquisa, CHANGELOG, ADRs 0017 a 0023 (tecnologia dos quatro serviços, matriz estendida, IDs dos casos de teste, interfaces da porta de entrada), releases automáticas, estrutura dos itens 12 a 15, títulos ARO, troca de área, sprints, item 12 com Apêndice B (#144), item 13 (diagrama de classes, #145), correções da área D (#190, #191), ajustes da área A (#192), casos de teste da área A (#193) e totais de 180 e 183 critérios, C13.8 passa da T13 para a T14 (#146), UC19 só na tarefa aberta e ajustes do item 13 (#167); casos de teste da área C (#154), UC32, UC36 e UC31 com a aba "Encerrados hoje" do UC26 (#206), ajustes da área C com 188 critérios (#189), item 12 e Apêndice B pela ADR-0023, domínios fechados e ordem dos avisos por versão (#205), conferir_classes.py nos dois sentidos (#205), ADR-0019 e ADR-0020 alinhadas aos itens 12 e 13 (#183, #205); ADR-0024 (canvas de Design como fonte única das telas) e inventário das telas (#229), RNF-13 com RF-12, RF-14 e RF-21 e chegadas na carga (#226), vista 13.5.5 com a busca dos nomes no Cadastro (#217)` has 14 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `Área A — Casos de teste do serviço Cadastro e Planejamento (UC01 a UC11, US001 a US011, 51 critérios de aceite, 111 casos de teste CT-A001 a CT-A111)` (e.g. with `IDs provisórios dos casos de teste por área (CT-A001, CT-B001, CT-C001, CT-D001)` and `Divisão por área dos itens 14 e 15 (37 UCs, 44 estórias, 188 critérios no total; área A com 51, área C com 57, área D com 33)`) actually correct?**
   _`Área A — Casos de teste do serviço Cadastro e Planejamento (UC01 a UC11, US001 a US011, 51 critérios de aceite, 111 casos de teste CT-A001 a CT-A111)` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 14 inferred relationships involving `Serviço Execução em Solo (RF-12 a RF-21 e RF-44)` (e.g. with `12 Modelo de dados (49 tabelas de negócio e 13 técnicas nos quatro serviços da ADR-0015; tabela Serviço | Tabela | RFs atendidos com os 44 RFs; visão geral e modelo lógico por serviço; dicionário no Apêndice B)` and `Diagrama — Modelo lógico da Execução em Solo`) actually correct?**
