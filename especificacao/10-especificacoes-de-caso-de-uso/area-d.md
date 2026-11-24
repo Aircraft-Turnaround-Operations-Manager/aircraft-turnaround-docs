@@ -223,8 +223,8 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| A4.1. O Coordenador de Turnaround abre o histórico do alerta encerrado. |  |
-|  | A4.2. O sistema exibe o horário do alerta, o horário da ação, a ação e o usuário. |
+| A4.1. O Coordenador de Turnaround abre a aba "Encerrados hoje" da lista de alertas (UC26). |  |
+|  | A4.2. O sistema exibe os alertas encerrados no dia, do mais recente para o mais antigo, cada um com o horário do alerta, o horário da ação, a ação e o usuário (RN3; US038, critério 3). |
 
 ### Fluxo alternativo A5 – Desistência (passo 5)
 
@@ -276,7 +276,7 @@
 | Ações do ator | Ações do sistema |
 |---|---|
 | 1. A Autoridade de Liberação abre a lista de liberações. |  |
-|  | 2. O sistema exibe os turnarounds da companhia: primeiro os que estão em "Pronto para liberação" e, em seguida, os que ainda não podem ser liberados, cada um com o estado e a quantidade de tarefas obrigatórias pendentes e de exceções abertas. |
+|  | 2. O sistema exibe os turnarounds da companhia com a chegada registrada e ainda não liberados: primeiro os que estão em "Pronto para liberação" e, em seguida, os que ainda não podem ser liberados ("Em solo", "Operações em andamento" ou "Em exceção"), cada um com o estado e a quantidade de tarefas obrigatórias pendentes e de exceções abertas. Em cada grupo, a ordem é a do TOBT vigente, do mais cedo para o mais tarde. O turnaround sai da lista quando é liberado. |
 | 3. A Autoridade de Liberação seleciona um turnaround no estado "Pronto para liberação". |  |
 |  | 4. O sistema exibe as condições da liberação: as tarefas obrigatórias, todas "Concluída" ou "Não aplicável", com o horário de cada uma; a ausência de exceção aberta; e o fim real do atendimento em solo (AEGT) [2]. |
 | 5. A Autoridade de Liberação seleciona "Confirmar prontidão". |  |
@@ -641,10 +641,10 @@
 
 ### Fluxo de exceção E2 – Operador deixa de estar disponível (passo 4)
 
-*Condição:* um operador da lista inicia uma tarefa enquanto a lista está aberta.
+*Condição:* o operador escolhido inicia uma tarefa entre a exibição da lista e a confirmação da reatribuição.
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E2.1. O sistema retira o operador da lista; se ele já tinha sido escolhido, a confirmação é recusada no UC30 (E2). |
+|  | E2.1. A lista é a da consulta feita na abertura e não muda enquanto está aberta. Na confirmação, o sistema confere a disponibilidade do operador escolhido, recusa a reatribuição e exibe a lista consultada de novo, já sem esse operador (UC30, E2). |
 
 Fontes citadas: [2], [8], [9], [62], [69], [70] e [71], conforme a numeração de `pesquisa/fontes.md`.

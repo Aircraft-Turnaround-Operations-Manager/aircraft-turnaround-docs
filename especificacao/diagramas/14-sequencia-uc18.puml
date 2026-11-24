@@ -1,0 +1,202 @@
+@startuml
+' UC18 – Marcar tarefa como "Não aplicável" (RF-18, US018; inclui o UC20 e o UC21).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). O Motor de Eventos (MarcoService e
+' PropagacaoService) roda na mesma transação do registro (ADR-0018, pontos 4 e 5; item 13, seção 13.5.4).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc18.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "TarefaView" as V
+boundary "FilaRegistrosSemConexao" as FS
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TarefaController" as C
+  participant "TarefaService" as S <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as TA
+  participant "MarcoService" as MS <<service>>
+  participant "PropagacaoService" as PS <<service>>
+  participant "RegistroTarefaRepository" as RR <<repository>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 a 5: detalhe e confirmação ==
+ref over OP, V : UC14 – Consultar lista de tarefas do operador (passos 3 e 4):\ndetalhe da tarefa "Aguardando" ou "Pronta" com a opção "Não aplicável" (RN2)
+OP -> V : selecionar "Não aplicável"
+activate V
+V --> OP : formulário com o campo de justificativa (passo 4)
+alt A1: o operador cancela o formulário
+  V --> OP : fecha o formulário sem gravar nada; a tarefa mantém o estado
+else o operador escreve a justificativa e confirma (passo 5)
+  OP -> V : marcarNaoAplicavel(tarefaId, justificativa)
+  alt E4: sem conexão com a internet
+    V -> FS : guardar(usuarioId, tarefaId, tipo = "Não aplicável", dados = justificativa, horarioAcao = relógio do celular em UTC, requisicaoId)
+    activate FS
+    FS --> V : guardado
+    deactivate FS
+    V --> OP : tarefa "Não aplicável" com a marca "pendente de envio" (E4.1; RNF-8)
+  else com conexão
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/nao-aplicavel", corpo = justificativa + horarioAcao + requisicaoId, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+    G -> C : marcarNaoAplicavel(tarefaId, justificativa, horarioAcao, requisicaoId, acesso)
+    activate C
+    C -> S : marcarNaoAplicavel(tarefaId, justificativa, horarioAcao, requisicaoId, autorId = acesso.usuarioId, equipeId = acesso.equipeId)
+    activate S
+
+    == Passo 6: verificações ==
+    S -> RR : buscarPorRequisicao(requisicaoId)
+    activate RR
+    RR -> DB : SELECT registro_tarefa WHERE requisicao_id = requisicaoId
+    RR --> S : registro ou vazio
+    deactivate RR
+    alt mesma requisicaoId já gravada (reenvio; RNF-8, ADR-0018 ponto 7)
+      S --> C : o registro gravado na primeira vez
+      C --> G : 200 mesma resposta
+      G --> V : 200
+    else requisição nova
+      critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+        S -> TR : buscarPorTarefa(tarefaId)
+        activate TR
+        TR -> DB : SELECT turnaround por tarefa.turnaround_id
+        TR --> S : turnaroundId
+        S -> TR : buscarComTrava(turnaroundId)
+        TR -> DB : SELECT turnaround, tarefa, dependencia_tarefa, marco ... FOR UPDATE
+        TR --> S : turnaround com as tarefas e os marcos
+        deactivate TR
+        S -> T : aceitaRegistros()
+        activate T
+        T --> S : não, se "Fora de bloco" (UC37, E3)
+        S -> T : buscarTarefa(tarefaId)
+        T --> S : tarefa
+        deactivate T
+        S -> TA : conferirResponsavel(autorId, equipeId)
+        activate TA
+        TA --> S : ok, ou recusa
+        alt turnaround encerrado ("Fora de bloco")
+          S --> C : recusa: turnaround encerrado
+          C --> G : 409 turnaround encerrado
+          G --> V : 409
+        else tarefa atribuída a outro operador (ADR-0010; RNF-8)
+          S --> C : recusa: tarefa não está mais atribuída a ele
+          C --> G : 403 tarefa reatribuída
+          G --> V : 403
+        else responsável confirmado
+          S -> TA : marcarNaoAplicavel(justificativa, autorId, horarioAcao, requisicaoId)
+          TA -> TA : estaIniciada()
+          TA -> TA : estaTerminada()
+          alt E1: justificativa vazia (RN3)
+            TA --> S : recusa: falta a justificativa
+            S --> C : recusa
+            C --> G : 422 justificativa obrigatória
+            G --> V : 422
+          else E2: tarefa já iniciada ou terminada ("Em execução", "Pausada", "Concluída" ou "Não aplicável"),\nou turnaround sem a chegada registrada (RN1)
+            TA --> S : recusa: só tarefa não iniciada, com a chegada registrada, pode ser marcada
+            S --> C : recusa com o estado atual
+            C --> G : 409 estado atual da tarefa
+            G --> V : 409
+          else E3: permiteNaoAplicavel = não (o modelo não permite; RN2)
+            TA --> S : recusa: essa tarefa não pode ser marcada
+            S --> C : recusa
+            C --> G : 409 marcação não permitida pelo modelo
+            G --> V : 409
+          else "Aguardando" ou "Pronta", permitida e com justificativa
+
+            == Passo 7: gravação da marcação ==
+            TA -> TA : mudarEstado(novo = "Não aplicável", autorId, causaId = registro.id, momento)
+            note right of TA
+              Cria o RegistroTarefa (tipo "Não aplicável", justificativa,
+              horario_acao, recebido_em, autor_id, requisicao_id) e o histórico;
+              registrarMudanca() soma 1 em tarefa.versao.
+            end note
+            TA --> S : registro
+            deactivate TA
+
+            == Passo 8: Motor de Eventos («include») ==
+            S -> MS : registrarMarcos(turnaround, tarefa, registro)
+            activate MS
+            ref over MS : UC20 – Registrar marcos do atendimento em solo
+            MS --> S : marcos criados (ou nenhum)
+            deactivate MS
+            S -> PS : propagarRegistro(turnaround, tarefa, registro)
+            activate PS
+            ref over PS : UC21 – Propagar estado das tarefas e do turnaround\n(A3: "Não aplicável" conta como terminada; RN5)
+            PS --> S : mudanças de estado (ou nenhuma)
+            deactivate PS
+            opt A2: a tarefa era a única predecessora pendente de outra tarefa "Aguardando"
+              note over MS, PS : UC21, passos 2 a 4: a sucessora passa para "Pronta"\ne aparece assim na lista do responsável (UC14)
+            end
+            opt A3: era a última tarefa obrigatória pendente
+              note over MS, PS : UC20, A4: AEGT = horário da marcação;\nUC21, A4: turnaround → "Pronto para liberação"
+            end
+            S -> TR : salvar(turnaround)
+            activate TR
+            TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao (inclusive as sucessoras);\nINSERT marco e historico_estado_turnaround\ne UPDATE turnaround SET estado, versao, se houver
+            TR --> S : ok
+            deactivate TR
+            S -> AU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = registro.id, turnaroundId, valoresAnteriores = estado anterior, valoresNovos = "Não aplicável" + justificativa + horarioAcao)
+            activate AU
+            AU -> DB : INSERT registro_auditoria
+            AU --> S : ok
+            deactivate AU
+            S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TarefaMarcadaNaoAplicavel", turnaroundId, autorId, causaId = registro.id, dados = tarefaId, registroId, estado, versao, horarioAcao, justificativa))
+            activate PUB
+            PUB -> DB : INSERT aviso_saida (mesma transação)
+            PUB --> S : ok
+            deactivate PUB
+            S --> C : registro
+            C --> G : 201 registro (estado "Não aplicável", justificativa)
+            G --> V : 201
+          end
+        end
+      end
+      deactivate S
+      deactivate C
+    end
+    deactivate G
+    alt 201 ou 200
+      V --> OP : "Não aplicável" e a justificativa no detalhe,\nsem nenhuma ação de registro (passo 7; RN6)
+    else 422, 409 ou 403
+      V --> OP : E1: pede a justificativa e volta ao passo 5;\nE2 e E3: recusa com o motivo; a tarefa mantém o estado;\ntarefa de outro operador: retira a tarefa da lista
+    end
+  end
+end
+deactivate V
+
+== Depois da gravação ==
+S -> N : notificarTarefa(operadorId, tarefa)
+note right of N : a lista do operador e o detalhe mudam\nem até 5 s (UC14, A4; RNF-11)
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TarefaMarcadaNaoAplicavel (e MarcoRegistrado,\nEstadoTarefaPropagado ou EstadoTurnaroundAlterado, se houver)
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ : o Monitoramento recalcula\n(UC24 – Recalcular projeção,\natraso e caminho crítico)
+
+== E4: volta da conexão (RNF-8) ==
+opt E4.2 e E4.3: registro guardado no celular
+  alt E4.3: a sessão expirou enquanto o celular estava sem conexão
+    FS --> OP : leva à autenticação; os registros continuam guardados no celular
+    ref over OP, FS : UC01 – Autenticar acesso do usuário (o mesmo operador)
+  end
+  FS -> FS : enviarPendentes(usuarioId)
+  activate FS
+  loop cada registro pendente, na ordem em que foi feito, em até 5 s
+    FS -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/nao-aplicavel", corpo = justificativa + horarioAcao do celular + requisicaoId, acaoDoUsuario = não)
+    ref over G, DB : Passos 6 a 8 acima, com o horário da ação guardado no celular;\no servidor confere as permissões atuais do operador (E4.3)
+    alt aceito (201 ou 200)
+      G --> FS : 201
+      FS --> OP : retira a marca "pendente de envio"
+    else E4.2: recusado (409 ou 403), sem alterar a tarefa
+      G --> FS : 409 ou 403 com o motivo
+      FS --> OP : aviso da recusa com o motivo
+    end
+  end
+  deactivate FS
+end
+@enduml

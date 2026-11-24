@@ -1,0 +1,209 @@
+@startuml
+' UC16 – Registrar conclusão da tarefa (RF-16, US016; inclui o UC20 e o UC21).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). O Motor de Eventos (MarcoService e
+' PropagacaoService) roda na mesma transação do registro (ADR-0018, pontos 4 e 5; item 13, seção 13.5.4).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc16.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "TarefaView" as V
+boundary "FilaRegistrosSemConexao" as FS
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TarefaController" as C
+  participant "TarefaService" as S <<service>>
+  entity "Turnaround" as T
+  entity "Tarefa" as TA
+  participant "MarcoService" as MS <<service>>
+  participant "PropagacaoService" as PS <<service>>
+  participant "RegistroTarefaRepository" as RR <<repository>>
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 a 5: detalhe e confirmação ==
+ref over OP, V : UC14 – Consultar lista de tarefas do operador (passos 3 e 4):\ndetalhe da tarefa "Em execução" com a opção "Concluir"
+opt A2: tarefa com pontos de QR Code, todos confirmados (UC19)
+  V --> OP : contagem de pontos confirmados igual ao total\n(por exemplo, "6 de 6 zonas confirmadas") e a opção "Concluir"
+end
+OP -> V : concluir(tarefaId)
+activate V
+V --> OP : pede a confirmação (nome da tarefa, aeronave e posição)
+alt A1: o operador cancela a confirmação
+  V --> OP : fecha a confirmação sem gravar nada; a tarefa continua "Em execução"
+else o operador confirma (passo 5)
+  OP -> V : confirmar
+  alt E6: sem conexão com a internet
+    V -> FS : guardar(usuarioId, tarefaId, tipo = "Conclusão", dados = vazio, horarioAcao = relógio do celular em UTC, requisicaoId)
+    activate FS
+    FS --> V : guardado
+    deactivate FS
+    V --> OP : tarefa "Concluída" com a marca "pendente de envio" (E6.1; RNF-8)
+  else com conexão
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/conclusao", corpo = horarioAcao + requisicaoId, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+    G -> C : registrarConclusao(tarefaId, horarioAcao, requisicaoId, acesso)
+    activate C
+    C -> S : registrarConclusao(tarefaId, horarioAcao, requisicaoId, autorId = acesso.usuarioId, equipeId = acesso.equipeId)
+    activate S
+
+    == Passo 6: verificações ==
+    S -> RR : buscarPorRequisicao(requisicaoId)
+    activate RR
+    RR -> DB : SELECT registro_tarefa WHERE requisicao_id = requisicaoId
+    RR --> S : registro ou vazio
+    deactivate RR
+    alt mesma requisicaoId já gravada (reenvio; RNF-8, ADR-0018 ponto 7)
+      S --> C : o registro gravado na primeira vez
+      C --> G : 200 mesma resposta
+      G --> V : 200
+    else requisição nova
+      critical trava do turnaround até o fim da transação (ADR-0015, regra 4; ADR-0018)
+        S -> TR : buscarPorTarefa(tarefaId)
+        activate TR
+        TR -> DB : SELECT turnaround por tarefa.turnaround_id
+        TR --> S : turnaroundId
+        S -> TR : buscarComTrava(turnaroundId)
+        TR -> DB : SELECT turnaround, tarefa, dependencia_tarefa, ponto_confirmacao,\nleitura_qr_code, marco ... FOR UPDATE
+        TR --> S : turnaround com as tarefas, os pontos e os marcos
+        deactivate TR
+        S -> T : aceitaRegistros()
+        activate T
+        T --> S : não, se "Fora de bloco" (UC37, E3)
+        S -> T : buscarTarefa(tarefaId)
+        T --> S : tarefa
+        deactivate T
+        S -> TA : conferirResponsavel(autorId, equipeId)
+        activate TA
+        TA --> S : ok, ou recusa
+        alt turnaround encerrado ("Fora de bloco")
+          S --> C : recusa: turnaround encerrado
+          C --> G : 409 turnaround encerrado
+          G --> V : 409
+        else E5: tarefa atribuída a outro operador (RN3; ADR-0010)
+          S --> C : recusa: tarefa não está mais atribuída a ele
+          C --> G : 403 tarefa reatribuída
+          G --> V : 403
+        else responsável confirmado
+          S -> TA : concluir(autorId, horarioAcao, requisicaoId)
+          TA -> TA : pontosPendentes()
+          alt E1: estado "Aguardando" ou "Pronta" (RN1)
+            TA --> S : recusa: a tarefa precisa ser iniciada antes
+            S --> C : recusa com o estado atual
+            C --> G : 409 tarefa não iniciada
+            G --> V : 409
+          else E2: estado "Pausada" (RN1)
+            TA --> S : recusa: a tarefa precisa ser retomada antes (UC17)
+            S --> C : recusa com o estado atual
+            C --> G : 409 tarefa pausada
+            G --> V : 409
+          else E3: estado "Concluída" ou "Não aplicável"
+            TA --> S : recusa: a tarefa já está terminada
+            S --> C : recusa com o estado atual
+            C --> G : 409 tarefa terminada
+            G --> V : 409
+          else E4: "Em execução", com ponto de QR Code não confirmado (RN2; ADR-0007)
+            TA --> S : recusa com os pontos que faltam
+            S --> C : recusa: pontos não confirmados
+            C --> G : 409 pontos que faltam confirmar
+            G --> V : 409
+          else estado = "Em execução" e nenhum ponto pendente (A2.2)
+
+            == Passo 7: gravação da conclusão ==
+            TA -> TA : mudarEstado(novo = "Concluída", autorId, causaId = registro.id, momento)
+            note right of TA
+              Cria o RegistroTarefa (tipo "Conclusão", horario_acao,
+              recebido_em, autor_id, requisicao_id) e o histórico;
+              registrarMudanca() soma 1 em tarefa.versao.
+            end note
+            TA --> S : registro
+            deactivate TA
+
+            == Passo 8: Motor de Eventos («include») ==
+            S -> MS : registrarMarcos(turnaround, tarefa, registro)
+            activate MS
+            ref over MS : UC20 – Registrar marcos do atendimento em solo
+            MS --> S : marcos criados (ou nenhum)
+            deactivate MS
+            S -> PS : propagarRegistro(turnaround, tarefa, registro)
+            activate PS
+            ref over PS : UC21 – Propagar estado das tarefas e do turnaround
+            PS --> S : mudanças de estado (ou nenhuma)
+            deactivate PS
+            opt A3: a tarefa era a única predecessora pendente de outra tarefa
+              note over MS, PS : UC21, passos 2 a 4: a sucessora passa de "Aguardando"\npara "Pronta" e aparece assim na lista do responsável (UC14)
+            end
+            opt A4: era a última tarefa obrigatória pendente
+              note over MS, PS : UC20, A3: AEGT = horário da conclusão;\nUC21, A4: turnaround → "Pronto para liberação"
+            end
+            S -> TR : salvar(turnaround)
+            activate TR
+            TR -> DB : INSERT registro_tarefa, historico_estado_tarefa;\nUPDATE tarefa SET estado, versao (inclusive as sucessoras);\nINSERT marco e historico_estado_turnaround\ne UPDATE turnaround SET estado, versao, se houver
+            TR --> S : ok
+            deactivate TR
+            S -> AU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = registro.id, turnaroundId, valoresAnteriores = "Em execução", valoresNovos = "Concluída" e horarioAcao)
+            activate AU
+            AU -> DB : INSERT registro_auditoria
+            AU --> S : ok
+            deactivate AU
+            S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TarefaConcluida", turnaroundId, autorId, causaId = registro.id, dados = tarefaId, registroId, estado, versao, horarioAcao))
+            activate PUB
+            PUB -> DB : INSERT aviso_saida (mesma transação)
+            PUB --> S : ok
+            deactivate PUB
+            S --> C : registro
+            C --> G : 201 registro (estado "Concluída", horário da conclusão)
+            G --> V : 201
+          end
+        end
+      end
+      deactivate S
+      deactivate C
+    end
+    deactivate G
+    alt 201 ou 200
+      V --> OP : "Concluída" e o horário da conclusão no detalhe (passo 7)
+    else 409 ou 403
+      V --> OP : recusa com o motivo e o estado atual (E1 a E4: a tarefa mantém o estado;\nE4: pontos que faltam); E5: "não está mais atribuída a você" e retira da lista
+    end
+  end
+end
+deactivate V
+
+== Depois da gravação ==
+S -> N : notificarTarefa(operadorId, tarefa)
+note right of N : a lista do operador e o detalhe mudam\nem até 5 s (UC14, A4; RNF-11)
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TarefaConcluida (e MarcoRegistrado,\nEstadoTarefaPropagado ou EstadoTurnaroundAlterado, se houver)
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ : o Monitoramento recalcula\n(UC24 – Recalcular projeção,\natraso e caminho crítico)
+
+== E6: volta da conexão (RNF-8) ==
+opt E6.2 e E6.3: registro guardado no celular
+  alt E6.3: a sessão expirou enquanto o celular estava sem conexão
+    FS --> OP : leva à autenticação; os registros continuam guardados no celular
+    ref over OP, FS : UC01 – Autenticar acesso do usuário (o mesmo operador)
+  end
+  FS -> FS : enviarPendentes(usuarioId)
+  activate FS
+  loop cada registro pendente, na ordem em que foi feito, em até 5 s
+    FS -> G : encaminhar(sessaoId, rota = "POST /v1/tarefas/{tarefaId}/conclusao", corpo = horarioAcao do celular + requisicaoId, acaoDoUsuario = não)
+    ref over G, DB : Passos 6 a 8 acima, com o horário da ação guardado no celular;\no servidor confere as permissões atuais do operador (E6.3)
+    alt aceito (201 ou 200)
+      G --> FS : 201
+      FS --> OP : retira a marca "pendente de envio"
+    else E6.2: recusado (409 ou 403), sem alterar a tarefa
+      G --> FS : 409 ou 403 com o motivo
+      FS --> OP : aviso da recusa com o motivo
+    end
+  end
+  deactivate FS
+end
+@enduml

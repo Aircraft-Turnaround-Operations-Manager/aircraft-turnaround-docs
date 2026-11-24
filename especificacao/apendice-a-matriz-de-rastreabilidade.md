@@ -10,26 +10,26 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF | Título | Objetivo | Ator / usuário | Estória | Caso(s) de uso | RNFs aplicáveis | Tabelas (item 12) |
 |---|---|---|---|---|---|---|---|
 | RF-1 | Autenticar acesso do usuário | Obj. 2 | Usuário | US001 | UC01 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-10, RNF-19, RNF-20 | falha_login (Cadastro e Planejamento), sessao (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
-| RF-2 | Gerenciar cadastro de usuários e perfis | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
+| RF-2 | Gerenciar cadastro de usuários e perfis | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento), usuario_vinculado (Cadastro e Planejamento) |
 | RF-3 | Abrir turnaround da aeronave | Obj. 1 e 2 | Coordenador de Turnaround | US003 | UC03 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | companhia (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
 | RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), equipe (Cadastro e Planejamento), modelo_tarefa (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
-| RF-5 | Confirmar plano inicial do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_plano (Cadastro e Planejamento), equipe (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
+| RF-5 | Confirmar plano inicial do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06, UC24 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_plano (Cadastro e Planejamento), equipe (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
 | RF-6 | Aplicar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US006 | UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | modelo_tarefa (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
 | RF-7 | Configurar pontos de confirmação das tarefas | Obj. 2 | Coordenador de Turnaround | US007 | UC07, UC19 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | ponto_confirmacao_modelo (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
 | RF-8 | Definir dependências entre tarefas | Obj. 1 e 2 | Coordenador de Turnaround | US008 | UC05, UC08 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), dependencia_tarefa_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
 | RF-9 | Gerenciar cadastro de equipes e especialidades | Obj. 2 | Administrador do Sistema | US009 | UC09 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento) |
 | RF-10 | Atualizar referências de previsão do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US010 | UC10 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | turnaround (Cadastro e Planejamento) |
 | RF-11 | Configurar política de abastecimento | Obj. 1 e 2 | Coordenador de Turnaround | US011 | UC05, UC11 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | companhia (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento) |
-| RF-12 | Registrar chegada da aeronave à posição | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-19, RNF-20 | historico_estado_turnaround (Execução em Solo), marco (Execução em Solo), turnaround (Execução em Solo) |
+| RF-12 | Registrar chegada da aeronave à posição | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-13, RNF-19, RNF-20 | historico_estado_turnaround (Execução em Solo), marco (Execução em Solo), turnaround (Execução em Solo) |
 | RF-13 | Corrigir horário de chegada à posição | Obj. 1 e 2 | Coordenador de Turnaround | US013 | UC12, UC13 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | correcao_aibt (Execução em Solo), marco (Execução em Solo) |
-| RF-14 | Consultar lista de tarefas do operador | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-20 | dependencia_tarefa (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
+| RF-14 | Consultar lista de tarefas do operador | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-13, RNF-20 | dependencia_tarefa (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
 | RF-15 | Registrar início da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US015 | UC15 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-16 | Registrar conclusão da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US016 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), leitura_qr_code (Execução em Solo), ponto_confirmacao (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-17 | Pausar e retomar execução da tarefa | Obj. 2 e 3 | Operador de Solo/Rampa | US017 | UC17 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20, RNF-22 | codigo_atraso (Execução em Solo), historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tabela_codigo_atraso (Execução em Solo), tarefa (Execução em Solo) |
 | RF-18 | Marcar tarefa como "Não aplicável" | Obj. 2 e 3 | Operador de Solo/Rampa | US018 | UC18 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-19 | Confirmar execução da tarefa por QR Code | Obj. 2 | Operador de Solo/Rampa | US019 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | leitura_qr_code (Execução em Solo), ponto_confirmacao (Execução em Solo), tarefa (Execução em Solo) |
 | RF-20 | Registrar marcos do atendimento em solo | Obj. 1 | Motor de Eventos | US020 | UC18, UC20 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-19, RNF-20 | marco (Execução em Solo), registro_tarefa (Execução em Solo) |
-| RF-21 | Propagar estado das tarefas e do turnaround | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-19, RNF-20 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), historico_estado_turnaround (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
+| RF-21 | Propagar estado das tarefas e do turnaround | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-19, RNF-20 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), historico_estado_turnaround (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
 | RF-22 | Recalcular projeção de prontidão | Obj. 1 e 3 | Motor de Eventos | US022 | UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 | dependencia_monitorada (Monitoramento), projecao (Monitoramento), tarefa_monitorada (Monitoramento), turnaround_monitorado (Monitoramento) |
 | RF-23 | Calcular atraso e impacto das tarefas | Obj. 1 e 3 | Motor de Eventos | US023 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 | dependencia_monitorada (Monitoramento), projecao_tarefa (Monitoramento), tarefa_monitorada (Monitoramento) |
 | RF-24 | Identificar caminho crítico do turnaround | Obj. 3 | Motor de Eventos | US024 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-16, RNF-17, RNF-19, RNF-20 | caminho_critico (Monitoramento), caminho_critico_tarefa (Monitoramento), dependencia_monitorada (Monitoramento), tarefa_monitorada (Monitoramento) |
@@ -48,7 +48,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-37 | Reatribuir tarefa a outro operador da mesma equipe | Obj. 2 e 3 | Coordenador de Turnaround | US037 | UC19, UC30 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | reatribuicao (Exceções e Liberação), tarefa (Execução em Solo), turnaround_referencia (Exceções e Liberação), usuario (Cadastro e Planejamento) |
 | RF-38 | Registrar ação tomada para cada alerta | Obj. 3 | Coordenador de Turnaround | US038 | UC31 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-15, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 | acao_alerta (Exceções e Liberação), alerta (Monitoramento), atualizacao_tobt (Exceções e Liberação), reatribuicao (Exceções e Liberação), replanejamento (Exceções e Liberação), turnaround_referencia (Exceções e Liberação) |
 | RF-39 | Confirmar prontidão e liberar aeronave | Obj. 3 | Autoridade de Liberação | US039 | UC32 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), liberacao (Exceções e Liberação), tarefa (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
-| RF-40 | Encerrar exceção do turnaround | Obj. 3 | Coordenador de Turnaround | US040 | UC29, UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
+| RF-40 | Encerrar exceção do turnaround | Obj. 3 | Coordenador de Turnaround | US040 | UC28, UC29, UC33 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-23, RNF-24 | excecao (Exceções e Liberação), historico_estado_turnaround (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação) |
 | RF-41 | Atualizar o TOBT quando a projeção se afasta 5 minutos ou mais | Obj. 1 | Coordenador de Turnaround | US041 | UC34 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-21, RNF-24 | atualizacao_tobt (Exceções e Liberação), projecao (Monitoramento), solicitacao_atualizacao_tobt (Exceções e Liberação), turnaround_referencia (Exceções e Liberação) |
 | RF-42 | Replanejar tarefas não iniciadas do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US042 | UC35 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), politica_abastecimento (Cadastro e Planejamento), replanejamento (Exceções e Liberação), tarefa (Execução em Solo), turnaround (Execução em Solo), turnaround_referencia (Exceções e Liberação), usuario (Cadastro e Planejamento) |
 | RF-43 | Consultar operadores disponíveis da equipe | Obj. 2 | Coordenador de Turnaround | US043 | UC36 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20, RNF-24 | equipe (Cadastro e Planejamento), registro_tarefa (Execução em Solo), tarefa (Execução em Solo), usuario (Cadastro e Planejamento) |
@@ -78,7 +78,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RNF-10 | Portabilidade (instalabilidade) | RF-1, RF-14 |
 | RNF-11 | Eficiência de desempenho (comportamento no tempo) | RF-12, RF-14, RF-21, RF-25, RF-26, RF-33 |
 | RNF-12 | Eficiência de desempenho (comportamento no tempo) | RF-22, RF-23, RF-24, RF-27, RF-28, RF-29, RF-30, RF-31 |
-| RNF-13 | Eficiência de desempenho (capacidade) | RF-22, RF-23, RF-24, RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-32, RF-33, RF-34, RF-35 |
+| RNF-13 | Eficiência de desempenho (capacidade) | RF-12, RF-14, RF-21, RF-22, RF-23, RF-24, RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-32, RF-33, RF-34, RF-35 |
 | RNF-14 | Eficiência de desempenho (comportamento no tempo) | RF-25, RF-26, RF-33, RF-34 |
 | RNF-15 | Usabilidade (operabilidade) | RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-33, RF-38 |
 | RNF-16 | Usabilidade (apreensibilidade) | RF-24, RF-25, RF-26, RF-33 |
@@ -106,16 +106,16 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC09 | — |
 | UC10 | — |
 | UC11 | — |
-| UC12 | — |
-| UC13 | — |
-| UC14 | — |
-| UC15 | — |
-| UC16 | — |
-| UC17 | — |
-| UC18 | — |
-| UC19 | — |
-| UC20 | — |
-| UC21 | — |
+| UC12 | 14-sequencia-uc12.png |
+| UC13 | 14-sequencia-uc13.png |
+| UC14 | 14-sequencia-uc14.png |
+| UC15 | 14-sequencia-uc15.png |
+| UC16 | 14-sequencia-uc16.png |
+| UC17 | 14-sequencia-uc17.png, 14-sequencia-uc17_001.png |
+| UC18 | 14-sequencia-uc18.png |
+| UC19 | 14-sequencia-uc19.png |
+| UC20 | 14-sequencia-uc20.png |
+| UC21 | 14-sequencia-uc21.png, 14-sequencia-uc21_001.png |
 | UC22 | — |
 | UC23 | — |
 | UC24 | — |
@@ -131,7 +131,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC34 | — |
 | UC35 | — |
 | UC36 | — |
-| UC37 | — |
+| UC37 | 14-sequencia-uc37.png |
 
 ### A.5 Critérios de aceite × casos de teste (item 15)
 
@@ -232,58 +232,63 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US021-CA5 | CT-B047, CT-B095 |
 | US021-CA6 | CT-B098 |
 | US021-CA7 | CT-B099 |
-| US022-CA1 | — |
-| US022-CA2 | — |
-| US022-CA3 | — |
-| US022-CA4 | — |
-| US022-CA5 | — |
-| US023-CA1 | — |
-| US023-CA2 | — |
-| US023-CA3 | — |
-| US023-CA4 | — |
-| US024-CA1 | — |
-| US024-CA2 | — |
-| US024-CA3 | — |
-| US025-CA1 | — |
-| US025-CA2 | — |
-| US025-CA3 | — |
-| US025-CA4 | — |
-| US026-CA1 | — |
-| US026-CA2 | — |
-| US026-CA3 | — |
-| US026-CA4 | — |
-| US027-CA1 | — |
-| US027-CA2 | — |
-| US027-CA3 | — |
-| US028-CA1 | — |
-| US028-CA2 | — |
-| US028-CA3 | — |
-| US028-CA4 | — |
-| US029-CA1 | — |
-| US029-CA2 | — |
-| US029-CA3 | — |
-| US030-CA1 | — |
-| US030-CA2 | — |
-| US030-CA3 | — |
-| US031-CA1 | — |
-| US031-CA2 | — |
-| US031-CA3 | — |
-| US032-CA1 | — |
-| US032-CA2 | — |
-| US032-CA3 | — |
-| US032-CA4 | — |
-| US033-CA1 | — |
-| US033-CA2 | — |
-| US033-CA3 | — |
-| US033-CA4 | — |
-| US034-CA1 | — |
-| US034-CA2 | — |
-| US034-CA3 | — |
-| US034-CA4 | — |
-| US034-CA5 | — |
-| US035-CA1 | — |
-| US035-CA2 | — |
-| US035-CA3 | — |
+| US022-CA1 | CT-C004, CT-C023, CT-C033, CT-C034, CT-C035, CT-C037, CT-C038 |
+| US022-CA2 | CT-C030 |
+| US022-CA3 | CT-C032 |
+| US022-CA4 | CT-C036 |
+| US022-CA5 | CT-C029 |
+| US023-CA1 | CT-C024 |
+| US023-CA2 | CT-C025, CT-C031 |
+| US023-CA3 | CT-C027 |
+| US023-CA4 | CT-C028 |
+| US024-CA1 | CT-C026 |
+| US024-CA2 | CT-C018, CT-C030, CT-C031 |
+| US024-CA3 | CT-C032 |
+| US025-CA1 | CT-C001, CT-C002, CT-C003, CT-C004, CT-C009, CT-C011 |
+| US025-CA2 | CT-C007, CT-C010 |
+| US025-CA3 | CT-C008 |
+| US025-CA4 | CT-C012 |
+| US026-CA1 | CT-C005, CT-C013, CT-C017, CT-C018, CT-C022 |
+| US026-CA2 | CT-C014, CT-C019 |
+| US026-CA3 | CT-C015 |
+| US026-CA4 | CT-C016, CT-C020, CT-C021 |
+| US027-CA1 | CT-C050, CT-C051, CT-C059 |
+| US027-CA2 | CT-C052 |
+| US027-CA3 | CT-C053 |
+| US027-CA4 | CT-C089 |
+| US028-CA1 | CT-C045 |
+| US028-CA2 | CT-C046 |
+| US028-CA3 | CT-C047, CT-C048 |
+| US028-CA4 | CT-C049 |
+| US029-CA1 | CT-C039, CT-C041, CT-C043, CT-C060 |
+| US029-CA2 | CT-C040, CT-C042 |
+| US029-CA3 | CT-C044 |
+| US030-CA1 | CT-C054 |
+| US030-CA2 | CT-C055 |
+| US030-CA3 | CT-C056 |
+| US030-CA4 | CT-C090 |
+| US031-CA1 | CT-C057 |
+| US031-CA2 | CT-C057 |
+| US031-CA3 | CT-C058 |
+| US031-CA4 | CT-C090 |
+| US032-CA1 | CT-C071, CT-C077 |
+| US032-CA2 | CT-C076 |
+| US032-CA3 | CT-C072 |
+| US032-CA4 | CT-C078 |
+| US032-CA5 | CT-C091 |
+| US032-CA6 | CT-C092 |
+| US033-CA1 | CT-C006, CT-C061, CT-C063, CT-C065, CT-C066, CT-C068, CT-C070 |
+| US033-CA2 | CT-C050, CT-C051, CT-C062 |
+| US033-CA3 | CT-C064, CT-C069 |
+| US033-CA4 | CT-C067 |
+| US034-CA1 | CT-C080, CT-C083, CT-C084, CT-C086, CT-C088, CT-C093 |
+| US034-CA2 | CT-C081 |
+| US034-CA3 | CT-C082, CT-C093 |
+| US034-CA4 | CT-C085 |
+| US034-CA5 | CT-C087 |
+| US035-CA1 | CT-C073, CT-C075 |
+| US035-CA2 | CT-C079 |
+| US035-CA3 | CT-C074 |
 | US036-CA1 | — |
 | US036-CA2 | — |
 | US036-CA3 | — |
@@ -293,7 +298,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US037-CA4 | — |
 | US038-CA1 | — |
 | US038-CA2 | — |
-| US038-CA3 | — |
+| US038-CA3 | CT-C094 |
 | US039-CA1 | — |
 | US039-CA2 | — |
 | US039-CA3 | — |
@@ -323,58 +328,32 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.6 Lacunas encontradas
 
-- US022-CA1 sem caso de teste (item 15)
-- US022-CA2 sem caso de teste (item 15)
-- US022-CA3 sem caso de teste (item 15)
-- US022-CA4 sem caso de teste (item 15)
-- US022-CA5 sem caso de teste (item 15)
-- US023-CA1 sem caso de teste (item 15)
-- US023-CA2 sem caso de teste (item 15)
-- US023-CA3 sem caso de teste (item 15)
-- US023-CA4 sem caso de teste (item 15)
-- US024-CA1 sem caso de teste (item 15)
-- US024-CA2 sem caso de teste (item 15)
-- US024-CA3 sem caso de teste (item 15)
-- US025-CA1 sem caso de teste (item 15)
-- US025-CA2 sem caso de teste (item 15)
-- US025-CA3 sem caso de teste (item 15)
-- US025-CA4 sem caso de teste (item 15)
-- US026-CA1 sem caso de teste (item 15)
-- US026-CA2 sem caso de teste (item 15)
-- US026-CA3 sem caso de teste (item 15)
-- US026-CA4 sem caso de teste (item 15)
-- US027-CA1 sem caso de teste (item 15)
-- US027-CA2 sem caso de teste (item 15)
-- US027-CA3 sem caso de teste (item 15)
-- US028-CA1 sem caso de teste (item 15)
-- US028-CA2 sem caso de teste (item 15)
-- US028-CA3 sem caso de teste (item 15)
-- US028-CA4 sem caso de teste (item 15)
-- US029-CA1 sem caso de teste (item 15)
-- US029-CA2 sem caso de teste (item 15)
-- US029-CA3 sem caso de teste (item 15)
-- US030-CA1 sem caso de teste (item 15)
-- US030-CA2 sem caso de teste (item 15)
-- US030-CA3 sem caso de teste (item 15)
-- US031-CA1 sem caso de teste (item 15)
-- US031-CA2 sem caso de teste (item 15)
-- US031-CA3 sem caso de teste (item 15)
-- US032-CA1 sem caso de teste (item 15)
-- US032-CA2 sem caso de teste (item 15)
-- US032-CA3 sem caso de teste (item 15)
-- US032-CA4 sem caso de teste (item 15)
-- US033-CA1 sem caso de teste (item 15)
-- US033-CA2 sem caso de teste (item 15)
-- US033-CA3 sem caso de teste (item 15)
-- US033-CA4 sem caso de teste (item 15)
-- US034-CA1 sem caso de teste (item 15)
-- US034-CA2 sem caso de teste (item 15)
-- US034-CA3 sem caso de teste (item 15)
-- US034-CA4 sem caso de teste (item 15)
-- US034-CA5 sem caso de teste (item 15)
-- US035-CA1 sem caso de teste (item 15)
-- US035-CA2 sem caso de teste (item 15)
-- US035-CA3 sem caso de teste (item 15)
+- UC01 sem diagrama de sequência (item 14)
+- UC02 sem diagrama de sequência (item 14)
+- UC03 sem diagrama de sequência (item 14)
+- UC04 sem diagrama de sequência (item 14)
+- UC05 sem diagrama de sequência (item 14)
+- UC06 sem diagrama de sequência (item 14)
+- UC07 sem diagrama de sequência (item 14)
+- UC08 sem diagrama de sequência (item 14)
+- UC09 sem diagrama de sequência (item 14)
+- UC10 sem diagrama de sequência (item 14)
+- UC11 sem diagrama de sequência (item 14)
+- UC22 sem diagrama de sequência (item 14)
+- UC23 sem diagrama de sequência (item 14)
+- UC24 sem diagrama de sequência (item 14)
+- UC25 sem diagrama de sequência (item 14)
+- UC26 sem diagrama de sequência (item 14)
+- UC27 sem diagrama de sequência (item 14)
+- UC28 sem diagrama de sequência (item 14)
+- UC29 sem diagrama de sequência (item 14)
+- UC30 sem diagrama de sequência (item 14)
+- UC31 sem diagrama de sequência (item 14)
+- UC32 sem diagrama de sequência (item 14)
+- UC33 sem diagrama de sequência (item 14)
+- UC34 sem diagrama de sequência (item 14)
+- UC35 sem diagrama de sequência (item 14)
+- UC36 sem diagrama de sequência (item 14)
 - US036-CA1 sem caso de teste (item 15)
 - US036-CA2 sem caso de teste (item 15)
 - US036-CA3 sem caso de teste (item 15)
@@ -384,7 +363,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - US037-CA4 sem caso de teste (item 15)
 - US038-CA1 sem caso de teste (item 15)
 - US038-CA2 sem caso de teste (item 15)
-- US038-CA3 sem caso de teste (item 15)
 - US039-CA1 sem caso de teste (item 15)
 - US039-CA2 sem caso de teste (item 15)
 - US039-CA3 sem caso de teste (item 15)
