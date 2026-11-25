@@ -362,8 +362,8 @@ Turnaround em atendimento: dono do estado (ADR-0015). RFs: RF-12, RF-14, RF-21, 
 | `plano_recebido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `versao` | `INTEGER` | — | Sim | Inteiro | Conta as mudanças de estado e de marco do turnaround; vai nos avisos de estado e de marco para quem guarda cópia ordenar |
 | `chave_plano` | `CHAR(36)` | — | Sim | UUID | Chave do último plano recebido; no reenvio com a mesma chave, responde o mesmo resultado sem aplicar de novo (ADR-0023, ponto 5) |
-| `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do Exceções e Liberação, só para exibir (UC37) |
-| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado |
+| `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Começa com o TOBT planejado, recebido com o plano; depois, cópia do Exceções e Liberação, só para exibir (UC37) |
+| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado; vazio até o primeiro aviso |
 | `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Recebido no pedido de liberação (horário da confirmação), só para exibir (UC37) |
 | `liberado_por_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia, só para exibir (UC37) |
 
