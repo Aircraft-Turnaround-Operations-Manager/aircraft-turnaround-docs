@@ -63,7 +63,7 @@ tec('tecnica-planejamento', 'Abertura e planejamento do turnaround', [
 tec('tecnica-execucao', 'Execução das tarefas no solo', [
   'execucao.ChegadaView', 'execucao.CorrecaoChegadaView', 'execucao.ListaTarefasView', 'execucao.TarefaView', 'execucao.LeituraQrCodeView', 'execucao.MarcoView', 'execucao.FilaRegistrosSemConexao',
   'execucao.ChegadaController', 'execucao.TarefaController', 'execucao.LeituraQrCodeController', 'execucao.CodigoAtrasoController',
-  'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.LeituraQrCodeService', 'execucao.CodigoAtrasoService',
+  'execucao.ChegadaService', 'execucao.TarefaService', 'execucao.LeituraQrCodeService', 'execucao.CodigoAtrasoService', 'execucao.CargaTabelaCodigoAtraso',
   'execucao.TurnaroundRepository', 'execucao.TarefaRepository', 'execucao.RegistroTarefaRepository', 'execucao.CorrecaoAibtRepository',
   'execucao.PontoConfirmacaoRepository', 'execucao.LeituraQrCodeRepository', 'execucao.CodigoAtrasoRepository', 'execucao.ListaTarefasNotificador',
   'execucao.TurnaroundController', 'execucao.TarefaDoOperador'])
