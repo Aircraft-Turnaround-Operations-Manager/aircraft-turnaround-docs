@@ -75,6 +75,10 @@ else há turnarounds abertos
 end
 
 == Passos 3 a 5: acompanhar em tempo real (RN5, RN6) ==
+V -> G : abrirConexao(sessaoId, rota = "/v1/tempo-real/painel")
+activate G
+ref over G, N : Abrir a conexão em tempo real pela porta de entrada (ADR-0023, ponto 7): confere a sessão no\nCadastro e repassa a conexão ao PainelNotificador; a cada minuto consulta o Cadastro de novo e fecha a\nconexão se o usuário foi desativado ou a sessão venceu. As mensagens recebidas não renovam a sessão.
+deactivate G
 ref over RS : UC24 – Recalcular projeção, atraso e caminho crítico (passo 4)
 RS -> PS : montarLinha(turnaroundId)
 activate PS

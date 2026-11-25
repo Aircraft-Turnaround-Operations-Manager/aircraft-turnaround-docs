@@ -1,6 +1,7 @@
 @startuml
 ' Item 13 — Liberação e saída da posição. Vista gerada a partir das fontes 13-classes-*.iuml.
 !include 13-classes-estilo.iuml
+restore cadastro
 restore comum
 restore excecoes
 restore execucao
@@ -25,4 +26,5 @@ restore execucao.SituacaoTurnaround
 restore comum.PublicadorAvisos
 restore excecoes.ConsumidorAvisosExcecoes
 restore excecoes.TurnaroundReferenciaService
+restore cadastro.UsuarioController
 @enduml

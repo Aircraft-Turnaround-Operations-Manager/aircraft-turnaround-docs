@@ -20,16 +20,16 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-9 | Gerenciar cadastro de equipes e especialidades | Obj. 2 | Administrador do Sistema | US009 | UC09 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento) |
 | RF-10 | Atualizar referências de previsão do turnaround | Obj. 1 e 3 | Coordenador de Turnaround | US010 | UC10 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | turnaround (Cadastro e Planejamento) |
 | RF-11 | Configurar política de abastecimento | Obj. 1 e 2 | Coordenador de Turnaround | US011 | UC05, UC11 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | companhia (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento) |
-| RF-12 | Registrar chegada da aeronave à posição | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-19, RNF-20 | historico_estado_turnaround (Execução em Solo), marco (Execução em Solo), turnaround (Execução em Solo) |
+| RF-12 | Registrar chegada da aeronave à posição | Obj. 1 e 2 | Operador de Solo/Rampa | US012 | UC10, UC12 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-9, RNF-11, RNF-13, RNF-19, RNF-20 | historico_estado_turnaround (Execução em Solo), marco (Execução em Solo), turnaround (Execução em Solo) |
 | RF-13 | Corrigir horário de chegada à posição | Obj. 1 e 2 | Coordenador de Turnaround | US013 | UC12, UC13 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | correcao_aibt (Execução em Solo), marco (Execução em Solo) |
-| RF-14 | Consultar lista de tarefas do operador | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-20 | dependencia_tarefa (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
+| RF-14 | Consultar lista de tarefas do operador | Obj. 2 | Operador de Solo/Rampa | US014 | UC14 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-9, RNF-10, RNF-11, RNF-13, RNF-20 | dependencia_tarefa (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
 | RF-15 | Registrar início da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US015 | UC15 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-16 | Registrar conclusão da tarefa | Obj. 1 e 2 | Operador de Solo/Rampa | US016 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), leitura_qr_code (Execução em Solo), ponto_confirmacao (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-17 | Pausar e retomar execução da tarefa | Obj. 2 e 3 | Operador de Solo/Rampa | US017 | UC17 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20, RNF-22 | codigo_atraso (Execução em Solo), historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tabela_codigo_atraso (Execução em Solo), tarefa (Execução em Solo) |
 | RF-18 | Marcar tarefa como "Não aplicável" | Obj. 2 e 3 | Operador de Solo/Rampa | US018 | UC18 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | historico_estado_tarefa (Execução em Solo), registro_tarefa (Execução em Solo), tarefa (Execução em Solo) |
 | RF-19 | Confirmar execução da tarefa por QR Code | Obj. 2 | Operador de Solo/Rampa | US019 | UC16, UC19 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-7, RNF-8, RNF-9, RNF-20 | leitura_qr_code (Execução em Solo), ponto_confirmacao (Execução em Solo), tarefa (Execução em Solo) |
 | RF-20 | Registrar marcos do atendimento em solo | Obj. 1 | Motor de Eventos | US020 | UC18, UC20 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-19, RNF-20 | marco (Execução em Solo), registro_tarefa (Execução em Solo) |
-| RF-21 | Propagar estado das tarefas e do turnaround | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-19, RNF-20 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), historico_estado_turnaround (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
+| RF-21 | Propagar estado das tarefas e do turnaround | Obj. 2 | Motor de Eventos | US021 | UC15, UC17, UC18, UC21 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-11, RNF-13, RNF-19, RNF-20 | dependencia_tarefa (Execução em Solo), historico_estado_tarefa (Execução em Solo), historico_estado_turnaround (Execução em Solo), tarefa (Execução em Solo), turnaround (Execução em Solo) |
 | RF-22 | Recalcular projeção de prontidão | Obj. 1 e 3 | Motor de Eventos | US022 | UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 | dependencia_monitorada (Monitoramento), projecao (Monitoramento), tarefa_monitorada (Monitoramento), turnaround_monitorado (Monitoramento) |
 | RF-23 | Calcular atraso e impacto das tarefas | Obj. 1 e 3 | Motor de Eventos | US023 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-19, RNF-20 | dependencia_monitorada (Monitoramento), projecao_tarefa (Monitoramento), tarefa_monitorada (Monitoramento) |
 | RF-24 | Identificar caminho crítico do turnaround | Obj. 3 | Motor de Eventos | US024 | UC23, UC24 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-12, RNF-13, RNF-16, RNF-17, RNF-19, RNF-20 | caminho_critico (Monitoramento), caminho_critico_tarefa (Monitoramento), dependencia_monitorada (Monitoramento), tarefa_monitorada (Monitoramento) |
@@ -78,7 +78,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RNF-10 | Portabilidade (instalabilidade) | RF-1, RF-14 |
 | RNF-11 | Eficiência de desempenho (comportamento no tempo) | RF-12, RF-14, RF-21, RF-25, RF-26, RF-33 |
 | RNF-12 | Eficiência de desempenho (comportamento no tempo) | RF-22, RF-23, RF-24, RF-27, RF-28, RF-29, RF-30, RF-31 |
-| RNF-13 | Eficiência de desempenho (capacidade) | RF-22, RF-23, RF-24, RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-32, RF-33, RF-34, RF-35 |
+| RNF-13 | Eficiência de desempenho (capacidade) | RF-12, RF-14, RF-21, RF-22, RF-23, RF-24, RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-32, RF-33, RF-34, RF-35 |
 | RNF-14 | Eficiência de desempenho (comportamento no tempo) | RF-25, RF-26, RF-33, RF-34 |
 | RNF-15 | Usabilidade (operabilidade) | RF-25, RF-26, RF-27, RF-28, RF-29, RF-30, RF-31, RF-33, RF-38 |
 | RNF-16 | Usabilidade (apreensibilidade) | RF-24, RF-25, RF-26, RF-33 |
@@ -106,16 +106,16 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC09 | — |
 | UC10 | — |
 | UC11 | — |
-| UC12 | — |
-| UC13 | — |
-| UC14 | — |
-| UC15 | — |
-| UC16 | — |
-| UC17 | — |
-| UC18 | — |
-| UC19 | — |
-| UC20 | — |
-| UC21 | — |
+| UC12 | 14-sequencia-uc12.png |
+| UC13 | 14-sequencia-uc13.png |
+| UC14 | 14-sequencia-uc14.png |
+| UC15 | 14-sequencia-uc15.png |
+| UC16 | 14-sequencia-uc16.png |
+| UC17 | 14-sequencia-uc17.png, 14-sequencia-uc17_001.png |
+| UC18 | 14-sequencia-uc18.png |
+| UC19 | 14-sequencia-uc19.png |
+| UC20 | 14-sequencia-uc20.png |
+| UC21 | 14-sequencia-uc21.png, 14-sequencia-uc21_001.png |
 | UC22 | 14-sequencia-uc22.png |
 | UC23 | 14-sequencia-uc23.png |
 | UC24 | 14-sequencia-uc24.png, 14-sequencia-uc24_001.png |
@@ -131,7 +131,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC34 | — |
 | UC35 | — |
 | UC36 | — |
-| UC37 | — |
+| UC37 | 14-sequencia-uc37.png |
 
 ### A.5 Critérios de aceite × casos de teste (item 15)
 
@@ -339,16 +339,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC09 sem diagrama de sequência (item 14)
 - UC10 sem diagrama de sequência (item 14)
 - UC11 sem diagrama de sequência (item 14)
-- UC12 sem diagrama de sequência (item 14)
-- UC13 sem diagrama de sequência (item 14)
-- UC14 sem diagrama de sequência (item 14)
-- UC15 sem diagrama de sequência (item 14)
-- UC16 sem diagrama de sequência (item 14)
-- UC17 sem diagrama de sequência (item 14)
-- UC18 sem diagrama de sequência (item 14)
-- UC19 sem diagrama de sequência (item 14)
-- UC20 sem diagrama de sequência (item 14)
-- UC21 sem diagrama de sequência (item 14)
 - UC29 sem diagrama de sequência (item 14)
 - UC30 sem diagrama de sequência (item 14)
 - UC31 sem diagrama de sequência (item 14)
@@ -357,7 +347,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC34 sem diagrama de sequência (item 14)
 - UC35 sem diagrama de sequência (item 14)
 - UC36 sem diagrama de sequência (item 14)
-- UC37 sem diagrama de sequência (item 14)
 - US012-CA1 sem caso de teste (item 15)
 - US012-CA2 sem caso de teste (item 15)
 - US012-CA3 sem caso de teste (item 15)

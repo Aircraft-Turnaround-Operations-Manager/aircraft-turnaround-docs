@@ -5,6 +5,8 @@ Os diagramas da área C mostram o serviço Monitoramento, que é dono da projeç
 
 O Motor de Eventos, ator dos casos de uso UC24, UC25 e UC27, não é uma classe: é o comportamento automático do `RecalculoService`, do `AlertaService` e do `AvisoChecagemService` (item 13, seção 13.1). Nos diagramas, ele inicia a sequência de dois jeitos. No primeiro, consome um aviso da fila "monitoramento" do RabbitMQ e o entrega ao `ConsumidorAvisosMonitoramento`. O `tratar(envelope)` desse consumidor é chamado depois de o `receber(envelope)` herdado descartar o aviso repetido (ADR-0016, ponto 5). No segundo, aciona o `AgendadorMinuto` (ADR-0015, regra 7). Entre serviços, os diagramas mostram o aviso na mensageria, e nenhum serviço lê o banco de outro. Dois avisos foram propostos com a área D na pendência #183: `ProjecaoRecalculada`, que o Monitoramento publica para o Exceções e Liberação comparar a projeção com o horário-alvo de prontidão (TOBT) vigente, e `AcaoAlertaRegistrada`, que o Exceções e Liberação publica para o Monitoramento encerrar o alerta (RF-38). Os avisos das outras áreas aparecem descritos pelo conteúdo, e não pelo nome.
 
+As telas que recebem mudanças em tempo real (painel, linha do tempo, lista de alertas e aviso de checagem) abrem a conexão pela porta de entrada (`abrirConexao`; ADR-0023, ponto 7), como mostra o UC22. Nos outros diagramas, a mensagem do `PainelNotificador` à tela passa por essa conexão.
+
 `«include»` aparece como fragmento `ref` (o UC24 inclui o UC25), e `«extend»` como fragmento `opt` com a condição (o UC23 estende o UC22). Os fluxos agrupados, que não mudam a interação, são estes:
 
 - UC22: o A1 e o A2 são `ref` ao UC23 e ao UC26.
