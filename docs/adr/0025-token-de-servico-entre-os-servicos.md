@@ -17,7 +17,7 @@ relacionados: [adr-0016, adr-0023, adr-0015, adr-0020]
 
 ## Contexto
 
-- Siglas usadas abaixo: requisito não funcional (RNF), token JSON assinado (JWT) e protocolo seguro de transferência de hipertexto (HTTPS).
+- Siglas usadas abaixo: requisito não funcional (RNF), token JSON assinado (JWT), transferência de estado representacional (REST), protocolo seguro de transferência de hipertexto (HTTPS) e segurança da camada de transporte (TLS).
 - A ADR-0016 diz que os pedidos entre os serviços são REST sobre HTTPS (ponto 3), mas não diz como o serviço chamado confere quem chama.
 - A ADR-0023, ponto 1, resolve as chamadas que vêm do site. A porta de entrada gera um token interno assinado com o usuário, válido por 60 s, e cada serviço "recusa a chamada sem token válido".
 - Há também pedidos que um serviço faz direto a outro, sem passar pela porta de entrada. No item 13, são os métodos dos três clientes:
@@ -43,7 +43,7 @@ Foi escolhida a **(a)**.
 2. **Conferência.** O serviço chamado confere a assinatura com a chave pública de quem chama e confere a validade. Depois, consulta uma lista fixa das rotas que cada serviço pode chamar. Recusa o pedido sem token válido ou de um serviço que não pode chamar aquela rota.
 3. **Autor da ação.** O token de serviço não leva usuário. Quando o pedido nasce de uma ação de usuário, o autor continua no parâmetro `autorId`, gravado na trilha de auditoria (RNF-2).
 4. **Reenvio.** Cada tentativa, inclusive a retomada depois de uma queda, gera um token novo. Por isso o reenvio não depende do token do usuário original.
-5. **Fora do alcance do site.** A porta de entrada não encaminha ao site as rotas entre serviços. Uma chamada a essas rotas vinda do site chega sem token de serviço e é recusada (RNF-1, "inclusive acesso direto").
+5. **Fora do alcance do site.** A porta de entrada não encaminha chamadas do site às rotas entre serviços. Uma chamada do site que chegue a essas rotas por outro caminho vem sem token de serviço e é recusada (RNF-1, "inclusive acesso direto").
 6. **Token válido.** Onde a ADR-0023, ponto 1, diz "token válido", vale o token interno do usuário, nas rotas do site, ou o token de serviço, nas rotas entre serviços. As duas rotas não se misturam.
 
 ## Consequências
