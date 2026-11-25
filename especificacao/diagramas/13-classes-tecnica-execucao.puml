@@ -21,6 +21,7 @@ restore execucao.ChegadaService
 restore execucao.TarefaService
 restore execucao.LeituraQrCodeService
 restore execucao.CodigoAtrasoService
+restore execucao.CargaTabelaCodigoAtraso
 restore execucao.TurnaroundRepository
 restore execucao.TarefaRepository
 restore execucao.RegistroTarefaRepository
