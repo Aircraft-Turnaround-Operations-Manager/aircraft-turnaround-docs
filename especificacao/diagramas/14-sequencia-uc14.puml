@@ -1,0 +1,125 @@
+@startuml
+' UC14 – Consultar lista de tarefas do operador (RF-14, US014; ADR-0010).
+' Classes do item 13 (execucao, contrato, comum) e tabelas do item 12 (Apêndice B.2). A consulta não muda estados.
+' A lista recebe as mudanças por WebSocket (ListaTarefasNotificador; ADR-0018, ponto 3; RNF-11).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc14.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Operador de\nSolo/Rampa" as OP
+boundary "ListaTarefasView" as LV
+boundary "TarefaView" as TV
+boundary "FilaRegistrosSemConexao" as FS
+participant "PortaDeEntrada" as G <<gateway>>
+box "Execução em Solo" #FAFAFA
+  control "TarefaController" as C
+  participant "TarefaService" as S <<service>>
+  entity "Tarefa" as TA
+  participant "TarefaRepository" as R <<repository>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  database "BancoExecucaoEmSolo" as DB
+end box
+
+== Passos 1 e 2: lista ==
+OP -> LV : abrir()
+activate LV
+alt E1: sem conexão com a internet
+  LV --> OP : a última lista recebida, com o horário da última atualização e o aviso "Sem conexão";\nos registros feitos a partir dela seguem o fluxo sem conexão de cada caso de uso (RNF-8)
+else com conexão
+  LV -> G : encaminhar(sessaoId, rota = "GET /v1/tarefas/minhas", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+  alt E2: sessão expirada (RNF-5)
+    G --> LV : 401 sessão expirada
+    LV --> OP : leva à tela de autenticação (E2.1)
+    ref over OP, G : UC01 – Autenticar acesso do usuário
+    note over OP, FS : E2.2: os registros pendentes continuam no celular e só são enviados\ndepois que o mesmo operador se autentica (FilaRegistrosSemConexao.enviarPendentes(usuarioId));\nE2.3: depois da autenticação, o caso de uso volta ao passo 2
+  else acesso confirmado
+    G -> C : listarDoOperador(acesso)
+    activate C
+    C -> S : listarDoOperador(operadorId = acesso.usuarioId)
+    activate S
+    S -> R : listarDoOperador(operadorId)
+    activate R
+    R -> DB : SELECT tarefa, dependencia_tarefa, turnaround\nWHERE tarefa.responsavel_id = operadorId\nAND turnaround.estado <> 'Fora de bloco' (RN6)\nORDER BY tarefa.inicio_planejado (RN5)
+    R --> S : tarefas atribuídas ao operador
+    deactivate R
+    note right of S
+      RN1: só as tarefas atribuídas ao operador; a tarefa de
+      outra equipe ou de outro operador não aparece. A equipe
+      é conferida em cada registro (Tarefa.conferirResponsavel).
+    end note
+    loop cada tarefa
+      S -> TA : predecessorasPendentes()
+      activate TA
+      TA --> S : predecessoras ainda não concluídas (RN2)
+      deactivate TA
+    end
+    S --> C : List<TarefaDoOperador> (tarefa, matrícula, posição, estado do turnaround)
+    deactivate S
+    C --> G : 200 lista
+    deactivate C
+    G --> LV : 200
+    deactivate G
+    alt A3: nenhuma tarefa atribuída em turnaround aberto
+      LV --> OP : "Nenhuma tarefa atribuída a você" e a lista vazia
+    else há tarefas
+      LV --> OP : tarefas ordenadas pelo início planejado, com aeronave e posição, estado,\njanela planejada de início e de fim e predecessoras pendentes (passo 2)
+
+      == Passos 3 e 4: detalhe ==
+      OP -> LV : abrirTarefa(tarefaId)
+      LV -> TV : abrir(tarefaId)
+      activate TV
+      TV -> G : encaminhar(sessaoId, rota = "GET /v1/tarefas/{tarefaId}", corpo = vazio, acaoDoUsuario = sim)
+      activate G
+      ref over G : Verificar acesso na porta de entrada\n(perfil Operador de Solo/Rampa; RNF-1; ADR-0023)
+      G -> C : consultar(tarefaId, acesso)
+      activate C
+      C -> S : consultar(tarefaId, operadorId = acesso.usuarioId)
+      activate S
+      S -> R : buscarPorId(tarefaId)
+      activate R
+      R -> DB : SELECT tarefa, dependencia_tarefa, ponto_confirmacao, leitura_qr_code, turnaround\nWHERE tarefa.id = tarefaId
+      R --> S : tarefa
+      deactivate R
+      alt E3: tarefa atribuída a outro operador depois que a lista foi carregada
+        S --> C : recusa: a tarefa não está mais atribuída a ele
+        C --> G : 403 tarefa reatribuída
+        G --> TV : 403
+        TV --> OP : informa que a tarefa não está mais atribuída a ele (E3.1)
+        TV -> LV : atualizarTarefa(tarefa)
+        LV --> OP : retira a tarefa da lista e volta ao passo 2 (E3.2)
+      else tarefa do operador
+        S -> TA : predecessorasPendentes()
+        activate TA
+        TA --> S : predecessoras pendentes
+        deactivate TA
+        S --> C : TarefaDoOperador
+        deactivate S
+        C --> G : 200 tarefa
+        deactivate C
+        G --> TV : 200
+        deactivate G
+        alt estado = "Pronta" (passo 4)
+          TV --> OP : detalhe com a opção "Iniciar" (UC15)
+        else A1: estado = "Aguardando"
+          TV --> OP : nome de cada predecessora pendente, sem "Iniciar" habilitado (RN4);\n"Não aplicável" se o modelo permitir (UC18); volta ao passo 3 ou termina
+        else A2: "Em execução", "Pausada", "Concluída" ou "Não aplicável"
+          TV --> OP : ações que o estado permite (RN3): "Em execução": "Concluir", "Pausar" e,\ncom pontos, "Ler QR Code"; "Pausada": "Retomar"; "Concluída" ou "Não aplicável":\nnenhuma ação de registro; volta ao passo 3 ou termina
+        end
+      end
+      deactivate TV
+    end
+  end
+end
+
+== A4: mudança de estado com a lista aberta (depois do passo 2) ==
+opt outro registro muda uma tarefa da lista (por exemplo, a propagação do UC21: "Aguardando" → "Pronta")
+  ref over S, N : UC15 a UC18, UC21 ou UC30 (Reatribuir tarefa), depois da gravação
+  S -> N : notificarTarefa(operadorId, tarefa)
+  activate N
+  N -> LV : atualizarTarefa(tarefa)
+  deactivate N
+  LV --> OP : o novo estado na lista em até 5 s, sem recarregar a página (A4.1; RNF-11);\no caso de uso continua no passo em que estava (A4.2)
+end
+deactivate LV
+@enduml

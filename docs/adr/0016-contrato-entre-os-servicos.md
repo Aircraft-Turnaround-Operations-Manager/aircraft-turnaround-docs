@@ -13,7 +13,7 @@ relacionados: [adr-0015]
 ---
 # ADR-0016 — Contrato comum entre os serviços
 
-- **Status:** aceita, como base provisória do RA2 · **Data:** 03/11/2026 · **Decisor:** grupo, por votação dos quatro integrantes
+- **Status:** aceita, como base provisória do RA2; ponto 1 alterado pela [ADR-0024](0024-canvas-de-design-como-fonte-das-telas.md) (a fonte das telas passou a ser o canvas de Design, e o Figma ficou congelado) · **Data:** 03/11/2026 · **Decisor:** grupo, por votação dos quatro integrantes
 
 ## Contexto
 

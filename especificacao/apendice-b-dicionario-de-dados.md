@@ -216,11 +216,15 @@ Plano inicial do turnaround, 1:1 (RF-5, RF-6); nasce ao aplicar o modelo. RFs: R
 | `politica_id` | `CHAR(36)` | FK | Não | Identificador de `politica_abastecimento` | Versão copiada ao aplicar o modelo; vazio = Não permitido |
 | `confirmado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Vazio = cópia ainda não confirmada |
 | `confirmado_por_id` | `CHAR(36)` | FK | Não | Identificador de `usuario` | — |
+| `situacao` | `VARCHAR(30)` | — | Sim | Em edição, Confirmação pendente, Confirmado | Sem edição enquanto a confirmação está pendente (ADR-0023, ponto 5) |
+| `chave_confirmacao` | `CHAR(36)` | — | Não | UUID | Chave de idempotência do envio à Execução em Solo; a retomada reenvia com a mesma chave (ADR-0023, ponto 5) |
+| `envio_pendente` | `CLOB` | — | Não | Texto JSON | Conteúdo enviado; vira o plano com a resposta positiva e é descartado com a recusa (ADR-0023, ponto 5) |
 
 **Restrições:**
 
 - UNIQUE (turnaround_id)
 - CHECK: confirmado_em e confirmado_por_id juntos
+- CHECK: situacao = Confirmação pendente exige chave_confirmacao e envio_pendente
 
 ### B.1.13 `tarefa_plano`
 
@@ -232,7 +236,7 @@ Tarefa do plano inicial e do catálogo copiado (RF-5, RF-6); o UUID da tarefa na
 | `plano_id` | `CHAR(36)` | FK | Sim | Identificador de `plano` | — |
 | `tarefa_modelo_id` | `CHAR(36)` | FK | Sim | Identificador de `tarefa_modelo` | Origem da cópia |
 | `nome` | `VARCHAR(60)` | — | Sim | Texto | — |
-| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Texto | — |
+| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Mesmo domínio de `tarefa_modelo.tipo_atividade` (B.1.8) | Cópia |
 | `equipe_id` | `CHAR(36)` | FK | Sim | Identificador de `equipe` | — |
 | `responsavel_id` | `CHAR(36)` | FK | Não | Identificador de `usuario` | Responsável no plano inicial; o atual é da Execução em Solo |
 | `duracao_planejada_min` | `INTEGER` | — | Sim | Minutos | — |
@@ -279,7 +283,16 @@ Pontos copiados para o plano (RF-6, RF-7). RFs: RF-6, RF-7.
 - UNIQUE (tarefa_plano_id, identificador)
 - UNIQUE (tarefa_plano_id, nome)
 
-### B.1.16 `registro_auditoria` (técnica)
+### B.1.16 `usuario_vinculado`
+
+Usuários que tiveram tarefa ou registro no turnaround, gravados com o aviso de encerramento (Fora de bloco) da Execução em Solo (ADR-0023, ponto 6). O prazo do RNF-6 de cada usuário é o mais tardio entre 90 dias depois da desativação e 90 dias depois do AOBT de cada turnaround vinculado. RFs: RF-2.
+
+| Campo | Tipo | Chave | Obrigatório | Domínio ou valores | Descrição |
+|---|---|---|---|---|---|
+| `turnaround_id` | `CHAR(36)` | PK, FK | Sim | Identificador de `turnaround` | — |
+| `usuario_id` | `CHAR(36)` | PK, FK | Sim | Identificador de `usuario` | — |
+
+### B.1.17 `registro_auditoria` (técnica)
 
 Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anonimização.
 
@@ -289,7 +302,7 @@ Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anoni
 | `objeto` | `VARCHAR(40)` | — | Sim | Texto | Tabela alterada |
 | `objeto_id` | `VARCHAR(80)` | — | Sim | Texto | Chave da linha; chave composta escrita como a|b |
 | `acao` | `VARCHAR(30)` | — | Sim | Inclusão, Alteração, Exclusão, Desativação, Anonimização | — |
-| `autor_tipo` | `VARCHAR(20)` | — | Sim | Texto | Usuário ou Motor de Eventos |
+| `autor_tipo` | `VARCHAR(20)` | — | Sim | Usuário, Motor de Eventos | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Obrigatório quando o autor é Usuário |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | Registro ou aviso que causou a ação automática |
 | `gatilho` | `VARCHAR(60)` | — | Não | Texto | Gatilho por horário sem registro (recálculo de minuto, TOBT − X, TOBT + 5, TOBT − 15) |
@@ -303,7 +316,7 @@ Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anoni
 
 - CHECK: autor_tipo = Usuário exige autor_id; Motor de Eventos exige causa_id ou gatilho
 
-### B.1.17 `aviso_saida` (técnica)
+### B.1.18 `aviso_saida` (técnica)
 
 Avisos a publicar, gravados na mesma transação da mudança (ADR-0016); origem = nome do serviço, constante.
 
@@ -320,7 +333,7 @@ Avisos a publicar, gravados na mesma transação da mudança (ADR-0016); origem 
 | `gravado_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Ordem de publicação |
 | `publicado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Vazio até a mensageria confirmar |
 
-### B.1.18 `aviso_processado` (técnica)
+### B.1.19 `aviso_processado` (técnica)
 
 Avisos já recebidos, para descartar o repetido (ADR-0016).
 
@@ -347,8 +360,11 @@ Turnaround em atendimento: dono do estado (ADR-0015). RFs: RF-12, RF-14, RF-21, 
 | `estado` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | Vazio até o AIBT |
 | `permite_com_passageiros` | `BOOLEAN` | — | Sim | Sim ou não | Política recebida com o plano; trava do RF-42 (regra 5) |
 | `plano_recebido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
+| `versao` | `INTEGER` | — | Sim | Inteiro | Conta as mudanças de estado e de marco do turnaround; vai nos avisos de estado e de marco para quem guarda cópia ordenar |
+| `chave_plano` | `CHAR(36)` | — | Sim | UUID | Chave do último plano recebido; no reenvio com a mesma chave, responde o mesmo resultado sem aplicar de novo (ADR-0023, ponto 5) |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do Exceções e Liberação, só para exibir (UC37) |
-| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia recebida na resposta da liberação, só para exibir |
+| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado |
+| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Recebido no pedido de liberação (horário da confirmação), só para exibir (UC37) |
 | `liberado_por_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia, só para exibir (UC37) |
 
 ### B.2.2 `marco`
@@ -367,7 +383,7 @@ Marcos do A-CDM gravados pela Execução em Solo (RF-12, RF-20, RF-44). RFs: RF-
 
 **Restrições:**
 
-- UNIQUE (turnaround_id, tipo); um AEGT novo substitui o anterior
+- UNIQUE (turnaround_id, tipo); o início sem conexão com horário anterior troca o ACGT, e um AEGT novo substitui o anterior (RF-20)
 - CHECK: AIBT e AOBT com autor_id; ACGT, ASBT e AEGT com registro_origem_id
 
 ### B.2.3 `correcao_aibt`
@@ -398,7 +414,7 @@ Tarefa do turnaround em andamento: dona do estado e do responsável (ADR-0015); 
 | `id` | `CHAR(36)` | PK | Sim | Identificador de `tarefa_plano` (Cadastro e Planejamento), sem FK | Identificador gerado no plano (ADR-0016, ponto 7) |
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround` | — |
 | `nome` | `VARCHAR(60)` | — | Sim | Texto | — |
-| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Texto | — |
+| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Mesmo domínio de `tarefa_modelo.tipo_atividade` (B.1.8) | Cópia |
 | `equipe_id` | `CHAR(36)` | — | Sim | Identificador de `equipe` (Cadastro e Planejamento), sem FK | — |
 | `responsavel_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Atual; muda na reatribuição (RF-37) |
 | `duracao_planejada_min` | `INTEGER` | — | Sim | Minutos | — |
@@ -524,7 +540,7 @@ Cada mudança de estado do turnaround, com a causa (RF-21; RNF-24). RFs: RF-12, 
 |---|---|---|---|---|---|
 | `id` | `CHAR(36)` | PK | Sim | UUID | — |
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround` | — |
-| `estado_anterior` | `VARCHAR(30)` | — | Não | Texto | Vazio na chegada |
+| `estado_anterior` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | Vazio na chegada |
 | `estado_novo` | `VARCHAR(30)` | — | Sim | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | — |
 | `ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Vazio = Motor de Eventos |
@@ -538,7 +554,7 @@ Cada mudança de estado da tarefa, com a causa (RF-21). RFs: RF-15, RF-16, RF-17
 |---|---|---|---|---|---|
 | `id` | `CHAR(36)` | PK | Sim | UUID | — |
 | `tarefa_id` | `CHAR(36)` | FK | Sim | Identificador de `tarefa` | — |
-| `estado_anterior` | `VARCHAR(20)` | — | Não | Texto | Vazio no acionamento do catálogo |
+| `estado_anterior` | `VARCHAR(20)` | — | Não | Aguardando, Pronta, Em execução, Pausada, Concluída, Não aplicável | Vazio no acionamento do catálogo |
 | `estado_novo` | `VARCHAR(20)` | — | Sim | Aguardando, Pronta, Em execução, Pausada, Concluída, Não aplicável | — |
 | `ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Vazio = Motor de Eventos |
@@ -554,7 +570,7 @@ Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anoni
 | `objeto` | `VARCHAR(40)` | — | Sim | Texto | Tabela alterada |
 | `objeto_id` | `VARCHAR(80)` | — | Sim | Texto | Chave da linha; chave composta escrita como a|b |
 | `acao` | `VARCHAR(30)` | — | Sim | Inclusão, Alteração, Exclusão, Desativação, Anonimização | — |
-| `autor_tipo` | `VARCHAR(20)` | — | Sim | Texto | Usuário ou Motor de Eventos |
+| `autor_tipo` | `VARCHAR(20)` | — | Sim | Usuário, Motor de Eventos | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Obrigatório quando o autor é Usuário |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | Registro ou aviso que causou a ação automática |
 | `gatilho` | `VARCHAR(60)` | — | Não | Texto | Gatilho por horário sem registro (recálculo de minuto, TOBT − X, TOBT + 5, TOBT − 15) |
@@ -609,7 +625,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `voo_chegada` | `VARCHAR(10)` | — | Sim | Texto | — |
 | `voo_partida` | `VARCHAR(10)` | — | Sim | Texto | — |
 | `posicao` | `VARCHAR(10)` | — | Sim | Texto | — |
-| `estado` | `VARCHAR(30)` | — | Não | Texto | Cópia; vazio até o AIBT |
+| `estado` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | Cópia; vazio até o AIBT |
 | `tobt_planejado` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Cópia; começa igual ao planejado (ADR-0003) |
 | `eibt` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
@@ -618,7 +634,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `acgt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `asbt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `aegt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
-| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
+| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso do Exceções e Liberação; o alerta do RF-31 confere se foi registrado |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Também define o período do RF-34 |
 | `pronto_para_liberacao_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Primeira entrada no estado (RF-34); pode diferir do AEGT |
 | `tolerancia_prontidao_min` | `INTEGER` | — | Sim | Minutos | TOBT + 5 (RNF-21) |
@@ -626,6 +642,8 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `antecedencia_embarque_min` | `INTEGER` | — | Sim | Minutos | X do RF-30 |
 | `antecedencia_checagem_min` | `INTEGER` | — | Sim | Minutos | 15 do RF-32 |
 | `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34 |
+| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor ou igual é ignorado |
+| `previsao_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `ocorridoEm` do último aviso de abertura ou de previsão aplicado; aviso mais antigo é ignorado |
 
 ### B.3.2 `tarefa_monitorada`
 
@@ -636,7 +654,7 @@ Cópia da tarefa do plano para calcular e exibir; o catálogo só entra quando a
 | `tarefa_id` | `CHAR(36)` | PK | Sim | Identificador de `tarefa` (Execução em Solo), sem FK | — |
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround_monitorado` | — |
 | `nome` | `VARCHAR(60)` | — | Sim | Texto | — |
-| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Texto | — |
+| `tipo_atividade` | `VARCHAR(20)` | — | Sim | Mesmo domínio de `tarefa_modelo.tipo_atividade` (B.1.8) | Cópia |
 | `equipe_id` | `CHAR(36)` | — | Sim | Identificador de `equipe` (Cadastro e Planejamento), sem FK | — |
 | `responsavel_id` | `CHAR(36)` | — | Sim | Identificador de `usuario` (Cadastro e Planejamento), sem FK | — |
 | `estado` | `VARCHAR(20)` | — | Sim | Aguardando, Pronta, Em execução, Pausada, Concluída, Não aplicável | — |
@@ -655,7 +673,7 @@ Cópia da tarefa do plano para calcular e exibir; o catálogo só entra quando a
 | `codigo_versao` | `INTEGER` | — | Não | Inteiro | RNF-22 |
 | `codigo_atraso` | `CHAR(2)` | — | Não | Texto | — |
 | `codigo_descricao` | `VARCHAR(200)` | — | Não | Texto | Descrição gravada com o registro (RNF-22) |
-| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão da tarefa no último aviso aplicado; aviso com versão menor é ignorado |
+| `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão da tarefa no último aviso aplicado; aviso com versão menor ou igual é ignorado |
 
 ### B.3.3 `dependencia_monitorada`
 
@@ -679,7 +697,7 @@ Cada cálculo da projeção de prontidão (RF-22 pede o registro). RFs: RF-22, R
 | `desvio_planejado_min` | `INTEGER` | — | Sim | Minutos | Projeção − TOBT planejado, com sinal |
 | `desvio_vigente_min` | `INTEGER` | — | Sim | Minutos | Projeção − TOBT vigente, com sinal |
 | `calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
-| `causa_tipo` | `VARCHAR(30)` | — | Sim | Início, Conclusão, Pausa, Retomada, Não aplicável, Chegada, Correção do AIBT, Replanejamento, Atualização do TOBT, Recálculo de minuto, Volta após falha | — |
+| `causa_tipo` | `VARCHAR(30)` | — | Sim | Início, Conclusão, Pausa, Retomada, Não aplicável, Chegada, Correção do AIBT, Plano confirmado, Replanejamento, Atualização do TOBT, Recálculo de minuto, Volta após falha | Plano confirmado: confirmação e nova confirmação do plano antes do início (RF-5) |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | causaId do aviso; vazio no recálculo de minuto |
 | `causa_tarefa_id` | `CHAR(36)` | FK | Não | Identificador de `tarefa_monitorada` | Para exibir a causa |
 
@@ -738,23 +756,24 @@ Alertas emitidos e encerrados (RF-27 a RF-31, RF-33); dados do gatilho por tipo.
 | `tipo` | `VARCHAR(30)` | — | Sim | Tarefa pronta não iniciada, Projeção além de TOBT + 5, Viabilidade, Embarque não iniciado, Prontidão não registrada | — |
 | `tarefa_id` | `CHAR(36)` | FK | Não | Identificador de `tarefa_monitorada` | RF-27 e RF-30 |
 | `critico` | `BOOLEAN` | — | Sim | Sim ou não | Classificação na emissão (RF-33; medida no RF-34) |
-| `ciclo` | `INTEGER` | — | Sim | Inteiro | Número da emissão; rearme do RF-28 |
+| `ciclo` | `INTEGER` | — | Sim | Inteiro | Número da emissão; rearme do RF-27 a RF-31 (UC25, RN9) |
 | `emitido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `minutos_espera` | `INTEGER` | — | Não | Inteiro | RF-27 |
 | `projecao_id` | `CHAR(36)` | FK | Não | Identificador de `projecao` | RF-28: projeção e desvio |
 | `eibt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | RF-29, na emissão |
 | `mttt_min` | `INTEGER` | — | Não | Minutos | RF-29, na emissão |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | RF-29 a RF-31, na emissão |
-| `estado_turnaround` | `VARCHAR(30)` | — | Não | Texto | RF-31, na emissão |
+| `estado_turnaround` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | RF-31, na emissão |
 | `encerrado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Pelo aviso da ação (RF-38) |
 | `acao_id` | `CHAR(36)` | — | Não | Identificador de `acao_alerta` (Exceções e Liberação), sem FK | Cópia do aviso da ação |
-| `tipo_acao` | `VARCHAR(30)` | — | Não | Texto | Cópia |
+| `tipo_acao` | `VARCHAR(30)` | — | Não | Reatribuir tarefa, Replanejar, Atualizar a previsão, Abrir exceção | Cópia |
 | `acao_autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia (UC26 E1) |
 | `acao_registrada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia; indicador de 2 min (RF-34) |
 
 **Restrições:**
 
 - UNIQUE (turnaround_id, tipo, tarefa_id, ciclo)
+- Regra: `tarefa_id` fica vazio nos alertas do RF-28, do RF-29 e do RF-31. Num banco SQL, dois campos vazios contam como diferentes, e o UNIQUE acima, sozinho, não impede dois desses alertas com o mesmo turnaround, tipo e ciclo. No Monitoramento, o MongoDB guarda o campo vazio ou ausente como valor num índice único comum, sem `sparse` nem `partialFilterExpression`, e a chave vale também para esses alertas (ADR-0019).
 - Regra: campos do gatilho preenchidos conforme o tipo
 
 ### B.3.9 `alerta_tarefa`
@@ -765,7 +784,7 @@ Tarefas listadas no alerta, com o estado na emissão (RF-28, RF-30, RF-31). RFs:
 |---|---|---|---|---|---|
 | `alerta_id` | `CHAR(36)` | PK, FK | Sim | Identificador de `alerta` | — |
 | `tarefa_id` | `CHAR(36)` | PK, FK | Sim | Identificador de `tarefa_monitorada` | — |
-| `estado` | `VARCHAR(20)` | — | Sim | Texto | Estado na emissão |
+| `estado` | `VARCHAR(20)` | — | Sim | Aguardando, Pronta, Em execução, Pausada, Concluída, Não aplicável | Estado na emissão |
 | `atraso_inicio_min` | `INTEGER` | — | Não | Minutos | — |
 | `atraso_fim_min` | `INTEGER` | — | Não | Minutos | — |
 
@@ -779,13 +798,13 @@ Aviso de TOBT − 15 e checagem com as equipes, um por turnaround (RF-32, RF-35)
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround_monitorado` | — |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | TOBT que gerou o aviso |
 | `emitido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
-| `encerrado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Horário da checagem (RF-35) |
+| `encerrado_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Horário da checagem (RF-35) ou da entrada em "Pronto para liberação", sem autor (RF-32; UC27, RN8) |
 | `autor_checagem_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | — |
 
 **Restrições:**
 
 - UNIQUE (turnaround_id)
-- CHECK: encerrado_em e autor_checagem_id juntos
+- CHECK: autor_checagem_id exige encerrado_em
 
 ### B.3.11 `atualizacao_tobt_monitorada`
 
@@ -809,7 +828,7 @@ Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anoni
 | `objeto` | `VARCHAR(40)` | — | Sim | Texto | Tabela alterada |
 | `objeto_id` | `VARCHAR(80)` | — | Sim | Texto | Chave da linha; chave composta escrita como a|b |
 | `acao` | `VARCHAR(30)` | — | Sim | Inclusão, Alteração, Exclusão, Desativação, Anonimização | — |
-| `autor_tipo` | `VARCHAR(20)` | — | Sim | Texto | Usuário ou Motor de Eventos |
+| `autor_tipo` | `VARCHAR(20)` | — | Sim | Usuário, Motor de Eventos | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Obrigatório quando o autor é Usuário |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | Registro ou aviso que causou a ação automática |
 | `gatilho` | `VARCHAR(60)` | — | Não | Texto | Gatilho por horário sem registro (recálculo de minuto, TOBT − X, TOBT + 5, TOBT − 15) |
@@ -944,7 +963,7 @@ Exceção do turnaround (RF-36, RF-40). RFs: RF-36, RF-39, RF-40.
 | `codigo_versao` | `INTEGER` | FK | Sim | Identificador de `codigo_atraso` | — |
 | `codigo_atraso` | `CHAR(2)` | FK | Sim | Identificador de `codigo_atraso` | — |
 | `descricao_problema` | `VARCHAR(500)` | — | Sim | Texto | — |
-| `estado_turnaround_anterior` | `VARCHAR(30)` | — | Não | Texto | Resposta da Execução em Solo, só para exibir (UC33) |
+| `estado_turnaround_anterior` | `VARCHAR(30)` | — | Não | Em solo, Operações em andamento, Em exceção, Pronto para liberação, Liberado, Fora de bloco | Resposta da Execução em Solo, só para exibir (UC33) |
 | `aberta_por_id` | `CHAR(36)` | — | Sim | Identificador de `usuario` (Cadastro e Planejamento), sem FK | — |
 | `aberta_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `solucao` | `VARCHAR(500)` | — | Não | Texto | RF-40 |
@@ -1041,7 +1060,7 @@ Trilha de auditoria do serviço (RNF-2, RNF-6); sem FK, para sobreviver à anoni
 | `objeto` | `VARCHAR(40)` | — | Sim | Texto | Tabela alterada |
 | `objeto_id` | `VARCHAR(80)` | — | Sim | Texto | Chave da linha; chave composta escrita como a|b |
 | `acao` | `VARCHAR(30)` | — | Sim | Inclusão, Alteração, Exclusão, Desativação, Anonimização | — |
-| `autor_tipo` | `VARCHAR(20)` | — | Sim | Texto | Usuário ou Motor de Eventos |
+| `autor_tipo` | `VARCHAR(20)` | — | Sim | Usuário, Motor de Eventos | — |
 | `autor_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Obrigatório quando o autor é Usuário |
 | `causa_id` | `CHAR(36)` | — | Não | UUID | Registro ou aviso que causou a ação automática |
 | `gatilho` | `VARCHAR(60)` | — | Não | Texto | Gatilho por horário sem registro (recálculo de minuto, TOBT − X, TOBT + 5, TOBT − 15) |
@@ -1083,7 +1102,7 @@ Avisos já recebidos, para descartar o repetido (ADR-0016).
 
 ### B.4.14 `pedido_pendente` (técnica)
 
-Pedido à Execução em Solo gravado antes da chamada e retomado depois de uma queda (ADR-0020; RNF-20).
+Pedido à Execução em Solo gravado antes da chamada e retomado depois de uma queda (ADR-0020; RNF-20). Vale para a abertura e o encerramento da exceção, a reatribuição, o replanejamento e a liberação; na retomada, o serviço pergunta à Execução em Solo, pelo `registro_id`, se o pedido foi aplicado.
 
 | Campo | Tipo | Chave | Obrigatório | Domínio ou valores | Descrição |
 |---|---|---|---|---|---|

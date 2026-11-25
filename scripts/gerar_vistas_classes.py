@@ -86,7 +86,8 @@ tec('tecnica-acompanhamento', 'Painel, linha do tempo, alertas, checagem e indic
   'monitoramento.Painel', 'monitoramento.LinhaPainel', 'monitoramento.LinhaDoTempo', 'monitoramento.RelatorioAderencia', 'monitoramento.Indicador',
   'monitoramento.PainelNotificador', 'monitoramento.TurnaroundMonitoradoRepository', 'monitoramento.ProjecaoRepository',
   'monitoramento.CaminhoCriticoRepository', 'monitoramento.AlertaRepository', 'monitoramento.AvisoChecagemRepository',
-  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView'])
+  'monitoramento.AtualizacaoTobtMonitoradaRepository', 'excecoes.RegistroAcaoAlertaView',
+  'cadastro.UsuarioController', 'cadastro.EquipeController'])
 tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o alerta', [
   'excecoes.ExcecaoView', 'excecoes.RegistroAcaoAlertaView', 'excecoes.AtualizacaoTobtView',
   'excecoes.ExcecaoController', 'excecoes.AtualizacaoTobtController', 'excecoes.CoordenadorNotificador',
@@ -95,7 +96,8 @@ tec('tecnica-excecoes', 'Exceções, atualização do TOBT e ação sobre o aler
   'excecoes.ExcecaoService', 'excecoes.AcaoAlertaService', 'excecoes.AtualizacaoTobtService', 'excecoes.PedidoService',
   'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository', 'excecoes.CodigoAtrasoRepository', 'excecoes.AcaoAlertaRepository',
   'excecoes.SolicitacaoAtualizacaoTobtRepository', 'excecoes.AtualizacaoTobtRepository', 'excecoes.ExecucaoEmSoloCliente',
-  'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.MudancaEstado'])
+  'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.MudancaEstado',
+  'cadastro.UsuarioController'])
 tec('tecnica-reatribuicao-replanejamento', 'Reatribuição e replanejamento', [
   'excecoes.ReatribuicaoView', 'excecoes.ReplanejamentoView',
   'excecoes.ReatribuicaoController', 'excecoes.ReplanejamentoController',
@@ -112,7 +114,8 @@ tec('tecnica-liberacao', 'Liberação e saída da posição', [
   'excecoes.ExecucaoEmSoloCliente', 'excecoes.SituacaoLiberacao', 'excecoes.TurnaroundLiberavel', 'excecoes.SituacaoTurnaround',
   'excecoes.TarefaResumo', 'excecoes.AtualizacaoTobtService',
   'execucao.SaidaPosicaoView', 'execucao.TurnaroundController', 'execucao.TurnaroundService', 'execucao.TurnaroundRepository', 'execucao.SituacaoTurnaround',
-  'comum.PublicadorAvisos', 'excecoes.ConsumidorAvisosExcecoes', 'excecoes.TurnaroundReferenciaService'])
+  'comum.PublicadorAvisos', 'excecoes.ConsumidorAvisosExcecoes', 'excecoes.TurnaroundReferenciaService',
+  'cadastro.UsuarioController'])
 
 # Disposição de cada vista, escolhida para a figura caber na página do PDF sem linhas amontoadas
 # (medida por scripts/medir_figuras_pdf.py). "empilhar" põe a segunda classe uma camada abaixo da primeira,
