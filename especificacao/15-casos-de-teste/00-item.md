@@ -10,7 +10,9 @@ O critério de aceite é escrito como USnnn-CAn, em que n é o número da linha 
 de teste pode citar mais de um, separados por vírgula. A planilha entra só no PDF (B4).
 ID provisório por área durante a escrita, CT-A001, CT-B001, CT-C001 e CT-D001 em diante, cada área com a sua
 sequência; na consolidação, um script renumera tudo para CT-001 em diante, na ordem do documento (ADR-0022), com
-scripts/renumerar_casos_de_teste.py; scripts/conferir_casos_de_teste.py confere C15.1, C15.2, C15.3 e C15.5. -->
+scripts/renumerar_casos_de_teste.py, que troca o ID nos .md e .puml de especificacao/, fora dos comentários HTML; fora
+de especificacao/ (CHANGELOG, CONTEXT.md, ADRs), os IDs provisórios ficam como histórico ou exemplo, e a tabela
+entregas/ra2-renumeracao.md dá a correspondência; scripts/conferir_casos_de_teste.py confere C15.1, C15.2, C15.3 e C15.5. -->
 
 Os casos de teste verificam se o Aircraft Turnaround Orchestration System faz o que as estórias de usuário (item 7) e as especificações de caso de uso (item 10) descrevem. Eles estão numa planilha, uma tabela por caso de uso, na ordem dos casos de uso. Cada linha é um caso de teste que outra pessoa consegue executar sem conhecer quem o escreveu: diz de onde parte, com que dados, o que fazer e o que deve acontecer.
 
@@ -30,7 +32,7 @@ Os casos de teste verificam se o Aircraft Turnaround Orchestration System faz o 
 
 ## 15.2 Massa de teste e ambiente
 
-Cada área descreve, antes da planilha, a massa de teste que os seus casos usam: usuários, equipes, turnarounds, tarefas e registros, com os identificadores universais únicos (UUID) de cada um. Os casos de teste rodam num ambiente com relógio controlado. As telas mostram o horário local de Brasília, e o sistema grava em tempo universal coordenado (UTC), como manda a ADR-0016; cada área diz a data e o fuso que a sua massa usa. Os parâmetros configuráveis do requisito não funcional (RNF) 21, como as tolerâncias e os gatilhos dos alertas, têm o valor escrito na massa de cada área.
+Cada área descreve, antes da planilha, a massa de teste que os seus casos usam: usuários, equipes, turnarounds, tarefas e registros, com os identificadores universais únicos (UUID) de cada um. Os casos de teste rodam num ambiente com relógio controlado. As telas mostram o horário local de Brasília, e o sistema grava em tempo universal coordenado (UTC), como manda a ADR-0016; cada área diz a data e o fuso que a sua massa usa. Os parâmetros configuráveis do requisito não funcional (RNF) 21, como as tolerâncias e os gatilhos dos alertas, têm o valor escrito na massa da área que os usa.
 
 ## 15.3 Cobertura e conferência
 
