@@ -37,7 +37,7 @@ namespace execucao {
     - planoRecebidoEm: DateTime
     - chavePlano: UUID
     - versao: Integer
-    - tobtVigente: DateTime [0..1]
+    - tobtVigente: DateTime
     - tobtVigenteOcorridoEm: DateTime [0..1]
     - ardt: DateTime [0..1]
     - liberadoPorId: UUID [0..1]
@@ -206,6 +206,7 @@ namespace execucao {
     - vooPartida: String
     - matricula: String
     - posicao: String
+    - tobtPlanejado: DateTime
     - permiteComPassageiros: Boolean
     - politicaVersao: Integer [0..1]
     - tarefas: List<TarefaPlanejada>
