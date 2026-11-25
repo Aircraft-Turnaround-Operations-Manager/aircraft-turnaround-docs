@@ -5,7 +5,7 @@ tipo: decisao
 decisao: D25
 status: aceita
 data: 2026-11-24
-decisor: Grupo (aprovação dos integrantes no pull request)
+decisor: Rodrigo Alves
 itens_template: [13, 14]
 areas: [A, B, C, D]
 fontes: []
@@ -13,7 +13,7 @@ relacionados: [adr-0016, adr-0023, adr-0015, adr-0020]
 ---
 # ADR-0025 — Token de serviço nos pedidos entre os serviços
 
-- **Status:** aceita, pela aprovação do grupo no pull request [#255](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/255), inclusive a do Eduardo Fabri, responsável pela porta de entrada. · **Data:** 24/11/2026 · **Decisor:** grupo, pela aprovação do pull request · **Complementa:** [ADR-0016](0016-contrato-entre-os-servicos.md), pontos 2 e 3, e [ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md), ponto 1
+- **Status:** aceita, pela aprovação do Rodrigo Alves no pull request [#255](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/255). · **Data:** 24/11/2026 · **Decisor:** Rodrigo Alves · **Complementa:** [ADR-0016](0016-contrato-entre-os-servicos.md), pontos 2 e 3, e [ADR-0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md), ponto 1
 
 ## Contexto
 
