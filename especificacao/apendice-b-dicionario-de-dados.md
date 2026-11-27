@@ -896,7 +896,7 @@ Pedido ao Coordenador de Turnaround quando a projeção se afasta 5 min do vigen
 | `id` | `CHAR(36)` | PK | Sim | UUID | — |
 | `turnaround_id` | `CHAR(36)` | FK | Sim | Identificador de `turnaround_referencia` | — |
 | `projecao_prontidao` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Projeção que disparou |
-| `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
+| `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `calculadaEm` da projeção que disparou, recebido no aviso `ProjecaoRecalculada` (RF-41) |
 | `solicitada_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `encerrada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `motivo_encerramento` | `VARCHAR(30)` | — | Não | Atendida, Projeção de volta à faixa, Turnaround liberado (UC34) | — |
