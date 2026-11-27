@@ -12,7 +12,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-1 | Autenticar acesso do usuário | Obj. 2 | Usuário | US001 | UC01 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-10, RNF-19, RNF-20 | falha_login (Cadastro e Planejamento), sessao (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
 | RF-2 | Gerenciar cadastro de usuários e perfis | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento), usuario_vinculado (Cadastro e Planejamento) |
 | RF-3 | Abrir turnaround da aeronave | Obj. 1 e 2 | Coordenador de Turnaround | US003 | UC03 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | companhia (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
-| RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), equipe (Cadastro e Planejamento), modelo_tarefa (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
+| RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05, UC20 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), equipe (Cadastro e Planejamento), modelo_tarefa (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
 | RF-5 | Confirmar plano inicial do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06, UC24 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_plano (Cadastro e Planejamento), equipe (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
 | RF-6 | Aplicar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US006 | UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | modelo_tarefa (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
 | RF-7 | Configurar pontos de confirmação das tarefas | Obj. 2 | Coordenador de Turnaround | US007 | UC07, UC19 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | ponto_confirmacao_modelo (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
@@ -224,14 +224,17 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US020-CA2 | CT-B036, CT-B084 |
 | US020-CA3 | CT-B047, CT-B086, CT-B088, CT-B114, CT-B115 |
 | US020-CA4 | CT-B085 |
-| US020-CA5 | CT-B067, CT-B087, CT-B118 |
+| US020-CA5 | CT-B067, CT-B087 |
 | US021-CA1 | CT-B035, CT-B092, CT-B101 |
-| US021-CA2 | CT-B046, CT-B091, CT-B096, CT-B097, CT-B100, CT-B102, CT-B117 |
+| US021-CA2 | CT-B046, CT-B091, CT-B096, CT-B097, CT-B100, CT-B102 |
 | US021-CA3 | CT-B093 |
 | US021-CA4 | CT-B066, CT-B094 |
 | US021-CA5 | CT-B047, CT-B095 |
-| US021-CA6 | CT-B098, CT-B119 |
+| US021-CA6 | CT-B098 |
 | US021-CA7 | CT-B099 |
+| US021-CA8 | CT-B117 |
+| US021-CA9 | CT-B119 |
+| US021-CA10 | CT-B118 |
 | US022-CA1 | CT-C004, CT-C023, CT-C033, CT-C034, CT-C035, CT-C037, CT-C038 |
 | US022-CA2 | CT-C030 |
 | US022-CA3 | CT-C032 |
