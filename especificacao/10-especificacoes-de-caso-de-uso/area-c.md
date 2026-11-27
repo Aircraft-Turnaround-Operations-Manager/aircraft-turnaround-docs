@@ -336,7 +336,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-| E4.1. O Motor de Eventos não emite o alerta de embarque não iniciado para o turnaround (RN4; US030, critérios 5 e 6) e continua verificando os demais gatilhos do turnaround. O caso de uso termina. |  |
+| E4.1. O Motor de Eventos não emite o alerta de embarque não iniciado (RN4; US030, critérios 5 e 6), e o caso de uso termina. |  |
 
 ## UC26 – Consultar lista de alertas abertos
 
