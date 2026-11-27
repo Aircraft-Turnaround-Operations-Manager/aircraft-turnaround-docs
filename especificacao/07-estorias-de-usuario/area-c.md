@@ -120,7 +120,7 @@
 ## US030 – REQUISITO RF-30: Emitir alerta de embarque não iniciado
 
 **COMO:** Motor de Eventos
-**POSSO:** emitir um alerta de risco ao horário ao Coordenador de Turnaround quando o ASBT não foi registrado até X minutos antes do TOBT vigente, sendo X um parâmetro configurável
+**POSSO:** emitir um alerta de risco ao horário ao Coordenador de Turnaround quando o turnaround tem tarefa de embarque (RF-4) e o ASBT não foi registrado até X minutos antes do TOBT vigente, sendo X um parâmetro configurável
 **PARA:** que o Coordenador de Turnaround saiba a tempo que o TOBT pode não ser cumprido, como prevê o alerta de embarque não iniciado da tomada de decisão colaborativa em aeroportos (A-CDM) [2]
 
 **Critérios de Aceite:**
@@ -131,6 +131,7 @@
 | 2 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-MBC é 10:30 <br> **QUANDO:** o ASBT do PR-MBC é registrado às 10:08 <br> **ENTÃO:** o sistema não emite o alerta de embarque não iniciado para o PR-MBC |
 | 3 | **DADO QUE:** X é 20 minutos e o TOBT vigente do PR-XMA passa de 10:30 para 10:40 antes das 10:10 <br> **QUANDO:** às 10:10 o ASBT ainda não foi registrado <br> **ENTÃO:** o sistema não emite alerta às 10:10 e passa a verificar o ASBT às 10:20 |
 | 4 | **DADO QUE:** X é 20 minutos, o alerta de embarque não iniciado do PR-XMA, emitido às 10:10, teve a ação registrada (RF-38) e o ASBT continua sem registro <br> **QUANDO:** às 10:37 o TOBT vigente passa de 10:30 para 10:45 <br> **ENTÃO:** o sistema emite na hora um novo alerta de embarque não iniciado, com o TOBT vigente 10:45, porque o novo limite (10:25) já passou |
+| 5 | **DADO QUE:** X é 20 minutos, o TOBT vigente do PR-TSE é 15:40 e o PR-TSE é um traslado sem passageiros, sem tarefa de embarque no plano (RF-4) <br> **QUANDO:** às 15:20 o ASBT do PR-TSE não foi registrado <br> **ENTÃO:** o sistema não emite o alerta de embarque não iniciado para o PR-TSE |
 
 ## US031 – REQUISITO RF-31: Emitir alerta de prontidão não registrada
 
