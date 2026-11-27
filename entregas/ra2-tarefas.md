@@ -23,9 +23,9 @@ As áreas do RA1 passaram a corresponder aos quatro serviços (ADR-0015). Depois
 |---|---|---|---|---|
 | **A** | Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 51 critérios | Eduardo Fabri (`eduardofabrii`) |
 | **B** | Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 50 critérios | João Pedro Cardoso de Liz (`Jcliz`) |
-| **C** | Monitoramento | 7 (UC22 a UC28) | 14 estórias, 58 critérios | João Vitor Correa Oliveira (`jvecodev`) |
+| **C** | Monitoramento | 7 (UC22 a UC28) | 14 estórias, 59 critérios | João Vitor Correa Oliveira (`jvecodev`) |
 | **D** | Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios | Rodrigo Alves (`rdsalvesPUC`) |
-| **Total** | | **37** | **44 estórias, 192 critérios** | |
+| **Total** | | **37** | **44 estórias, 193 critérios** | |
 
 A divisão por área serve só para dividir o trabalho. Diagramas e textos agrupam por função do sistema.
 
@@ -131,7 +131,7 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
   - Rótulos de cada uma: `ra2`, `item-14`, `por-integrante`, `area-x`
   - Critérios de cada sub-issue: C14.2 a C14.8 para todos os casos de uso da área
 
-**T15 · [RA2][Item 15] Casos de teste (192 critérios de aceite)** — tarefa-mãe
+**T15 · [RA2][Item 15] Casos de teste (193 critérios de aceite)** — tarefa-mãe
 - Responsável: quem puxar (consolidação) · Rótulos: `ra2`, `item-15`
 - Descrição: começar pela conferência cruzada do item. Depois, juntar as planilhas das áreas, numerar os casos de teste de forma única (CT-nnn) e conferir por script a cobertura dos critérios e dos fluxos.
 - Critérios: C15.1 a C15.8
@@ -139,7 +139,7 @@ Total: **23 issues**, sendo 11 principais e 12 sub-issues. A issue #136, fechada
 - Sub-issues:
   - **T15-A** · Casos de teste da área A (11 estórias, 51 critérios; UC01 a UC11) · `eduardofabrii` · `area-a`
   - **T15-B** · Casos de teste da área B (11 estórias, 50 critérios; UC12 a UC21 e UC37) · `Jcliz` · `area-b`
-  - **T15-C** · Casos de teste da área C (14 estórias, 58 critérios; UC22 a UC28) · `jvecodev` · `area-c`
+  - **T15-C** · Casos de teste da área C (14 estórias, 59 critérios; UC22 a UC28) · `jvecodev` · `area-c`
   - **T15-D** · Casos de teste da área D (8 estórias, 33 critérios; UC29 a UC36) · `rdsalvesPUC` · `area-d`
   - Rótulos de cada uma: `ra2`, `item-15`, `por-integrante`, `area-x`
   - Critérios de cada sub-issue: C15.1 a C15.7 para todas as estórias e casos de uso da área

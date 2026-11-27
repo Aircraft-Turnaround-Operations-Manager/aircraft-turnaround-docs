@@ -271,6 +271,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US030-CA3 | CT-C056 |
 | US030-CA4 | CT-C090 |
 | US030-CA5 | CT-C095 |
+| US030-CA6 | CT-C096 |
 | US031-CA1 | CT-C057 |
 | US031-CA2 | CT-C057 |
 | US031-CA3 | CT-C058 |
