@@ -343,7 +343,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | A4.1. O Motor de Eventos grava o horário da conclusão como AEGT (UC20) e muda o turnaround para "Pronto para liberação" (UC21). O caso de uso termina. |
+|  | A4.1. O Motor de Eventos grava o AEGT pela regra do UC20 (RN3), com o maior horário da ação entre os registros que levaram as tarefas obrigatórias a "Concluída" ou "Não aplicável", e muda o turnaround para "Pronto para liberação" (UC21). O caso de uso termina. |
 
 ### Fluxo de exceção E1 – Tarefa não iniciada (passo 6)
 
@@ -490,7 +490,7 @@
 | **Descrição** | O Operador de Solo/Rampa marca como "Não aplicável", com justificativa escrita, uma tarefa da sua equipe atribuída a ele que ainda não foi iniciada e que o modelo de tarefas do turnaround permite marcar assim, por exemplo um serviço que aquela aeronave não vai receber. Inclui os casos de uso UC20 (marcos), porque a marcação da última tarefa obrigatória pendente grava o AEGT, e UC21 (propagação), porque a tarefa "Não aplicável" deixa de segurar as sucessoras. Atende ao RF-18 e à US018. |
 | **Pré-condições** | 1. O Operador de Solo/Rampa está autenticado com o perfil de operador.<br>2. A tarefa é da equipe do operador, está atribuída a ele, está no estado "Aguardando" ou "Pronta", e o modelo de tarefas do turnaround permite marcá-la como "Não aplicável".<br>3. A chegada da aeronave à posição está registrada (UC12). |
 | **Pós-condições** | **Sucesso:** a tarefa está no estado "Não aplicável", com a justificativa, o usuário e o horário gravados, e o Motor de Eventos processou o registro (UC20 e UC21).<br>**Recusa:** a tarefa mantém o estado anterior e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ser marcada como "Não aplicável", e só depois da chegada da aeronave à posição: antes dela, o turnaround ainda não tem estado (RF-18).<br>**RN2.** Só a tarefa que o modelo de tarefas do turnaround permite marcar como "Não aplicável" pode ser marcada; o modelo é definido no UC04 ([Inferência], base: [22][45]).<br>**RN3.** A marcação exige justificativa escrita (RF-18).<br>**RN4.** A marcação grava o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-8).<br>**RN5.** Para a propagação, a tarefa "Não aplicável" conta como terminada, igual à "Concluída": as sucessoras sem outra predecessora pendente passam para "Pronta" (RF-21); se era a última tarefa obrigatória pendente, o horário da marcação é gravado como fim real do atendimento em solo (AEGT) [2][4] e o turnaround passa para "Pronto para liberação" (RF-20, RF-21).<br>**RN6.** A tarefa "Não aplicável" é final: não aceita início, pausa, conclusão nem leitura de QR Code. |
+| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ser marcada como "Não aplicável", e só depois da chegada da aeronave à posição: antes dela, o turnaround ainda não tem estado (RF-18).<br>**RN2.** Só a tarefa que o modelo de tarefas do turnaround permite marcar como "Não aplicável" pode ser marcada; o modelo é definido no UC04 ([Inferência], base: [22][45]).<br>**RN3.** A marcação exige justificativa escrita (RF-18).<br>**RN4.** A marcação grava o usuário e o horário da ação; sem conexão, vale o horário da ação, e não o do envio (RNF-8).<br>**RN5.** Para a propagação, a tarefa "Não aplicável" conta como terminada, igual à "Concluída": as sucessoras sem outra predecessora pendente passam para "Pronta" (RF-21); se era a última tarefa obrigatória pendente, o Motor de Eventos grava o fim real do atendimento em solo (AEGT) [2][4] pela regra do UC20 (RN3), com o maior horário da ação entre os registros que levaram as tarefas obrigatórias a esses estados, e o turnaround passa para "Pronto para liberação" (RF-20, RF-21).<br>**RN6.** A tarefa "Não aplicável" é final: não aceita início, pausa, conclusão nem leitura de QR Code. |
 | **Protótipo(s) de tela** | Formulário de marcação como "Não aplicável", com o campo de justificativa.<br>![UC18 – marcar como "Não aplicável"](prototipos/uc-b5-nao-aplicavel.png) |
 
 ### Fluxo básico
@@ -527,7 +527,7 @@
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | A3.1. O Motor de Eventos grava o horário da marcação como AEGT (UC20) e muda o turnaround para "Pronto para liberação" (UC21). O caso de uso termina. |
+|  | A3.1. O Motor de Eventos grava o AEGT pela regra do UC20 (RN3), com o maior horário da ação entre os registros que levaram as tarefas obrigatórias a "Concluída" ou "Não aplicável", e muda o turnaround para "Pronto para liberação" (UC21). O caso de uso termina. |
 
 ### Fluxo de exceção E1 – Sem justificativa (passo 6)
 

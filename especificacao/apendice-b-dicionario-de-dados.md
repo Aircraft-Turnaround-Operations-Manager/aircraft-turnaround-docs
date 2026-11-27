@@ -362,8 +362,8 @@ Turnaround em atendimento: dono do estado (ADR-0015). RFs: RF-12, RF-14, RF-21, 
 | `plano_recebido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | — |
 | `versao` | `INTEGER` | — | Sim | Inteiro | Conta as mudanças de estado e de marco do turnaround; vai nos avisos de estado e de marco para quem guarda cópia ordenar |
 | `chave_plano` | `CHAR(36)` | — | Sim | UUID | Chave do último plano recebido; no reenvio com a mesma chave, responde o mesmo resultado sem aplicar de novo (ADR-0023, ponto 5) |
-| `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do Exceções e Liberação, só para exibir (UC37) |
-| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado |
+| `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Começa com o TOBT planejado, recebido com o plano; depois, cópia do Exceções e Liberação, só para exibir (UC37) |
+| `tobt_vigente_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `ocorridoEm` do último aviso de TOBT vigente aplicado; aviso mais antigo é ignorado; vazio até o primeiro aviso |
 | `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Recebido no pedido de liberação (horário da confirmação), só para exibir (UC37) |
 | `liberado_por_id` | `CHAR(36)` | — | Não | Identificador de `usuario` (Cadastro e Planejamento), sem FK | Cópia, só para exibir (UC37) |
 
@@ -641,7 +641,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `espera_tarefa_pronta_min` | `INTEGER` | — | Sim | Minutos | Y do RF-27 |
 | `antecedencia_embarque_min` | `INTEGER` | — | Sim | Minutos | X do RF-30 |
 | `antecedencia_checagem_min` | `INTEGER` | — | Sim | Minutos | 15 do RF-32 |
-| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34 |
+| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34; vale este no indicador e na lista de alertas (#183) |
 | `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor ou igual é ignorado |
 | `previsao_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `ocorridoEm` do último aviso de abertura ou de previsão aplicado; aviso mais antigo é ignorado |
 
@@ -884,7 +884,7 @@ Turnaround e TOBT vigente: dono do vigente (ADR-0015), com os parâmetros vigent
 | `projecao_prontidao` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Última projeção recebida do Monitoramento (RF-41) |
 | `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `limiar_atualizacao_tobt_min` | `INTEGER` | — | Sim | Minutos | 5 min do RF-41 (RNF-21; ADR-0020) |
-| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min (RNF-21; ADR-0020) |
+| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min (RNF-21; ADR-0020); só para mostrar o tempo restante no UC31 (#183) |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso; só para o prazo do RNF-6 |
 
 ### B.4.2 `solicitacao_atualizacao_tobt`
