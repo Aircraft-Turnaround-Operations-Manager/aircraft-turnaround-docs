@@ -641,7 +641,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `espera_tarefa_pronta_min` | `INTEGER` | — | Sim | Minutos | Y do RF-27 |
 | `antecedencia_embarque_min` | `INTEGER` | — | Sim | Minutos | X do RF-30 |
 | `antecedencia_checagem_min` | `INTEGER` | — | Sim | Minutos | 15 do RF-32 |
-| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34 |
+| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min do RF-34; vale este no indicador e na lista de alertas (#183) |
 | `versao_origem` | `INTEGER` | — | Sim | Inteiro | Versão do turnaround no último aviso de estado ou de marco aplicado; 0 até o primeiro; aviso de versão menor ou igual é ignorado |
 | `previsao_ocorrido_em` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | `ocorridoEm` do último aviso de abertura ou de previsão aplicado; aviso mais antigo é ignorado |
 
@@ -884,7 +884,7 @@ Turnaround e TOBT vigente: dono do vigente (ADR-0015), com os parâmetros vigent
 | `projecao_prontidao` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Última projeção recebida do Monitoramento (RF-41) |
 | `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `limiar_atualizacao_tobt_min` | `INTEGER` | — | Sim | Minutos | 5 min do RF-41 (RNF-21; ADR-0020) |
-| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min (RNF-21; ADR-0020) |
+| `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min (RNF-21; ADR-0020); só para mostrar o tempo restante no UC31 (#183) |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso; só para o prazo do RNF-6 |
 
 ### B.4.2 `solicitacao_atualizacao_tobt`
