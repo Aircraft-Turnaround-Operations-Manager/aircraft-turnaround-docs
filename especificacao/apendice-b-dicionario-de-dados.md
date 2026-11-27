@@ -882,7 +882,7 @@ Turnaround e TOBT vigente: dono do vigente (ADR-0015), com os parâmetros vigent
 | `tobt_planejado` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Recebido na abertura |
 | `tobt_vigente` | `TIMESTAMP WITH TIME ZONE` | — | Sim | Data, hora e fuso | Começa igual ao planejado (ADR-0003); só o RF-41 muda |
 | `projecao_prontidao` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Última projeção recebida do Monitoramento (RF-41) |
-| `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
+| `projecao_calculada_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | `calculadaEm` da última `ProjecaoRecalculada` aplicada; projeção calculada antes é ignorada (#259) |
 | `limiar_atualizacao_tobt_min` | `INTEGER` | — | Sim | Minutos | 5 min do RF-41 (RNF-21; ADR-0020) |
 | `prazo_acao_critica_min` | `INTEGER` | — | Sim | Minutos | 2 min (RNF-21; ADR-0020); só para mostrar o tempo restante no UC31 (#183) |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso; só para o prazo do RNF-6 |
