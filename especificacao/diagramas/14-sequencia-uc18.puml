@@ -132,7 +132,7 @@ else o operador escreve a justificativa e confirma (passo 5)
               note over MS, PS : UC21, passos 2 a 4: a sucessora passa para "Pronta"\ne aparece assim na lista do responsável (UC14)
             end
             opt A3: era a última tarefa obrigatória pendente
-              note over MS, PS : UC20, A4: AEGT = horário da marcação;\nUC21, A4: turnaround → "Pronto para liberação"
+              note over MS, PS : UC20, A4: AEGT = maior horário da ação entre os registros\nque terminaram as tarefas obrigatórias (RN3);\nUC21, A4: turnaround → "Pronto para liberação"
             end
             S -> TR : salvar(turnaround)
             activate TR

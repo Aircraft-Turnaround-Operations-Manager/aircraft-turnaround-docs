@@ -12,7 +12,7 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | RF-1 | Autenticar acesso do usuário | Obj. 2 | Usuário | US001 | UC01 | RNF-1, RNF-2, RNF-3, RNF-5, RNF-6, RNF-10, RNF-19, RNF-20 | falha_login (Cadastro e Planejamento), sessao (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
 | RF-2 | Gerenciar cadastro de usuários e perfis | Obj. 2 | Administrador do Sistema | US002 | UC02 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | equipe (Cadastro e Planejamento), tarefa (Execução em Solo), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento), usuario_vinculado (Cadastro e Planejamento) |
 | RF-3 | Abrir turnaround da aeronave | Obj. 1 e 2 | Coordenador de Turnaround | US003 | UC03 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | companhia (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
-| RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), equipe (Cadastro e Planejamento), modelo_tarefa (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
+| RF-4 | Criar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US004 | UC04, UC05, UC20, UC25 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_modelo (Cadastro e Planejamento), equipe (Cadastro e Planejamento), modelo_tarefa (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
 | RF-5 | Confirmar plano inicial do turnaround | Obj. 1 e 2 | Coordenador de Turnaround | US005 | UC05, UC06, UC24 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | dependencia_tarefa_plano (Cadastro e Planejamento), equipe (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), usuario (Cadastro e Planejamento) |
 | RF-6 | Aplicar modelo de tarefas | Obj. 2 | Coordenador de Turnaround | US006 | UC06 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | modelo_tarefa (Cadastro e Planejamento), plano (Cadastro e Planejamento), politica_abastecimento (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento), tarefa_plano (Cadastro e Planejamento), turnaround (Cadastro e Planejamento) |
 | RF-7 | Configurar pontos de confirmação das tarefas | Obj. 2 | Coordenador de Turnaround | US007 | UC07, UC19 | RNF-1, RNF-2, RNF-3, RNF-4, RNF-5, RNF-6, RNF-18, RNF-19, RNF-20 | ponto_confirmacao_modelo (Cadastro e Planejamento), ponto_confirmacao_plano (Cadastro e Planejamento), tarefa_modelo (Cadastro e Planejamento) |
@@ -188,50 +188,53 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US011-CA2 | CT-A100, CT-A104, CT-A105 |
 | US011-CA3 | CT-A101, CT-A102, CT-A106 |
 | US011-CA4 | CT-A049, CT-A079 |
-| US012-CA1 | — |
-| US012-CA2 | — |
-| US012-CA3 | — |
-| US012-CA4 | — |
-| US012-CA5 | — |
-| US012-CA6 | — |
-| US013-CA1 | — |
-| US013-CA2 | — |
-| US013-CA3 | — |
-| US013-CA4 | — |
-| US013-CA5 | — |
-| US013-CA6 | — |
-| US014-CA1 | — |
-| US014-CA2 | — |
-| US014-CA3 | — |
-| US015-CA1 | — |
-| US015-CA2 | — |
-| US016-CA1 | — |
-| US016-CA2 | — |
-| US016-CA3 | — |
-| US017-CA1 | — |
-| US017-CA2 | — |
-| US017-CA3 | — |
-| US017-CA4 | — |
-| US017-CA5 | — |
-| US018-CA1 | — |
-| US018-CA2 | — |
-| US018-CA3 | — |
-| US019-CA1 | — |
-| US019-CA2 | — |
-| US019-CA3 | — |
-| US019-CA4 | — |
-| US020-CA1 | — |
-| US020-CA2 | — |
-| US020-CA3 | — |
-| US020-CA4 | — |
-| US020-CA5 | — |
-| US021-CA1 | — |
-| US021-CA2 | — |
-| US021-CA3 | — |
-| US021-CA4 | — |
-| US021-CA5 | — |
-| US021-CA6 | — |
-| US021-CA7 | — |
+| US012-CA1 | CT-B001, CT-B003, CT-B012 |
+| US012-CA2 | CT-B006, CT-B007, CT-B011 |
+| US012-CA3 | CT-B004, CT-B005 |
+| US012-CA4 | CT-B002 |
+| US012-CA5 | CT-B008, CT-B010 |
+| US012-CA6 | CT-B009 |
+| US013-CA1 | CT-B013, CT-B015, CT-B022, CT-B023 |
+| US013-CA2 | CT-B018, CT-B019 |
+| US013-CA3 | CT-B016, CT-B017 |
+| US013-CA4 | CT-B020, CT-B021 |
+| US013-CA5 | CT-B013 |
+| US013-CA6 | CT-B014 |
+| US014-CA1 | CT-B024, CT-B027, CT-B029, CT-B030, CT-B031 |
+| US014-CA2 | CT-B026 |
+| US014-CA3 | CT-B025, CT-B028, CT-B032, CT-B039, CT-B041, CT-B052 |
+| US015-CA1 | CT-B033, CT-B034, CT-B035, CT-B036, CT-B039, CT-B040, CT-B041, CT-B042 |
+| US015-CA2 | CT-B037, CT-B038 |
+| US016-CA1 | CT-B043, CT-B044, CT-B045, CT-B046, CT-B047, CT-B049, CT-B050, CT-B052, CT-B053 |
+| US016-CA2 | CT-B048 |
+| US016-CA3 | CT-B045, CT-B051 |
+| US017-CA1 | CT-B054, CT-B057, CT-B058, CT-B061, CT-B063 |
+| US017-CA2 | CT-B056 |
+| US017-CA3 | CT-B059 |
+| US017-CA4 | CT-B060 |
+| US017-CA5 | CT-B055, CT-B062 |
+| US018-CA1 | CT-B064, CT-B065, CT-B066, CT-B067, CT-B071 |
+| US018-CA2 | CT-B069, CT-B070, CT-B116 |
+| US018-CA3 | CT-B068 |
+| US019-CA1 | CT-B072, CT-B073, CT-B074, CT-B081, CT-B112 |
+| US019-CA2 | CT-B075, CT-B076, CT-B077, CT-B079, CT-B080 |
+| US019-CA3 | CT-B078 |
+| US019-CA4 | CT-B082, CT-B110, CT-B111 |
+| US020-CA1 | CT-B035, CT-B083, CT-B089, CT-B090, CT-B113 |
+| US020-CA2 | CT-B036, CT-B084 |
+| US020-CA3 | CT-B047, CT-B086, CT-B088, CT-B114, CT-B115 |
+| US020-CA4 | CT-B085 |
+| US020-CA5 | CT-B067, CT-B087 |
+| US021-CA1 | CT-B035, CT-B092, CT-B101 |
+| US021-CA2 | CT-B046, CT-B091, CT-B096, CT-B097, CT-B100, CT-B102 |
+| US021-CA3 | CT-B093 |
+| US021-CA4 | CT-B066, CT-B094 |
+| US021-CA5 | CT-B047, CT-B095 |
+| US021-CA6 | CT-B098 |
+| US021-CA7 | CT-B099 |
+| US021-CA8 | CT-B117 |
+| US021-CA9 | CT-B119 |
+| US021-CA10 | CT-B118 |
 | US022-CA1 | CT-C004, CT-C023, CT-C033, CT-C034, CT-C035, CT-C037, CT-C038 |
 | US022-CA2 | CT-C030 |
 | US022-CA3 | CT-C032 |
@@ -267,6 +270,8 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US030-CA2 | CT-C055 |
 | US030-CA3 | CT-C056 |
 | US030-CA4 | CT-C090 |
+| US030-CA5 | CT-C095 |
+| US030-CA6 | CT-C096 |
 | US031-CA1 | CT-C057 |
 | US031-CA2 | CT-C057 |
 | US031-CA3 | CT-C058 |
@@ -322,9 +327,9 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US043-CA2 | — |
 | US043-CA3 | — |
 | US043-CA4 | — |
-| US044-CA1 | — |
-| US044-CA2 | — |
-| US044-CA3 | — |
+| US044-CA1 | CT-B103, CT-B104, CT-B109 |
+| US044-CA2 | CT-B106 |
+| US044-CA3 | CT-B105, CT-B107, CT-B108 |
 
 ### A.6 Lacunas encontradas
 
@@ -347,53 +352,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC34 sem diagrama de sequência (item 14)
 - UC35 sem diagrama de sequência (item 14)
 - UC36 sem diagrama de sequência (item 14)
-- US012-CA1 sem caso de teste (item 15)
-- US012-CA2 sem caso de teste (item 15)
-- US012-CA3 sem caso de teste (item 15)
-- US012-CA4 sem caso de teste (item 15)
-- US012-CA5 sem caso de teste (item 15)
-- US012-CA6 sem caso de teste (item 15)
-- US013-CA1 sem caso de teste (item 15)
-- US013-CA2 sem caso de teste (item 15)
-- US013-CA3 sem caso de teste (item 15)
-- US013-CA4 sem caso de teste (item 15)
-- US013-CA5 sem caso de teste (item 15)
-- US013-CA6 sem caso de teste (item 15)
-- US014-CA1 sem caso de teste (item 15)
-- US014-CA2 sem caso de teste (item 15)
-- US014-CA3 sem caso de teste (item 15)
-- US015-CA1 sem caso de teste (item 15)
-- US015-CA2 sem caso de teste (item 15)
-- US016-CA1 sem caso de teste (item 15)
-- US016-CA2 sem caso de teste (item 15)
-- US016-CA3 sem caso de teste (item 15)
-- US017-CA1 sem caso de teste (item 15)
-- US017-CA2 sem caso de teste (item 15)
-- US017-CA3 sem caso de teste (item 15)
-- US017-CA4 sem caso de teste (item 15)
-- US017-CA5 sem caso de teste (item 15)
-- US018-CA1 sem caso de teste (item 15)
-- US018-CA2 sem caso de teste (item 15)
-- US018-CA3 sem caso de teste (item 15)
-- US019-CA1 sem caso de teste (item 15)
-- US019-CA2 sem caso de teste (item 15)
-- US019-CA3 sem caso de teste (item 15)
-- US019-CA4 sem caso de teste (item 15)
-- US020-CA1 sem caso de teste (item 15)
-- US020-CA2 sem caso de teste (item 15)
-- US020-CA3 sem caso de teste (item 15)
-- US020-CA4 sem caso de teste (item 15)
-- US020-CA5 sem caso de teste (item 15)
-- US021-CA1 sem caso de teste (item 15)
-- US021-CA2 sem caso de teste (item 15)
-- US021-CA3 sem caso de teste (item 15)
-- US021-CA4 sem caso de teste (item 15)
-- US021-CA5 sem caso de teste (item 15)
-- US021-CA6 sem caso de teste (item 15)
-- US021-CA7 sem caso de teste (item 15)
-- US044-CA1 sem caso de teste (item 15)
-- US044-CA2 sem caso de teste (item 15)
-- US044-CA3 sem caso de teste (item 15)
 - US036-CA1 sem caso de teste (item 15)
 - US036-CA2 sem caso de teste (item 15)
 - US036-CA3 sem caso de teste (item 15)

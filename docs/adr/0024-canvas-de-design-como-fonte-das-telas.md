@@ -13,7 +13,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 ---
 # ADR-0024 — Canvas de Design como fonte única das telas
 
-- **Status:** aceita, pela aprovação do grupo no pull request [#229](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/229) · **Data:** 21/11/2026 · **Decisor:** grupo, pela aprovação do pull request · **Altera:** [ADR-0016](0016-contrato-entre-os-servicos.md), ponto 1 ("Design System próprio, a partir dos protótipos do Figma")
+- **Status:** aceita, pela aprovação do grupo no pull request [#229](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/pull/229); ponto 3 alterado em 28/11/2026 pela [#280](https://github.com/Aircraft-Turnaround-Operations-Manager/aircraft-turnaround-docs/issues/280), com a aprovação do grupo no pull request (o PNG é gerado do canvas por quem muda a tela, integrante ou agente) · **Data:** 21/11/2026 · **Decisor:** grupo, pela aprovação do pull request · **Altera:** [ADR-0016](0016-contrato-entre-os-servicos.md), ponto 1 ("Design System próprio, a partir dos protótipos do Figma")
 
 ## Contexto
 
@@ -37,7 +37,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 
 1. **Fonte única.** O layout de toda tela do projeto está no canvas [Protótipos de tela — Aircraft Turnaround Orchestration System](https://claude.ai/artifact/79Tw5VSVMVEracfZeYMGaX). Tela nova e ajuste de tela existente se fazem nele.
 2. **Figma congelado.** O arquivo `aircraft` do Figma deixa de ser atualizado e fica só como histórico do RA1.
-3. **Imagens do documento.** Cada PNG de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/` é a exportação de uma tela do canvas, com o mesmo nome: a tela `uc-d4-confirmar-prontidao-v2` gera `uc-d4-confirmar-prontidao-v2.png`. Quem exporta é o integrante, pelo menu de exportação do canvas. Ninguém gera imagem de tela na própria máquina. Quando uma tela muda no canvas, a imagem é exportada de novo, no mesmo pull request que muda o texto que a cita.
+3. **Imagens do documento.** Cada PNG de `especificacao/10-especificacoes-de-caso-de-uso/prototipos/` é gerado de uma tela do canvas, com o mesmo nome: a tela `uc-d4-confirmar-prontidao-v2` gera `uc-d4-confirmar-prontidao-v2.png`. Quem muda a tela, integrante ou agente, gera o PNG da versão atual dela no canvas (o arquivo `project/<tela>.dc.html`, com os ícones de `project/assets/`), no mesmo pull request que muda o texto que a cita. O PNG nunca é editado direto: sempre sai do canvas.
 4. **Dono da tela.** Cada integrante muda as telas da sua área. Para mudar a tela de outra área, é preciso a concordância do dono da área, registrada na issue ou no pull request.
 5. **Origem marcada.** O título de cada tela no canvas diz o caso de uso e a origem. A legenda do canvas diz de onde veio cada grupo de telas. As telas do Figma que não estão no item 10 ficam marcadas como histórico.
 6. **Design System.** O Design System próprio da ADR-0016, ponto 1, parte das telas do canvas, e não mais do Figma. O resto do ponto 1 não muda.
@@ -45,9 +45,9 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 
 ## Consequências
 
-- O Claude de cada integrante segue a regra 11 do `AGENTS.md`: lê e muda telas só no canvas, e nunca usa o Figma nem gera imagem local.
+- O Claude de cada integrante segue a regra 11 do `AGENTS.md`: lê e muda telas só no canvas, nunca usa o Figma e gera o PNG da tela que mudou a partir do canvas, sem editar a imagem.
 - As telas continuam provisórias. Servem à especificação e não são a interface final, como já vale para os protótipos do RA1.
-- O canvas fica fora do repositório, então o histórico de cada mudança de tela fica no próprio canvas. No repositório ficam as imagens exportadas e o texto.
+- O canvas fica fora do repositório, então o histórico de cada mudança de tela fica no próprio canvas. No repositório ficam as imagens geradas do canvas e o texto.
 - Quem não tem acesso ao canvas não consegue mudar telas. O acesso é dado pelo dono do canvas (Rodrigo Alves).
 - A linha Status da ADR-0016 registra que o ponto 1 foi alterado por esta ADR.
 

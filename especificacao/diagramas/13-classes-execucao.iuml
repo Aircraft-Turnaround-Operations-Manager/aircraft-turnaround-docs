@@ -37,7 +37,7 @@ namespace execucao {
     - planoRecebidoEm: DateTime
     - chavePlano: UUID
     - versao: Integer
-    - tobtVigente: DateTime [0..1]
+    - tobtVigente: DateTime
     - tobtVigenteOcorridoEm: DateTime [0..1]
     - ardt: DateTime [0..1]
     - liberadoPorId: UUID [0..1]
@@ -206,6 +206,7 @@ namespace execucao {
     - vooPartida: String
     - matricula: String
     - posicao: String
+    - tobtPlanejado: DateTime
     - permiteComPassageiros: Boolean
     - politicaVersao: Integer [0..1]
     - tarefas: List<TarefaPlanejada>
@@ -371,7 +372,6 @@ namespace execucao {
 
   class CodigoAtrasoController <<control>> {
     + consultarVigente(acesso: Acesso): TabelaCodigoAtraso
-    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>, acesso: Acesso): TabelaCodigoAtraso
   }
 
   class TurnaroundController <<control>> {
@@ -516,7 +516,7 @@ namespace execucao {
     - auditoria: AuditoriaService
     - publicador: PublicadorAvisos
     + consultarVigente(): TabelaCodigoAtraso
-    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>, autorId: UUID): TabelaCodigoAtraso
+    + carregarVersao(referencia: String, codigos: List<CodigoAtraso>): TabelaCodigoAtraso
   }
 
   ' ---------- acesso a dados ----------
@@ -572,6 +572,12 @@ namespace execucao {
     + notificarTarefa(operadorId: UUID, tarefa: TarefaDoOperador): void
     + notificarReatribuicao(operadorAnteriorId: UUID, operadorNovoId: UUID, tarefa: TarefaDoOperador): void
     + notificarRecusa(operadorId: UUID, requisicaoId: UUID, motivo: String): void
+  }
+
+  ' Carga técnica da tabela da ANAC, sem ator do sistema: ao iniciar, grava como nova versão o arquivo da configuração ainda não carregado (RNF-22; #207).
+  class CargaTabelaCodigoAtraso <<scheduler>> {
+    - codigos: CodigoAtrasoService
+    + executarAoIniciar(): void
   }
 
   class RotinaAnonimizacaoExecucao <<scheduler>> {
@@ -652,6 +658,7 @@ namespace execucao {
 
   comum.ConsumidorAvisos <|-- execucao.ConsumidorAvisosExecucao
   comum.RotinaAnonimizacao <|-- execucao.RotinaAnonimizacaoExecucao
+  execucao.CargaTabelaCodigoAtraso --> execucao.CodigoAtrasoService
   execucao.RotinaAnonimizacaoExecucao --> execucao.TurnaroundRepository
   execucao.ChegadaService --> comum.AuditoriaService
   execucao.ChegadaService --> comum.PublicadorAvisos

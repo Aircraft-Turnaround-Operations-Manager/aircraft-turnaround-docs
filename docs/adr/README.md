@@ -3,8 +3,8 @@ id: adr-indice
 titulo: "Decisões do projeto (ADRs)"
 tipo: decisao-indice
 status: vigente
-atualizado: 2026-11-23
-relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0019, adr-0020, adr-0021, adr-0022, adr-0023, adr-0024, mapa-pesquisa]
+atualizado: 2026-11-24
+relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0007, adr-0008, adr-0009, adr-0010, adr-0011, adr-0012, adr-0013, adr-0014, adr-0015, adr-0016, adr-0017, adr-0018, adr-0019, adr-0020, adr-0021, adr-0022, adr-0023, adr-0024, adr-0025, mapa-pesquisa]
 ---
 # Decisões do projeto (ADRs)
 
@@ -35,7 +35,8 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0021](0021-matriz-de-rastreabilidade-estendida.md) | D21 | Matriz de rastreabilidade estendida aos itens 12, 14 e 15: RF → tabelas, caso de uso → diagrama de sequência, critério de aceite → casos de teste (complementa a 0012) | 12, 14, 15 |
 | [0022](0022-ids-provisorios-dos-casos-de-teste.md) | D22 | Casos de teste com ID provisório por área (CT-A001…) e renumeração única (CT-001…) na consolidação (complementa a 0011) | 15 |
 | [0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md) | D23 | Interfaces da porta de entrada e do Cadastro e Planejamento com os outros serviços: token interno assinado, consultas, confirmação do plano com chave e prazo dos dados pessoais (complementa a 0016) | 12, 13, 14, 15 |
-| [0024](0024-canvas-de-design-como-fonte-das-telas.md) | D24 | Canvas de Design como fonte única das telas; Figma congelado; PNG do item 10 exportado do canvas (altera o ponto 1 da 0016) | 10 |
+| [0024](0024-canvas-de-design-como-fonte-das-telas.md) | D24 | Canvas de Design como fonte única das telas; Figma congelado; PNG do item 10 gerado do canvas por quem muda a tela (ponto 3 alterado pela #280; altera o ponto 1 da 0016) | 10 |
+| [0025](0025-token-de-servico-entre-os-servicos.md) | D25 | Token de serviço assinado nos pedidos entre os serviços, conferido com a lista de rotas de cada serviço (complementa a 0016 e o ponto 1 da 0023) | 13, 14 |
 
 ---
 
