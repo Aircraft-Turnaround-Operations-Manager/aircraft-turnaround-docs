@@ -142,7 +142,7 @@ UC30, UC35 e UC36. A decisão é da Execução em Solo, que é a dona da tarefa;
 
 ### 13.5.8 Liberação e saída da posição
 
-UC32 e UC37. O Exceções e Liberação confere as exceções e pede a liberação; a Execução em Solo confere o estado e as tarefas, grava "Liberado" e responde, e só então o horário real de prontidão (ARDT) é gravado no Exceções e Liberação (`Liberacao`), que o avisa ao Monitoramento (RF-31) (ADR-0015, regra 6). O AOBT registrado na saída vai por aviso ao Cadastro, ao Exceções e Liberação e ao Monitoramento.
+UC32 e UC37. O Exceções e Liberação confere as exceções e pede a liberação; a Execução em Solo confere o estado e as tarefas, grava "Liberado" e responde, e só então o horário real de prontidão (ARDT) é gravado no Exceções e Liberação (`Liberacao`) (ADR-0015, regra 6). O Monitoramento recebe o ARDT da Execução em Solo, que o guarda ao gravar "Liberado" e o envia no aviso desse estado, com a versão do turnaround (`aplicarMarco` e `aplicarEstado`; RF-31; #275). O AOBT registrado na saída vai por aviso ao Cadastro, ao Exceções e Liberação e ao Monitoramento.
 
 ![Diagrama de classes — liberação e saída da posição](diagramas/13-classes-tecnica-liberacao.png)
 
