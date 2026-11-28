@@ -1,0 +1,117 @@
+@startuml
+' Interação auxiliar "Verificar acesso na porta de entrada", citada como fragmento ref em todos os diagramas do item 14.
+' RNF-1 (identidade e permissão a cada ação), RNF-5 (sessão de 45 min sem ação; consulta automática não renova) e
+' ADR-0023, pontos 1, 2 e 7 (token interno assinado, ação do usuário × consulta automática, conexão em tempo real).
+' Classes do item 13 (contrato, cadastro) e tabelas do item 12 (Apêndice B.1).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-acesso.puml
+!include 14-sequencia-estilo.iuml
+
+boundary "Tela do site" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "AcessoController" as AC
+  participant "AutenticacaoService" as AS <<service>>
+  entity "Sessao" as SE
+  entity "Usuario" as US
+  participant "SessaoRepository" as SR <<repository>>
+  participant "UsuarioRepository" as UR <<repository>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+box "Serviço que atende a ação" #FAFAFA
+  control "Controle do serviço" as SC
+end box
+
+== Toda ação ou consulta do site ==
+V -> G : encaminhar(sessaoId, rota, corpo, acaoDoUsuario)
+activate G
+G -> G : verificarAcesso(sessaoId, acaoDoUsuario)
+G -> AC : verificarAcesso(sessaoId, acaoDoUsuario)
+activate AC
+AC -> AS : verificarAcesso(sessaoId, acaoDoUsuario, momento)
+activate AS
+AS -> SR : buscarPorId(sessaoId)
+activate SR
+SR -> DB : SELECT sessao WHERE id = sessaoId
+SR --> AS : sessão ou vazio
+deactivate SR
+AS -> SE : estaAberta(momento, inatividadeMin = 45)
+activate SE
+SE --> AS : aberta ou não
+deactivate SE
+alt sessão inexistente, encerrada (UC01, A2) ou vencida por inatividade (RNF-5)
+  opt vencida e ainda sem encerramento
+    AS -> SE : encerrar(momento)
+    AS -> SR : salvar(sessao)
+    activate SR
+    SR -> DB : UPDATE sessao SET encerrada_em = momento
+    SR --> AS : ok
+    deactivate SR
+  end
+  AS --> AC : recusa
+  AC --> G : 401 sessão inválida
+  G --> V : 401: a tela volta para a autenticação, sem dados protegidos
+else sessão aberta
+  AS -> UR : buscarPorId(sessao.usuario)
+  activate UR
+  UR -> DB : SELECT usuario WHERE id = usuarioId
+  UR --> AS : usuário
+  deactivate UR
+  AS -> US : estaAtivo()
+  activate US
+  US --> AS : ativo ou desativado
+  deactivate US
+  alt usuário desativado depois da abertura da sessão (RNF-1; UC02, A2)
+    AS --> AC : recusa
+    AC --> G : 401 acesso revogado
+    G --> V : 401: a ação é recusada, sem alterar dados
+  else usuário ativo
+    opt acaoDoUsuario = sim (a consulta automática não renova a sessão; RNF-5; ADR-0023, ponto 2)
+      AS -> SE : renovar(momento)
+      AS -> SR : salvar(sessao)
+      activate SR
+      SR -> DB : UPDATE sessao SET ultima_acao_em = momento
+      SR --> AS : ok
+      deactivate SR
+    end
+    AS --> AC : Acesso com usuarioId, perfil, equipeId e companhiaId
+    deactivate AS
+    AC --> G : 200 Acesso
+    deactivate AC
+    note over G
+      Gera o token interno assinado, um token JSON assinado (JWT)
+      de 60 s, com o usuário,
+      o perfil, a equipe, a companhia, a sessão e se a chamada
+      é ação do usuário (ADR-0023, ponto 1).
+    end note
+    G -> SC : chamada da rota com o token interno
+    activate SC
+    SC -> SC : confere a assinatura e a validade do token e Acesso.permite(perfilExigido)
+    alt perfil sem permissão para a ação, inclusive por acesso direto à rota (RNF-1)
+      SC --> G : 403, sem dados protegidos e sem gravar
+    else perfil permitido
+      SC --> G : resposta da ação (o diagrama de cada caso de uso mostra o resto)
+    end
+    deactivate SC
+    G --> V : resposta
+  end
+end
+deactivate G
+
+== Conexão em tempo real: lista do operador e painéis (ADR-0023, ponto 7) ==
+V -> G : abrirConexao(sessaoId, rota)
+activate G
+ref over G, DB : a mesma conferência acima, com acaoDoUsuario = não
+G -> SC : repassa a conexão com o token interno
+loop a cada minuto, enquanto a conexão está aberta
+  G -> AC : verificarAcesso(sessaoId, acaoDoUsuario = não)
+  activate AC
+  AC --> G : Acesso ou recusa
+  deactivate AC
+  alt recusa: usuário desativado ou sessão vencida
+    G -> SC : fecha a conexão
+    G --> V : conexão fechada: a tela volta para a autenticação
+  end
+end
+note over V, SC : as mensagens que chegam à tela não renovam a sessão (ADR-0023, ponto 7)
+deactivate G
+@enduml

@@ -1,0 +1,140 @@
+@startuml
+' UC10 – Atualizar referências de previsão do turnaround (RF-10, US010; RNF-2; ADR-0003, ADR-0023 ponto 4).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). O AIBT é da Execução em Solo, que
+' responde se a chegada já foi registrada; o TOBT planejado e o vigente não mudam aqui (RN2).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc10.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "TurnaroundView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "TurnaroundController" as TC
+  participant "TurnaroundService" as S <<service>>
+  entity "Turnaround" as T
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "ChegadaController" as ETC
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: previsão atual ==
+CO -> V : abrirPrevisao(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+G -> TC : consultar(turnaroundId, acesso)
+activate TC
+TC -> S : consultar(turnaroundId)
+activate S
+S -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround WHERE id = turnaroundId
+TR --> S : turnaround
+deactivate TR
+S --> TC : turnaround
+deactivate S
+TC --> G : 200
+deactivate TC
+G --> V : 200
+deactivate G
+V --> CO : EIBT e MTTT atuais; horários-alvo só para consulta (passo 2)
+
+== Passo 3 ==
+alt A2: o coordenador cancela
+  V --> CO : nenhum valor é atualizado (A2.1)
+else o coordenador altera um ou os dois campos e seleciona "Salvar previsão"
+  opt A1: só um campo alterado
+    note over CO, V : o campo não alterado vai com o valor atual e permanece igual (A1.1, A1.2)
+  end
+  CO -> V : salvarPrevisao(turnaroundId, eibt, mtttMin)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/turnarounds/{turnaroundId}/previsao", corpo = eibt + mtttMin, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> TC : atualizarPrevisao(turnaroundId, eibt, mtttMin, acesso)
+  activate TC
+  TC -> S : atualizarPrevisao(turnaroundId, eibt, mtttMin, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 4: formatos, MTTT positivo e chegada ainda não registrada (RN1, RN3) ==
+  S -> TR : buscarPorId(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround WHERE id = turnaroundId
+  TR --> S : turnaround
+  deactivate TR
+  alt E1: EIBT sem data ou fuso, ou MTTT ≤ 0
+    S --> TC : recusa com o campo
+    TC --> G : 422
+    G --> V : 422
+    V --> CO : indica o campo e volta ao passo 3, sem gravar (E1.1)
+  else valores válidos
+    S -> EX : chegadaRegistrada(turnaroundId)
+    activate EX
+    EX -> ETC : chegadaRegistrada(turnaroundId)
+    activate ETC
+    ETC --> EX : sim ou não
+    deactivate ETC
+    EX --> S : resposta
+    deactivate EX
+    alt E2: a chegada (AIBT) foi registrada durante a edição
+      S --> TC : recusa
+      TC --> G : 409
+      G --> V : 409
+      V --> CO : recusa sem alterar os valores (E2.1)
+    else a Execução em Solo não responde
+      S --> TC : falha técnica, sem gravar (ADR-0023, ponto 4)
+      TC --> G : 503
+      G --> V : 503
+      V --> CO : informa que a ação não foi concluída
+    else chegada ainda não registrada
+
+      == Passo 5: valores anteriores e novos, auditoria e evento (RN2, RN4) ==
+      S -> T : atualizarPrevisao(eibt, mtttMin)
+      S -> TR : salvar(turnaround)
+      activate TR
+      TR -> DB : UPDATE turnaround SET eibt, mttt_min (tobt_planejado não muda)
+      alt E3: falha de gravação
+        TR --> S : erro; a transação é desfeita, sem alteração parcial
+        S --> TC : falha técnica
+        TC --> G : 500
+        G --> V : 500
+        V --> CO : não anuncia sucesso (E3.1)
+      else gravado
+        TR --> S : ok
+        deactivate TR
+        S -> AU : registrar(objeto = "turnaround", objetoId = turnaroundId, acao = Alteração, autorId, causaId = vazio, turnaroundId, valoresAnteriores = EIBT e MTTT anteriores, valoresNovos = EIBT e MTTT novos)
+        activate AU
+        AU -> DB : INSERT registro_auditoria
+        deactivate AU
+        S -> PUB : registrar(EnvelopeAviso.novo(tipo = "PrevisaoAtualizada", turnaroundId, autorId, causaId = vazio, dados = eibt e mtttMin))
+        activate PUB
+        PUB -> DB : INSERT aviso_saida (mesma transação)
+        deactivate PUB
+        S --> TC : turnaround
+        TC --> G : 200
+        G --> V : 200
+
+        == Passo 6 ==
+        V --> CO : novos valores, com os horários-alvo preservados; não registra a chegada\nnem muda estados (RN4)
+      end
+    end
+  end
+  deactivate S
+  deactivate TC
+  deactivate G
+end
+deactivate V
+
+== Depois da gravação: dados para o Motor de Eventos ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica PrevisaoAtualizada (falha na entrega: tenta de novo, como no UC03)
+deactivate PUB
+ref over MQ : Monitoramento (aplicarPrevisao): UC25 – checagem de viabilidade\nEIBT + MTTT ≤ TOBT e alertas (RN3)
+@enduml

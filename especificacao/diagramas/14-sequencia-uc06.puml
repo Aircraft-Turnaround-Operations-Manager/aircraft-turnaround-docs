@@ -1,0 +1,160 @@
+@startuml
+' UC06 – Aplicar modelo de tarefas (RF-6, US006; RNF-2, RNF-4; ADR-0005, ADR-0007, ADR-0014).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). A cópia recebe identificadores
+' próprios e a versão da política da companhia; o modelo original não muda (RN2 a RN5). Com o plano confirmado, a cópia
+' é recusada (RN1), e uma tarefa só começa depois da confirmação, por isso os dois impedimentos são conferidos juntos.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc06.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "PlanoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "ModeloTarefaController" as MC
+  participant "ModeloTarefaService" as MS <<service>>
+  control "PlanoController" as PC
+  participant "PlanoService" as S <<service>>
+  entity "ModeloTarefa" as M
+  entity "Plano" as P
+  participant "TurnaroundRepository" as TR <<repository>>
+  participant "ModeloTarefaRepository" as MR <<repository>>
+  participant "PlanoRepository" as PR <<repository>>
+  participant "PoliticaAbastecimentoRepository" as POR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+== Passos 1 e 2: modelos compatíveis ==
+CO -> V : abrirAplicarModelo(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}/modelos-compativeis", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+G -> MC : listarCompativeis(turnaroundId, acesso)
+activate MC
+MC -> MS : listarCompativeis(turnaroundId)
+activate MS
+MS -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround WHERE id = turnaroundId
+TR --> MS : turnaround (tipo de aeronave e serviço)
+deactivate TR
+MS -> MR : listarCompativeis(tipoAeronave, tipoServico)
+activate MR
+MR -> DB : SELECT modelo_tarefa, tarefa_modelo WHERE tipo_aeronave e tipo_servico iguais
+MR --> MS : modelos compatíveis
+deactivate MR
+MS --> MC : modelos
+deactivate MS
+MC --> G : 200
+deactivate MC
+G --> V : 200
+deactivate G
+V --> CO : lista os modelos compatíveis (passo 2)
+
+== Passos 3 e 4 ==
+CO -> V : selecionarModelo(modeloId)
+V --> CO : tarefas regulares, catálogo sob demanda, dependências, pontos e política que serão copiados
+
+== Passo 5 ==
+alt A2: o coordenador cancela
+  V --> CO : nada é copiado (A2.1)
+else o coordenador confirma "Aplicar modelo"
+  CO -> V : aplicarModelo(turnaroundId, modeloId, substituir = não)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/turnarounds/{turnaroundId}/plano/modelo", corpo = modeloId + substituir, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> PC : aplicarModelo(turnaroundId, modeloId, substituir, acesso)
+  activate PC
+  PC -> S : aplicarModelo(turnaroundId, modeloId, substituir, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 6: pré-condições e cópia (RN1 a RN5) ==
+  critical trava do plano até o fim da transação
+    S -> PR : buscarComTrava(turnaroundId)
+    activate PR
+    PR -> DB : SELECT plano, tarefa_plano ... FOR UPDATE
+    PR --> S : cópia atual ou vazio
+    deactivate PR
+    S -> MR : buscarPorId(modeloId)
+    activate MR
+    MR -> DB : SELECT modelo_tarefa, tarefa_modelo, dependencia_tarefa_modelo,\nponto_confirmacao_modelo WHERE modelo_tarefa.id = modeloId
+    MR --> S : modelo
+    deactivate MR
+    S -> M : compativelCom(tipoAeronave, tipoServico)
+    opt já existe cópia
+      S -> P : estaConfirmado()
+    end
+    S -> S : conferirEquipesAtivas(modelo)
+    S -> POR : buscarVigente(companhiaId)
+    activate POR
+    POR -> DB : SELECT politica_abastecimento WHERE companhia_id = companhiaId ORDER BY versao DESC
+    POR --> S : política vigente; sem configuração, vale "Não permitido"
+    deactivate POR
+    S -> S : conferirPolitica(plano)
+    alt E1: modelo incompatível, plano confirmado (e, com ele, tarefa iniciada)\nou equipe desativada no modelo (UC09, RN3)
+      S --> PC : recusa com o impedimento
+      PC --> G : 409
+      G --> V : 409
+      V --> CO : explica o impedimento e mantém os dados atuais (E1.1)
+    else E2: com a política "Não permitido", faltam as tarefas ou as relações\nda sequência desembarque, abastecimento e embarque
+      S --> PC : recusa com as tarefas faltantes ou conflitantes
+      PC --> G : 422
+      G --> V : 422
+      V --> CO : indica as tarefas e não copia (E2.1)
+    else A1: já existe cópia, sem plano confirmado, e substituir = não
+      S --> PC : pede confirmação da substituição
+      PC --> G : 409 substituição não confirmada
+      G --> V : 409
+      V --> CO : pede confirmação para substituir a cópia anterior (A1.1)
+    else cópia permitida
+      opt substituir = sim
+        S -> PR : excluir(plano)
+        activate PR
+        PR -> DB : DELETE ponto_confirmacao_plano, dependencia_tarefa_plano, tarefa_plano, plano\nda cópia anterior (mesma transação)
+        deactivate PR
+      end
+      note right of S
+        Nova cópia: tarefas regulares e catálogo sob demanda
+        (acionada = não), com identificadores próprios, tipo, equipe,
+        duração, obrigatoriedade, "Não aplicável" e "sob demanda";
+        dependências e pontos ligados às tarefas copiadas;
+        política com a versão; nenhum operador atribuído.
+      end note
+      S -> PR : salvar(plano)
+      activate PR
+      PR -> DB : INSERT plano (politica_id, situacao 'Em edição'); INSERT tarefa_plano,\ndependencia_tarefa_plano, ponto_confirmacao_plano
+      alt E3: falha ao copiar
+        PR --> S : erro; a transação é desfeita, sem tarefas parcialmente copiadas
+        S --> PC : falha técnica
+        PC --> G : 500
+        G --> V : 500
+        V --> CO : informa a falha; a cópia anterior permanece (E3.1)
+      else gravado
+        PR --> S : ok
+        deactivate PR
+        S -> AU : registrar(objeto = "plano", objetoId, acao = Inclusão, autorId, causaId = modeloId, turnaroundId, valoresAnteriores = cópia anterior, valoresNovos = cópia nova)
+        activate AU
+        AU -> DB : INSERT registro_auditoria
+        deactivate AU
+        S --> PC : plano
+        PC --> G : 201 plano
+        G --> V : 201
+        V --> CO : apresenta a cópia, separando as tarefas do plano e os serviços do catálogo,\ncom o acesso ao planejamento (passo 7); o modelo original não muda
+      end
+    end
+  end
+  deactivate S
+  deactivate PC
+  deactivate G
+  opt A1: o coordenador decide sobre a substituição
+    alt cancela
+      V --> CO : mantém a cópia anterior (A1.2)
+    else confirma
+      CO -> V : aplicarModelo(turnaroundId, modeloId, substituir = sim)
+      ref over V, DB : o mesmo passo 6, agora com substituir = sim
+    end
+  end
+end
+deactivate V
+@enduml

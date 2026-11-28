@@ -1,0 +1,146 @@
+@startuml
+' UC01 – Autenticar acesso do usuário (RF-1, US001; RNF-1, RNF-3, RNF-5; ADR-0010, ADR-0023).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). O login é a única rota sem sessão:
+' vai da porta de entrada direto ao AutenticacaoController (item 13, seção 13.1).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc01.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Usuário" as U
+boundary "AutenticacaoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "AutenticacaoController" as AC
+  participant "AutenticacaoService" as AS <<service>>
+  entity "Usuario" as US
+  entity "Sessao" as SE
+  participant "UsuarioRepository" as UR <<repository>>
+  participant "FalhaLoginRepository" as FR <<repository>>
+  participant "SessaoRepository" as SR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+== Passos 1 e 2: tela de autenticação ==
+U -> V : abrir()
+activate V
+V --> U : Identificador de acesso, Senha e Entrar
+
+== Passo 3 ==
+alt A1: o Usuário fecha a tela sem enviar
+  V --> U : nenhuma sessão é criada (A1.2)
+else o Usuário preenche os campos e seleciona Entrar
+  U -> V : entrar(identificadorAcesso, senha)
+  alt E2: campo vazio
+    V --> U : indica o campo obrigatório e mantém a tela, sem enviar (E2.1)
+  else campos preenchidos
+    V -> G : entrar(identificadorAcesso, senha)
+    activate G
+    G -> AC : autenticar(identificadorAcesso, senha)
+    activate AC
+    alt E3: Cadastro e Planejamento indisponível
+      AC --> G : sem resposta
+      G --> V : 503
+      V --> U : informa a falha e permite nova tentativa, sem apresentar o Usuário como autenticado (E3.1)
+    else serviço disponível
+
+      == Passo 4: credenciais, situação e perfil (RN1, RN2) ==
+      AC -> AS : autenticar(identificadorAcesso, senha, momento)
+      activate AS
+      AS -> UR : buscarPorIdentificador(identificadorAcesso)
+      activate UR
+      UR -> DB : SELECT usuario WHERE identificador_acesso = identificadorAcesso
+      UR --> AS : usuário ou vazio
+      deactivate UR
+      opt usuário encontrado
+        AS -> US : estaAtivo()
+        AS -> US : estaBloqueado(momento)
+        AS -> US : conferirSenha(senha)
+        note right of US : senha_hash com sal individual; a senha\nnão é guardada nem registrada (RNF-3)
+      end
+      alt E1: identificador inexistente, usuário desativado, conta bloqueada ou senha incorreta
+        opt senha incorreta de usuário existente (RNF-5)
+          AS -> AS : registrarFalha(usuario, momento)
+          AS -> FR : salvar(falha)
+          activate FR
+          FR -> DB : INSERT falha_login (usuario_id, ocorrida_em)
+          AS -> FR : contarDesde(usuarioId, desde = momento − 15 min)
+          FR -> DB : SELECT COUNT(*) falha_login WHERE usuario_id = usuarioId AND ocorrida_em >= desde
+          FR --> AS : falhas
+          deactivate FR
+          opt quinta falha em 15 min
+            AS -> US : bloquear(ate = momento + 15 min)
+            AS -> UR : salvar(usuario)
+            activate UR
+            UR -> DB : UPDATE usuario SET bloqueado_ate
+            UR --> AS : ok
+            deactivate UR
+            AS -> AU : registrar(objeto = "usuario", objetoId, acao = Alteração, autorId = vazio, causaId = falha.id, turnaroundId = vazio, valoresAnteriores, valoresNovos = bloqueado_ate)
+            activate AU
+            AU -> DB : INSERT registro_auditoria
+            deactivate AU
+          end
+        end
+        AS --> AC : recusa, sem dizer a causa (RN2)
+        AC --> G : 401
+        G --> V : 401
+        V --> U : "Não foi possível autenticar. Verifique suas credenciais ou contate o administrador"; volta ao passo 3 sem sessão (E1.1)
+      else credenciais válidas, usuário ativo e sem bloqueio
+
+        == Passo 5: sessão e tela do perfil ==
+        AS -> FR : apagarDoUsuario(usuarioId)
+        activate FR
+        FR -> DB : DELETE falha_login WHERE usuario_id = usuarioId
+        deactivate FR
+        AS -> SR : salvar(sessao)
+        activate SR
+        SR -> DB : INSERT sessao (usuario_id, iniciada_em, ultima_acao_em)
+        SR --> AS : ok
+        deactivate SR
+        AS -> AS : emitirToken(sessao)
+        AS --> AC : TokenAcesso com sessaoId, perfil e nome
+        deactivate AS
+        AC --> G : 200 TokenAcesso
+        G --> V : token de login da sessão (ADR-0023, ponto 1)
+        V --> U : abre a tela do perfil do cadastro (RN2): tarefas (Operador de Solo/Rampa),\npainel (Coordenador de Turnaround), pendências (Autoridade de Liberação)\nou usuários (Administrador do Sistema)
+      end
+    end
+    deactivate AC
+    deactivate G
+  end
+end
+
+== RN3: autorização verificada em cada operação ==
+U -> V : ação de qualquer tela, inclusive o acesso direto a uma rota de outro perfil
+ref over V, DB : Verificar acesso na porta de entrada (interação auxiliar):\nsessão aberta e usuário ativo; o serviço confere o perfil e recusa com 403, sem dados protegidos (RNF-1; US001, critério 3)
+
+== A2: encerrar a sessão (depois do passo 5) ==
+U -> V : sair()
+V -> G : sair(sessaoId)
+activate G
+G -> AC : encerrarSessao(sessaoId)
+activate AC
+AC -> AS : encerrarSessao(sessaoId, momento)
+activate AS
+AS -> SR : buscarPorId(sessaoId)
+activate SR
+SR -> DB : SELECT sessao WHERE id = sessaoId
+SR --> AS : sessão
+deactivate SR
+AS -> SE : encerrar(momento)
+AS -> SR : salvar(sessao)
+activate SR
+SR -> DB : UPDATE sessao SET encerrada_em = momento
+SR --> AS : ok
+deactivate SR
+AS --> AC : ok
+deactivate AS
+AC --> G : 204
+deactivate AC
+G --> V : 204
+deactivate G
+V --> U : exibe a tela de autenticação (A2.2)
+U -> V : ação seguinte com a sessão encerrada
+ref over V, DB : Verificar acesso na porta de entrada: sessão encerrada → 401, sem dados (RN4)
+V --> U : volta para a autenticação
+deactivate V
+@enduml

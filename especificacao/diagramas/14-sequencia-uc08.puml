@@ -1,0 +1,142 @@
+@startuml
+' UC08 – Definir dependências entre tarefas (RF-8, US008; RNF-2; ADR-0005). Estende o UC04 e o UC05.
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). No modelo, a mudança é do Cadastro;
+' no plano, ela é confirmada como o plano inteiro (UC05, passo 6), porque a Execução em Solo é quem sabe se alguma tarefa
+' já começou (ADR-0015, regra 5; ADR-0023, ponto 5).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc08.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ModeloTarefaView" as VM
+boundary "PlanoView" as VP
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "ModeloTarefaController" as MC
+  participant "ModeloTarefaService" as MS <<service>>
+  entity "TarefaModelo" as TM
+  participant "ModeloTarefaRepository" as MR <<repository>>
+  control "PlanoController" as PC
+  participant "PlanoService" as PS <<service>>
+  entity "TarefaPlano" as TP
+  participant "PlanoRepository" as PR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+note over CO, VP : «extend» do UC04 (modelo) ou do UC05 (plano inicial)
+
+== Passos 1 a 4: tarefas e predecessoras ==
+alt A2: o coordenador cancela
+  VM --> CO : as relações anteriores são preservadas (A2.1)
+else dependências no modelo (UC04)
+  CO -> VM : salvarDependencias(modeloId, tarefaModeloId, predecessoraIds)
+  activate VM
+  opt A1: remove uma relação opcional
+    note over CO, VM : aceito se não violar a política de abastecimento (A1.2)
+  end
+  VM -> G : encaminhar(sessaoId, rota = "PUT /v1/modelos-tarefa/{modeloId}/tarefas/{tarefaModeloId}/predecessoras", corpo = predecessoraIds, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+  G -> MC : definirDependencias(modeloId, tarefaModeloId, predecessoraIds, acesso)
+  activate MC
+  MC -> MS : definirDependencias(modeloId, tarefaModeloId, predecessoraIds, autorId = acesso.usuarioId)
+  activate MS
+  MS -> MR : buscarPorId(modeloId)
+  activate MR
+  MR -> DB : SELECT modelo_tarefa, tarefa_modelo, dependencia_tarefa_modelo WHERE modelo_tarefa.id = modeloId
+  MR --> MS : modelo
+  deactivate MR
+
+  == Passo 5: referências, ciclos e política (RN1, RN3) ==
+  MS -> TM : definirPredecessoras(predecessoras)
+  MS -> MS : conferirDependencias(modelo)
+  alt E1: ciclo (A depende de B e B de A), a própria tarefa, tarefa inexistente ou de outro modelo
+    MS --> MC : recusa com as tarefas
+    MC --> G : 422
+    G --> VM : 422
+    VM --> CO : identifica as tarefas e não salva (E1.1)
+  else relações válidas
+
+    == Passo 6 ==
+    MS -> MR : salvar(modelo)
+    activate MR
+    MR -> DB : DELETE e INSERT dependencia_tarefa_modelo (predecessora_id, sucessora_id)
+    MR --> MS : ok
+    deactivate MR
+    MS -> AU : registrar(objeto = "tarefa_modelo", objetoId = tarefaModeloId, acao = Alteração, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores, valoresNovos = predecessoras)
+    activate AU
+    AU -> DB : INSERT registro_auditoria
+    deactivate AU
+    MS --> MC : TarefaModelo
+    MC --> G : 200
+    G --> VM : 200
+    VM --> CO : exibe as relações; editar o modelo não muda as cópias (RN4)
+  end
+  deactivate MS
+  deactivate MC
+  deactivate G
+  deactivate VM
+else dependências no plano inicial (UC05)
+  CO -> VP : salvarDependencias(turnaroundId, tarefaPlanoId, predecessoraIds)
+  activate VP
+  VP -> G : encaminhar(sessaoId, rota = "PUT /v1/turnarounds/{turnaroundId}/plano/tarefas/{tarefaPlanoId}/predecessoras", corpo = predecessoraIds, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> PC : definirDependencias(turnaroundId, tarefaPlanoId, predecessoraIds, acesso)
+  activate PC
+  PC -> PS : definirDependencias(turnaroundId, tarefaPlanoId, predecessoraIds, autorId = acesso.usuarioId)
+  activate PS
+  PS -> PR : buscarComTrava(turnaroundId)
+  activate PR
+  PR -> DB : SELECT plano, tarefa_plano, dependencia_tarefa_plano ... FOR UPDATE
+  PR --> PS : plano
+  deactivate PR
+  PS -> TP : definirPredecessoras(predecessoras)
+  PS -> PS : conferirDependencias(plano)
+  PS -> PS : conferirPolitica(plano)
+  alt E1: ciclo, referência inválida ou tarefa de outro turnaround
+    PS --> PC : recusa com as tarefas
+    PC --> G : 422
+    G --> VP : 422
+    VP --> CO : identifica as tarefas e não salva (E1.1)
+  else E2: sucessora começa antes do fim da predecessora, ou a remoção quebra\na sequência exigida pela política de abastecimento (RN2, RN3)
+    PS --> PC : recusa com o conflito
+    PC --> G : 422
+    G --> VP : 422
+    VP --> CO : informa o conflito e volta ao passo 3, sem alterar o plano (E2.1)
+  else relações válidas
+    alt plano ainda em edição (nunca confirmado)
+      PS -> PR : salvar(plano)
+      activate PR
+      PR -> DB : DELETE e INSERT dependencia_tarefa_plano
+      PR --> PS : ok
+      deactivate PR
+      PS -> AU : registrar(objeto = "tarefa_plano", objetoId = tarefaPlanoId, acao = Alteração, autorId, causaId = vazio, turnaroundId, valoresAnteriores, valoresNovos = predecessoras)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      PS --> PC : TarefaPlano
+      PC --> G : 200
+      G --> VP : 200
+      VP --> CO : exibe as relações (passo 6)
+    else plano já confirmado
+      ref over PS, DB : UC05, passo 6: "Confirmação pendente" com chave, pedido receberPlano à Execução em Solo\ne gravação com auditoria só depois da resposta positiva
+      alt E3: alguma tarefa começou durante a edição
+        PS --> PC : recusa da Execução em Solo
+        PC --> G : 409
+        G --> VP : 409
+        VP --> CO : recusa a alteração do plano inicial; o replanejamento fica no UC35 (E3.1)
+      else aceito
+        PS --> PC : TarefaPlano
+        PC --> G : 200
+        G --> VP : 200
+        VP --> CO : exibe as relações (passo 6)
+      end
+    end
+  end
+  deactivate PS
+  deactivate PC
+  deactivate G
+  deactivate VP
+end
+@enduml

@@ -95,17 +95,17 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 | Caso de uso | Diagrama(s) de sequência |
 |---|---|
-| UC01 | — |
-| UC02 | — |
-| UC03 | — |
-| UC04 | — |
-| UC05 | — |
-| UC06 | — |
-| UC07 | — |
-| UC08 | — |
-| UC09 | — |
-| UC10 | — |
-| UC11 | — |
+| UC01 | 14-sequencia-uc01.png |
+| UC02 | 14-sequencia-uc02.png, 14-sequencia-uc02_001.png |
+| UC03 | 14-sequencia-uc03.png |
+| UC04 | 14-sequencia-uc04.png |
+| UC05 | 14-sequencia-uc05.png |
+| UC06 | 14-sequencia-uc06.png |
+| UC07 | 14-sequencia-uc07.png |
+| UC08 | 14-sequencia-uc08.png |
+| UC09 | 14-sequencia-uc09.png |
+| UC10 | 14-sequencia-uc10.png |
+| UC11 | 14-sequencia-uc11.png |
 | UC12 | 14-sequencia-uc12.png |
 | UC13 | 14-sequencia-uc13.png |
 | UC14 | 14-sequencia-uc14.png |
@@ -333,17 +333,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 
 ### A.6 Lacunas encontradas
 
-- UC01 sem diagrama de sequência (item 14)
-- UC02 sem diagrama de sequência (item 14)
-- UC03 sem diagrama de sequência (item 14)
-- UC04 sem diagrama de sequência (item 14)
-- UC05 sem diagrama de sequência (item 14)
-- UC06 sem diagrama de sequência (item 14)
-- UC07 sem diagrama de sequência (item 14)
-- UC08 sem diagrama de sequência (item 14)
-- UC09 sem diagrama de sequência (item 14)
-- UC10 sem diagrama de sequência (item 14)
-- UC11 sem diagrama de sequência (item 14)
 - UC22 sem diagrama de sequência (item 14)
 - UC23 sem diagrama de sequência (item 14)
 - UC24 sem diagrama de sequência (item 14)

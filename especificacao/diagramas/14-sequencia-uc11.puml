@@ -1,0 +1,127 @@
+@startuml
+' UC11 – Configurar política de abastecimento (RF-11, US011; RNF-2; ADR-0005).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). A política é versionada por
+' companhia; a cópia vai ao plano quando o modelo é aplicado (UC06) e não muda depois (RN3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc11.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "PoliticaAbastecimentoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "PoliticaAbastecimentoController" as PC
+  participant "PoliticaAbastecimentoService" as S <<service>>
+  control "PlanoController" as PLC
+  participant "PoliticaAbastecimentoRepository" as PR <<repository>>
+  participant "CompanhiaRepository" as CR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+== Passos 1 e 2: política atual ==
+alt A3: aberta a partir de um turnaround que já tem a cópia
+  CO -> V : abre a política pelo turnaround
+  activate V
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/turnarounds/{turnaroundId}/plano", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+  G -> PLC : consultar(turnaroundId, acesso)
+  activate PLC
+  ref over PLC, DB : PlanoService.consultar(turnaroundId) → PlanoRepository.buscarPorTurnaround(turnaroundId):\nSELECT plano, politica_abastecimento (a versão copiada)
+  PLC --> G : 200 plano com a política copiada
+  deactivate PLC
+  G --> V : 200
+  deactivate G
+  V --> CO : mostra a cópia só para consulta, informa que ela é fixa (RN3) e que só a política geral\nda companhia pode ser alterada, valendo para os modelos aplicados depois (A3.2)
+  deactivate V
+else aberta pela companhia
+  CO -> V : abrir(companhiaId)
+  activate V
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/companhias/{companhiaId}/politica-abastecimento", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> PC : consultarVigente(companhiaId, acesso)
+  activate PC
+  PC -> S : consultarVigente(companhiaId)
+  activate S
+  S -> PR : buscarVigente(companhiaId)
+  activate PR
+  PR -> DB : SELECT politica_abastecimento WHERE companhia_id = companhiaId ORDER BY versao DESC
+  PR --> S : política vigente ou vazio
+  deactivate PR
+  S --> PC : política; sem configuração, "Não permitido" (RN1)
+  deactivate S
+  PC --> G : 200
+  deactivate PC
+  G -> PC : listarVersoes(companhiaId, acesso)
+  activate PC
+  ref over PC, DB : PoliticaAbastecimentoService.listarVersoes(companhiaId) →\nPoliticaAbastecimentoRepository.listarPorCompanhia(companhiaId): SELECT politica_abastecimento
+  PC --> G : 200 histórico de versões
+  deactivate PC
+  G --> V : 200
+  deactivate G
+  V --> CO : permissão atual e versão, ou "Não permitido" sem configuração (passo 2)
+
+  == Passos 3 a 5 ==
+  alt A1: o coordenador mantém "Não permitido"
+    note over CO, V : permiteComPassageiros = não: a configuração é salva com a sequência\ndesembarque, abastecimento e embarque (A1.2)
+  else habilita, conforme a política autorizada da companhia (RN2, RN5)
+    note over CO, V : permitir paralelismo não remove outras dependências; as condições do Regulamento\nBrasileiro da Aviação Civil (RBAC) nº 91, seção 91.102(g), são verificadas na operação real (RN5)
+  end
+  V --> CO : apresenta a consequência da escolha e pede confirmação (passo 4)
+  alt A2: o coordenador cancela
+    V --> CO : política anterior preservada (A2.1)
+  else o coordenador confirma
+    CO -> V : confirmarPolitica(companhiaId, permiteComPassageiros)
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/companhias/{companhiaId}/politica-abastecimento", corpo = permiteComPassageiros, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada
+
+    == Passo 6: autorização, nova versão e auditoria ==
+    alt E1: acesso revogado
+      G --> V : 401
+      V --> CO : a mudança é recusada sem gravar (E1.1)
+    else acesso confirmado
+      G -> PC : registrar(companhiaId, permiteComPassageiros, acesso)
+      activate PC
+      PC -> S : registrar(companhiaId, permiteComPassageiros, autorId = acesso.usuarioId)
+      activate S
+      S -> CR : buscarPorId(companhiaId)
+      activate CR
+      CR -> DB : SELECT companhia WHERE id = companhiaId
+      CR --> S : companhia
+      deactivate CR
+      S -> PR : buscarVigente(companhiaId)
+      activate PR
+      PR -> DB : SELECT politica_abastecimento WHERE companhia_id = companhiaId ORDER BY versao DESC
+      PR --> S : versão atual
+      deactivate PR
+      S -> PR : salvar(politica)
+      activate PR
+      PR -> DB : INSERT politica_abastecimento (companhia_id, versao + 1,\npermite_com_passageiros, registrada_em, autor_id)
+      alt E2: falha de gravação
+        PR --> S : erro; a transação é desfeita
+        S --> PC : falha técnica
+        PC --> G : 500
+        G --> V : 500
+        V --> CO : política anterior e cópias operacionais inalteradas (E2.1)
+      else gravado
+        PR --> S : ok
+        deactivate PR
+        S -> AU : registrar(objeto = "politica_abastecimento", objetoId, acao = Inclusão, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = versão anterior, valoresNovos = nova versão)
+        activate AU
+        AU -> DB : INSERT registro_auditoria
+        deactivate AU
+        S --> PC : política
+        PC --> G : 201
+        G --> V : 201
+        V --> CO : nova versão salva; as cópias existentes permanecem iguais e a nova vale\npara os modelos aplicados depois (passo 6; RN3)
+      end
+      deactivate S
+      deactivate PC
+    end
+    deactivate G
+  end
+  deactivate V
+end
+@enduml

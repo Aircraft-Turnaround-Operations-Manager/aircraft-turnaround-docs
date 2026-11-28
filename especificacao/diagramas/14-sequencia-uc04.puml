@@ -1,0 +1,156 @@
+@startuml
+' UC04 – Criar modelo de tarefas (RF-4, US004; RNF-2; ADR-0014). Estendido pelo UC07 e pelo UC08.
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). Alterar o modelo não muda as
+' cópias já aplicadas aos planos (UC06, RN4).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc04.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ModeloTarefaView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "EquipeController" as EC
+  control "ModeloTarefaController" as MC
+  participant "ModeloTarefaService" as S <<service>>
+  entity "ModeloTarefa" as M
+  participant "EquipeRepository" as ER <<repository>>
+  participant "ModeloTarefaRepository" as MR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+
+== Passos 1 e 2: identificação do modelo e lista de tarefas ==
+CO -> V : abrir()
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/equipes", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1)
+G -> EC : listar(acesso)
+activate EC
+ref over EC, DB : EquipeService.listar() → EquipeRepository.listar(): SELECT equipe (só as ativas entram nas tarefas)
+EC --> G : 200 equipes
+deactivate EC
+G -> MC : listar(acesso)
+activate MC
+MC -> S : listar()
+activate S
+S -> MR : listar()
+activate MR
+MR -> DB : SELECT modelo_tarefa, tarefa_modelo
+MR --> S : modelos
+deactivate MR
+S --> MC : modelos
+deactivate S
+MC --> G : 200 modelos
+deactivate MC
+G --> V : 200
+deactivate G
+V --> CO : modelos existentes, Novo modelo e formulário
+
+== Passos 3 e 4 ==
+alt A2: o coordenador cancela sem salvar
+  V --> CO : nenhum modelo criado (A2.1)
+else o coordenador informa nome, tipo de aeronave e serviço e adiciona as tarefas
+  opt A1: serviço sem embarque de passageiros
+    note over CO, V : comPassageiros = não: o sistema não exige tarefa de embarque (A1.2)
+  end
+  opt A3: tarefa marcada "sob demanda", como a limpeza profunda
+    note over CO, V : sobDemanda = sim, com tipo, equipe e duração planejada: a tarefa fica no\ncatálogo e não entra no plano até ser acionada (A3.2; RN5; ADR-0014)
+  end
+  opt «extend» UC07: a tarefa exige pontos de confirmação
+    ref over CO, DB : UC07 – Configurar pontos de confirmação das tarefas
+  end
+  opt «extend» UC08: há tarefas que precisam terminar antes de outras
+    ref over CO, DB : UC08 – Definir dependências entre tarefas
+  end
+  CO -> V : salvarModelo(dados)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/modelos-tarefa", corpo = dados, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> MC : criar(dados, acesso)
+  activate MC
+  MC -> S : criar(dados, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 5: campos, equipes ativas, durações e embarque (RN1, RN2) ==
+  loop cada tarefa do modelo
+    S -> ER : buscarPorId(equipeId)
+    activate ER
+    ER -> DB : SELECT equipe WHERE id = equipeId
+    ER --> S : equipe (ativa?)
+    deactivate ER
+  end
+  S -> M : contarEmbarques()
+  activate M
+  M --> S : quantidade de tarefas do tipo Embarque
+  deactivate M
+  alt E1: campo vazio, equipe inativa, duração ≤ 0, ou serviço com passageiros\nsem exatamente uma tarefa do tipo Embarque
+    S --> MC : recusa com as tarefas e os campos
+    MC --> G : 422
+    G --> V : 422
+    V --> CO : indica o erro e volta ao passo 3, sem gravar (E1.1, E1.2)
+  else configuração válida
+
+    == Passo 6: gravação do modelo e das tarefas (RN3, RN4) ==
+    S -> MR : salvar(modelo)
+    activate MR
+    MR -> DB : INSERT modelo_tarefa; INSERT tarefa_modelo (tipo_atividade, equipe_id,\nduracao_planejada_min, obrigatoria, permite_nao_aplicavel, sob_demanda)
+    alt E2: falha de gravação
+      MR --> S : erro; a transação é desfeita, sem modelo parcial
+      S --> MC : falha técnica
+      MC --> G : 500
+      G --> V : 500
+      V --> CO : não apresenta confirmação de sucesso (E2.1)
+    else gravado
+      MR --> S : ok
+      deactivate MR
+      S -> AU : registrar(objeto = "modelo_tarefa", objetoId, acao = Inclusão, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = vazio, valoresNovos = modelo e tarefas)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> MC : modelo
+      MC --> G : 201
+      G --> V : 201
+      V --> CO : exibe a configuração salva; o modelo não é copiado para nenhum turnaround (RN3)
+    end
+  end
+  deactivate S
+  deactivate MC
+  deactivate G
+end
+
+== A4: alterar um modelo existente (passo 1) ==
+CO -> V : abrirModelo(modeloId)
+V --> CO : identificação e tarefas do modelo
+CO -> V : salvarAlteracao(modeloId, dados)
+V -> G : encaminhar(sessaoId, rota = "PUT /v1/modelos-tarefa/{modeloId}", corpo = dados, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada
+G -> MC : alterar(modeloId, dados, acesso)
+activate MC
+MC -> S : alterar(modeloId, dados, autorId)
+activate S
+S -> MR : buscarPorId(modeloId)
+activate MR
+MR -> DB : SELECT modelo_tarefa, tarefa_modelo WHERE modelo_tarefa.id = modeloId
+MR --> S : modelo atual
+deactivate MR
+ref over S, DB : as mesmas verificações do passo 5 (A4.2): E1 recusa com 422, sem gravar
+S -> MR : salvar(modelo)
+activate MR
+MR -> DB : UPDATE modelo_tarefa; INSERT, UPDATE ou DELETE tarefa_modelo
+MR --> S : ok (E2 se falhar, sem alteração parcial)
+deactivate MR
+S -> AU : registrar(objeto = "modelo_tarefa", objetoId = modeloId, acao = Alteração, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores, valoresNovos)
+activate AU
+AU -> DB : INSERT registro_auditoria
+deactivate AU
+S --> MC : modelo
+deactivate S
+MC --> G : 200
+deactivate MC
+G --> V : 200
+deactivate G
+V --> CO : configuração salva; as cópias já aplicadas aos planos não mudam (A4.3; UC06, RN4)
+deactivate V
+@enduml

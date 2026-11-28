@@ -1,0 +1,273 @@
+@startuml
+' UC02 – Gerenciar cadastro de usuários e perfis (RF-2, US002; RNF-1, RNF-2, RNF-3; ADR-0010, ADR-0023).
+' Classes do item 13 (cadastro, contrato, comum) e tabelas do item 12 (Apêndice B.1). As tarefas pendentes de planos já
+' entregues são da Execução em Solo, que responde por pedido; as de planos ainda não confirmados, o Cadastro confere no
+' próprio banco (ADR-0023, ponto 4).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc02.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Administrador\ndo Sistema" as AD
+boundary "UsuarioView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+  control "EquipeController" as EC
+  participant "UsuarioService" as S <<service>>
+  entity "Usuario" as US
+  participant "UsuarioRepository" as UR <<repository>>
+  participant "EquipeRepository" as ER <<repository>>
+  participant "CompanhiaRepository" as CR <<repository>>
+  participant "PlanoRepository" as PR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoCadastroPlanejamento" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "TarefaController" as TC
+end box
+
+== Passos 1 e 2: lista e formulário ==
+AD -> V : abrir()
+activate V
+V -> G : encaminhar(sessaoId, rota = "GET /v1/usuarios", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Administrador do Sistema; RN2; RNF-1)
+G -> UC : listar(acesso)
+activate UC
+UC -> S : listar()
+activate S
+S -> UR : listar()
+activate UR
+UR -> DB : SELECT usuario
+UR --> S : usuários
+deactivate UR
+S --> UC : List<UsuarioResumo>, sem senha, hash nem token (RNF-3)
+deactivate S
+UC --> G : 200
+deactivate UC
+G -> EC : listar(acesso)
+activate EC
+ref over EC, DB : EquipeService.listar() → EquipeRepository.listar(): SELECT equipe (para o campo Equipe; só as ativas aceitam vínculo)
+EC --> G : 200 equipes
+deactivate EC
+G --> V : 200
+deactivate G
+V --> AD : lista de usuários e o formulário (identificador, senha inicial, perfil, equipe ou companhia)
+
+alt fluxo básico: Novo usuário (passos 3 a 6)
+  AD -> V : salvarUsuario(dados, senhaInicial)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios", corpo = dados + senhaInicial, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  alt E2: acesso revogado
+    G --> V : 401, sem alterar dados (E2.1)
+  else acesso confirmado
+    G -> UC : criar(dados, senhaInicial, acesso)
+    activate UC
+    UC -> S : criar(dados, senhaInicial, autorId = acesso.usuarioId)
+    activate S
+
+    == Passo 5: autorização, campos, unicidade e equipe ou companhia (RN1) ==
+    S -> UR : existeIdentificador(identificadorAcesso)
+    activate UR
+    UR -> DB : SELECT 1 FROM usuario WHERE identificador_acesso = identificadorAcesso
+    UR --> S : sim ou não
+    deactivate UR
+    opt perfil Operador de Solo/Rampa
+      S -> ER : buscarPorId(equipeId)
+      activate ER
+      ER -> DB : SELECT equipe WHERE id = equipeId
+      ER --> S : equipe (ativa?)
+      deactivate ER
+    end
+    opt perfil Autoridade de Liberação
+      S -> CR : buscarPorId(companhiaId)
+      activate CR
+      CR -> DB : SELECT companhia WHERE id = companhiaId
+      CR --> S : companhia
+      deactivate CR
+    end
+    alt E1: campo obrigatório vazio, senha inicial vazia, identificador duplicado, perfil fora dos quatro,\noperador sem equipe ativa ou Autoridade de Liberação sem companhia
+      S --> UC : recusa com os campos
+      UC --> G : 422 campos inválidos
+      G --> V : 422
+      V --> AD : indica os campos e volta ao passo 3, sem gravar (E1.1, E1.2)
+    else dados válidos
+
+      == Passo 6: senha protegida, gravação e auditoria ==
+      S -> US : definirSenha(senhaInicial)
+      note right of US : guarda só o senha_hash com sal\nindividual (RNF-3)
+      S -> UR : salvar(usuario)
+      activate UR
+      UR -> DB : INSERT usuario (ativo, sem desativado_em)
+      alt E3: falha ao salvar
+        UR --> S : erro; a transação é desfeita
+        S --> UC : falha técnica
+        UC --> G : 500
+        G --> V : 500
+        V --> AD : informa a falha, mantém os dados anteriores e permite nova tentativa (E3.1)
+      else gravado
+        UR --> S : ok
+        deactivate UR
+        S -> AU : registrar(objeto = "usuario", objetoId, acao = Inclusão, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = vazio, valoresNovos = dados sem senha)
+        activate AU
+        AU -> DB : INSERT registro_auditoria (sem senha, hash nem token; RNF-2)
+        deactivate AU
+        S --> UC : UsuarioResumo
+        UC --> G : 201 UsuarioResumo
+        G --> V : 201
+        V --> AD : o usuário aparece na lista, ativo e sem a credencial (passo 7)
+      end
+    end
+    deactivate S
+    deactivate UC
+  end
+  deactivate G
+
+else A1: Alterar (A1.1 a A1.4)
+  AD -> V : abrirUsuario(usuarioId)
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/usuarios/{usuarioId}", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> UC : consultar(usuarioId, acesso)
+  activate UC
+  ref over UC, DB : UsuarioService.consultar(usuarioId) → UsuarioRepository.buscarPorId(usuarioId): SELECT usuario
+  UC --> G : 200 UsuarioResumo
+  deactivate UC
+  G --> V : 200
+  deactivate G
+  AD -> V : salvarUsuario(dados, senhaInicial = vazio)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/usuarios/{usuarioId}", corpo = dados, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  alt E2: acesso revogado
+    G --> V : 401, sem alterar dados (E2.1)
+  else acesso confirmado
+    G -> UC : alterar(usuarioId, dados, acesso)
+    activate UC
+    UC -> S : alterar(usuarioId, dados, autorId)
+    activate S
+    S -> UR : buscarPorId(usuarioId)
+    activate UR
+    UR -> DB : SELECT usuario WHERE id = usuarioId
+    UR --> S : usuário
+    deactivate UR
+    ref over S, DB : mesmas verificações do passo 5, sem exigir senha nova (A1.2)
+    opt operador com troca de equipe (RN3)
+      S -> EX : listarTarefasPendentesDoOperador(usuarioId)
+      activate EX
+      EX -> TC : listarTarefasPendentesDoOperador(usuarioId)
+      activate TC
+      TC --> EX : tarefas em "Aguardando", "Pronta", "Em execução" ou "Pausada" em turnarounds\nnão encerrados; o item do catálogo não acionado (estado vazio) não conta
+      deactivate TC
+      EX --> S : List<TarefaResumo>
+      deactivate EX
+      S -> PR : listarTarefasNaoConfirmadasDoResponsavel(usuarioId)
+      activate PR
+      PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId\nAND (sob_demanda = não OR acionada = sim) (plano não confirmado)
+      PR --> S : tarefas de planos não confirmados (o catálogo não acionado não conta)
+      deactivate PR
+    end
+    alt E1: dados inválidos (A1.4)
+      S --> UC : recusa com os campos
+      UC --> G : 422
+      G --> V : 422
+      V --> AD : indica os campos, sem gravar
+    else E5: troca de equipe de operador com tarefa pendente (E5.1)
+      S --> UC : recusa com as tarefas a reatribuir
+      UC --> G : 409 tarefas pendentes
+      G --> V : 409
+      V --> AD : lista as tarefas a reatribuir (UC05 ou UC30); o operador continua na equipe atual (E5.2)
+    else alteração válida
+      S -> UR : salvar(usuario)
+      activate UR
+      UR -> DB : UPDATE usuario SET nome, perfil, equipe_id, companhia_id\n(mantém id, senha_hash e desativado_em; A1.3)
+      UR --> S : ok (E3 se falhar, como no fluxo básico)
+      deactivate UR
+      S -> AU : registrar(objeto = "usuario", objetoId, acao = Alteração, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores, valoresNovos)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> UC : UsuarioResumo
+      UC --> G : 200
+      G --> V : 200
+      V --> AD : dados atualizados na lista (passo 7)
+    end
+    deactivate S
+    deactivate UC
+  end
+  deactivate G
+
+else A3: o administrador cancela o cadastro ou a alteração (passo 4)
+  V --> AD : volta à lista sem gravar (A3.1)
+end
+deactivate V
+
+newpage Diagrama de Sequência do UC02 (parte 2: desativar)
+
+== A2: Desativar (passo 1) ==
+activate V
+AD -> V : desativarUsuario(usuarioId)
+V --> AD : pede confirmação
+alt A3: o administrador cancela
+  V --> AD : volta à lista sem gravar (A3.1)
+else confirmada
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/{usuarioId}/desativacao", corpo = vazio, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  alt E2: acesso revogado
+    G --> V : 401, sem alterar dados (E2.1)
+  else acesso confirmado
+    G -> UC : desativar(usuarioId, acesso)
+    activate UC
+    UC -> S : desativar(usuarioId, autorId)
+    activate S
+    S -> UR : buscarPorId(usuarioId)
+    activate UR
+    UR -> DB : SELECT usuario WHERE id = usuarioId
+    UR --> S : usuário
+    deactivate UR
+    opt Operador de Solo/Rampa (RN3)
+      S -> EX : listarTarefasPendentesDoOperador(usuarioId)
+      activate EX
+      EX -> TC : listarTarefasPendentesDoOperador(usuarioId)
+      activate TC
+      TC --> EX : tarefas em "Aguardando", "Pronta", "Em execução" ou "Pausada" em turnarounds\nnão encerrados; o item do catálogo não acionado (estado vazio) não conta
+      deactivate TC
+      EX --> S : List<TarefaResumo>
+      deactivate EX
+      S -> PR : listarTarefasNaoConfirmadasDoResponsavel(usuarioId)
+      activate PR
+      PR -> DB : SELECT tarefa_plano JOIN plano WHERE responsavel_id = usuarioId\nAND (sob_demanda = não OR acionada = sim) (plano não confirmado)
+      PR --> S : tarefas
+      deactivate PR
+    end
+    alt E4: operador com tarefa pendente
+      S --> UC : recusa com as tarefas
+      UC --> G : 409
+      G --> V : 409
+      V --> AD : lista as tarefas a reatribuir; o usuário continua ativo (E4.2); o sistema não reatribui sozinho
+    else sem impedimento
+      S -> US : desativar(momento)
+      S -> UR : salvar(usuario)
+      activate UR
+      UR -> DB : UPDATE usuario SET desativado_em = momento (o histórico e os vínculos ficam)
+      UR --> S : ok
+      deactivate UR
+      S -> AU : registrar(objeto = "usuario", objetoId, acao = Desativação, autorId, causaId = vazio, turnaroundId = vazio, valoresAnteriores = ativo, valoresNovos = desativado)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      S --> UC : ok
+      UC --> G : 204
+      G --> V : 204
+      V --> AD : usuário desativado; a próxima entrada ou ação dele é recusada,\nmesmo com sessão aberta (interação auxiliar; RNF-1)
+    end
+    deactivate S
+    deactivate UC
+  end
+  deactivate G
+end
+
+deactivate V
+@enduml
