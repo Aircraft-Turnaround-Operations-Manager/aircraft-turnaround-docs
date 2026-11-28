@@ -116,13 +116,13 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC19 | 14-sequencia-uc19.png |
 | UC20 | 14-sequencia-uc20.png |
 | UC21 | 14-sequencia-uc21.png, 14-sequencia-uc21_001.png |
-| UC22 | — |
-| UC23 | — |
-| UC24 | — |
-| UC25 | — |
-| UC26 | — |
-| UC27 | — |
-| UC28 | — |
+| UC22 | 14-sequencia-uc22.png |
+| UC23 | 14-sequencia-uc23.png |
+| UC24 | 14-sequencia-uc24.png, 14-sequencia-uc24_001.png |
+| UC25 | 14-sequencia-uc25.png, 14-sequencia-uc25_001.png |
+| UC26 | 14-sequencia-uc26.png |
+| UC27 | 14-sequencia-uc27.png |
+| UC28 | 14-sequencia-uc28.png |
 | UC29 | — |
 | UC30 | — |
 | UC31 | — |
@@ -344,13 +344,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC09 sem diagrama de sequência (item 14)
 - UC10 sem diagrama de sequência (item 14)
 - UC11 sem diagrama de sequência (item 14)
-- UC22 sem diagrama de sequência (item 14)
-- UC23 sem diagrama de sequência (item 14)
-- UC24 sem diagrama de sequência (item 14)
-- UC25 sem diagrama de sequência (item 14)
-- UC26 sem diagrama de sequência (item 14)
-- UC27 sem diagrama de sequência (item 14)
-- UC28 sem diagrama de sequência (item 14)
 - UC29 sem diagrama de sequência (item 14)
 - UC30 sem diagrama de sequência (item 14)
 - UC31 sem diagrama de sequência (item 14)

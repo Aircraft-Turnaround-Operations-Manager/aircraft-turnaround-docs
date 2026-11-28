@@ -1,0 +1,261 @@
+@startuml
+' UC24 – Recalcular projeção, atraso e caminho crítico (RF-22 a RF-24, US022 a US024; inclui o UC25).
+' O Motor de Eventos é o comportamento automático do RecalculoService (item 13, seção 13.1), acionado por aviso
+' na fila "monitoramento" ou pelo AgendadorMinuto (ADR-0015, regra 7). Tabelas do item 12 (B.3); aviso ProjecaoRecalculada (item 12, seção 12.5.3; #183).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc24.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+queue "RabbitMQ" as MQ
+box "Monitoramento" #FAFAFA
+  participant "ConsumidorAvisosMonitoramento" as CO <<consumer>>
+  participant "AgendadorMinuto" as AG <<scheduler>>
+  participant "CopiaService" as CS <<service>>
+  participant "RecalculoService" as RS <<service>>
+  entity "TurnaroundMonitorado" as TM
+  entity "TarefaMonitorada" as TA
+  entity "CaminhoCritico" as CC
+  participant "AlertaService" as AS <<service>>
+  participant "PainelService" as PS <<service>>
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "ProjecaoRepository" as PR <<repository>>
+  participant "CaminhoCriticoRepository" as CR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "AtualizacaoTobtMonitoradaRepository" as AT <<repository>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoMonitoramento" as DB
+  participant "PainelNotificador" as N <<websocket>>
+end box
+box "Exceções e Liberação" #FAFAFA
+  participant "ConsumidorAvisosExcecoes" as CE <<consumer>>
+  participant "AtualizacaoTobtService" as ATS <<service>>
+end box
+
+== Passo 1: o que dispara o recálculo (RN1) ==
+alt registro aceito de tarefa (UC15 a UC18, depois do UC21) — passo 1, A2
+  ME -> MQ : consumir(fila = "monitoramento")
+  MQ --> ME : envelope de TarefaIniciada, TarefaConcluida, TarefaPausada, TarefaRetomada,\nTarefaMarcadaNaoAplicavel ou EstadoTarefaPropagado (Execução em Solo)\n(estado, horários, versao; ocorridoEm = horário da ação)
+  ME -> CO : tratar(envelope)
+  activate CO
+  note right of CO
+    Chamado por receber(envelope), herdado de ConsumidorAvisos:
+    o aviso repetido já foi descartado por aviso_processado,
+    e o id do aviso é gravado na mesma transação (ADR-0016, ponto 5).
+    E2: o registro recusado no servidor não gera aviso;
+    nada é recalculado por ele.
+  end note
+  CO -> CS : aplicarTarefa(turnaroundId, tarefa, versao, causa, causaId)
+  activate CS
+  CS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+  TR --> CS : turnaround
+  deactivate TR
+  CS -> TA : aceitaVersao(versao)
+  activate TA
+  TA --> CS : sim / não
+  deactivate TA
+  alt versão menor ou igual à versao_origem (aviso fora de ordem; item 12, seção 12.5.2)
+    CS --> CO : aviso ignorado, sem recálculo
+  else versão maior (E3: o registro feito sem conexão chega depois e é aplicado)
+    CS -> TR : salvar(turnaround)
+    activate TR
+    TR -> DB : UPDATE tarefa_monitorada SET estado, inicio_real, fim_real,\npronta_em, executado_min, em_execucao_desde, justificativa,\ncodigo_atraso, versao_origem
+    TR --> CS : ok
+    deactivate TR
+    CS -> RS : recalcular(turnaroundId, causa, causaId, momento)
+    activate RS
+    ref over RS, N : Passos 2 a 8 (abaixo)
+    RS --> CS : projeção
+    deactivate RS
+    CS --> CO : ok
+  end
+  deactivate CS
+  deactivate CO
+else A3: alteração do plano, do TOBT vigente ou do AIBT
+  ME -> MQ : consumir(fila = "monitoramento")
+  MQ --> ME : aviso de replanejamento ou de serviço sob demanda (Execução em Solo, com a versao da tarefa),\nde atualização do TOBT (Exceções e Liberação, com o registrada_em) ou AibtCorrigido\n(Execução em Solo, com a versao do turnaround)
+  ME -> CO : tratar(envelope)
+  activate CO
+  alt replanejamento ou inclusão de serviço sob demanda (US042)
+    CO -> CS : aplicarTarefa(turnaroundId, tarefa, versao, causa = "Replanejamento", causaId)
+  else atualização do TOBT vigente (US041)
+    CO -> CS : aplicarTobtVigente(atualizacao)
+  else correção do AIBT (US013)
+    CO -> CS : aplicarMarco(turnaroundId, tipo = "AIBT", horario, versao, causaId)
+  end
+  activate CS
+  CS -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+  TR --> CS : turnaround
+  deactivate TR
+  alt replanejamento ou serviço sob demanda (aviso de tarefa)
+    CS -> TA : aceitaVersao(versao)
+    activate TA
+    TA --> CS : sim / não
+    deactivate TA
+    note right of CS : a tarefa sob demanda ainda desconhecida é criada\ncom o que o aviso traz (item 12, seção 12.4)
+  else atualização do TOBT vigente
+    CS -> AT : listarDosTurnarounds(turnaroundIds = [turnaroundId])
+    activate AT
+    AT -> DB : SELECT atualizacao_tobt_monitorada WHERE turnaround_id
+    AT --> CS : atualizações guardadas (registrada_em da última)
+    deactivate AT
+  else correção do AIBT
+    CS -> TM : aceitaVersao(versao)
+    activate TM
+    TM --> CS : sim / não
+    deactivate TM
+  end
+  alt aviso fora de ordem: versão menor ou igual à versao_origem da tarefa ou do turnaround,\nou TOBT com registrada_em anterior ao da última atualização guardada (item 12, seção 12.5.2)
+    CS --> CO : aviso ignorado, sem recálculo
+  else aviso mais novo
+    opt correção do AIBT
+      CS -> TM : aplicarMarco(tipo = "AIBT", horario, versao)
+      activate TM
+      TM --> CS : ok
+      deactivate TM
+    end
+    CS -> TR : salvar(turnaround)
+    activate TR
+    TR -> DB : UPDATE turnaround_monitorado SET tobt_vigente, ou SET aibt e versao_origem,\nou tarefa_monitorada (janela, dependências e versao_origem)
+    TR --> CS : ok
+    deactivate TR
+    opt atualização do TOBT vigente
+      CS -> AT : salvar(atualizacao)
+      activate AT
+      AT -> DB : INSERT atualizacao_tobt_monitorada
+      AT --> CS : ok
+      deactivate AT
+    end
+    CS -> RS : recalcular(turnaroundId, causa, causaId, momento)
+    activate RS
+    ref over RS, N : Passos 2 a 8 (abaixo), com o plano ou o TOBT novo (A3.2)
+    RS --> CS : projeção
+    deactivate RS
+  end
+  deactivate CS
+  deactivate CO
+else A1: virada do minuto, sem registro novo
+  ME -> AG : executar(momento)
+  activate AG
+  AG -> RS : recalcularAbertos(momento, causa = "Recálculo de minuto")
+  activate RS
+  RS -> TR : listarAbertos()
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado WHERE aobt IS NULL
+  TR --> RS : turnarounds abertos
+  deactivate TR
+  loop para cada turnaround aberto
+    RS -> RS : recalcular(turnaroundId, causa = "Recálculo de minuto", causaId = vazio, momento)
+    ref over RS, N : Passos 2 a 8 (abaixo); a causa gravada é o recálculo de minuto (A1.2)
+  end
+  deactivate RS
+  deactivate AG
+end
+
+newpage
+== Passos 2 a 8: recalcular(turnaroundId, causa, causaId, momento) ==
+activate RS
+RS -> TR : buscarComTrava(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada,\ndependencia_monitorada (com trava)
+TR --> RS : turnaround com tarefas e dependências
+deactivate TR
+RS -> TM : estaEmCalculo()
+activate TM
+TM --> RS : sim / não
+deactivate TM
+alt E1: turnaround "Liberado" ou "Fora de bloco"
+  RS --> RS : não recalcula; a última projeção gravada continua a mesma (US022, critério 4)
+else turnaround em cálculo
+  RS -> RS : projetarTarefas(turnaround, momento)
+  loop cada tarefa que não está "Não aplicável", na ordem das dependências (passo 2, RN2)
+    RS -> TA : fimProjetado(agora = momento, fimPredecessoras)
+    activate TA
+    TA --> RS : fim projetado
+    deactivate TA
+  end
+  note right of RS
+    RN2: "Concluída" → fim real; "Em execução" → maior entre início
+    real + duração e agora; "Pausada" → agora + duração que falta;
+    "Aguardando" ou "Pronta" → maior entre início planejado, fim das
+    predecessoras e agora, + duração (A4: sem AIBT, todas assim).
+    A2: "Não aplicável" sai do cálculo.
+    RN3: projeção = maior fim projetado das obrigatórias; desvios do
+    TOBT planejado e do vigente (passo 4).
+    RN4 e RN5: atraso de início e de fim em minutos completos;
+    sucessora "impactada" com a tarefa de origem (no empate, a de
+    maior atraso de fim) e os minutos de impacto (passo 5).
+    RN9: horários da ação do operador, inclusive sem conexão.
+  end note
+  RS -> PR : buscarUltima(turnaroundId)
+  activate PR
+  PR -> DB : SELECT projecao (a anterior)
+  PR --> RS : projeção anterior
+  deactivate PR
+  RS -> PR : salvar(projecao)
+  activate PR
+  PR -> DB : INSERT projecao (projecao_prontidao, tobt_vigente, desvio_planejado_min,\ndesvio_vigente_min, calculada_em, causa_tipo, causa_id, causa_tarefa_id);\nINSERT projecao_tarefa (fins projetados, atrasos, impactada_por_id, impacto_min)
+  PR --> RS : ok (passos 3 a 5)
+  deactivate PR
+  RS -> RS : identificarCaminhoCritico(turnaround, projecao)
+  note right of RS : RN6: cadeia de obrigatórias que termina na de maior fim projetado;\nem empate entre predecessoras, as duas ficam no caminho; a cadeia começa\nna tarefa cujo início planejado é posterior ao fim de todas as predecessoras (#279)
+  RS -> CR : buscarAtual(turnaroundId)
+  activate CR
+  CR -> DB : SELECT caminho_critico, caminho_critico_tarefa (o atual)
+  CR --> RS : caminho anterior
+  deactivate CR
+  RS -> CC : igualA(outro = anterior)
+  activate CC
+  CC --> RS : sim / não
+  deactivate CC
+  alt A1, A2: o caminho crítico mudou (RN8)
+    RS -> CR : salvar(caminho)
+    activate CR
+    CR -> DB : INSERT caminho_critico (projecao_id, anterior_id);\nINSERT caminho_critico_tarefa (ordem; empatadas com a mesma ordem)
+    CR --> RS : ok
+    deactivate CR
+    RS -> AU : registrarAutomatico(objeto = "caminho_critico", objetoId, acao = "Inclusão", causaId, gatilho, turnaroundId, valoresAnteriores = caminho anterior, valoresNovos = caminho novo)
+    activate AU
+    AU -> DB : INSERT registro_auditoria (autor_tipo = Motor de Eventos)
+    AU --> RS : ok
+    deactivate AU
+  else o caminho continua o mesmo (passo 6)
+    RS --> RS : não grava mudança de caminho (US024, critério 1)
+  end
+  RS -> PUB : registrar(EnvelopeAviso.novo(tipo = "ProjecaoRecalculada", turnaroundId, autorId = vazio, causaId = projecao.id, dados = projecaoId, projecaoProntidao, calculadaEm))
+  activate PUB
+  PUB -> DB : INSERT aviso_saida (mesma transação)
+  PUB --> RS : ok
+  deactivate PUB
+  RS -> AS : verificarGatilhos(turnaround, projecao, anterior, momento)
+  activate AS
+  ref over AS, N : UC25 – Emitir alertas de risco ao horário («include»; passo 7)
+  AS --> RS : alertas emitidos
+  deactivate AS
+  RS -> PS : montarLinha(turnaroundId)
+  activate PS
+  PS --> RS : LinhaPainel
+  deactivate PS
+  RS -> N : notificarLinha(linha)
+  RS -> N : notificarLinhaDoTempo(turnaroundId)
+  note right of N : passo 8 e RN10: painel (UC22) e linha do tempo (UC23)\natualizados em até 5 s
+end
+deactivate RS
+
+== Depois da transação: aviso da projeção ao Exceções e Liberação (RN3; UC34) ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publicar ProjecaoRecalculada na fila "excecoes-e-liberacao"
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+MQ -> CE : tratar(envelope)
+activate CE
+CE -> ATS : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm, causaId = projecaoId)
+activate ATS
+ref over ATS : UC34 – Atualizar TOBT, passo 1: compara com o TOBT vigente\ne pede a atualização ao Coordenador de Turnaround\nse a diferença for de 5 min ou mais (ADR-0003)
+deactivate ATS
+deactivate CE
+@enduml

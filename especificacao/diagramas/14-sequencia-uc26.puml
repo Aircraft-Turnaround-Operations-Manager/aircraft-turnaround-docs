@@ -1,0 +1,181 @@
+@startuml
+' UC26 – Consultar lista de alertas abertos (RF-33, US033; o registro da ação é o UC31, da área D).
+' O encerramento chega pelo aviso AcaoAlertaRegistrada do Exceções e Liberação (ADR-0015, regras 1 e 2; item 12, seção 12.5.4; #183).
+' Classes do item 13; tabelas do item 12 (B.3.8). Imagens: python scripts/exportar_plantuml.py <este arquivo>
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CT
+boundary "ListaAlertasView" as V
+boundary "RegistroAcaoAlertaView" as RV
+participant "PortaDeEntrada" as G <<gateway>>
+box "Monitoramento" #FAFAFA
+  control "AlertaController" as C
+  participant "AlertaService" as S <<service>>
+  entity "Alerta" as A
+  participant "AlertaRepository" as AR <<repository>>
+  database "BancoMonitoramento" as DB
+  participant "ConsumidorAvisosMonitoramento" as CO <<consumer>>
+  participant "PainelNotificador" as N <<websocket>>
+end box
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: abrir a lista ==
+CT -> V : abrir()
+activate V
+note right of CT : A1: o mesmo abrir() é chamado por "Abrir lista de alertas"\nno aviso do alerta (UC25), e o caso de uso segue do passo 2
+V -> G : encaminhar(sessaoId, rota = "GET /v1/alertas?situacao=aberto", corpo, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> C : listarAbertos(acesso)
+activate C
+C -> S : listarAbertos()
+activate S
+S -> AR : listarAbertos()
+activate AR
+AR -> DB : SELECT alerta, alerta_tarefa, turnaround_monitorado, tarefa_monitorada\nWHERE alerta.encerrado_em IS NULL ORDER BY emitido_em
+AR --> S : alertas abertos, do mais antigo para o mais recente (RN1)
+deactivate AR
+loop para cada alerta
+  S -> A : minutosDecorridos(agora)
+  activate A
+  A --> S : minutos completos desde a emissão (RN2)
+  deactivate A
+end
+S --> C : alertas
+deactivate S
+C --> G : 200 alertas
+deactivate C
+G --> V : 200 alertas
+deactivate G
+V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/nomes", corpo, acaoDoUsuario = não)
+activate G
+G -> UC : listarNomes(usuarioIds, acesso)
+activate UC
+UC --> G : nomes dos operadores responsáveis
+deactivate UC
+G --> V : 200 nomes
+deactivate G
+alt A3: nenhum alerta aberto
+  V --> CT : "Nenhum alerta aberto"; o caso de uso termina
+else há alertas abertos
+  V --> CT : alertas do mais antigo para o mais recente: emissão, tempo decorrido, turnaround\n(matrícula e posição), tipo e dados do gatilho, tarefa, equipe, responsável e\n"crítico" ou "não crítico" (RN2, RN3); crítico com 2 min ou mais em destaque (RN4)
+end
+
+opt A4: novo alerta com a lista aberta
+  ref over S, N : UC25 – Emitir alertas de risco ao horário
+  N -> V : incluirAlerta(alerta)
+  V --> CT : alerta no fim da lista em até 5 s, sem recarregar a página (RN6)
+end
+
+opt A5: Coordenador de Turnaround seleciona a aba "Encerrados hoje"
+  CT -> V : abrirEncerrados()
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/alertas?situacao=encerrado&dia=hoje", corpo, acaoDoUsuario = sim)
+  activate G
+  G -> C : listarEncerrados(dia, acesso)
+  activate C
+  C -> S : listarEncerrados(dia)
+  activate S
+  S -> AR : listarEncerrados(dia)
+  activate AR
+  AR -> DB : SELECT alerta, turnaround_monitorado\nWHERE encerrado_em no dia (horário local) ORDER BY encerrado_em DESC
+  AR --> S : alertas encerrados no dia, com a ação copiada\n(tipo_acao, acao_autor_id, acao_registrada_em)
+  deactivate AR
+  S --> C : alertas encerrados
+  deactivate S
+  C --> G : 200 alertas encerrados
+  deactivate C
+  G --> V : 200 alertas encerrados
+  deactivate G
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/nomes", corpo, acaoDoUsuario = não)
+  activate G
+  G -> UC : listarNomes(usuarioIds, acesso)
+  activate UC
+  UC --> G : nomes de quem registrou cada ação
+  deactivate UC
+  G --> V : 200 nomes
+  deactivate G
+  V --> CT : alertas encerrados no dia, do mais recente para o mais antigo: emissão, turnaround,\ntipo e dados do gatilho, classificação, ação, quem registrou, horário do registro e\ntempo de resposta (acao_registrada_em − emitido_em), sem "Registrar ação" (A5.2, A5.3)
+end
+
+opt A2: Coordenador de Turnaround seleciona o turnaround de um alerta
+  ref over CT, V : UC23 – Consultar linha do tempo do turnaround
+end
+
+opt E2: sem conexão com a internet
+  V --> CT : última lista recebida, com "Sem conexão" e o horário da última atualização;\n"Registrar ação" fica indisponível até a conexão voltar
+end
+
+== Passos 3 e 4: registrar a ação do alerta mais antigo ==
+CT -> V : registrarAcao(alertaId)
+V -> G : encaminhar(sessaoId, rota = "GET /v1/alertas/{alertaId}", corpo, acaoDoUsuario = sim)
+activate G
+G -> C : consultar(alertaId, acesso)
+activate C
+C -> S : consultar(alertaId)
+activate S
+S -> AR : buscarPorId(alertaId)
+activate AR
+AR -> DB : SELECT alerta WHERE id = alertaId
+AR --> S : alerta
+deactivate AR
+S -> A : estaAberto()
+activate A
+A --> S : sim / não
+deactivate A
+S --> C : alerta (situação, ação, autor e horário da ação)
+deactivate S
+C --> G : 200 alerta
+deactivate C
+G --> V : 200 alerta
+deactivate G
+alt E1: alerta já encerrado por outro Coordenador de Turnaround
+  V --> CT : "Alerta já tratado", com o autor (nome pelo Cadastro) e o horário da ação
+  V -> V : retirarAlerta(alertaId)
+  note right of V : volta ao passo 2
+else alerta aberto
+  V -> RV : abrir(alertaId)
+  activate RV
+  ref over CT, RV : UC31 – Registrar ação tomada para o alerta (área D, Exceções e Liberação):\na ação é gravada na mesma transação que publica o aviso AcaoAlertaRegistrada
+  deactivate RV
+end
+
+== Passo 5: encerrar o alerta e tirá-lo da lista (RN5; RF-38) ==
+MQ -> CO : tratar(envelope)
+activate CO
+note right of CO
+  Aviso AcaoAlertaRegistrada do Exceções e Liberação (item 12, seção 12.5.4; #183):
+  envelope com turnaroundId, autorId e causaId = acaoId;
+  dados: alertaId, acaoId, tipoAcao e registradaEm.
+end note
+CO -> S : encerrarPorAcao(turnaroundId, alertaId, acaoId, tipoAcao, autorId, registradaEm)
+activate S
+S -> AR : buscarPorId(alertaId)
+activate AR
+AR -> DB : SELECT alerta WHERE id = alertaId
+AR --> S : alerta
+deactivate AR
+alt alerta desconhecido, já encerrado ou de outro turnaround
+  S --> CO : descarta o aviso e registra no log (RNF-24)
+else alerta aberto do turnaround
+  S -> A : encerrar(acaoId, tipoAcao, autorId, registradaEm, momento)
+  activate A
+  A --> S : ok
+  deactivate A
+  S -> AR : salvar(alerta)
+  activate AR
+  AR -> DB : UPDATE alerta SET encerrado_em, acao_id, tipo_acao,\nacao_autor_id, acao_registrada_em
+  AR --> S : ok
+  deactivate AR
+  S -> N : notificarAlertaEncerrado(alertaId)
+  activate N
+  N -> V : retirarAlerta(alertaId)
+  deactivate N
+  V --> CT : alerta fora da lista em até 5 s; os demais continuam (US033, critério 3)
+end
+deactivate S
+deactivate CO
+deactivate V
+@enduml

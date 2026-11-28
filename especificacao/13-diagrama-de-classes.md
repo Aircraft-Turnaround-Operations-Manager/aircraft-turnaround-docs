@@ -124,7 +124,7 @@ A primeira vista mostra a parte do Motor de Eventos na Execução em Solo, que g
 
 ### 13.5.5 Painel, linha do tempo, alertas, checagem e indicadores
 
-UC22, UC23, UC26, UC27 e UC28. Os painéis (UC22 e UC23) são lidos por GraphQL, como decidido na ADR-0016 ("GraphQL só nos painéis"). Toda mudança que o Coordenador de Turnaround vê (recálculo, alerta emitido ou encerrado, cópia de estado, marco ou previsão, aviso de checagem) monta a linha do painel de novo e a envia pelo `PainelNotificador`, que também mostra o aviso do alerta sobre a tela e tira do painel o turnaround "Fora de bloco". As telas buscam no Cadastro o nome das pessoas e das equipes.
+UC22, UC23, UC26, UC27 e UC28. Os painéis (UC22 e UC23) são lidos por GraphQL, como decidido na ADR-0016 ("GraphQL só nos painéis"). Toda mudança que o Coordenador de Turnaround vê (recálculo, alerta emitido ou encerrado, cópia de estado, marco ou previsão, aviso de checagem) monta a linha do painel de novo e a envia pelo `PainelNotificador`, que também mostra o aviso do alerta sobre a tela e tira do painel o turnaround "Fora de bloco". Quando o turnaround entra em "Pronto para liberação" com o aviso de checagem aberto, a cópia do estado (`CopiaService.aplicarEstado`) pede ao `AvisoChecagemService.encerrarPorProntidao` que encerre o aviso sem autor (UC27, RN8). As telas buscam no Cadastro o nome das pessoas e das equipes.
 
 ![Diagrama de classes — acompanhamento](diagramas/13-classes-tecnica-acompanhamento.png)
 

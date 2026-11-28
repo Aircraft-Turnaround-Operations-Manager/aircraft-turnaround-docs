@@ -1,0 +1,214 @@
+@startuml
+' UC27 – Registrar checagem com as equipes em TOBT − 15 (RF-32, RF-35, US032, US035).
+' Dois atores: o Motor de Eventos emite e encerra o aviso (AvisoChecagemService, item 13, seção 13.1); o Coordenador de
+' Turnaround registra a checagem. Tabela do item 12: B.3.10 aviso_checagem. Imagens: python scripts/exportar_plantuml.py <este arquivo>
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+actor "Coordenador de\nTurnaround" as CT
+boundary "AvisoChecagemView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+queue "RabbitMQ" as MQ
+box "Monitoramento" #FAFAFA
+  participant "AgendadorMinuto" as AG <<scheduler>>
+  participant "ConsumidorAvisosMonitoramento" as CO <<consumer>>
+  participant "CopiaService" as CS <<service>>
+  control "AvisoChecagemController" as C
+  participant "AvisoChecagemService" as S <<service>>
+  entity "AvisoChecagem" as AV
+  entity "TurnaroundMonitorado" as TM
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "ProjecaoRepository" as PR <<repository>>
+  participant "AvisoChecagemRepository" as AR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoMonitoramento" as DB
+  participant "PainelNotificador" as N <<websocket>>
+end box
+
+== Passos 1 a 4: emitir o aviso em TOBT vigente − 15 (Motor de Eventos) ==
+ME -> AG : executar(momento)
+activate AG
+AG -> S : emitirDevidos(momento)
+activate S
+S -> TR : listarAbertos()
+activate TR
+TR -> DB : SELECT turnaround_monitorado WHERE aobt IS NULL
+TR --> S : turnarounds abertos (estado, TOBT vigente, antecedencia_checagem_min)
+deactivate TR
+loop para cada turnaround com o relógio em TOBT vigente − 15 (RN1)
+  note right of S : E2: o horário usa o TOBT vigente atual; se ele mudou\nantes do aviso (11:00 → 11:10), o aviso sai às 10:55
+  S -> AR : buscarPorTurnaround(turnaroundId)
+  activate AR
+  AR -> DB : SELECT aviso_checagem WHERE turnaround_id
+  AR --> S : aviso já emitido ou nenhum
+  deactivate AR
+  alt A3: turnaround em "Pronto para liberação" ou estado posterior (RN3)
+    S --> AG : não emite o aviso
+  else A2.2: o turnaround já tem aviso (RN9: um por turnaround, mesmo com o TOBT vigente mudado depois)
+    S --> AG : não emite outro aviso
+  else estado antes de "Pronto para liberação" (inclusive sem AIBT), sem aviso (passo 2)
+    S -> PR : buscarUltima(turnaroundId)
+    activate PR
+    PR -> DB : SELECT projecao, projecao_tarefa (a última)
+    PR --> S : tarefas obrigatórias não "Concluída" nem "Não aplicável",\ncom equipe, responsável, estado e fim projetado (passo 3, RN4)
+    deactivate PR
+    S -> AR : salvar(aviso)
+    activate AR
+    AR -> DB : INSERT aviso_checagem (turnaround_id, tobt_vigente, emitido_em)
+    AR --> S : ok
+    deactivate AR
+    S -> AU : registrarAutomatico(objeto = "aviso_checagem", objetoId, acao = "Inclusão", causaId = vazio, gatilho = "TOBT − 15", turnaroundId, valoresAnteriores = vazio, valoresNovos = aviso)
+    activate AU
+    AU -> DB : INSERT registro_auditoria (autor_tipo = Motor de Eventos)
+    AU --> S : ok
+    deactivate AU
+    S -> N : notificarAvisoChecagem(aviso, pendentes)
+    activate N
+    N -> V : exibirAviso(aviso, pendentes)
+    deactivate N
+    V --> CT : aviso de checagem, identificado como aviso e não como alerta:\nfora da lista de alertas e sem mudar a cor do painel (passo 4, RN5)
+    opt E1: Coordenador de Turnaround sem conexão
+      note over V : o aviso fica gravado e aberto; quando a conexão volta,\nabrir() → AvisoChecagemController.listarAbertos(acesso) o exibe
+    end
+  end
+end
+deactivate S
+deactivate AG
+
+== Passos 5 a 7: registrar a checagem (Coordenador de Turnaround) ==
+note over CT : Passo 5 e RN7: o coordenador confere o prazo com cada equipe\nlistada por rádio ou telefone, fora do sistema
+alt A1: Coordenador de Turnaround seleciona "Lembrar depois"
+  CT -> V : lembrarDepois(avisoId)
+  activate V
+  V --> CT : aviso fechado na tela; continua aberto e aparece na linha do tempo (UC23, RN9)
+  deactivate V
+else passo 6 (A2: também quando uma equipe informa atraso)
+  CT -> V : registrarChecagem(avisoId)
+  activate V
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/avisos-checagem/{avisoId}/checagem", corpo, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+  G -> C : registrarChecagem(avisoId, acesso)
+  activate C
+  C -> S : registrarChecagem(avisoId, autorId)
+  activate S
+  S -> AR : buscarPorId(avisoId)
+  activate AR
+  AR -> DB : SELECT aviso_checagem WHERE id = avisoId
+  AR --> S : aviso (com o turnaround)
+  deactivate AR
+  S -> TR : buscarComTrava(turnaroundId)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado (com trava)
+  TR --> S : turnaround
+  deactivate TR
+  S -> AR : buscarPorId(avisoId)
+  activate AR
+  AR -> DB : SELECT aviso_checagem WHERE id = avisoId (relido com a trava)
+  AR --> S : aviso
+  deactivate AR
+  note right of S : a trava do turnaround serializa a checagem com o\nencerramento do A4, que roda com a mesma trava
+  S -> AV : estaEncerrado()
+  activate AV
+  AV --> S : sim / não
+  deactivate AV
+  alt E3: aviso já encerrado (checagem de outro coordenador ou A4)
+    S --> C : recusa: aviso já encerrado (autor e horário do encerramento)
+    C --> G : 409 aviso já encerrado
+    G --> V : 409
+    V --> CT : "Aviso já encerrado", com o autor e o horário do primeiro registro, ou\n"turnaround já em Pronto para liberação" no aviso encerrado pelo A4
+  else aviso aberto
+    S -> AV : registrarChecagem(autorId, momento)
+    activate AV
+    AV --> S : ok
+    deactivate AV
+    S -> AR : salvar(aviso)
+    activate AR
+    AR -> DB : UPDATE aviso_checagem SET encerrado_em, autor_checagem_id
+    AR --> S : ok
+    deactivate AR
+    S -> AU : registrar(objeto = "aviso_checagem", objetoId, acao = "Alteração", autorId, causaId = vazio, turnaroundId, valoresAnteriores = aberto, valoresNovos = encerrado)
+    activate AU
+    AU -> DB : INSERT registro_auditoria (autor_tipo = Usuário)
+    AU --> S : ok
+    deactivate AU
+    S -> N : notificarAvisoChecagemEncerrado(avisoId)
+    activate N
+    N -> V : retirarAviso(avisoId)
+    deactivate N
+    S --> C : aviso encerrado
+    deactivate S
+    C --> G : 200 aviso encerrado
+    deactivate C
+    G --> V : 200
+    deactivate G
+    V --> CT : checagem gravada com o usuário e o horário; aviso encerrado (passo 7)
+    opt A2: uma equipe informou que não termina no prazo
+      ref over CT, V : UC34 – Atualizar TOBT ou UC30 – Reatribuir tarefa (área D);\no TOBT vigente novo não gera outro aviso (A2.2, RN9)
+    end
+  end
+  deactivate V
+end
+
+== A4: turnaround fica pronto com o aviso aberto (Motor de Eventos; RN8) ==
+ME -> MQ : consumir(fila = "monitoramento")
+MQ --> ME : EstadoTurnaroundAlterado da Execução em Solo: "Pronto para liberação" (UC21),\ncom a versao do turnaround
+ME -> CO : tratar(envelope)
+activate CO
+CO -> CS : aplicarEstado(turnaroundId, estado = "Pronto para liberação", momento, versao)
+activate CS
+CS -> TR : buscarComTrava(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
+TR --> CS : turnaround
+deactivate TR
+CS -> TM : aceitaVersao(versao)
+activate TM
+TM --> CS : sim / não
+deactivate TM
+alt versão menor ou igual à versao_origem (aviso fora de ordem; item 12, seção 12.5.2)
+  CS --> CO : aviso ignorado; o aviso de checagem não é encerrado
+else versão maior
+CS -> TM : aplicarEstado(estado = "Pronto para liberação", momento, versao)
+activate TM
+TM --> CS : ok
+deactivate TM
+CS -> TR : salvar(turnaround)
+activate TR
+TR -> DB : UPDATE turnaround_monitorado SET estado, versao_origem e, só se vazio,\npronto_para_liberacao_em (primeira entrada no estado; RF-34)
+TR --> CS : ok
+deactivate TR
+CS -> S : encerrarPorProntidao(turnaroundId, momento)
+activate S
+S -> AR : buscarPorTurnaround(turnaroundId)
+activate AR
+AR -> DB : SELECT aviso_checagem WHERE turnaround_id
+AR --> S : aviso, se houver
+deactivate AR
+opt aviso aberto
+  S -> AV : encerrarSemChecagem(momento)
+  activate AV
+  AV --> S : ok
+  deactivate AV
+  S -> AR : salvar(aviso)
+  activate AR
+  AR -> DB : UPDATE aviso_checagem SET encerrado_em (autor_checagem_id vazio)
+  AR --> S : ok
+  deactivate AR
+  S -> AU : registrarAutomatico(objeto = "aviso_checagem", objetoId, acao = "Alteração", causaId, gatilho = vazio, turnaroundId, valoresAnteriores = aberto, valoresNovos = encerrado sem autor)
+  activate AU
+  AU -> DB : INSERT registro_auditoria (autor_tipo = Motor de Eventos)
+  AU --> S : ok
+  deactivate AU
+  S -> N : notificarAvisoChecagemEncerrado(avisoId)
+  activate N
+  N -> V : retirarAviso(avisoId)
+  deactivate N
+  S -> N : notificarLinhaDoTempo(turnaroundId)
+  V --> CT : aviso fora da tela e da linha do tempo (A4.2)
+end
+deactivate S
+end
+deactivate CS
+deactivate CO
+@enduml

@@ -1,0 +1,157 @@
+@startuml
+' UC23 – Consultar linha do tempo do turnaround (RF-26, US026; estende o UC22; ADR-0016, ponto 3: GraphQL e WebSocket).
+' Classes e métodos do item 13 (13-classes-monitoramento.iuml e 13-classes-cadastro.iuml); tabelas do item 12 (B.3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc23.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CT
+boundary "LinhaDoTempoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Monitoramento" #FAFAFA
+  control "PainelResolver" as R <<resolver>>
+  participant "PainelService" as PS <<service>>
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "ProjecaoRepository" as PR <<repository>>
+  participant "CaminhoCriticoRepository" as CR <<repository>>
+  participant "AvisoChecagemRepository" as AC <<repository>>
+  database "BancoMonitoramento" as DB
+  participant "RecalculoService" as RS <<service>>
+  participant "PainelNotificador" as N <<websocket>>
+end box
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+  control "EquipeController" as EC
+end box
+
+opt A1: abrir pela busca (passo 1)
+  CT -> V : buscarTurnaround(texto)
+  activate V
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/graphql { buscarTurnarounds }", corpo, acaoDoUsuario = sim)
+  activate G
+  G -> R : buscarTurnarounds(texto, acesso)
+  activate R
+  R -> PS : buscarTurnarounds(texto)
+  activate PS
+  PS -> TR : buscarPorTexto(texto)
+  activate TR
+  TR -> DB : SELECT turnaround_monitorado\nWHERE matricula, voo_chegada, voo_partida ou posicao = texto
+  TR --> PS : turnarounds encontrados (abertos e encerrados)
+  deactivate TR
+  PS --> R : turnarounds
+  deactivate PS
+  R --> G : 200 turnarounds
+  deactivate R
+  G --> V : 200 turnarounds
+  deactivate G
+  V --> CT : turnarounds encontrados (A1.2)
+  deactivate V
+end
+
+== Passos 1 a 4: abrir a linha do tempo («extend» do UC22, a partir do painel ou do A1) ==
+CT -> V : abrir(turnaroundId)
+activate V
+V -> G : encaminhar(sessaoId, rota = "POST /v1/graphql { linhaDoTempo }", corpo, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> R : linhaDoTempo(turnaroundId, acesso)
+activate R
+R -> PS : montarLinhaDoTempo(turnaroundId)
+activate PS
+PS -> TR : buscarPorId(turnaroundId)
+activate TR
+TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada, dependencia_monitorada
+TR --> PS : turnaround, marcos, tarefas e dependências
+deactivate TR
+PS -> PR : buscarUltima(turnaroundId)
+activate PR
+PR -> DB : SELECT projecao, projecao_tarefa (a última projeção)
+PR --> PS : projeção, fins projetados, atrasos e impactos (RF-23)
+deactivate PR
+PS -> CR : buscarAtual(turnaroundId)
+activate CR
+CR -> DB : SELECT caminho_critico, caminho_critico_tarefa (o atual)
+CR --> PS : caminho crítico
+deactivate CR
+PS -> AC : buscarPorTurnaround(turnaroundId)
+activate AC
+AC -> DB : SELECT aviso_checagem
+AC --> PS : aviso de checagem, se houver
+deactivate AC
+PS --> R : LinhaDoTempo
+deactivate PS
+R --> G : 200 LinhaDoTempo
+deactivate R
+G --> V : 200 LinhaDoTempo
+deactivate G
+V -> G : encaminhar(sessaoId, rota = "POST /v1/usuarios/nomes", corpo, acaoDoUsuario = não)
+activate G
+G -> UC : listarNomes(usuarioIds, acesso)
+activate UC
+UC --> G : nomes dos responsáveis
+deactivate UC
+G --> V : 200 nomes
+deactivate G
+V -> G : encaminhar(sessaoId, rota = "GET /v1/equipes", corpo, acaoDoUsuario = não)
+activate G
+G -> EC : listar(acesso)
+activate EC
+EC --> G : equipes
+deactivate EC
+G --> V : 200 equipes
+deactivate G
+note right of V
+  O Monitoramento guarda só os identificadores
+  das pessoas e das equipes; o nome vem do
+  Cadastro (item 12, seção 12.2).
+end note
+alt E1: turnaround encontrado na busca já está "Fora de bloco"
+  V --> CT : linha do tempo completa só para consulta, com todos os marcos\ne horários reais, sem atualização (US044)
+else A4: turnaround ainda sem AIBT
+  V --> CT : EIBT no lugar do estado, tarefas com horários planejados\ne projetados e faixa de marcos sem horário
+else turnaround em solo (passos 2 a 4)
+  V --> CT : cabeçalho: estado, TOBT planejado e vigente, projeção e\n"dentro" ou "fora da régua" (RN6); aviso de checagem aberto (RN9)
+  V --> CT : faixa de marcos: só os já registrados, com o horário (RN5)
+  V --> CT : tarefas: equipe, responsável, estado, janelas planejada e real ou projetada,\natraso (RN1); "Pausada" com justificativa e código da ANAC (RN2);\n"Não aplicável" com justificativa e sem atraso (RN3); caminho crítico e\n"impactada por <origem> · +n min" em destaque (RN4); gráfico (RN7)
+end
+
+== Passo 5: consultar a linha do tempo ==
+opt A2: Coordenador de Turnaround seleciona "Caminho crítico"
+  CT -> V : abrirCaminhoCritico(turnaroundId)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/graphql { recalculos }", corpo, acaoDoUsuario = sim)
+  activate G
+  G -> R : recalculos(turnaroundId, acesso)
+  activate R
+  R -> PS : listarRecalculos(turnaroundId)
+  activate PS
+  PS -> PR : listarPorTurnaround(turnaroundId)
+  activate PR
+  PR -> DB : SELECT projecao WHERE turnaround_id\nORDER BY calculada_em
+  PR --> PS : recálculos (horário, causa e projeção)
+  deactivate PR
+  PS --> R : recálculos
+  deactivate PS
+  R --> G : 200 recálculos
+  deactivate R
+  G --> V : 200 recálculos
+  deactivate G
+  V --> CT : grafo de dependências com o caminho crítico destacado e\na lista dos recálculos do Motor de Eventos (volta ao passo 5)
+end
+
+opt A3: novo registro ou recálculo com a linha do tempo aberta (RN8)
+  ref over RS : UC24 – Recalcular projeção, atraso e caminho crítico
+  RS -> N : notificarLinhaDoTempo(turnaroundId)
+  activate N
+  N -> V : atualizar(turnaroundId)
+  deactivate N
+  ref over V, G, R, PS : Passos 1 a 4 com acaoDoUsuario = não (consulta automática; RNF-5)
+  V --> CT : tarefa, atrasos, caminho crítico e cabeçalho atualizados em até 5 s,\nsem recarregar a página (volta ao passo 5)
+end
+
+opt E2: sem conexão com a internet
+  V --> CT : última linha do tempo recebida, com "Sem conexão" e o horário da última atualização
+  note over V : ao voltar a conexão, a tela chama atualizar(turnaroundId),\nrepete os passos 1 a 4 e volta ao passo 5
+end
+
+note over CT, V : Passo 6: o caso de uso termina quando o Coordenador de Turnaround volta ao painel (UC22).
+deactivate V
+@enduml

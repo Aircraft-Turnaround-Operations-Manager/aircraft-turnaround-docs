@@ -1,0 +1,99 @@
+@startuml
+' UC28 – Consultar indicadores de aderência (RF-34, US034; ADR-0001, ADR-0002; fonte [7] no quarto indicador).
+' Classes do item 13; tabelas do item 12 (B.3.1, B.3.2, B.3.8 e B.3.11). Imagens: python scripts/exportar_plantuml.py <este arquivo>
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CT
+boundary "IndicadorView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Monitoramento" #FAFAFA
+  control "IndicadorController" as C
+  participant "IndicadorService" as S <<service>>
+  entity "TarefaMonitorada" as TA
+  entity "AtualizacaoTobtMonitorada" as AT
+  participant "TurnaroundMonitoradoRepository" as TR <<repository>>
+  participant "AlertaRepository" as AR <<repository>>
+  participant "AtualizacaoTobtMonitoradaRepository" as UR <<repository>>
+  database "BancoMonitoramento" as DB
+end box
+
+== Passos 1 e 2 ==
+CT -> V : abrir()
+activate V
+V --> CT : pede o período (data de início e data de fim)
+
+== Passos 3 a 6 (A1: trocar o período repete daqui com o período novo) ==
+CT -> V : consultar(inicio, fim)
+alt E2: sem conexão com a internet
+  V --> CT : não foi possível calcular os indicadores; o período fica para nova tentativa
+else
+  V -> G : encaminhar(sessaoId, rota = "GET /v1/indicadores?inicio&fim", corpo, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+  G -> C : consultar(inicio, fim, acesso)
+  activate C
+  C -> S : calcular(inicio, fim)
+  activate S
+  alt E1: data de fim antes da de início
+    S --> C : recusa: período inválido
+    C --> G : 422 a data de fim deve ser igual ou posterior à de início
+    G --> V : 422
+    V --> CT : recusa o período, não calcula e volta a pedir o período (passo 3)
+  else período válido
+    S -> TR : listarEncerradosNoPeriodo(inicio, fim)
+    activate TR
+    TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada\nWHERE aobt entre o início e o fim, as duas datas inclusive,\nno horário local (RN1; turnaround em "Liberado" não entra)
+    TR --> S : turnarounds encerrados no período, com as tarefas
+    deactivate TR
+    alt A2: nenhum turnaround encerrado no período
+      S --> C : relatório sem turnarounds
+      C --> G : 200
+      G --> V : 200
+      V --> CT : não há turnarounds encerrados no período; sem percentuais
+    else há turnarounds (passo 4)
+      note right of S
+        RN2 prontidão: pronto_para_liberacao_em (a primeira entrada
+        no estado, e não o AEGT) até TOBT planejado + 5, em minutos
+        completos (10:35:59 dentro; 10:36:00 fora).
+      end note
+      loop para cada tarefa dos turnarounds, menos "Não aplicável" e as\nnão obrigatórias que não foram iniciadas (RN3)
+        S -> TA : dentroDaJanelaOriginal()
+        activate TA
+        TA --> S : início e fim reais dentro da janela do plano confirmado?
+        deactivate TA
+      end
+      S -> AR : listarCriticosDosTurnarounds(turnaroundIds)
+      activate AR
+      AR -> DB : SELECT alerta WHERE critico AND turnaround_id IN (...)
+      AR --> S : alertas críticos, com emitido_em e acao_registrada_em (RN4: até 2 min)
+      deactivate AR
+      S -> UR : listarDosTurnarounds(turnaroundIds)
+      activate UR
+      UR -> DB : SELECT atualizacao_tobt_monitorada WHERE turnaround_id IN (...)
+      UR --> S : atualizações do TOBT
+      deactivate UR
+      loop para cada atualização do TOBT
+        S -> AT : tardia(limiteMin = 10)
+        activate AT
+        AT --> S : feita a menos de 10 min do TOBT vigente?
+        deactivate AT
+      end
+      note right of S
+        RN5: conta o turnaround com pelo menos uma atualização tardia,
+        sobre todos os turnarounds do período, como o "Late Updaters"
+        de Heathrow, que conta voos [7]. Menor é melhor.
+        RN8: denominador zero → "sem dados", e não 0%.
+      end note
+      S --> C : RelatorioAderencia (4 indicadores e turnarounds)
+      deactivate S
+      C --> G : 200 relatório
+      deactivate C
+      G --> V : 200 relatório
+      V --> CT : prontidão 80% (8/10), janela 80% (120/150), alertas críticos 90% (18/20) e\natualizações tardias 20% (2/10), cada um com numerador e denominador e,\nnos três primeiros, a meta do objetivo 1 ou 3 (passo 5, RN6)
+      V --> CT : lista dos turnarounds com TOBT planejado, entrada em "Pronto para liberação",\ndiferença e "dentro" ou "fora" da régua TOBT + 5 (passo 6, RN7)
+    end
+  end
+  deactivate G
+end
+deactivate V
+@enduml
