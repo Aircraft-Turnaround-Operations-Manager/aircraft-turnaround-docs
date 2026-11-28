@@ -47,7 +47,7 @@ relacionados: [adr-0016, adr-0007, adr-0010]
 
 - O Claude de cada integrante segue a regra 11 do `AGENTS.md`: lê e muda telas só no canvas, nunca usa o Figma e gera o PNG da tela que mudou a partir do canvas, sem editar a imagem.
 - As telas continuam provisórias. Servem à especificação e não são a interface final, como já vale para os protótipos do RA1.
-- O canvas fica fora do repositório, então o histórico de cada mudança de tela fica no próprio canvas. No repositório ficam as imagens exportadas e o texto.
+- O canvas fica fora do repositório, então o histórico de cada mudança de tela fica no próprio canvas. No repositório ficam as imagens geradas do canvas e o texto.
 - Quem não tem acesso ao canvas não consegue mudar telas. O acesso é dado pelo dono do canvas (Rodrigo Alves).
 - A linha Status da ADR-0016 registra que o ponto 1 foi alterado por esta ADR.
 
