@@ -634,7 +634,7 @@ Cópia do turnaround para calcular e exibir, com os parâmetros vigentes na aber
 | `acgt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `asbt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
 | `aegt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | — |
-| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia por aviso do Exceções e Liberação; o alerta do RF-31 confere se foi registrado |
+| `ardt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Cópia do aviso do estado "Liberado" da Execução em Solo, ordenada pela versão do turnaround (#275); o alerta do RF-31 confere se foi registrado |
 | `aobt` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Também define o período do RF-34 |
 | `pronto_para_liberacao_em` | `TIMESTAMP WITH TIME ZONE` | — | Não | Data, hora e fuso | Primeira entrada no estado (RF-34); pode diferir do AEGT |
 | `tolerancia_prontidao_min` | `INTEGER` | — | Sim | Minutos | TOBT + 5 (RNF-21) |
