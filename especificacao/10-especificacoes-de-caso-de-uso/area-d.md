@@ -140,7 +140,7 @@
 
 ### Fluxo de exceção E2 – Operador de outra equipe ou indisponível (passo 5)
 
-*Condição:* o operador escolhido não é da equipe da tarefa ou iniciou outra tarefa depois que a lista foi exibida.
+*Condição:* o operador escolhido não é da equipe da tarefa ou iniciou outra tarefa depois que a lista foi exibida. A lista do UC36 mostra só a equipe da tarefa, então o operador de outra equipe só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -192,8 +192,8 @@
 | 3. O Coordenador de Turnaround escolhe "Reatribuir tarefa". |  |
 |  | 4. O sistema exibe os campos da reatribuição, com a tarefa do alerta e os operadores disponíveis (UC30). |
 | 5. O Coordenador de Turnaround escolhe o operador, escreve o motivo e confirma (**E1**). |  |
-|  | 6. O sistema executa a reatribuição (UC30) (**E2**). |
-|  | 7. O sistema grava no alerta a ação "reatribuir tarefa", o usuário e o horário, encerra o alerta e o retira da lista de alertas abertos (**E3**). O caso de uso termina. |
+|  | 6. O sistema verifica que o alerta continua aberto e executa a reatribuição (UC30) (**E2**, **E3**). |
+|  | 7. O sistema grava no alerta a ação "reatribuir tarefa", o usuário e o horário, encerra o alerta e o retira da lista de alertas abertos. O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Replanejar (passo 3)
 
@@ -251,13 +251,13 @@
 |  | E2.1. O sistema exibe o motivo da recusa, não grava a ação e mantém o alerta aberto. |
 |  | E2.2. O caso de uso volta ao passo 3. |
 
-### Fluxo de exceção E3 – Alerta já encerrado (passo 7)
+### Fluxo de exceção E3 – Alerta já encerrado (passo 6)
 
-*Condição:* outro Coordenador de Turnaround registrou a ação do mesmo alerta antes.
+*Condição:* outro Coordenador de Turnaround registrou a ação do mesmo alerta antes. A verificação vem antes da execução da ação, para que a ação não seja feita duas vezes.
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados e não grava outro registro no alerta. |
+|  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados, não executa a ação escolhida e não grava outro registro no alerta. |
 
 ## UC32 – Confirmar prontidão e liberar aeronave
 
@@ -310,7 +310,7 @@
 
 ### Fluxo de exceção E2 – Tarefa obrigatória pendente (passo 6)
 
-*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US039, critério 3).
+*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US039, critério 3). Como a tela só oferece "Confirmar prontidão" em "Pronto para liberação" (A1), a confirmação nesse estado só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -482,7 +482,7 @@
 | **Descrição** | Com o turnaround em andamento, o Coordenador de Turnaround altera a janela planejada ou as dependências das tarefas ainda não iniciadas, para ajustar o plano diante de um desvio, e vê em seguida a projeção de prontidão e o caminho crítico recalculados. Pelo mesmo caso de uso, ele aciona um serviço sob demanda, incluindo no plano uma tarefa do catálogo do modelo de tarefas (ADR-0014). Pode ser executado a partir do registro da ação de um alerta (UC31) e inclui o UC21 (propagação) para ajustar o estado das tarefas não iniciadas. Atende ao RF-42 e à US042. |
 | **Pré-condições** | 1. O Coordenador de Turnaround está autenticado com o perfil de coordenador.<br>2. O turnaround está em "Em solo", "Operações em andamento" ou "Em exceção", com o plano de tarefas definido (UC05).<br>3. Para alterar uma tarefa, ela está no estado "Aguardando" ou "Pronta". |
 | **Pós-condições** | **Sucesso:** a alteração está gravada com o usuário e o horário, e a projeção de prontidão e o caminho crítico foram recalculados e exibidos.<br>**Recusa:** a janela, as dependências e o plano ficam como estavam, e nenhum registro é gravado. |
-| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-42; US042, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-42). A alteração da janela ou das dependências não exige motivo; o motivo só é exigido no acionamento do serviço sob demanda (RN7; ADR-0014).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24), e o sistema os exibe (RF-42).<br>**RN4.** As travas são as do plano inicial: as referências a predecessoras e sucessoras precisam existir e pertencer ao mesmo turnaround (RF-42); a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC21, RN7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC21, RN1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com um operador ativo da equipe da tarefa como responsável, janela planejada, dependências e motivo; as sucessoras da tarefa incluída precisam estar ainda não iniciadas (RF-42). Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC14) e, se for obrigatória, segura a liberação (UC32). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
+| **Regras de negócio** | **RN1.** Só a tarefa ainda não iniciada ("Aguardando" ou "Pronta") pode ter a janela planejada ou as dependências alteradas; a tarefa "Em execução", "Pausada", "Concluída" ou "Não aplicável" é recusada (RF-42; US042, critério 2).<br>**RN2.** Toda alteração grava o usuário e o horário (RF-42). A alteração da janela ou das dependências não exige motivo; o motivo só é exigido no acionamento do serviço sob demanda (RN7; ADR-0014).<br>**RN3.** Depois de cada alteração, o Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24), e o sistema os exibe (RF-42). Antecipar só o início e o fim planejados de uma tarefa não adianta as sucessoras, que não começam antes do próprio início planejado (UC24, RN2; RF-8): o ganho vem de encurtar a janela de uma tarefa atrasada ou de replanejar também as sucessoras.<br>**RN4.** As travas são as do plano inicial: as referências a predecessoras e sucessoras precisam existir e pertencer ao mesmo turnaround (RF-42); a alteração que cria ciclo entre as tarefas é recusada, e o início planejado da sucessora não pode ser anterior ao fim planejado das predecessoras (ADR-0014).<br>**RN5.** A regra de abastecimento com passageiros a bordo do operador aéreo continua valendo: quando ela não permite, não se pode retirar a dependência entre o desembarque e o abastecimento nem entre o abastecimento e o embarque (ADR-0005; UC21, RN7).<br>**RN6.** Depois da alteração das dependências, o estado das tarefas não iniciadas segue as regras de propagação: a tarefa sem predecessora pendente fica "Pronta", e a que ganhou predecessora pendente volta a "Aguardando" (UC21, RN1).<br>**RN7.** Serviço sob demanda (ADR-0014): o Coordenador de Turnaround inclui no plano em andamento uma tarefa do catálogo do modelo de tarefas, com um operador ativo da equipe da tarefa como responsável, janela planejada, dependências e motivo; as sucessoras da tarefa incluída precisam estar ainda não iniciadas (RF-42). Só ele aciona o serviço no sistema; a tripulação e as equipes de solo avisam por fora do sistema. [Fato] Nos contratos de atendimento em solo, parte dos serviços só é prestada quando a companhia pede [69][70][71].<br>**RN8.** A tarefa incluída é uma tarefa como as outras: entra na projeção e no caminho crítico, aparece na lista do operador responsável (UC14) e, se for obrigatória, segura a liberação (UC32). O atraso que ela causar conta na meta de 80% do objetivo 1 (ADR-0014).<br>**RN9.** O Operador de Solo/Rampa executa e registra a tarefa, mas não replaneja (ADR-0014). |
 | **Protótipo(s) de tela** | Replanejamento de uma tarefa, com a janela planejada, as predecessoras e o que acontece depois de salvar (gravação, recálculo e exibição da projeção e do caminho crítico); e acionamento de um serviço sob demanda, com o catálogo, o responsável, a janela, as dependências e o motivo.<br>![UC35 – replanejar tarefas](prototipos/uc-d7-replanejar-tarefas.png) ![UC35 – acionar serviço sob demanda](prototipos/uc-d7-acionar-servico-sob-demanda.png) |
 
 ### Fluxo básico
@@ -491,9 +491,9 @@
 |---|---|
 | 1. O Coordenador de Turnaround seleciona "Replanejar" em um turnaround em "Operações em andamento". |  |
 |  | 2. O sistema exibe as tarefas ainda não iniciadas do turnaround, cada uma com o estado, a janela planejada, as predecessoras e a indicação de caminho crítico. |
-| 3. O Coordenador de Turnaround escolhe uma tarefa "Aguardando" do caminho crítico, por exemplo o catering. |  |
-| 4. O Coordenador de Turnaround antecipa em 10 minutos o início e o fim planejados da tarefa e confirma. |  |
-|  | 5. O sistema verifica que a tarefa continua não iniciada, que a nova janela não começa antes do fim planejado das predecessoras e que a alteração não cria ciclo e que todas as referências a tarefas existem e pertencem ao mesmo turnaround (**E1**, **E2**, **E3**, **E4**, **E7**). |
+| 3. O Coordenador de Turnaround escolhe uma tarefa "Aguardando" do caminho crítico, por exemplo o catering, atrasado pelo desembarque. |  |
+| 4. O Coordenador de Turnaround encurta em 5 minutos a janela planejada da tarefa, antecipando o fim, e confirma. |  |
+|  | 5. O sistema verifica, nesta ordem, que a tarefa continua não iniciada, que todas as referências a tarefas existem e pertencem ao mesmo turnaround, que a alteração não cria ciclo e que a nova janela não começa antes do fim planejado das predecessoras (**E1**, **E7**, **E3**, **E2**, **E4**). |
 |  | 6. O sistema grava a alteração com o valor anterior, o novo valor, o usuário e o horário. |
 |  | 7. O Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24). |
 |  | 8. O sistema exibe a projeção anterior e a nova e o novo caminho crítico. O caso de uso termina. |
@@ -557,7 +557,7 @@
 
 ### Fluxo de exceção E3 – Ciclo de dependências (passo 5, vindo do A2 ou do A3)
 
-*Condição:* a dependência informada faz uma tarefa depender, direta ou indiretamente, dela mesma.
+*Condição:* a dependência informada faz uma tarefa depender, direta ou indiretamente, dela mesma. O ciclo é conferido antes da janela (E2): num plano que respeita o RF-8, toda dependência que fecha um ciclo também faria uma tarefa começar antes do fim de uma predecessora, e a mensagem que ajuda o coordenador é a do ciclo.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -587,7 +587,7 @@
 
 ### Fluxo de exceção E7 – Referência inválida a tarefa (passo 5 ou A3.4)
 
-*Condição:* uma predecessora ou sucessora informada não existe ou pertence a outro turnaround.
+*Condição:* uma predecessora ou sucessora informada não existe ou pertence a outro turnaround. O formulário só oferece as tarefas do turnaround, então a referência inválida só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
