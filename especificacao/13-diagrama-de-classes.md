@@ -130,7 +130,7 @@ UC22, UC23, UC26, UC27 e UC28. Os painéis (UC22 e UC23) são lidos por GraphQL,
 
 ### 13.5.6 Exceções, atualização do TOBT e ação sobre o alerta
 
-UC29, UC31, UC33 e UC34. A abertura e o encerramento da exceção são pedidos à Execução em Solo, gravados antes como pedido pendente (ADR-0020); a Execução em Solo responde com a mudança de estado (`MudancaEstado`). A ação sobre um alerta (UC31) não é uma chamada à parte: a tela de registro abre a tela da ação com o alerta, e abrir a exceção, reatribuir, replanejar ou atualizar o TOBT recebem o `alertaId` e gravam a `AcaoAlerta` na mesma transação, depois de conferir que o alerta ainda não tem ação. A atualização do TOBT é recusada quando a solicitação já foi encerrada ou o turnaround já foi liberado.
+UC29, UC31, UC33 e UC34. A abertura e o encerramento da exceção são pedidos à Execução em Solo, gravados antes como pedido pendente (ADR-0020); a Execução em Solo responde com a mudança de estado (`MudancaEstado`). A ação sobre um alerta (UC31) não é uma chamada à parte: a tela de registro abre a tela da ação com o alerta, e abrir a exceção, reatribuir, replanejar ou atualizar o TOBT recebem o `alertaId` e gravam a `AcaoAlerta` na mesma transação, depois de conferir que o alerta ainda não tem ação. A atualização do TOBT é recusada quando a solicitação já foi encerrada ou o turnaround já foi liberado. O formulário da exceção mostra a aeronave, a posição e o estado do turnaround pela consulta à Execução em Solo (`consultarSituacao`), e a tela de registro da ação mostra o tempo restante do alerta crítico com o prazo guardado no `TurnaroundReferencia` (`consultarTobt`).
 
 ![Diagrama de classes — exceções, TOBT e ação sobre o alerta](diagramas/13-classes-tecnica-excecoes.png)
 
@@ -152,7 +152,7 @@ O pacote `contrato` tem o que os quatro serviços combinaram (ADR-0016): o ident
 
 ![Diagrama de classes — contrato e infraestrutura comum](diagramas/13-classes-contrato.png)
 
-O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20). Quando o serviço volta, a `RetomadaPedidos` aciona o `PedidoService`, que consulta a Execução em Solo (`consultarPedido`) para cada pedido pendente e conclui ou desfaz o registro conforme a resposta.
+O Exceções e Liberação tem também o `PedidoPendente`, que guarda o pedido à Execução em Solo antes da chamada e é retomado depois de uma queda (ADR-0020; RNF-20). Quando o serviço volta, a `RetomadaPedidos` aciona o `PedidoService`, que consulta a Execução em Solo (`consultarPedido`) para cada pedido pendente e conclui ou desfaz o registro conforme a resposta. Na abertura e no encerramento da exceção e na liberação, o `PedidoService.registrar` recusa o pedido quando já há outro desses tipos pendente no mesmo turnaround (`existePendente`), para que o encerramento não decida a saída de "Em exceção" sem contar uma abertura ainda à espera da resposta (#151).
 
 ![Diagrama de classes — pedidos pendentes à Execução em Solo](diagramas/13-classes-pedidos-pendentes.png)
 

@@ -1,137 +1,338 @@
 @startuml
-' UC32 – Confirmar prontidão e liberar aeronave (RF-39, US039; ADR-0015, regra 6; ADR-0016).
-' Exemplo da tarefa T02 (issue #141): revisar na T14-D depois do diagrama de classes (item 13).
+' UC32 – Confirmar prontidão e liberar aeronave (RF-39, US039; ADR-0004, ADR-0015 regras 1, 4 e 6, ADR-0020; RNF-20).
+' Classes do item 13 (excecoes, execucao, cadastro, contrato, comum) e tabelas do item 12 (Apêndices B.4, B.2 e B.1).
+' O Exceções e Liberação confere a companhia e as exceções e pede a liberação; a Execução em Solo confere o estado e as
+' tarefas no dado original, grava "Liberado" e responde; só então o ARDT é gravado aqui (13.5.8). O ARDT é o horário
+' da confirmação, guardado no pedido pendente (ADR-0020). Substitui o exemplo da T02 (#141, #151).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc32.puml
 !include 14-sequencia-estilo.iuml
 
 actor "Autoridade de\nLiberação" as AL
 boundary "LiberacaoView" as V
 participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+end box
 box "Exceções e Liberação" #FAFAFA
   control "LiberacaoController" as C
   participant "LiberacaoService" as S <<service>>
-  participant "ExcecaoRepository" as RE <<repository>>
-  participant "LiberacaoRepository" as RL <<repository>>
+  entity "SituacaoLiberacao" as SL <<dto>>
+  participant "TurnaroundReferenciaRepository" as TRR <<repository>>
+  participant "ExcecaoRepository" as ER <<repository>>
+  participant "LiberacaoRepository" as LR <<repository>>
+  participant "PedidoService" as PS <<service>>
+  participant "PedidoPendenteRepository" as PPR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AtualizacaoTobtService" as ATS <<service>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
   database "BancoExcecoesLiberacao" as DB
 end box
 box "Execução em Solo" #FAFAFA
-  control "TurnaroundController" as TC
+  control "TurnaroundController" as ETC
+  participant "TurnaroundService" as ETS <<service>>
+  entity "Turnaround" as ET
+  participant "TurnaroundRepository" as ETR <<repository>>
+  participant "AuditoriaService" as EAU <<service>>
+  participant "PublicadorAvisos" as EPUB <<publisher>>
+  database "BancoExecucaoEmSolo" as EDB
 end box
+queue "RabbitMQ" as MQ
 
-== Passos 1 e 2: lista de liberações ==
-AL -> V : abrir lista de liberações
+== Passos 1 e 2: lista de liberações da companhia (RN7) ==
+AL -> V : abrir()
 activate V
-V -> G : GET /liberacoes
+V -> G : encaminhar(sessaoId, rota = "GET /v1/liberacoes", corpo = vazio, acaoDoUsuario = sim)
 activate G
-ref over G, C : Verificar acesso na porta de entrada\n(perfil Autoridade de Liberação; ADR-0016)
-G -> C : listarTurnarounds(companhiaId)
+ref over G : Verificar acesso na porta de entrada\n(perfil Autoridade de Liberação, com a companhia; RNF-1; ADR-0023)
+G -> C : listarTurnarounds(acesso)
 activate C
-C -> S : listarTurnarounds(companhiaId)
+C -> S : listarTurnarounds(companhiaId = acesso.companhiaId)
 activate S
-S -> TC : consultarPendencias(companhiaId)
-activate TC
-TC --> S : turnarounds (estado, tarefas obrigatórias pendentes)
-deactivate TC
-S -> RE : contarAbertasPorTurnaround(turnaroundIds)
-activate RE
-RE -> DB : SELECT excecao WHERE situacao = 'aberta'
-RE --> S : exceções abertas por turnaround
-deactivate RE
-S --> C : lista ordenada ("Pronto para liberação" primeiro)
-deactivate S
-C --> G : 200 lista
-deactivate C
-G --> V : 200 lista
-deactivate G
-V --> AL : turnarounds, pendências e exceções (RN7)
-
-== Passos 3 e 4: condições da liberação ==
-AL -> V : selecionar turnaround
-V -> G : GET /liberacoes/{turnaroundId}
-activate G
-G -> C : consultarCondicoes(turnaroundId)
-activate C
-C -> S : consultarCondicoes(turnaroundId)
-activate S
-S -> TC : consultarTarefasObrigatorias(turnaroundId)
-activate TC
-TC --> S : estado, tarefas obrigatórias (estado e horário) e AEGT
-deactivate TC
-S -> RE : listarAbertas(turnaroundId)
-activate RE
-RE -> DB : SELECT excecao
-RE --> S : exceções abertas
-deactivate RE
-S --> C : condições
-deactivate S
-C --> G : 200 condições
-deactivate C
-G --> V : 200 condições
-deactivate G
-alt estado = "Pronto para liberação"
-  V --> AL : tarefas, ausência de exceção, AEGT e "Confirmar prontidão"
-else A1: estado = "Operações em andamento" ou "Em exceção"
-  V --> AL : tarefas pendentes e exceções abertas, sem "Confirmar prontidão"
+S -> TRR : listarPorCompanhia(companhiaId)
+activate TRR
+TRR -> DB : SELECT turnaround_referencia WHERE companhia_id = companhiaId\nAND aobt IS NULL AND NOT EXISTS (liberacao do turnaround)
+TRR --> S : turnarounds da companhia ainda não liberados, com o TOBT vigente
+deactivate TRR
+S -> EX : listarSituacoes(turnaroundIds)
+activate EX
+EX -> ETC : listarSituacoes(turnaroundIds)
+activate ETC
+ref over ETC, EDB : TurnaroundService.listarSituacoes(turnaroundIds) → TurnaroundRepository:\nSELECT turnaround, tarefa (estado, obrigatórias pendentes, AEGT)
+ETC --> EX : 200 List<SituacaoTurnaround>
+deactivate ETC
+EX --> S : List<SituacaoTurnaround>
+deactivate EX
+loop cada turnaround
+  S -> ER : contarAbertas(turnaroundId)
+  activate ER
+  ER -> DB : SELECT COUNT(*) FROM excecao WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
+  ER --> S : exceções abertas
+  deactivate ER
 end
+note right of S
+  Ficam os turnarounds com a chegada registrada (estado preenchido)
+  e fora de "Liberado" e "Fora de bloco". Ordem: primeiro "Pronto
+  para liberação", depois "Em solo", "Operações em andamento" e
+  "Em exceção"; em cada grupo, pelo TOBT vigente (passo 2).
+end note
+S --> C : List<TurnaroundLiberavel>
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+deactivate G
+V --> AL : turnarounds com estado, obrigatórias pendentes e exceções abertas (passo 2)
 
-opt A2: Autoridade de Liberação seleciona "Voltar"
-  V --> AL : volta à lista sem gravar nada
-end
-
-== Passos 5 a 8: confirmação ==
-AL -> V : "Confirmar prontidão"
-V -> G : POST /liberacoes/{turnaroundId}
+== Passos 3 e 4: condições da liberação (RN1, RN7) ==
+AL -> V : selecionarTurnaround(turnaroundId)
+V -> G : encaminhar(sessaoId, rota = "GET /v1/liberacoes/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
 activate G
-G -> C : confirmarProntidao(turnaroundId, usuarioId)
+ref over G : Verificar acesso na porta de entrada
+G -> C : consultarCondicoes(turnaroundId, acesso)
 activate C
-C -> S : confirmarProntidao(turnaroundId, usuarioId, horarioConfirmacao)
+C -> S : consultarCondicoes(turnaroundId, companhiaId = acesso.companhiaId)
 activate S
-S -> RE : existeAberta(turnaroundId)
-activate RE
-RE -> DB : SELECT excecao
-RE --> S : sim / não
-deactivate RE
-alt E1: exceção aberta
-  S --> C : recusa: exceção aberta
-  C --> G : 409 exceção aberta
-  G --> V : 409
-  V --> AL : informa a exceção; ARDT não gravado
-else sem exceção aberta
-  S -> TC : liberarTurnaround(turnaroundId, horarioConfirmacao, usuarioId)
-  activate TC
-  note right of TC : confere estado e tarefas e,\nse puder, grava "Liberado"\n(ADR-0015, regras 4 e 6)
-  alt E2: tarefa obrigatória pendente
-    TC --> S : 409 tarefas pendentes
-    S --> C : recusa: tarefas pendentes
-    C --> G : 409
-    G --> V : 409
-    V --> AL : lista as tarefas pendentes; ARDT não gravado
-  else E3: turnaround já "Liberado"
-    TC --> S : 409 já liberado
-    S -> RL : buscarPorTurnaround(turnaroundId)
-    activate RL
-    RL -> DB : SELECT liberacao
-    RL --> S : ARDT e autor
-    deactivate RL
-    S --> C : já liberado (ARDT, autor)
-    C --> G : 409
-    G --> V : 409
-    V --> AL : já "Liberado", com ARDT e quem confirmou
-  else liberado
-    TC --> S : 200 "Liberado"
-    deactivate TC
-    S -> RL : salvar(turnaroundId, ardt = horarioConfirmacao, usuarioId)
-    activate RL
-    RL -> DB : INSERT liberacao
-    RL --> S : ok
-    deactivate RL
-    S --> C : liberado (ARDT, autor)
+S -> TRR : buscarPorId(turnaroundId)
+activate TRR
+TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId
+TRR --> S : TurnaroundReferencia com a companhia
+deactivate TRR
+alt turnaround de outra companhia (pré-condição 2; ADR-0004)
+  S --> C : recusa
+  C --> G : 403
+  G --> V : 403
+else mesma companhia
+  S -> EX : consultarSituacao(turnaroundId)
+  activate EX
+  EX -> ETC : consultarSituacao(turnaroundId)
+  activate ETC
+  ref over ETC, EDB : TurnaroundService.consultarSituacao(turnaroundId):\nSELECT turnaround, tarefa, marco (obrigatórias com estado e horário, AEGT)
+  ETC --> EX : 200 SituacaoTurnaround
+  deactivate ETC
+  EX --> S : SituacaoTurnaround
+  deactivate EX
+  S -> ER : listarAbertas(turnaroundId)
+  activate ER
+  ER -> DB : SELECT excecao WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
+  ER --> S : exceções abertas
+  deactivate ER
+  S -> SL : podeLiberar()
+  activate SL
+  SL --> S : estado = "Pronto para liberação" e nenhuma exceção aberta
+  deactivate SL
+  S --> C : SituacaoLiberacao
+  C --> G : 200
+  G --> V : 200
+end
+deactivate S
+deactivate C
+deactivate G
+alt A1: turnaround em "Em solo", "Operações em andamento" ou "Em exceção"
+  V --> AL : tarefas obrigatórias pendentes e exceções abertas,\nsem a opção "Confirmar prontidão" (A1.2); volta ao passo 2 ou termina (A1.3)
+else "Pronto para liberação"
+  V --> AL : obrigatórias "Concluída" ou "Não aplicável" com o horário de cada uma,\nnenhuma exceção aberta e o fim real do atendimento em solo (AEGT) (passo 4)
+
+  == Passos 5 e 6 ==
+  alt A2: a Autoridade de Liberação seleciona "Voltar"
+    V --> AL : volta à lista sem gravar; o turnaround continua "Pronto para liberação" (A2.2)
+  else seleciona "Confirmar prontidão" (passo 5; RN4: a decisão é sempre dela)
+    AL -> V : confirmarProntidao(turnaroundId)
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/liberacoes/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada
+    G -> C : confirmarProntidao(turnaroundId, acesso)
+    activate C
+    C -> S : confirmarProntidao(turnaroundId, autorId = acesso.usuarioId, companhiaId = acesso.companhiaId, horarioConfirmacao = agora)
+    activate S
+    critical transação 1: trava do turnaround e pedido pendente (ADR-0020)
+      S -> TRR : buscarComTrava(turnaroundId)
+      activate TRR
+      TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId FOR UPDATE
+      TRR --> S : TurnaroundReferencia
+      deactivate TRR
+      S -> LR : buscarPorTurnaround(turnaroundId)
+      activate LR
+      LR -> DB : SELECT liberacao WHERE turnaround_id = turnaroundId
+      LR --> S : liberação ou nenhuma
+      deactivate LR
+      S -> ER : contarAbertas(turnaroundId)
+      activate ER
+      ER -> DB : SELECT COUNT(*) FROM excecao WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
+      ER --> S : exceções abertas
+      deactivate ER
+      alt outra companhia
+        S --> C : recusa
+        C --> G : 403
+      else E3: já existe liberação (outro representante confirmou antes)
+        S --> C : recusa com o ARDT e o autor gravados, sem outro registro (E3.1)
+        C --> G : 409 já liberado
+      else E1: exceção aberta depois que a tela foi carregada (RN2; UC29, RN5)
+        S --> C : recusa com a exceção aberta; o ARDT não é gravado (E1.1)
+        C --> G : 409 exceção aberta
+      else sem liberação e sem exceção aberta
+        S -> PS : registrar(tipo = "Liberação", turnaroundId, registroId = liberacaoId, autorId, horarioAcao = horarioConfirmacao, dados = ardt)
+        activate PS
+        PS -> PPR : existePendente(turnaroundId, tipos = abertura e encerramento de exceção e liberação)
+        activate PPR
+        PPR -> DB : SELECT pedido_pendente WHERE turnaround_id = turnaroundId AND situacao = 'Pendente'\nAND tipo IN ('Abertura de exceção', 'Encerramento de exceção', 'Liberação')
+        PPR --> PS : sim / não
+        deactivate PPR
+        alt outro pedido desses tipos ainda pendente no turnaround (a resposta da Execução em Solo não chegou)
+          PS --> S : recusa: ação em andamento no turnaround; nada é gravado
+          note right of S : sem pedido nem chamada à Execução em Solo; 409 "ação em andamento" ao usuário,\nque tenta de novo depois. Assim uma abertura pendente não fica fora\nda contagem do encerramento (UC29, RN4; UC33, RN3)
+        else nenhum pendente
+          PS -> PPR : salvar(pedido)
+          activate PPR
+          PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = liberacaoId,\nhorario_acao = horarioConfirmacao, que é o ARDT)
+          deactivate PPR
+        end
+        deactivate PS
+      end
+    end
+
+    opt pedido pendente gravado
+      == Passo 6: a Execução em Solo confere o estado e as tarefas no dado original (ADR-0015, regra 6) ==
+      S -> EX : liberar(turnaroundId, liberacaoId, ardt = horarioConfirmacao, autorId)
+      activate EX
+      EX -> ETC : liberar(turnaroundId, liberacaoId, ardt, autorId)
+      activate ETC
+      ETC -> ETS : liberar(turnaroundId, liberacaoId, ardt, autorId)
+      activate ETS
+      critical trava do turnaround até o fim da transação (ADR-0018)
+        ETS -> ETR : buscarComTrava(turnaroundId)
+        activate ETR
+        ETR -> EDB : SELECT turnaround, tarefa ... FOR UPDATE
+        ETR --> ETS : turnaround com as tarefas
+        deactivate ETR
+        ETS -> ET : obrigatoriasPendentes()
+        activate ET
+        ET --> ETS : obrigatórias fora de "Concluída" e "Não aplicável"
+        alt E2: turnaround fora de "Pronto para liberação" ou com obrigatória pendente (RN1; US039, critério 3)
+          ETS --> ETC : recusa com o estado e a lista das tarefas pendentes
+          ETC --> EX : 409 impedimento
+        else "Pronto para liberação" e nenhuma obrigatória pendente
+
+          == Passo 7: "Liberado" (RN3, RN5, RN6) ==
+          ETS -> ET : aplicarLiberacao(ardt, autorId, liberacaoId, momento)
+          ET --> ETS : estado "Liberado", com a cópia do ARDT e de quem liberou\n(soma 1 em turnaround.versao)
+          deactivate ET
+          ETS -> ETR : salvar(turnaround)
+          activate ETR
+          ETR -> EDB : UPDATE turnaround SET estado = 'Liberado', ardt, liberado_por_id, versao;\nINSERT historico_estado_turnaround (autor_id, causa_id = liberacaoId)
+          deactivate ETR
+          ETS -> EAU : registrar(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", autorId, causaId = liberacaoId, turnaroundId, valoresAnteriores = "Pronto para liberação", valoresNovos = "Liberado" + ardt)
+          activate EAU
+          EAU -> EDB : INSERT registro_auditoria
+          deactivate EAU
+          ETS -> EPUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId, causaId = liberacaoId, dados = estadoAnterior + estadoNovo + versao))
+          activate EPUB
+          EPUB -> EDB : INSERT aviso_saida (mesma transação)
+          deactivate EPUB
+          ETS --> ETC : SituacaoTurnaround com estado "Liberado"
+          ETC --> EX : 200
+        end
+      end
+      deactivate ETS
+      deactivate ETC
+
+      alt 409: recusa da Execução em Solo
+        EX --> S : recusa com as tarefas pendentes
+        S -> PS : desfazer(pedido)
+        activate PS
+        PS -> PPR : salvar(pedido)
+        activate PPR
+        PPR -> DB : UPDATE pedido_pendente SET situacao = 'Desfeito', resolvido_em
+        deactivate PPR
+        deactivate PS
+        S --> C : recusa; o ARDT não é gravado (E2.1)
+        C --> G : 409 tarefas pendentes
+      else sem resposta da Execução em Solo (falha técnica)
+        EX --> S : falha técnica
+        note right of S : o turnaround não aparece como "Liberado" sem a resposta;\no pedido fica "Pendente" e é resolvido pela RetomadaPedidos,\ncom o ARDT guardado no pedido (UC29; ADR-0020)
+        S --> C : falha
+        C --> G : 503
+      else 200 SituacaoTurnaround
+        EX --> S : SituacaoTurnaround
+        deactivate EX
+
+        == Passo 7: ARDT e decisão no Exceções e Liberação ==
+        critical transação 2: liberação, auditoria, aviso e conclusão do pedido juntos (ADR-0020)
+          S -> LR : salvar(liberacao)
+          activate LR
+          LR -> DB : INSERT liberacao (id = liberacaoId, turnaround_id, ardt = horarioConfirmacao,\nautor_id, registrada_em)
+          deactivate LR
+          S -> AU : registrar(objeto = "liberacao", objetoId = liberacaoId, acao = "Inclusão", autorId, causaId = liberacaoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = ardt + autor)
+          activate AU
+          AU -> DB : INSERT registro_auditoria
+          deactivate AU
+          S -> ATS : encerrarPorLiberacao(turnaroundId)
+          activate ATS
+          ref over ATS, DB : UC34, E3 – encerra a solicitação aberta com o motivo "Turnaround liberado"\ne a retira da tela do Coordenador de Turnaround
+          deactivate ATS
+          S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TurnaroundLiberado", turnaroundId, autorId, causaId = liberacaoId, dados = liberacaoId + ardt))
+          activate PUB
+          PUB -> DB : INSERT aviso_saida (mesma transação)
+          deactivate PUB
+          S -> PS : concluir(pedido)
+          activate PS
+          PS -> PPR : salvar(pedido)
+          activate PPR
+          PPR -> DB : UPDATE pedido_pendente SET situacao = 'Concluído', resolvido_em
+          deactivate PPR
+          deactivate PS
+        end
+        S --> C : Liberacao
+        C --> G : 201 liberação
+      end
+    end
     deactivate S
-    C --> G : 200
     deactivate C
-    G --> V : 200
+    G --> V : resposta
     deactivate G
-    V --> AL : turnaround "Liberado", ARDT e quem confirmou
+
+    == Passo 8: resultado ==
+    opt 201, ou 409 do E3 (mostram quem confirmou)
+      V -> G : encaminhar(sessaoId, rota = "GET /v1/usuarios/nomes?ids={autorId}", corpo = vazio, acaoDoUsuario = sim)
+      activate G
+      G -> UC : listarNomes(usuarioIds = autorId, acesso)
+      activate UC
+      UC --> G : 200 List<NomeUsuario>
+      deactivate UC
+      G --> V : 200
+      deactivate G
+    end
+    alt 201
+      V --> AL : turnaround "Liberado", com o ARDT e o nome de quem confirmou;\nele sai da lista de liberações (passo 8)
+    else 409 E3
+      V --> AL : o turnaround já está "Liberado", com o ARDT e quem confirmou (E3.1)
+    else 409 E1
+      V --> AL : informa a exceção aberta; o turnaround mantém o estado (E1.2)
+    else 409 E2
+      V --> AL : lista as tarefas obrigatórias pendentes; o turnaround mantém o estado (E2.2)
+    else 403, 503 ou 409 de ação em andamento
+      V --> AL : a confirmação não foi concluída, e o turnaround mantém o estado
+    end
   end
 end
 deactivate V
+
+== Depois da gravação: avisos ==
+EPUB -> EPUB : publicarPendentes()
+activate EPUB
+EPUB -> MQ : publica EstadoTurnaroundAlterado ("Liberado")
+deactivate EPUB
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TurnaroundLiberado (ARDT)
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ
+  O Monitoramento copia o estado "Liberado" (aplicarEstado)
+  e o ARDT, que encerra o gatilho de prontidão não registrada
+  em TOBT + 5 (UC25, RN5; RF-31). "Liberado" é ato interno:
+  o acionamento e o push-back continuam com o controle de
+  tráfego aéreo (ATC), fora do sistema (RN5); a saída da
+  posição é registrada no UC37.
+end note
 @enduml

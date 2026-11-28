@@ -290,6 +290,7 @@ namespace excecoes {
   class ExcecaoController <<control>> {
     + listarAbertas(turnaroundId: UUID, acesso: Acesso): List<Excecao>
     + listarTarefas(turnaroundId: UUID, acesso: Acesso): List<TarefaResumo>
+    + consultarSituacao(turnaroundId: UUID, acesso: Acesso): SituacaoTurnaround
     + consultarCodigos(acesso: Acesso): TabelaCodigoAtraso
     + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], acesso: Acesso): Excecao
     + encerrar(excecaoId: UUID, solucao: String, acesso: Acesso): EncerramentoExcecao
@@ -336,6 +337,7 @@ namespace excecoes {
     - publicador: PublicadorAvisos
     + listarAbertas(turnaroundId: UUID): List<Excecao>
     + listarTarefas(turnaroundId: UUID): List<TarefaResumo>
+    + consultarSituacao(turnaroundId: UUID): SituacaoTurnaround
     + consultarCodigos(): TabelaCodigoAtraso
     + abrir(turnaroundId: UUID, tarefaId: UUID, codigoVersao: Integer, codigoAtraso: String, descricao: String, alertaId: UUID [0..1], autorId: UUID): Excecao
     + encerrar(excecaoId: UUID, solucao: String, autorId: UUID): EncerramentoExcecao
@@ -388,7 +390,7 @@ namespace excecoes {
     - notificador: CoordenadorNotificador
     - auditoria: AuditoriaService
     - publicador: PublicadorAvisos
-    + avaliarProjecao(turnaroundId: UUID, projecaoProntidao: DateTime, calculadaEm: DateTime): void
+    + avaliarProjecao(turnaroundId: UUID, projecaoProntidao: DateTime, calculadaEm: DateTime, causaId: UUID): void
     + consultarTobt(turnaroundId: UUID): TurnaroundReferencia
     + consultarSolicitacao(turnaroundId: UUID): SolicitacaoAtualizacaoTobt
     + atualizar(turnaroundId: UUID, tobtNovo: DateTime, solicitacaoId: UUID [0..1], alertaId: UUID [0..1], autorId: UUID): AtualizacaoTobt
@@ -499,7 +501,10 @@ namespace excecoes {
     + desfazer(momento: DateTime): void
   }
 
+  ' existePendente: o PedidoService.registrar recusa a abertura, o encerramento da exceção e a liberação quando já há
+  ' pedido pendente de um desses tipos no mesmo turnaround, para que um não decida sem o registro do outro (#151).
   interface PedidoPendenteRepository <<repository>> {
+    + existePendente(turnaroundId: UUID, tipos: List<TipoPedido>): Boolean
     + listarPendentes(): List<PedidoPendente>
     + salvar(pedido: PedidoPendente): void
   }
@@ -550,6 +555,7 @@ namespace excecoes {
   excecoes.ExcecaoView ..> excecoes.ExcecaoController
   excecoes.ReatribuicaoView ..> excecoes.ReatribuicaoController
   excecoes.RegistroAcaoAlertaView ..> excecoes.ExcecaoView
+  excecoes.RegistroAcaoAlertaView ..> excecoes.AtualizacaoTobtController
   excecoes.RegistroAcaoAlertaView ..> excecoes.ReatribuicaoView
   excecoes.RegistroAcaoAlertaView ..> excecoes.ReplanejamentoView
   excecoes.RegistroAcaoAlertaView ..> excecoes.AtualizacaoTobtView

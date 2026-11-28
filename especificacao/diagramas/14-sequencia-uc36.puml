@@ -1,0 +1,111 @@
+@startuml
+' UC36 – Consultar operadores disponíveis da equipe (RF-43, US043; ADR-0010, ADR-0015 regra 3). Incluído pelo UC30.
+' Classes do item 13 (excecoes, execucao, cadastro, contrato) e tabelas do item 12 (Apêndice B.2). A disponibilidade é
+' da Execução em Solo, dona das tarefas; os operadores ativos da equipe e os nomes vêm do Cadastro, na hora (13.5.7).
+' A consulta não altera nenhuma tarefa nem a atribuição.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc36.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ReatribuicaoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Exceções e Liberação" #FAFAFA
+  control "ReatribuicaoController" as C
+  participant "ReatribuicaoService" as S <<service>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+end box
+box "Execução em Solo" #FAFAFA
+  control "AtribuicaoController" as EAC
+  participant "AtribuicaoService" as EAS <<service>>
+  participant "TarefaRepository" as TR <<repository>>
+  participant "RegistroTarefaRepository" as RR <<repository>>
+  participant "CadastroCliente" as CC <<client>>
+  database "BancoExecucaoEmSolo" as EDB
+end box
+box "Cadastro e Planejamento" #FAFAFA
+  control "EquipeController" as EQ
+  database "BancoCadastroPlanejamento" as CDB
+end box
+
+== Passo 1: o coordenador inicia a reatribuição (UC30) ==
+ref over CO, V : UC30, passos 1 e 2 – ReatribuicaoView.abrir(turnaroundId, alertaId)\ne a tarefa escolhida, por exemplo a limpeza da cabine
+CO -> V : escolherTarefa(tarefaId)
+activate V
+note right of V : A1: trocar a tarefa por outra, de outra equipe,\nchama de novo escolherTarefa e refaz a lista (A1.2)
+
+== Passo 2: equipe da tarefa e operadores sem tarefa em execução (RN1 a RN3) ==
+V -> G : encaminhar(sessaoId, rota = "GET /v1/reatribuicoes/tarefas/{tarefaId}/operadores-disponiveis", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> C : listarOperadoresDisponiveis(tarefaId, acesso)
+activate C
+C -> S : listarOperadoresDisponiveis(tarefaId)
+activate S
+S -> EX : listarOperadoresDisponiveis(tarefaId)
+activate EX
+EX -> EAC : listarOperadoresDisponiveis(tarefaId)
+activate EAC
+EAC -> EAS : listarOperadoresDisponiveis(tarefaId)
+activate EAS
+EAS -> TR : buscarPorId(tarefaId)
+activate TR
+TR -> EDB : SELECT tarefa WHERE id = tarefaId
+TR --> EAS : tarefa com a equipe e o responsável atual
+deactivate TR
+EAS -> CC : listarOperadoresAtivos(equipeId)
+activate CC
+CC -> EQ : listarOperadoresAtivos(equipeId)
+activate EQ
+ref over EQ, CDB : EquipeService.listarOperadoresAtivos(equipeId) → UsuarioRepository.listarAtivosPorEquipe(equipeId):\nSELECT usuario WHERE equipe_id = equipeId AND desativado_em IS NULL
+EQ --> CC : 200 List<OperadorAtivo> (com o nome)
+deactivate EQ
+CC --> EAS : operadores ativos da equipe (RN1; ADR-0010)
+deactivate CC
+EAS -> TR : listarOperadoresEmExecucao(operadorIds)
+activate TR
+TR -> EDB : SELECT DISTINCT responsavel_id FROM tarefa WHERE responsavel_id IN operadorIds AND estado = 'Em execução'
+TR --> EAS : operadores com tarefa em execução
+deactivate TR
+note right of EAS : ficam fora os que têm tarefa "Em execução" (RN2)\ne o responsável atual da tarefa (RN3)
+EAS -> RR : listarUltimasConclusoes(operadorIds)
+activate RR
+RR -> EDB : SELECT registro_tarefa (tipo = 'Conclusão', o mais recente de cada operador), tarefa, turnaround (matrícula)
+RR --> EAS : última conclusão de cada operador
+deactivate RR
+
+== Passo 3: ordem (RN4) ==
+note right of EAS
+  Ordem: primeiro quem ainda não concluiu nenhuma tarefa
+  (minutosDesdeUltimaConclusao vazio, "ainda sem tarefa
+  concluída"), em ordem alfabética; depois pelo tempo desde
+  a última conclusão, do maior para o menor (25, 10 e 3 min),
+  com a última aeronave atendida (RF-43; US043, critérios 1 e 4).
+end note
+EAS --> EAC : List<OperadorDisponivel>
+deactivate EAS
+EAC --> EX : 200
+deactivate EAC
+EX --> S : List<OperadorDisponivel>
+deactivate EX
+S --> C : operadores disponíveis
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+deactivate G
+
+alt E1: nenhum operador disponível na equipe (RN5)
+  V --> CO : não há operador disponível na equipe; a confirmação da reatribuição\nnão é oferecida, e a tarefa mantém o operador original (E1.1, E1.2)
+else há operadores disponíveis
+  V --> CO : lista ordenada, com o tempo e a última aeronave ao lado de cada nome (passo 3)
+
+  == Passo 4 ==
+  alt A2: o coordenador fecha a reatribuição sem escolher
+    V --> CO : nada é alterado; a tarefa mantém o operador original (A2.2)
+  else escolhe um operador
+    note right of V : a reatribuição continua no UC30 (passo 3)
+    ref over CO, V : UC30, passos 3 a 7 – E2: a lista é a da consulta feita na abertura e não muda;\nna confirmação, a Execução em Solo confere a disponibilidade de novo e, se o operador iniciou\noutra tarefa, recusa e a lista é consultada de novo, já sem ele (UC30, E2)
+  end
+end
+deactivate V
+@enduml
