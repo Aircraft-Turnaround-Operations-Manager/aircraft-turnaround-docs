@@ -11,7 +11,7 @@ As telas que recebem mudanças em tempo real (painel, linha do tempo, lista de a
 
 - UC22: o A1 e o A2 são `ref` ao UC23 e ao UC26.
 - UC24: o A2 e o E3 ficam no mesmo ramo do registro de tarefa, com a regra em nota; o E2 é nota, porque o registro recusado não gera aviso.
-- UC25: o A2, o A3 e o A4 usam o mesmo trecho de emissão (passos 3 a 5); o E1 e o A6 são as duas saídas da conferência do último alerta.
+- UC25: o A2, o A3 e o A4 usam o mesmo trecho de emissão (passos 3 a 5); o E1 e o A6 são as duas saídas da conferência do último alerta; o E2 e o E4 são as saídas sem alerta dos gatilhos por horário.
 - UC26: o A1 é nota no passo 1, porque o aviso do alerta chama o mesmo `abrir()`; o A5 (aba "Encerrados hoje") tem fragmento próprio.
 - UC27: o A2 usa o ramo do registro da checagem.
 - UC28: o A1 repete os passos 3 a 6 com o período novo.

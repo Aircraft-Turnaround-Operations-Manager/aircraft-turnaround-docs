@@ -80,7 +80,7 @@ else A1 (RN2): recálculo da projeção (UC24, passo 7)
     AS --> RS : não emite
   end
   deactivate AS
-else A2, A3, A4 e A6: gatilhos por horário (RNF-12)
+else A2, A3, A4, A6, E2 e E4: gatilhos por horário (RNF-12)
   ME -> AG : executar(momento)
   activate AG
   AG -> AS : verificarHorarios(momento)
@@ -93,8 +93,10 @@ else A2, A3, A4 e A6: gatilhos por horário (RNF-12)
   loop para cada turnaround aberto e cada gatilho
     alt A2 (RN1): tarefa "Pronta" sem início há mais de Y min, contados do mais tarde entre pronta_em e o início planejado
       ref over AS, N : Passos 3 a 5: alerta "Tarefa pronta não iniciada", com a tarefa,\na equipe, o responsável e os minutos de espera (A2.1)
-    else A3 (RN4): ASBT sem registro em TOBT vigente − X
+    else A3 (RN4): tarefa de embarque (tipo_atividade = "Embarque") fora de "Não aplicável"\ne ASBT sem registro em TOBT vigente − X
       ref over AS, N : Passos 3 a 5: alerta "Embarque não iniciado", com o TOBT vigente e o estado\ndo embarque e das predecessoras (alerta_tarefa) (A3.1)
+    else E4 (RN4): sem tarefa de embarque (traslado sem passageiros, RF-4) ou com ela em "Não aplicável" (UC18)
+      AS --> AG : não emite o alerta de embarque não iniciado (RN4; US030, critérios 5 e 6)
     else A4 (RN5): ARDT sem registro em TOBT vigente + 5, em minutos completos (10:36:00 para TOBT 10:30)
       ref over AS, N : Passos 3 a 5: alerta "Prontidão não registrada", com o TOBT vigente, o estado do\nturnaround e as obrigatórias não concluídas (alerta_tarefa) (A4.1)
     else E2: o registro que desfaz o gatilho chegou antes do limite (ex.: ASBT 10:08, limite 10:10)
