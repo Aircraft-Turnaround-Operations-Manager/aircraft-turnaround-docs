@@ -26,7 +26,7 @@
 1. **Condição de conclusão:** todos os critérios aplicáveis deste arquivo (`C00.y`, `C12.y` a `C15.y`, `Y.y` e `K.y`) marcados como atendidos, cada um com evidência.
 2. **Lista de tarefas antes de começar,** com um item por ID de critério do escopo pedido.
 3. **Evidência por critério:** seção do documento, contagem feita, nome do arquivo do diagrama ou da planilha.
-4. **Contagem por comando, não por estimativa:** 37 diagramas de sequência, 188 critérios de aceite cobertos etc. são conferidos por script ou listagem.
+4. **Contagem por comando, não por estimativa:** 37 diagramas de sequência, 193 critérios de aceite cobertos etc. são conferidos por script ou listagem.
 5. **Não encerrar com itens abertos;** só parar em bloqueio real, dizendo qual critério e por quê.
 6. **Verificação independente ao final,** separada da escrita, que recebe só este arquivo e o documento produzido.
 7. **Relatório final** em tabela `ID | status | evidência`.
@@ -177,7 +177,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 - [ ] **C14.1** **Um por caso de uso:** 37 diagramas, UC01 a UC37, cada um com a legenda "Diagrama de Sequência do UCnn – <nome do caso de uso>" e o mesmo nome do item 10 (contagem por script).
 - [ ] **C14.2** **Notação UML:** ator que inicia, linhas de vida, ativações, mensagens de chamada contínuas, retornos tracejados e fragmentos com condição de guarda.
 - [ ] **C14.3** **Camadas:** os participantes seguem a arquitetura do item 13 (interface, controle, serviço ou modelo, acesso a dados e banco de dados), com o estereótipo correspondente, e as mensagens descem e voltam pelas camadas, sem atalho da interface para o banco. Entre serviços, o diagrama mostra o aviso na mensageria ou o pedido em chamada direta, conforme a ADR-0015, e nenhum serviço acessa o banco de outro.
-- [ ] **C14.4** **Completo:** o diagrama cobre o fluxo básico do caso de uso e, em fragmentos `alt`/`opt`, cada fluxo alternativo e cada fluxo de exceção do item 10 (37 básicos, 119 alternativos e 122 de exceção no RA1; 122 alternativos e 122 de exceção depois da #192; 121 alternativos e 121 de exceção depois da restrição do UC19 à tarefa aberta; 122 alternativos e 121 de exceção depois da aba "Encerrados hoje" do UC26, #206; 124 alternativos e 121 de exceção depois do UC25 A6 e do UC27 A4, #189). Fluxo que não muda a interação (ex.: só volta a um passo) pode ser agrupado, e o texto diz quais foram agrupados.
+- [ ] **C14.4** **Completo:** o diagrama cobre o fluxo básico do caso de uso e, em fragmentos `alt`/`opt`, cada fluxo alternativo e cada fluxo de exceção do item 10 (37 básicos, 119 alternativos e 122 de exceção no RA1; 122 alternativos e 122 de exceção depois da #192; 121 alternativos e 121 de exceção depois da restrição do UC19 à tarefa aberta; 122 alternativos e 121 de exceção depois da aba "Encerrados hoje" do UC26, #206; 124 alternativos e 121 de exceção depois do UC25 A6 e do UC27 A4, #189; 124 alternativos e 122 de exceção depois do UC25 E4, #264). Fluxo que não muda a interação (ex.: só volta a um passo) pode ser agrupado, e o texto diz quais foram agrupados.
 - [ ] **C14.5** **Mensagens específicas:** cada mensagem é um método com nome e argumentos (`registrarInicio(tarefaId, horario)`), nada genérico como `processar()` ou `executar()`; cada chamada ao banco cita a tabela do item 12.
 - [ ] **C14.6** **Coerente com o comportamento descrito:** a ordem das mensagens segue a ordem dos passos do caso de uso; as regras de negócio que o caso de uso verifica aparecem como mensagens ou condições de guarda; o que o RF manda gravar (autor, horário, valor anterior) aparece gravado.
 - [ ] **C14.7** **Atores e relacionamentos do item 9:** o ator que inicia é o do caso de uso (inclusive o Motor de Eventos nos casos de uso dele); `«include»` aparece como fragmento `ref` para o caso de uso incluído, e `«extend»` como fragmento `opt` com a condição de extensão.
@@ -190,7 +190,7 @@ Cada item traz: o que pedem as fontes, o peso na nota e o checklist com o crité
 **Rubrica, Excede:** "Planilha completa e bem estruturada, contendo cenários diversos, dados de entrada, passos, resultados esperados e clara relação com os critérios de aceite."
 
 - [ ] **C15.1** **Estrutura:** a planilha tem as colunas `ID` (CT-nnn), `Caso de uso`, `Cenário` (fluxos percorridos, ex.: FP1–FP3 / A1.1–A1.3), `Estória e critério de aceite` (ex.: US015-CA2), `Caso de teste` (título), `Pré-condições`, `Dados de entrada`, `Passos` e `Resultado esperado`.
-- [ ] **C15.2** **Relação com os critérios de aceite:** todo critério de aceite das 44 estórias (179 no RA1; 180 depois da #190; 183 depois da #192; 188 depois da #189) é coberto por pelo menos um caso de teste, e todo caso de teste aponta para um critério existente (conferido por script).
+- [ ] **C15.2** **Relação com os critérios de aceite:** todo critério de aceite das 44 estórias (179 no RA1; 180 depois da #190; 183 depois da #192; 188 depois da #189; 191 depois da #252; 193 depois da #264) é coberto por pelo menos um caso de teste, e todo caso de teste aponta para um critério existente (conferido por script).
 - [ ] **C15.3** **Cenários diversos:** para cada um dos 37 casos de uso, o fluxo básico, cada fluxo alternativo e cada fluxo de exceção têm pelo menos um cenário com caso de teste.
 - [ ] **C15.4** **Dados de entrada concretos:** valores de verdade (horários com data e fuso, identificadores, quantidades, códigos de atraso da ANAC), e não "dados válidos"; valores-limite onde a regra tem limite (ex.: TOBT + 5 min, 5 s, antecipação de 5 min; ADR-0001 e ADR-0003).
 - [ ] **C15.5** **Passos:** cada caso de teste tem passos numerados, executáveis por quem não escreveu o caso.
@@ -224,10 +224,10 @@ Itens 7 e 10 (RA1) ──► Item 15 (casos de teste) ── pode começar já; 
 | Área | Casos de uso (item 14) | Estórias e critérios (item 15) |
 |---|---|---|
 | A — Cadastro e Planejamento | 11 (UC01 a UC11) | 11 estórias, 51 critérios |
-| B — Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 47 critérios |
-| C — Monitoramento | 7 (UC22 a UC28) | 14 estórias, 57 critérios |
+| B — Execução em Solo | 11 (UC12 a UC21 e UC37) | 11 estórias, 50 critérios |
+| C — Monitoramento | 7 (UC22 a UC28) | 14 estórias, 59 critérios |
 | D — Exceções e Liberação | 8 (UC29 a UC36) | 8 estórias, 33 critérios |
-| **Total** | **37** | **44 estórias, 188 critérios** |
+| **Total** | **37** | **44 estórias, 193 critérios** |
 
 - **Janela de tempo:** de 28/10 a 28/11. Pelo plano de ensino, as aulas de 29/10 (classes), 05/11 (sequência) e 12/11 e 19/11 (casos de teste) são de prática desses itens; 21/11 é o TDE3; a entrega é sábado, 28/11, às 23:59.
 
@@ -244,7 +244,7 @@ Executar depois que todos os itens estiverem prontos, e de novo antes do envio.
 - [ ] **K.5** Todo critério de aceite (item 7) é coberto por pelo menos um caso de teste (item 15), e todo fluxo de cada caso de uso (item 10) tem cenário de teste.
 - [ ] **K.6** Os estados (turnaround e tarefa) têm os mesmos valores no `CONTEXT.md`, no item 12 (domínio do campo), no item 13 (enumerações), no item 14 (condições de guarda) e no item 15 (resultados esperados).
 - [ ] **K.7** O título ARO de cada RF é idêntico nos itens 6 e 7 e no Apêndice A (C00.2).
-- [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 188 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
+- [ ] **K.8** As contagens conferem por contagem real: 44 títulos ARO, 37 diagramas de sequência, 193 critérios de aceite cobertos, fluxos de 37 casos de uso cobertos.
 - [ ] **K.9** Os critérios gerais Y.1 a Y.8 estão atendidos, e a checagem do RA1 continua passando (`scripts/verificar_revisao.py`, `scripts/marcos_nos_diagramas.py`).
 - [ ] **K.10** Nenhum item contradiz o `CONTEXT.md` nem as decisões D1–D16 (`docs/adr/`) e as que forem criadas para o RA2; todo número ou sigla do setor cita a fonte (`pesquisa/fontes.md`).
 - [ ] **K.11** Não há issue aberta com o rótulo `pendencia-cruzada`: toda suposição de um item sobre outro foi resolvida com o ID do requisito ou com a decisão do grupo registrada.
