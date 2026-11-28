@@ -294,39 +294,39 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | US035-CA1 | CT-C073, CT-C075 |
 | US035-CA2 | CT-C079 |
 | US035-CA3 | CT-C074 |
-| US036-CA1 | — |
-| US036-CA2 | — |
-| US036-CA3 | — |
-| US037-CA1 | — |
-| US037-CA2 | — |
-| US037-CA3 | — |
-| US037-CA4 | — |
-| US038-CA1 | — |
-| US038-CA2 | — |
-| US038-CA3 | CT-C094 |
-| US039-CA1 | — |
-| US039-CA2 | — |
-| US039-CA3 | — |
-| US039-CA4 | — |
-| US040-CA1 | — |
-| US040-CA2 | — |
-| US040-CA3 | — |
-| US040-CA4 | — |
-| US040-CA5 | — |
-| US041-CA1 | — |
-| US041-CA2 | — |
-| US041-CA3 | — |
-| US041-CA4 | — |
-| US042-CA1 | — |
-| US042-CA2 | — |
-| US042-CA3 | — |
-| US042-CA4 | — |
-| US042-CA5 | — |
-| US042-CA6 | — |
-| US043-CA1 | — |
-| US043-CA2 | — |
-| US043-CA3 | — |
-| US043-CA4 | — |
+| US036-CA1 | CT-D001, CT-D005, CT-D006, CT-D021 |
+| US036-CA2 | CT-D002, CT-D003 |
+| US036-CA3 | CT-D004 |
+| US037-CA1 | CT-D008, CT-D009, CT-D010, CT-D011, CT-D015 |
+| US037-CA2 | CT-D012 |
+| US037-CA3 | CT-D013, CT-D014, CT-D025, CT-D071 |
+| US037-CA4 | CT-D017 |
+| US038-CA1 | CT-D005, CT-D009, CT-D018, CT-D019, CT-D020, CT-D021, CT-D026, CT-D047, CT-D056 |
+| US038-CA2 | CT-D023, CT-D024, CT-D025 |
+| US038-CA3 | CT-C094, CT-D022 |
+| US039-CA1 | CT-D007, CT-D028, CT-D034, CT-D051 |
+| US039-CA2 | CT-D030, CT-D032 |
+| US039-CA3 | CT-D029, CT-D033 |
+| US039-CA4 | CT-D027, CT-D031 |
+| US040-CA1 | CT-D035, CT-D041 |
+| US040-CA2 | CT-D036 |
+| US040-CA3 | CT-D039, CT-D040 |
+| US040-CA4 | CT-D037 |
+| US040-CA5 | CT-D038 |
+| US041-CA1 | CT-D042, CT-D048 |
+| US041-CA2 | CT-D044, CT-D050, CT-D051 |
+| US041-CA3 | CT-D020, CT-D043, CT-D045, CT-D047, CT-D049 |
+| US041-CA4 | CT-D046, CT-D050 |
+| US042-CA1 | CT-D052, CT-D056, CT-D057, CT-D059 |
+| US042-CA2 | CT-D058 |
+| US042-CA3 | CT-D053, CT-D054 |
+| US042-CA4 | CT-D055, CT-D062, CT-D063, CT-D064 |
+| US042-CA5 | CT-D060 |
+| US042-CA6 | CT-D061 |
+| US043-CA1 | CT-D065, CT-D069, CT-D071 |
+| US043-CA2 | CT-D066 |
+| US043-CA3 | CT-D016, CT-D068, CT-D070 |
+| US043-CA4 | CT-D067 |
 | US044-CA1 | CT-B103, CT-B104, CT-B109 |
 | US044-CA2 | CT-B106 |
 | US044-CA3 | CT-B105, CT-B107, CT-B108 |
@@ -359,36 +359,4 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC34 sem diagrama de sequência (item 14)
 - UC35 sem diagrama de sequência (item 14)
 - UC36 sem diagrama de sequência (item 14)
-- US036-CA1 sem caso de teste (item 15)
-- US036-CA2 sem caso de teste (item 15)
-- US036-CA3 sem caso de teste (item 15)
-- US037-CA1 sem caso de teste (item 15)
-- US037-CA2 sem caso de teste (item 15)
-- US037-CA3 sem caso de teste (item 15)
-- US037-CA4 sem caso de teste (item 15)
-- US038-CA1 sem caso de teste (item 15)
-- US038-CA2 sem caso de teste (item 15)
-- US039-CA1 sem caso de teste (item 15)
-- US039-CA2 sem caso de teste (item 15)
-- US039-CA3 sem caso de teste (item 15)
-- US039-CA4 sem caso de teste (item 15)
-- US040-CA1 sem caso de teste (item 15)
-- US040-CA2 sem caso de teste (item 15)
-- US040-CA3 sem caso de teste (item 15)
-- US040-CA4 sem caso de teste (item 15)
-- US040-CA5 sem caso de teste (item 15)
-- US041-CA1 sem caso de teste (item 15)
-- US041-CA2 sem caso de teste (item 15)
-- US041-CA3 sem caso de teste (item 15)
-- US041-CA4 sem caso de teste (item 15)
-- US042-CA1 sem caso de teste (item 15)
-- US042-CA2 sem caso de teste (item 15)
-- US042-CA3 sem caso de teste (item 15)
-- US042-CA4 sem caso de teste (item 15)
-- US042-CA5 sem caso de teste (item 15)
-- US042-CA6 sem caso de teste (item 15)
-- US043-CA1 sem caso de teste (item 15)
-- US043-CA2 sem caso de teste (item 15)
-- US043-CA3 sem caso de teste (item 15)
-- US043-CA4 sem caso de teste (item 15)
 <!-- matriz:fim -->
