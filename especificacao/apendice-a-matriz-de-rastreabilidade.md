@@ -123,14 +123,14 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 | UC26 | — |
 | UC27 | — |
 | UC28 | — |
-| UC29 | — |
-| UC30 | — |
-| UC31 | — |
-| UC32 | — |
-| UC33 | — |
-| UC34 | — |
-| UC35 | — |
-| UC36 | — |
+| UC29 | 14-sequencia-uc29.png |
+| UC30 | 14-sequencia-uc30.png |
+| UC31 | 14-sequencia-uc31.png |
+| UC32 | 14-sequencia-uc32.png |
+| UC33 | 14-sequencia-uc33.png |
+| UC34 | 14-sequencia-uc34.png, 14-sequencia-uc34_001.png |
+| UC35 | 14-sequencia-uc35.png, 14-sequencia-uc35_001.png |
+| UC36 | 14-sequencia-uc36.png |
 | UC37 | 14-sequencia-uc37.png |
 
 ### A.5 Critérios de aceite × casos de teste (item 15)
@@ -351,14 +351,6 @@ As tabelas abaixo são **geradas** pelo script `scripts/gerar_matriz_rastreabili
 - UC26 sem diagrama de sequência (item 14)
 - UC27 sem diagrama de sequência (item 14)
 - UC28 sem diagrama de sequência (item 14)
-- UC29 sem diagrama de sequência (item 14)
-- UC30 sem diagrama de sequência (item 14)
-- UC31 sem diagrama de sequência (item 14)
-- UC32 sem diagrama de sequência (item 14)
-- UC33 sem diagrama de sequência (item 14)
-- UC34 sem diagrama de sequência (item 14)
-- UC35 sem diagrama de sequência (item 14)
-- UC36 sem diagrama de sequência (item 14)
 - US036-CA1 sem caso de teste (item 15)
 - US036-CA2 sem caso de teste (item 15)
 - US036-CA3 sem caso de teste (item 15)

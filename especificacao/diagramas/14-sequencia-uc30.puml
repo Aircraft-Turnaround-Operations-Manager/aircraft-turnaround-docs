@@ -1,0 +1,273 @@
+@startuml
+' UC30 – Reatribuir tarefa (RF-37, US037; ADR-0010, ADR-0015 regras 1 e 3, ADR-0020; RNF-8, RNF-20).
+' Inclui o UC36; estende o UC31 (A1). Classes do item 13 (excecoes, execucao, cadastro, contrato, comum) e tabelas do
+' item 12 (Apêndices B.4 e B.2). A decisão é da Execução em Solo, dona da tarefa: confere o estado, a equipe e a
+' disponibilidade no dado original e troca o responsável; o Exceções e Liberação guarda o motivo e o autor (13.5.7).
+' Pedido pendente e retomada como no UC29.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc30.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ReatribuicaoView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Cadastro e Planejamento" #FAFAFA
+  control "UsuarioController" as UC
+  control "EquipeController" as EQ
+end box
+box "Exceções e Liberação" #FAFAFA
+  control "ReatribuicaoController" as C
+  participant "ReatribuicaoService" as S <<service>>
+  participant "TurnaroundReferenciaRepository" as TRR <<repository>>
+  participant "ReatribuicaoRepository" as RR <<repository>>
+  participant "PedidoService" as PS <<service>>
+  participant "PedidoPendenteRepository" as PPR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoExcecoesLiberacao" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "TurnaroundController" as ETC
+  control "AtribuicaoController" as EAC
+  participant "AtribuicaoService" as EAS <<service>>
+  entity "Turnaround" as ET
+  entity "Tarefa" as TA
+  participant "TurnaroundRepository" as ETR <<repository>>
+  participant "TarefaRepository" as ETAR <<repository>>
+  participant "CadastroCliente" as CC <<client>>
+  participant "ListaTarefasNotificador" as N <<websocket>>
+  participant "AuditoriaService" as EAU <<service>>
+  participant "PublicadorAvisos" as EPUB <<publisher>>
+  database "BancoExecucaoEmSolo" as EDB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: formulário ==
+alt A1: o coordenador escolhe "Reatribuir tarefa" como ação de um alerta (UC31)
+  CO -> V : abrir(turnaroundId, alertaId)
+  activate V
+  note right of V : A1.2: a tarefa do alerta já vem escolhida
+else passo 1: "Reatribuir" numa tarefa "Pronta", por exemplo a limpeza da cabine
+  CO -> V : abrir(turnaroundId, alertaId = vazio)
+end
+CO -> V : escolherTarefa(tarefaId)
+V -> G : encaminhar(sessaoId, rota = "GET /v1/reatribuicoes/tarefas/{tarefaId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> C : consultarTarefa(tarefaId, acesso)
+activate C
+C -> S : consultarTarefa(tarefaId)
+activate S
+S -> EX : consultarTarefa(tarefaId)
+activate EX
+EX -> ETC : consultarTarefa(tarefaId)
+activate ETC
+ref over ETC, EDB : TurnaroundService.consultarTarefa(tarefaId) → TarefaRepository.buscarPorId(tarefaId):\nSELECT tarefa (nome, equipe, responsável e estado)
+ETC --> EX : 200 TarefaResumo
+deactivate ETC
+EX --> S : TarefaResumo
+deactivate EX
+S --> C : tarefa
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+V -> G : encaminhar(sessaoId, rota = "GET /v1/usuarios/nomes?ids={responsavelId}", corpo = vazio, acaoDoUsuario = sim)
+G -> UC : listarNomes(usuarioIds = responsavelId, acesso)
+activate UC
+UC --> G : 200 List<NomeUsuario>
+deactivate UC
+G --> V : 200 nome do operador atual
+deactivate G
+ref over CO, V : «include» UC36 – Consultar operadores disponíveis da equipe:\nReatribuicaoController.listarOperadoresDisponiveis(tarefaId, acesso), já ordenada (RN2)
+alt E4: nenhum operador disponível (UC36, E1)
+  V --> CO : não há operador disponível na equipe; a tarefa mantém o operador original (E4.1)
+else
+  V --> CO : tarefa, operador atual e operadores disponíveis da mesma equipe (passo 2);\nA2: a tarefa "Em execução" ou "Pausada" também pode ser reatribuída
+
+  == Passos 3 e 4 ==
+  alt A3: o coordenador cancela
+    V --> CO : fecha o formulário sem gravar; a tarefa mantém o operador original (A3.2)
+  else escolhe o operador (passo 3), escreve o motivo e confirma (passo 4)
+    CO -> V : reatribuir(turnaroundId, tarefaId, operadorNovoId, motivo)
+    V -> G : encaminhar(sessaoId, rota = "POST /v1/reatribuicoes", corpo = turnaroundId + tarefaId + operadorNovoId + motivo + alertaId, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada
+    G -> C : reatribuir(turnaroundId, tarefaId, operadorNovoId, motivo, alertaId, acesso)
+    activate C
+    C -> S : reatribuir(turnaroundId, tarefaId, operadorNovoId, motivo, alertaId, autorId = acesso.usuarioId)
+    activate S
+
+    == Passo 5: verificações ==
+    alt E3: motivo não informado (RN3)
+      S --> C : recusa: pede o motivo
+      C --> G : 422 campo inválido
+    else motivo preenchido
+      critical transação 1: trava do turnaround e pedido pendente (ADR-0020)
+        S -> TRR : buscarComTrava(turnaroundId)
+        activate TRR
+        TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId FOR UPDATE
+        deactivate TRR
+        opt A1: alertaId informado
+          ref over S, DB : UC31, passo 7 – AcaoAlertaService.conferirSemAcao(alertaId) (UC31, E3)
+        end
+        S -> PS : registrar(tipo = "Reatribuição", turnaroundId, registroId = reatribuicaoId, autorId, horarioAcao, dados = tarefaId + operadorNovoId + motivo + alertaId)
+        activate PS
+        PS -> PPR : salvar(pedido)
+        activate PPR
+        PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = reatribuicaoId)
+        deactivate PPR
+        deactivate PS
+      end
+
+      == Passos 5 e 6: pedido à Execução em Solo, dona da tarefa (ADR-0015, regra 3) ==
+      S -> EX : reatribuir(turnaroundId, tarefaId, operadorNovoId, autorId, horarioAcao, reatribuicaoId)
+      activate EX
+      EX -> EAC : reatribuir(turnaroundId, tarefaId, operadorNovoId, autorId, horarioAcao, reatribuicaoId)
+      activate EAC
+      EAC -> EAS : reatribuir(turnaroundId, tarefaId, operadorNovoId, autorId, horarioAcao, reatribuicaoId)
+      activate EAS
+      critical trava do turnaround até o fim da transação (ADR-0018)
+        EAS -> ETR : buscarComTrava(turnaroundId)
+        activate ETR
+        ETR -> EDB : SELECT turnaround, tarefa ... FOR UPDATE
+        ETR --> EAS : turnaround com as tarefas
+        deactivate ETR
+        EAS -> ET : buscarTarefa(tarefaId)
+        activate ET
+        ET --> EAS : tarefa
+        EAS -> ET : aceitaRegistros()
+        ET --> EAS : não, se "Fora de bloco" (pré-condição 2)
+        deactivate ET
+        EAS -> TA : estaTerminada()
+        activate TA
+        TA --> EAS : "Concluída" ou "Não aplicável"?
+        deactivate TA
+        EAS -> CC : listarOperadoresAtivos(equipeId)
+        activate CC
+        CC -> EQ : listarOperadoresAtivos(equipeId)
+        activate EQ
+        EQ --> CC : 200 List<OperadorAtivo>
+        deactivate EQ
+        CC --> EAS : operadores ativos da equipe da tarefa
+        deactivate CC
+        EAS -> ETAR : listarOperadoresEmExecucao(operadorIds = operadorNovoId)
+        activate ETAR
+        ETAR -> EDB : SELECT tarefa WHERE responsavel_id = operadorNovoId AND estado = 'Em execução'
+        ETAR --> EAS : em execução ou não
+        deactivate ETAR
+        alt E1: tarefa "Concluída" ou "Não aplicável", por exemplo concluída com o formulário aberto (RN1), ou turnaround "Fora de bloco"
+          EAS --> EAC : recusa: tarefa concluída não pode ser reatribuída
+          EAC --> EX : 409 impedimento
+        else E2: operador de outra equipe, inativo ou que iniciou outra tarefa depois que a lista foi exibida (RN2)
+          EAS --> EAC : recusa: operador não é da mesma equipe ou não está disponível
+          EAC --> EX : 409 operador indisponível
+        else aceita
+          == Passo 6: troca do responsável, sem mudar o estado (RN4, RN7) ==
+          EAS -> TA : reatribuir(operadorNovoId)
+          activate TA
+          TA --> EAS : operadorAnteriorId (estado mantido, inclusive "Em execução" ou "Pausada"; A2.1)
+          deactivate TA
+          EAS -> ETR : salvar(turnaround)
+          activate ETR
+          ETR -> EDB : UPDATE tarefa SET responsavel_id = operadorNovoId, versao
+          deactivate ETR
+          EAS -> EAU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = reatribuicaoId, turnaroundId, valoresAnteriores = operadorAnteriorId, valoresNovos = operadorNovoId)
+          activate EAU
+          EAU -> EDB : INSERT registro_auditoria
+          deactivate EAU
+          EAS -> EPUB : registrar(EnvelopeAviso.novo(tipo = aviso da troca de responsável (área B), turnaroundId, autorId, causaId = reatribuicaoId, dados = tarefaId + responsavelId + versao))
+          activate EPUB
+          EPUB -> EDB : INSERT aviso_saida (mesma transação)
+          deactivate EPUB
+          EAS --> EAC : operadorAnteriorId
+          EAC --> EX : 200
+        end
+      end
+      opt reatribuição gravada (passo 7; RN5)
+        EAS -> N : notificarReatribuicao(operadorAnteriorId, operadorNovoId, tarefa)
+        activate N
+        note right of N : os dois operadores recebem o aviso no celular; a tarefa sai da\nlista do original e aparece só na do novo (UC14), em até 5 s
+        deactivate N
+      end
+      deactivate EAS
+      deactivate EAC
+
+      alt 409: recusa da Execução em Solo
+        EX --> S : recusa
+        S -> PS : desfazer(pedido)
+        activate PS
+        PS -> PPR : salvar(pedido)
+        activate PPR
+        PPR -> DB : UPDATE pedido_pendente SET situacao = 'Desfeito', resolvido_em
+        deactivate PPR
+        deactivate PS
+        S --> C : recusa; a tarefa mantém o operador original (E1.2, E2.2)
+        C --> G : 409
+      else sem resposta da Execução em Solo (falha técnica)
+        EX --> S : falha técnica
+        note right of S : o pedido fica "Pendente" e é resolvido\npela RetomadaPedidos, como no UC29
+        S --> C : falha
+        C --> G : 503
+      else 200 operadorAnteriorId
+        EX --> S : operadorAnteriorId
+        deactivate EX
+
+        == Passo 6: motivo, autor e horário no Exceções e Liberação (RN3) ==
+        critical transação 2: reatribuição, auditoria e conclusão do pedido juntas (ADR-0020)
+          note right of S : Reatribuicao nova: tarefaId, operadorAnteriorId (da resposta),\noperadorNovoId, motivo, autorId e registradaEm = horarioAcao
+          S -> RR : salvar(reatribuicao)
+          activate RR
+          RR -> DB : INSERT reatribuicao (id = reatribuicaoId, turnaround_id, tarefa_id, operador_anterior_id,\noperador_novo_id, motivo, autor_id, registrada_em)
+          deactivate RR
+          S -> AU : registrar(objeto = "reatribuicao", objetoId = reatribuicaoId, acao = "Inclusão", autorId, causaId = reatribuicaoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = reatribuição)
+          activate AU
+          AU -> DB : INSERT registro_auditoria
+          deactivate AU
+          opt A1: alertaId informado (A1.3)
+            ref over S, DB : UC31, passo 7 – AcaoAlertaService.registrar(acao com tipoAcao = "Reatribuir tarefa"\ne a reatribuicao): INSERT acao_alerta e aviso AcaoAlertaRegistrada, na mesma transação
+          end
+          S -> PS : concluir(pedido)
+          activate PS
+          PS -> PPR : salvar(pedido)
+          activate PPR
+          PPR -> DB : UPDATE pedido_pendente SET situacao = 'Concluído', resolvido_em
+          deactivate PPR
+          deactivate PS
+        end
+        S --> C : Reatribuicao
+        C --> G : 201 reatribuição
+      end
+    end
+    deactivate S
+    deactivate C
+    G --> V : resposta
+    deactivate G
+
+    == Passo 7: resultado ==
+    alt 201
+      V --> CO : tarefa atribuída ao novo operador; os dois foram avisados (passo 7)
+    else 422
+      V --> CO : E3: pede o motivo; volta ao passo 4 (E3.2)
+    else 409 E1
+      V --> CO : tarefa concluída não pode ser reatribuída (E1.1)
+    else 409 E2
+      V --> CO : operador não é da mesma equipe ou não está disponível;\nvolta ao passo 2 com a lista consultada de novo (E2.2; UC36)
+    else 503
+      V --> CO : a reatribuição não foi concluída; a tarefa mantém o operador original
+    end
+  end
+end
+deactivate V
+
+== Depois da gravação ==
+EPUB -> EPUB : publicarPendentes()
+activate EPUB
+EPUB -> MQ : publica a troca de responsável
+EPUB -> EDB : UPDATE aviso_saida SET publicado_em
+deactivate EPUB
+note right of MQ : o Monitoramento copia o responsável pela versão da tarefa\n(aplicarResponsavel; item 12, seção 12.5.2)
+
+opt E5: o operador original registrou o início sem conexão (RN6; RNF-8)
+  ref over CO, EDB : UC15 – Registrar início da tarefa: quando a conexão volta, o registro chega ao servidor e é\nrecusado com 403 "tarefa reatribuída" (Tarefa.conferirResponsavel), sem mudar o estado da tarefa (E5.1);\no ListaTarefasNotificador.notificarRecusa avisa o operador original com o motivo (E5.2)
+end
+@enduml

@@ -1,0 +1,414 @@
+@startuml
+' UC35 – Replanejar tarefas não iniciadas do turnaround (RF-42, US042; ADR-0005, ADR-0014, ADR-0015 regras 1 e 3,
+' ADR-0020; RNF-20). Inclui o UC21; estende o UC31 (A4). Classes do item 13 (excecoes, execucao, monitoramento, contrato,
+' comum) e tabelas do item 12 (Apêndices B.4 e B.2). A decisão e as travas são da Execução em Solo, dona da tarefa; o
+' Exceções e Liberação guarda o tipo, o motivo e o autor (13.5.7). Pedido pendente e retomada como no UC29.
+' Parte 1: janela e dependências; parte 2: acionamento do serviço sob demanda (A3).
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc35.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "ReplanejamentoView" as V
+boundary "LinhaDoTempoView" as LT
+participant "PortaDeEntrada" as G <<gateway>>
+box "Exceções e Liberação" #FAFAFA
+  control "ReplanejamentoController" as C
+  participant "ReplanejamentoService" as S <<service>>
+  participant "TurnaroundReferenciaRepository" as TRR <<repository>>
+  participant "ReplanejamentoRepository" as RR <<repository>>
+  participant "PedidoService" as PS <<service>>
+  participant "PedidoPendenteRepository" as PPR <<repository>>
+  participant "ExecucaoEmSoloCliente" as EX <<client>>
+  participant "AuditoriaService" as AU <<service>>
+  database "BancoExcecoesLiberacao" as DB
+end box
+box "Execução em Solo" #FAFAFA
+  control "ReplanejamentoController" as ERC
+  participant "ReplanejamentoService" as ERS <<service>>
+  entity "Tarefa" as TA
+  participant "TurnaroundRepository" as ETR <<repository>>
+  participant "CadastroCliente" as CC <<client>>
+  participant "PropagacaoService" as PROP <<service>>
+  participant "AuditoriaService" as EAU <<service>>
+  participant "PublicadorAvisos" as EPUB <<publisher>>
+  database "BancoExecucaoEmSolo" as EDB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: tarefas não iniciadas ==
+alt A4: o coordenador escolhe "Replanejar" como ação de um alerta (UC31, A1)
+  CO -> V : abrir(turnaroundId, alertaId)
+  activate V
+else passo 1: "Replanejar" num turnaround em "Operações em andamento"
+  CO -> V : abrir(turnaroundId, alertaId = vazio)
+end
+V -> G : encaminhar(sessaoId, rota = "GET /v1/replanejamentos/turnarounds/{turnaroundId}/tarefas", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> C : listarNaoIniciadas(turnaroundId, acesso)
+activate C
+C -> S : listarNaoIniciadas(turnaroundId)
+activate S
+S -> EX : listarNaoIniciadas(turnaroundId)
+activate EX
+EX -> ERC : listarNaoIniciadas(turnaroundId)
+activate ERC
+ref over ERC, EDB : ReplanejamentoService.listarNaoIniciadas(turnaroundId) → TurnaroundRepository.buscarPorId:\nSELECT tarefa, dependencia_tarefa WHERE estado IN ('Aguardando', 'Pronta')
+ERC --> EX : 200 List<TarefaResumo>
+deactivate ERC
+EX --> S : tarefas com estado, janela e predecessoras
+deactivate EX
+S --> C : tarefas
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+deactivate G
+note right of V : a indicação do caminho crítico vem do Monitoramento,\ndono do caminho (UC24); ver a nota da área D
+V --> CO : tarefas não iniciadas, com estado, janela planejada,\npredecessoras e indicação de caminho crítico (passo 2)
+
+== Passos 3 e 4 ==
+alt A5: o coordenador cancela
+  V --> CO : fecha o formulário sem gravar; o plano fica como estava (A5.2)
+else A3: "Acionar serviço sob demanda"
+  ref over CO, EDB : parte 2 (abaixo)
+else escolhe uma tarefa "Aguardando" do caminho crítico (passo 3) e altera
+  alt passo 4: antecipa em 10 min o início e o fim planejados e confirma
+    CO -> V : alterarJanela(turnaroundId, tarefaId, inicio, fim)
+    V -> G : encaminhar(sessaoId, rota = "PUT /v1/replanejamentos/tarefas/{tarefaId}/janela", corpo = turnaroundId + inicio + fim + alertaId, acaoDoUsuario = sim)
+    activate G
+    ref over G : Verificar acesso na porta de entrada
+    G -> C : alterarJanela(turnaroundId, tarefaId, inicio, fim, alertaId, acesso)
+    activate C
+    C -> S : alterarJanela(turnaroundId, tarefaId, inicio, fim, alertaId, autorId = acesso.usuarioId)
+    activate S
+  else A1: retira uma predecessora, ou A2: acrescenta uma predecessora, e confirma
+    CO -> V : alterarDependencias(turnaroundId, tarefaId, predecessoraIds)
+    V -> G : encaminhar(sessaoId, rota = "PUT /v1/replanejamentos/tarefas/{tarefaId}/predecessoras", corpo = turnaroundId + predecessoraIds + alertaId, acaoDoUsuario = sim)
+    G -> C : alterarDependencias(turnaroundId, tarefaId, predecessoraIds, alertaId, acesso)
+    C -> S : alterarDependencias(turnaroundId, tarefaId, predecessoraIds, alertaId, autorId = acesso.usuarioId)
+  end
+
+  == Passo 5: pedido pendente (ADR-0020) ==
+  critical transação 1: trava do turnaround e pedido pendente
+    S -> TRR : buscarComTrava(turnaroundId)
+    activate TRR
+    TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId FOR UPDATE
+    deactivate TRR
+    opt A4: alertaId informado
+      ref over S, DB : UC31, passo 7 – AcaoAlertaService.conferirSemAcao(alertaId) (UC31, E3)
+    end
+    S -> PS : registrar(tipo = "Replanejamento", turnaroundId, registroId = replanejamentoId, autorId, horarioAcao, dados = tarefaId + janela ou predecessoraIds + alertaId)
+    activate PS
+    PS -> PPR : salvar(pedido)
+    activate PPR
+    PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = replanejamentoId)
+    deactivate PPR
+    deactivate PS
+  end
+
+  == Passo 5: verificações na Execução em Solo (RN1, RN4, RN5) ==
+  alt janela (passo 4)
+    S -> EX : alterarJanela(turnaroundId, tarefaId, inicio, fim, autorId, horarioAcao, replanejamentoId)
+    activate EX
+    EX -> ERC : alterarJanela(turnaroundId, tarefaId, inicio, fim, autorId, horarioAcao, replanejamentoId)
+    activate ERC
+    ERC -> ERS : alterarJanela(turnaroundId, tarefaId, inicio, fim, autorId, horarioAcao, replanejamentoId)
+    activate ERS
+  else dependências (A1, A2)
+    S -> EX : alterarDependencias(turnaroundId, tarefaId, predecessoraIds, autorId, horarioAcao, replanejamentoId)
+    EX -> ERC : alterarDependencias(turnaroundId, tarefaId, predecessoraIds, autorId, horarioAcao, replanejamentoId)
+    ERC -> ERS : alterarDependencias(turnaroundId, tarefaId, predecessoraIds, autorId, horarioAcao, replanejamentoId)
+  end
+  critical trava do turnaround até o fim da transação (ADR-0018)
+    ERS -> ETR : buscarComTrava(turnaroundId)
+    activate ETR
+    ETR -> EDB : SELECT turnaround, tarefa, dependencia_tarefa ... FOR UPDATE
+    ETR --> ERS : turnaround com as tarefas (estado aceita replanejamento: "Em solo",\n"Operações em andamento" ou "Em exceção"; pré-condição 2)
+    deactivate ETR
+    ERS -> TA : estaIniciada()
+    activate TA
+    TA --> ERS : "Em execução", "Pausada", "Concluída" ou "Não aplicável"?
+    alt E1: a tarefa já foi iniciada, por exemplo pelo operador com o formulário aberto
+      ERS --> ERC : recusa: só tarefas ainda não iniciadas podem ser replanejadas (E1.1, E1.2)
+      ERC --> EX : 409 impedimento
+    else E7: predecessora que não existe ou é de outro turnaround (RF-42)
+      ERS --> ERC : recusa com a referência inválida; o plano fica como estava (E7.1, E7.2)
+      ERC --> EX : 422 referência inválida
+    else ainda não iniciada
+      alt janela
+        ERS -> TA : alterarJanela(inicio, fim)
+      else dependências
+        ERS -> TA : definirPredecessoras(predecessoras)
+      end
+      deactivate TA
+      ERS -> ERS : conferirJanelas(tarefa)
+      ERS -> ERS : conferirCiclos(turnaround)
+      ERS -> ERS : conferirPolitica(turnaround)
+      alt E2: início antes do fim planejado de uma predecessora, ou fim antes do início (RN4; RF-8)
+        ERS --> ERC : recusa com a predecessora e o horário em conflito; volta ao passo 4 (E2.1)
+        ERC --> EX : 422 conflito de janela
+      else E3: a dependência cria ciclo (vindo do A2)
+        ERS --> ERC : recusa com as tarefas que formam o ciclo (E3.1)
+        ERC --> EX : 422 ciclo
+      else E4: retira a dependência desembarque → abastecimento ou abastecimento → embarque, e o turnaround não permite abastecer com passageiros a bordo (RN5; ADR-0005)
+        ERS --> ERC : recusa com a regra do operador aéreo (E4.1)
+        ERC --> EX : 422 regra de abastecimento
+      else travas cumpridas
+
+        == Passo 6: gravação com o valor anterior e o novo (RN2) ==
+        opt dependências (A1.2, A2.2; RN6)
+          ERS -> PROP : reavaliarNaoIniciadas(turnaround, causaId = replanejamentoId)
+          activate PROP
+          ref over PROP, EDB : «include» UC21 – Propagar estado das tarefas e do turnaround (A8): sem predecessora\npendente a tarefa fica "Pronta"; com predecessora nova pendente volta a "Aguardando" (A2.2)
+          PROP --> ERS : mudanças de estado
+          deactivate PROP
+        end
+        ERS -> ETR : salvar(turnaround)
+        activate ETR
+        ETR -> EDB : UPDATE tarefa SET inicio_planejado, fim_planejado, versao\nou DELETE / INSERT dependencia_tarefa
+        deactivate ETR
+        ERS -> EAU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = replanejamentoId, turnaroundId, valoresAnteriores = janela ou predecessoras anteriores, valoresNovos = janela ou predecessoras novas)
+        activate EAU
+        EAU -> EDB : INSERT registro_auditoria
+        deactivate EAU
+        ERS -> EPUB : registrar(EnvelopeAviso.novo(tipo = aviso de replanejamento (área B), turnaroundId, autorId, causaId = replanejamentoId, dados = tarefaId + janela + predecessoras + versao))
+        activate EPUB
+        EPUB -> EDB : INSERT aviso_saida (mesma transação)
+        deactivate EPUB
+        ERS --> ERC : TarefaResumo
+        ERC --> EX : 200
+      end
+    end
+  end
+  deactivate ERS
+  deactivate ERC
+
+  alt 409 ou 422: recusa da Execução em Solo
+    EX --> S : recusa
+    S -> PS : desfazer(pedido)
+    activate PS
+    PS -> PPR : salvar(pedido)
+    activate PPR
+    PPR -> DB : UPDATE pedido_pendente SET situacao = 'Desfeito', resolvido_em
+    deactivate PPR
+    deactivate PS
+    S --> C : recusa; a janela e as dependências ficam como estavam
+    C --> G : 409 ou 422
+    G --> V : 409 ou 422
+    V --> CO : o motivo da recusa (E1 a E4, E7)
+  else sem resposta da Execução em Solo (falha técnica)
+    EX --> S : falha técnica
+    note right of S : o pedido fica "Pendente" e é resolvido pela RetomadaPedidos, como no UC29
+    S --> C : falha
+    C --> G : 503
+    G --> V : 503
+    V --> CO : o replanejamento não foi concluído
+  else 200 TarefaResumo
+    EX --> S : TarefaResumo
+    deactivate EX
+    critical transação 2: replanejamento, auditoria e conclusão do pedido juntos (ADR-0020)
+      note right of S : Replanejamento novo: tarefaId, tipo = "Janela" ou "Dependências",\nmotivo vazio (RN2), autorId e registradaEm = horarioAcao
+      S -> RR : salvar(replanejamento)
+      activate RR
+      RR -> DB : INSERT replanejamento (id = replanejamentoId, turnaround_id, tarefa_id, tipo, autor_id, registrada_em)
+      deactivate RR
+      S -> AU : registrar(objeto = "replanejamento", objetoId = replanejamentoId, acao = "Inclusão", autorId, causaId = replanejamentoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = replanejamento)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      opt A4: alertaId informado (A4.2: depois do passo 6)
+        ref over S, DB : UC31, passo 7 – AcaoAlertaService.registrar(acao com tipoAcao = "Replanejar"\ne o replanejamento): INSERT acao_alerta e aviso AcaoAlertaRegistrada, na mesma transação
+      end
+      S -> PS : concluir(pedido)
+      activate PS
+      PS -> PPR : salvar(pedido)
+      activate PPR
+      PPR -> DB : UPDATE pedido_pendente SET situacao = 'Concluído', resolvido_em
+      deactivate PPR
+      deactivate PS
+    end
+    S --> C : Replanejamento
+    deactivate S
+    C --> G : 200
+    deactivate C
+    G --> V : 200
+    deactivate G
+
+    == Passos 7 e 8: recálculo e resultado (RN3) ==
+    EPUB -> MQ : publica o replanejamento (publicarPendentes)
+    ref over MQ : UC24 – Recalcular projeção, atraso e caminho crítico (A3): o Motor de Eventos\nrecalcula a projeção e o caminho crítico com o plano novo (passo 7)
+    V -> V : exibirResultado(turnaroundId)
+    V -> LT : abrir(turnaroundId)
+    activate LT
+    ref over CO, LT : UC23 – Consultar linha do tempo do turnaround: a projeção anterior e a nova\ne o novo caminho crítico, atualizados em até 5 s (passo 8)
+    deactivate LT
+  end
+end
+deactivate V
+
+newpage UC35 – parte 2: acionamento do serviço sob demanda (A3; RN7, RN8; ADR-0014)
+
+== A3.1 e A3.2: catálogo e responsáveis ==
+CO -> V : abrir(turnaroundId, alertaId)
+activate V
+note right of V : o mesmo formulário da parte 1, com "Acionar serviço sob demanda" (A3.1)
+V -> G : encaminhar(sessaoId, rota = "GET /v1/replanejamentos/turnarounds/{turnaroundId}/catalogo", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada
+G -> C : listarCatalogoSobDemanda(turnaroundId, acesso)
+activate C
+C -> S : listarCatalogoSobDemanda(turnaroundId)
+activate S
+S -> EX : listarCatalogoSobDemanda(turnaroundId)
+activate EX
+EX -> ERC : listarCatalogoSobDemanda(turnaroundId)
+activate ERC
+ref over ERC, EDB : ReplanejamentoService.listarCatalogoSobDemanda(turnaroundId):\nSELECT tarefa WHERE sob_demanda AND estado IS NULL (itens do catálogo ainda não acionados)
+ERC --> EX : 200 List<TarefaResumo>
+deactivate ERC
+EX --> S : catálogo com a equipe e a duração planejada
+deactivate EX
+S --> C : catálogo
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+V --> CO : catálogo de serviços sob demanda do modelo de tarefas (A3.2)
+note over CO, V : o coordenador escolhe o serviço, por exemplo a limpeza profunda de assento
+V -> G : encaminhar(sessaoId, rota = "GET /v1/replanejamentos/equipes/{equipeId}/operadores", corpo = vazio, acaoDoUsuario = sim)
+G -> C : listarOperadoresAtivos(equipeId, acesso)
+activate C
+C -> S : listarOperadoresAtivos(equipeId)
+activate S
+S -> EX : listarOperadoresAtivos(equipeId)
+activate EX
+EX -> ERC : listarOperadoresAtivos(equipeId)
+activate ERC
+ERC -> ERS : listarOperadoresAtivos(equipeId)
+activate ERS
+ERS -> CC : listarOperadoresAtivos(equipeId)
+activate CC
+ref over CC : UC36 – EquipeController.listarOperadoresAtivos(equipeId), no Cadastro e Planejamento
+CC --> ERS : operadores ativos da equipe, com o nome
+deactivate CC
+ERS --> ERC : List<OperadorAtivo>
+deactivate ERS
+ERC --> EX : 200
+deactivate ERC
+EX --> S : operadores ativos
+deactivate EX
+S --> C : operadores
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+deactivate G
+
+== A3.3 e A3.4: inclusão e verificações ==
+alt A5: o coordenador cancela
+  V --> CO : nada é gravado; o plano fica como estava
+else escolhe o responsável, a janela, as predecessoras e as sucessoras, escreve o motivo e confirma (A3.3)
+  CO -> V : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, motivo)
+  V -> G : encaminhar(sessaoId, rota = "POST /v1/replanejamentos/sob-demanda", corpo = turnaroundId + tarefaId + responsavelId + inicio + fim + predecessoraIds + sucessoraIds + motivo + alertaId, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> C : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, motivo, alertaId, acesso)
+  activate C
+  C -> S : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, motivo, alertaId, autorId = acesso.usuarioId)
+  activate S
+  alt E5: sem responsável, janela ou motivo (RN7)
+    S --> C : recusa com o campo que falta; a tarefa não entra no plano (E5.1)
+    C --> G : 422 campo inválido
+  else campos preenchidos
+    ref over S, DB : parte 1, passo 5 – transação 1: trava do turnaround, conferirSemAcao no A4\ne INSERT pedido_pendente (tipo = "Replanejamento", registro_id = replanejamentoId)
+    S -> EX : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, autorId, horarioAcao, replanejamentoId)
+    activate EX
+    EX -> ERC : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, autorId, horarioAcao, replanejamentoId)
+    activate ERC
+    ERC -> ERS : acionarSobDemanda(turnaroundId, tarefaId, responsavelId, inicio, fim, predecessoraIds, sucessoraIds, autorId, horarioAcao, replanejamentoId)
+    activate ERS
+    critical trava do turnaround até o fim da transação (ADR-0018)
+      ERS -> ETR : buscarComTrava(turnaroundId)
+      activate ETR
+      ETR -> EDB : SELECT turnaround, tarefa, dependencia_tarefa ... FOR UPDATE
+      deactivate ETR
+      ERS -> TA : estaNoCatalogo()
+      activate TA
+      TA --> ERS : item do catálogo ainda não acionado
+      ERS -> CC : listarOperadoresAtivos(equipeId)
+      activate CC
+      CC --> ERS : operadores ativos da equipe do serviço
+      deactivate CC
+      ERS -> TA : estaIniciada()
+      TA --> ERS : estado de cada sucessora
+      alt E5: responsável não é operador ativo da equipe do serviço (A3.4)
+        ERS --> ERC : recusa com o campo
+        ERC --> EX : 422
+      else E6: uma sucessora está "Em execução", "Pausada", "Concluída" ou "Não aplicável"
+        ERS --> ERC : recusa com a sucessora já iniciada; a tarefa não entra no plano (E6.1)
+        ERC --> EX : 409
+      else E7: predecessora ou sucessora que não existe ou é de outro turnaround
+        ERS --> ERC : recusa com a referência inválida (E7.1, E7.2)
+        ERC --> EX : 422
+      else sucessoras "Aguardando" ou "Pronta" e referências válidas
+        ERS -> TA : acionar(responsavelId, inicio, fim)
+        ERS -> TA : definirPredecessoras(predecessoras)
+        deactivate TA
+        ERS -> ERS : conferirJanelas(tarefa)
+        ERS -> ERS : conferirCiclos(turnaround)
+        ERS -> ERS : conferirPolitica(turnaround)
+        alt E2, E3 ou E4: janela antes das predecessoras, ciclo ou regra de abastecimento (RN4, RN5)
+          ERS --> ERC : recusa com o conflito
+          ERC --> EX : 422
+        else travas cumpridas (A3.5)
+          ERS -> PROP : reavaliarNaoIniciadas(turnaround, causaId = replanejamentoId)
+          activate PROP
+          ref over PROP, EDB : «include» UC21 (A8) – a tarefa incluída entra em "Aguardando" ou, sem\npredecessora pendente, em "Pronta"; as sucessoras voltam a "Aguardando" (RF-21)
+          PROP --> ERS : mudanças de estado
+          deactivate PROP
+          ERS -> ETR : salvar(turnaround)
+          activate ETR
+          ETR -> EDB : UPDATE tarefa SET responsavel_id, inicio_planejado, fim_planejado, estado, versao;\nINSERT dependencia_tarefa
+          deactivate ETR
+          ERS -> EAU : registrar(objeto = "tarefa", objetoId = tarefaId, acao = "Alteração", autorId, causaId = replanejamentoId, turnaroundId, valoresAnteriores = item do catálogo, valoresNovos = tarefa incluída)
+          activate EAU
+          EAU -> EDB : INSERT registro_auditoria
+          deactivate EAU
+          ERS -> EPUB : registrar(EnvelopeAviso.novo(tipo = aviso de inclusão sob demanda (área B), turnaroundId, autorId, causaId = replanejamentoId, dados = tarefa incluída + versao))
+          activate EPUB
+          EPUB -> EDB : INSERT aviso_saida (mesma transação)
+          deactivate EPUB
+          note right of ERS : a tarefa aparece na lista do responsável (UC14), entra na projeção e no\ncaminho crítico e, se obrigatória, segura a liberação (UC32); o atraso\nque ela causar conta na meta de 80% (RN8)
+          ERS --> ERC : TarefaResumo
+          ERC --> EX : 200
+        end
+      end
+    end
+    deactivate ERS
+    deactivate ERC
+    alt 200
+      EX --> S : TarefaResumo
+      ref over S, DB : parte 1 – transação 2, com tipo = "Inclusão sob demanda" e o motivo (RN7):\nINSERT replanejamento, registro_auditoria, AcaoAlerta no A4 e pedido "Concluído"
+      S --> C : Replanejamento
+      C --> G : 201
+    else recusa ou falha técnica
+      EX --> S : recusa ou falha
+      deactivate EX
+      note right of S : desfaz o pedido na recusa, ou o deixa "Pendente" na falha, como na parte 1
+      S --> C : recusa ou falha
+      C --> G : 409, 422 ou 503
+    end
+  end
+  deactivate S
+  deactivate C
+  G --> V : resposta
+  deactivate G
+  alt 201
+    ref over CO, LT : parte 1, passos 7 e 8 – recálculo (UC24) e linha do tempo (UC23) (A3.6)
+  else recusa
+    V --> CO : o motivo da recusa (E2 a E7); a tarefa não entra no plano
+  end
+end
+deactivate V
+@enduml

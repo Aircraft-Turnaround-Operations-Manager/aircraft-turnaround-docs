@@ -1,0 +1,296 @@
+@startuml
+' UC34 – Atualizar TOBT (RF-41, US041; ADR-0001, ADR-0003, ADR-0015 regra 1, ADR-0020 ponto 3; RNF-21).
+' Estende o UC31 (A4). Classes do item 13 (excecoes, contrato, comum) e tabelas do item 12 (Apêndice B.4).
+' Parte 1: o Motor de Eventos (AtualizacaoTobtService.avaliarProjecao; item 13, seção 13.1) recebe a ProjecaoRecalculada
+' do Monitoramento (#183), descarta a projeção calculada antes da última aplicada (#259; item 12, "Ordem dos avisos") e
+' abre ou retira a solicitação. Parte 2: o Coordenador de Turnaround atualiza o TOBT vigente, que é dado deste serviço.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc34.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Motor de\nEventos" as ME
+actor "Coordenador de\nTurnaround" as CO
+boundary "AtualizacaoTobtView" as V
+participant "PortaDeEntrada" as G <<gateway>>
+box "Exceções e Liberação" #FAFAFA
+  participant "ConsumidorAvisosExcecoes" as CE <<consumer>>
+  control "AtualizacaoTobtController" as C
+  participant "AtualizacaoTobtService" as S <<service>>
+  entity "TurnaroundReferencia" as T
+  entity "SolicitacaoAtualizacaoTobt" as SOL
+  participant "TurnaroundReferenciaRepository" as TRR <<repository>>
+  participant "SolicitacaoAtualizacaoTobtRepository" as SR <<repository>>
+  participant "AtualizacaoTobtRepository" as AR <<repository>>
+  participant "LiberacaoRepository" as LR <<repository>>
+  participant "CoordenadorNotificador" as N <<websocket>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoExcecoesLiberacao" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passo 1: projeção recalculada (UC24) ==
+ref over ME, MQ : UC24 – Recalcular projeção, atraso e caminho crítico: o Monitoramento publica\nProjecaoRecalculada a cada projeção gravada, na fila "excecoes-e-liberacao" (#183)
+ME -> CE : tratar(envelope)
+activate CE
+note right of CE
+  Aviso ProjecaoRecalculada (#183): envelope com turnaroundId e
+  causaId = id da projeção; dados: projecaoId, projecaoProntidao
+  e calculadaEm. Chamado por receber(envelope), herdado de
+  ConsumidorAvisos: o aviso repetido já foi descartado por
+  aviso_processado, gravado na mesma transação (ADR-0016).
+end note
+CE -> S : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm)
+activate S
+critical trava do turnaround até o fim da transação (item 13, seção 13.2)
+  S -> TRR : buscarComTrava(turnaroundId)
+  activate TRR
+  TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId FOR UPDATE
+  TRR --> S : TurnaroundReferencia (TOBT vigente, projecao_calculada_em, limiar de 5 min)
+  deactivate TRR
+  alt calculadaEm anterior a turnaround_referencia.projecao_calculada_em (#259)
+    note right of S : projeção velha que chegou atrasada: é ignorada e\nnão abre nem retira a solicitação (item 12, "Ordem dos avisos")
+  else projeção mais nova
+    S -> T : aplicarProjecao(projecaoProntidao, calculadaEm)
+    activate T
+    deactivate T
+    S -> TRR : salvar(turnaround)
+    activate TRR
+    TRR -> DB : UPDATE turnaround_referencia SET projecao_prontidao, projecao_calculada_em
+    deactivate TRR
+    S -> LR : buscarPorTurnaround(turnaroundId)
+    activate LR
+    LR -> DB : SELECT liberacao WHERE turnaround_id = turnaroundId
+    LR --> S : liberação ou nenhuma
+    deactivate LR
+    S -> SR : buscarAberta(turnaroundId)
+    activate SR
+    SR -> DB : SELECT solicitacao_atualizacao_tobt WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
+    SR --> S : solicitação aberta ou nenhuma
+    deactivate SR
+    S -> T : pedeAtualizacaoTobt()
+    activate T
+    T --> S : |projeção − TOBT vigente| ≥ limiar (5 min; RN1, RN2; RNF-21)
+    deactivate T
+    alt turnaround já liberado (pré-condição 1)
+      note right of S : sem solicitação
+    else pede e não há solicitação aberta (passo 1: TOBT vigente 10:30 e projeção 10:37)
+      note right of SOL : SolicitacaoAtualizacaoTobt nova com a projeção,\no calculadaEm e o horário da solicitação
+      S -> SR : salvar(solicitacao)
+      activate SR
+      SR -> DB : INSERT solicitacao_atualizacao_tobt (projecao_prontidao, projecao_calculada_em, solicitada_em)
+      deactivate SR
+      S -> AU : registrarAutomatico(objeto = "solicitacao_atualizacao_tobt", objetoId = solicitacao.id, acao = "Inclusão", causaId = projecaoId, gatilho = vazio, turnaroundId, valoresAnteriores = vazio, valoresNovos = projeção + TOBT vigente)
+      activate AU
+      AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+      deactivate AU
+
+      == Passo 2: solicitação ao Coordenador de Turnaround (ADR-0020, ponto 3) ==
+      S -> N : notificarSolicitacao(solicitacao)
+      activate N
+      N -> V : exibirSolicitacao(solicitacao)
+      activate V
+      V -> SOL : antecipacao(tobtVigente)
+      activate SOL
+      SOL --> V : projeção 5 min ou mais antes do TOBT vigente?
+      deactivate SOL
+      alt A1: antecipação (TOBT vigente 10:30 e projeção 10:24; RN3; ADR-0003)
+        V --> CO : solicitação como aviso de antecipação, e não como alerta de risco (A1.1)
+      else projeção depois do TOBT vigente
+        V --> CO : solicitação de atualização do TOBT, com o TOBT vigente e a projeção (passo 2)
+      end
+      deactivate V
+      deactivate N
+    else pede e já há solicitação aberta
+      note right of S : uma solicitação aberta por turnaround (Apêndice B.4.2);\na projeção nova fica guardada em turnaround_referencia
+    else A3 / E2: não pede (TOBT vigente 10:30 e projeção 10:34) e há solicitação aberta
+      S -> SOL : encerrar(motivo = "Projeção de volta à faixa", momento)
+      activate SOL
+      deactivate SOL
+      S -> SR : salvar(solicitacao)
+      activate SR
+      SR -> DB : UPDATE solicitacao_atualizacao_tobt SET encerrada_em, motivo_encerramento
+      deactivate SR
+      S -> AU : registrarAutomatico(objeto = "solicitacao_atualizacao_tobt", objetoId = solicitacao.id, acao = "Alteração", causaId = projecaoId, gatilho = vazio, turnaroundId, valoresAnteriores = aberta, valoresNovos = "Projeção de volta à faixa")
+      activate AU
+      AU -> DB : INSERT registro_auditoria (autor_tipo = 'Motor de Eventos')
+      deactivate AU
+      S -> N : retirarSolicitacao(turnaroundId, solicitacaoId)
+      activate N
+      N -> V : retirarSolicitacao(solicitacaoId)
+      deactivate N
+      note right of V : E2.1: com o formulário aberto, informa a nova\nprojeção e retira a solicitação
+    else A3: não pede e não há solicitação aberta
+      note right of S : sem solicitação, e o caso de uso termina (A3.1)
+    end
+  end
+end
+S --> CE : ok
+deactivate S
+CE --> ME : confirma a mensagem à fila só depois de gravada
+deactivate CE
+
+newpage UC34 – parte 2: atualização pelo Coordenador de Turnaround
+
+== Passos 3 e 4 ==
+alt A4: o coordenador escolhe "Atualizar TOBT" como ação de um alerta (UC31, A2)
+  CO -> V : abrir(turnaroundId, alertaId)
+  activate V
+else passo 3: o coordenador abre a solicitação
+  CO -> V : abrir(turnaroundId, alertaId = vazio)
+end
+V -> G : encaminhar(sessaoId, rota = "GET /v1/tobt/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> C : consultarTobt(turnaroundId, acesso)
+activate C
+C -> S : consultarTobt(turnaroundId)
+activate S
+S -> TRR : buscarPorId(turnaroundId)
+activate TRR
+TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId
+TRR --> S : TOBT planejado, TOBT vigente e projeção
+deactivate TRR
+S --> C : TurnaroundReferencia
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+V -> G : encaminhar(sessaoId, rota = "GET /v1/tobt/{turnaroundId}/solicitacao", corpo = vazio, acaoDoUsuario = sim)
+G -> C : consultarSolicitacao(turnaroundId, acesso)
+activate C
+C -> S : consultarSolicitacao(turnaroundId)
+activate S
+S -> SR : buscarAberta(turnaroundId)
+activate SR
+SR -> DB : SELECT solicitacao_atualizacao_tobt WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
+SR --> S : solicitação aberta ou nenhuma
+deactivate SR
+S --> C : SolicitacaoAtualizacaoTobt
+deactivate S
+C --> G : 200
+deactivate C
+G --> V : 200
+deactivate G
+V -> T : desvioDaProjecaoMin()
+activate T
+T --> V : diferença em minutos
+deactivate T
+V --> CO : TOBT planejado, TOBT vigente, projeção, diferença e o campo do\nnovo TOBT preenchido com a projeção (passo 4)
+
+== Passos 5 a 8 ==
+alt A5: o coordenador cancela
+  V --> CO : fecha o formulário sem gravar; a solicitação continua aberta (A5.2)
+else passo 5: mantém o valor sugerido e confirma, ou A2: troca por outro horário e confirma
+  CO -> V : atualizarTobt(turnaroundId, tobtNovo, solicitacaoId)
+  V -> G : encaminhar(sessaoId, rota = "PUT /v1/tobt/{turnaroundId}", corpo = tobtNovo + solicitacaoId + alertaId, acaoDoUsuario = sim)
+  activate G
+  ref over G : Verificar acesso na porta de entrada
+  G -> C : atualizar(turnaroundId, tobtNovo, solicitacaoId, alertaId, acesso)
+  activate C
+  C -> S : atualizar(turnaroundId, tobtNovo, solicitacaoId, alertaId, autorId = acesso.usuarioId)
+  activate S
+
+  == Passo 6: verificações ==
+  critical trava do turnaround até o fim da transação (item 13, seção 13.2)
+    S -> TRR : buscarComTrava(turnaroundId)
+    activate TRR
+    TRR -> DB : SELECT turnaround_referencia ... FOR UPDATE
+    TRR --> S : TurnaroundReferencia
+    deactivate TRR
+    S -> LR : buscarPorTurnaround(turnaroundId)
+    activate LR
+    LR -> DB : SELECT liberacao WHERE turnaround_id = turnaroundId
+    LR --> S : liberação ou nenhuma
+    deactivate LR
+    opt solicitacaoId informado
+      S -> SR : buscarPorId(solicitacaoId)
+      activate SR
+      SR -> DB : SELECT solicitacao_atualizacao_tobt WHERE id = solicitacaoId
+      SR --> S : solicitação
+      deactivate SR
+    end
+    alt E3: turnaround passou para "Liberado" com o formulário aberto
+      note right of S : a solicitação já foi encerrada com o motivo "Turnaround liberado"\npelo encerrarPorLiberacao (UC32, passo 7), que a retirou da tela
+      S --> C : recusa com o estado atual
+      C --> G : 409 impedimento
+    else E2: solicitação já encerrada com "Projeção de volta à faixa" (parte 1)
+      S --> C : recusa com a nova projeção; o TOBT vigente não muda
+      C --> G : 409 solicitação encerrada
+    else E1: novo TOBT não informado ou igual ao vigente
+      S --> C : recusa: pede um horário diferente do TOBT vigente
+      C --> G : 422 campo inválido
+    else novo TOBT válido
+      opt A4: alertaId informado
+        ref over S, DB : UC31, passo 7 – AcaoAlertaService.conferirSemAcao(alertaId) (UC31, E3)
+      end
+
+      == Passo 7: gravação (RN4, RN5, RN6) ==
+      S -> T : atualizarTobt(tobtNovo, autorId, solicitacao, momento)
+      activate T
+      T --> S : AtualizacaoTobt (tobtAnterior = vigente, tobtNovo, autor e horário);\no TOBT vigente passa a ser o novo e a solicitação é encerrada como "Atendida"
+      deactivate T
+      S -> AR : salvar(atualizacao)
+      activate AR
+      AR -> DB : INSERT atualizacao_tobt (solicitacao_id, tobt_anterior, tobt_novo, autor_id, registrada_em)
+      deactivate AR
+      S -> TRR : salvar(turnaround)
+      activate TRR
+      TRR -> DB : UPDATE turnaround_referencia SET tobt_vigente = tobtNovo\n(tobt_planejado não muda: a régua continua o TOBT planejado + 5; ADR-0001)
+      deactivate TRR
+      opt havia solicitação
+        S -> SR : salvar(solicitacao)
+        activate SR
+        SR -> DB : UPDATE solicitacao_atualizacao_tobt SET encerrada_em, motivo_encerramento = 'Atendida'
+        deactivate SR
+      end
+      S -> AU : registrar(objeto = "turnaround_referencia", objetoId = turnaroundId, acao = "Alteração", autorId, causaId = atualizacao.id, turnaroundId, valoresAnteriores = tobtAnterior, valoresNovos = tobtNovo)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      opt A4: alertaId informado (A4.2)
+        ref over S, DB : UC31, passo 7 – AcaoAlertaService.registrar(acao com tipoAcao = "Atualizar a previsão"\ne a atualizacaoTobt): INSERT acao_alerta e aviso AcaoAlertaRegistrada, na mesma transação
+      end
+      S -> PUB : registrar(EnvelopeAviso.novo(tipo = "TobtAtualizado", turnaroundId, autorId, causaId = atualizacao.id, dados = atualizacaoId + tobtAnterior + tobtNovo + registradaEm))
+      activate PUB
+      PUB -> DB : INSERT aviso_saida (mesma transação)
+      deactivate PUB
+      S --> C : AtualizacaoTobt
+      C --> G : 200
+    end
+  end
+  opt atualização gravada ou E3 (passo 8)
+    S -> N : retirarSolicitacao(turnaroundId, solicitacaoId)
+    activate N
+    N -> V : retirarSolicitacao(solicitacaoId)
+    deactivate N
+  end
+  deactivate S
+  deactivate C
+  G --> V : resposta
+  deactivate G
+  alt 200
+    V --> CO : o novo valor como TOBT vigente, sem a solicitação; o TOBT planejado\ncontinua a referência da tolerância de 5 min (passos 7 e 8; RN5)
+  else 422
+    V --> CO : E1: pede um horário diferente do TOBT vigente; volta ao passo 5 (E1.2)
+  else 409 E2
+    V --> CO : informa a nova projeção; a solicitação foi retirada (E2.1)
+  else 409 E3
+    V --> CO : informa o estado atual do turnaround; a solicitação foi retirada (E3.1)
+  end
+end
+deactivate V
+
+== Depois da gravação: aviso do TOBT vigente ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica TobtAtualizado
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+note right of MQ
+  Execução em Solo: aplicarTobtVigente, cópia para a tela de saída (UC37).
+  Monitoramento: aplicarTobtVigente, que recalcula (UC24, A3) e reavalia
+  os gatilhos que dependem do TOBT vigente (UC25). Os dois ordenam
+  pelo ocorridoEm (item 12, "Ordem dos avisos"). RN7: a solicitação só
+  volta se a projeção se afastar de novo 5 min ou mais do vigente.
+end note
+@enduml

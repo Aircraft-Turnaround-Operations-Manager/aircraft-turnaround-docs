@@ -1,0 +1,154 @@
+@startuml
+' UC31 – Registrar ação tomada para o alerta (RF-38, US038; ADR-0003, ADR-0015 regras 1 e 2; RNF-21; #183).
+' Aberto a partir do UC26; estendido pelo UC29, UC30, UC34 e UC35. Classes do item 13 (excecoes, monitoramento,
+' contrato, comum) e tabelas do item 12 (Apêndice B.4). A ação não é uma chamada à parte: a tela da ação recebe o
+' alertaId, e o serviço da ação grava a AcaoAlerta na mesma transação, com o aviso AcaoAlertaRegistrada ao
+' Monitoramento, dono do alerta, que o encerra (item 13, seção 13.5.6). O passo 7 é desenhado aqui com a reatribuição.
+' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc31.puml
+!include 14-sequencia-estilo.iuml
+
+actor "Coordenador de\nTurnaround" as CO
+boundary "RegistroAcaoAlertaView" as RV
+boundary "ReatribuicaoView" as RAV
+boundary "ReplanejamentoView" as RPV
+boundary "AtualizacaoTobtView" as ATV
+boundary "ExcecaoView" as EXV
+participant "PortaDeEntrada" as G <<gateway>>
+box "Monitoramento" #FAFAFA
+  control "AlertaController" as MAC
+end box
+box "Exceções e Liberação" #FAFAFA
+  control "AtualizacaoTobtController" as ATC
+  participant "ReatribuicaoService" as RS <<service>>
+  participant "AcaoAlertaService" as AAS <<service>>
+  entity "AcaoAlerta" as AA
+  participant "AcaoAlertaRepository" as AAR <<repository>>
+  participant "AuditoriaService" as AU <<service>>
+  participant "PublicadorAvisos" as PUB <<publisher>>
+  database "BancoExcecoesLiberacao" as DB
+end box
+queue "RabbitMQ" as MQ
+
+== Passos 1 e 2: o alerta e as quatro ações ==
+ref over CO, RV : UC26 – Consultar lista de alertas abertos: "Registrar ação" num alerta aberto\nabre a RegistroAcaoAlertaView (passo 1)
+CO -> RV : abrir(alertaId)
+activate RV
+RV -> G : encaminhar(sessaoId, rota = "GET /v1/alertas/{alertaId}", corpo = vazio, acaoDoUsuario = sim)
+activate G
+ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
+G -> MAC : consultar(alertaId, acesso)
+activate MAC
+ref over MAC : UC26, passo 4 – AlertaService.consultar(alertaId):\nSELECT alerta, alerta_tarefa (Monitoramento)
+MAC --> G : 200 Alerta (tipo, turnaround, tarefa, dados do gatilho, crítico, emitidoEm, aberto?)
+deactivate MAC
+G --> RV : 200
+opt alerta crítico (RN4; RF-33)
+  RV -> G : encaminhar(sessaoId, rota = "GET /v1/tobt/{turnaroundId}", corpo = vazio, acaoDoUsuario = sim)
+  G -> ATC : consultarTobt(turnaroundId, acesso)
+  activate ATC
+  ref over ATC, DB : UC34, parte 2 – AtualizacaoTobtService.consultarTobt(turnaroundId):\nSELECT turnaround_referencia (prazo_acao_critica_min, copiado na abertura; RNF-21)
+  ATC --> G : 200 TurnaroundReferencia com prazoAcaoCriticaMin
+  deactivate ATC
+  G --> RV : 200
+  note right of RV : tempo restante = emitidoEm + prazo de 2 min − agora;\no indicador do RF-34 é do Monitoramento (#183)
+end
+deactivate G
+RV --> CO : tipo, aeronave, posição, dados do gatilho e, no alerta crítico,\no tempo que resta do prazo, com as quatro ações (passo 2; RN1, RN6)
+
+== Passos 3 a 6: a ação escolhida (RN5) ==
+alt A5: o coordenador cancela
+  RV --> CO : fecha o registro sem gravar; o alerta continua aberto (A5.2)
+else E1: confirma sem escolher uma das ações
+  RV --> CO : a ação é obrigatória; o alerta continua aberto e volta ao passo 3 (E1.1, E1.2)
+else o coordenador escolhe uma ação
+  CO -> RV : escolherAcao(alertaId, tipoAcao)
+  opt «extend» UC30: tipoAcao = "Reatribuir tarefa" (passos 3 a 6)
+    RV -> RAV : abrir(turnaroundId, alertaId)
+    activate RAV
+    ref over CO, RAV : UC30 – Reatribuir tarefa (A1): a tarefa do alerta já escolhida, os operadores\ndisponíveis (UC36) e o motivo; a confirmação chama ReatribuicaoService.reatribuir(..., alertaId)
+    deactivate RAV
+  end
+  opt «extend» UC35: tipoAcao = "Replanejar" (A1)
+    RV -> RPV : abrir(turnaroundId, alertaId)
+    activate RPV
+    ref over CO, RPV : UC35 – Replanejar tarefas não iniciadas do turnaround (A4), com o alertaId
+    deactivate RPV
+  end
+  opt «extend» UC34: tipoAcao = "Atualizar a previsão" (A2)
+    RV -> ATV : abrir(turnaroundId, alertaId)
+    activate ATV
+    ref over CO, ATV : UC34 – Atualizar TOBT, parte 2 (A4): TOBT vigente, projeção e novo TOBT, com o alertaId
+    deactivate ATV
+  end
+  opt «extend» UC29: tipoAcao = "Abrir exceção" (A3)
+    RV -> EXV : abrir(turnaroundId, alertaId)
+    activate EXV
+    ref over CO, EXV : UC29 – Abrir exceção do turnaround (A2): a tarefa do alerta já escolhida, com o alertaId
+    deactivate EXV
+  end
+
+  == Passo 7: ação registrada no alerta (RN2, RN3), na transação da ação ==
+  note over RS
+    Mostrado com a reatribuição (passo 6); o
+    ExcecaoService, o ReplanejamentoService e
+    o AtualizacaoTobtService chamam os mesmos
+    dois métodos, com a trava do turnaround.
+  end note
+  activate RS
+  RS -> AAS : conferirSemAcao(alertaId)
+  activate AAS
+  AAS -> AAR : buscarPorAlerta(alertaId)
+  activate AAR
+  AAR -> DB : SELECT acao_alerta WHERE alerta_id = alertaId
+  AAR --> AAS : ação ou nenhuma
+  deactivate AAR
+  alt E3: outro Coordenador de Turnaround já registrou a ação do alerta
+    AAS --> RS : recusa com a ação, o usuário e o horário gravados
+    deactivate AAS
+    note right of RS : a ação não é executada nem gravada de novo (E3.1)
+  else alerta sem ação
+    AAS --> RS : ok
+    ref over RS, DB : UC30, passos 5 e 6 – pedido pendente, pedido à Execução em Solo e registro da reatribuição
+    alt E2: a ação foi recusada (por exemplo, UC30, E2: operador deixou de estar disponível)
+      note right of RS : nenhuma ação é gravada e o alerta continua aberto;\nvolta ao passo 3 (E2.1, E2.2; RN5)
+    else ação aceita
+      note right of AA
+        AcaoAlerta nova: alertaId, turnaround, tipoAcao, o registro
+        da ação (excecao, reatribuicao, replanejamento ou
+        atualizacaoTobt, exatamente um), autorId e registradaEm.
+      end note
+      RS -> AAS : registrar(acao)
+      activate AAS
+      AAS -> AAR : salvar(acao)
+      activate AAR
+      AAR -> DB : INSERT acao_alerta (alerta_id único, tipo_acao, reatribuicao_id, autor_id, registrada_em)
+      deactivate AAR
+      AAS -> AU : registrar(objeto = "acao_alerta", objetoId = acaoId, acao = "Inclusão", autorId, causaId = acaoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = tipoAcao + registro da ação)
+      activate AU
+      AU -> DB : INSERT registro_auditoria
+      deactivate AU
+      AAS -> PUB : registrar(EnvelopeAviso.novo(tipo = "AcaoAlertaRegistrada", turnaroundId, autorId, causaId = acaoId, dados = alertaId + acaoId + tipoAcao + registradaEm))
+      activate PUB
+      PUB -> DB : INSERT aviso_saida (mesma transação da ação; #183)
+      deactivate PUB
+      AAS --> RS : ok
+      deactivate AAS
+    end
+  end
+  deactivate RS
+  RV --> CO : alerta encerrado, fora da lista dos abertos (passo 7);\nE2: motivo da recusa; E3: a ação, o usuário e o horário já gravados
+end
+deactivate RV
+
+== Depois da gravação: o Monitoramento encerra o alerta ==
+PUB -> PUB : publicarPendentes()
+activate PUB
+PUB -> MQ : publica AcaoAlertaRegistrada na fila "monitoramento"
+PUB -> DB : UPDATE aviso_saida SET publicado_em
+deactivate PUB
+ref over MQ : UC26, passo 5 – AlertaService.encerrarPorAcao(turnaroundId, alertaId, acaoId,\ntipoAcao, autorId, registradaEm): o alerta sai da lista dos abertos, e o registradaEm\né o horário que o indicador de 2 min usa (RF-34)
+
+opt A4: consulta do histórico
+  ref over CO, RV : UC26, A5 – aba "Encerrados hoje": horário do alerta, horário da ação,\na ação e o usuário, do mais recente para o mais antigo (RN3; US038, critério 3)
+end
+@enduml
