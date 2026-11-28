@@ -158,7 +158,7 @@ As tabelas técnicas não atendem RF: elas sustentam a troca de avisos, a audito
 | `registro_auditoria` | Todos | Trilha de quem fez o quê e quando: o autor, que é um usuário ou o Motor de Eventos, o registro ou gatilho por horário que causou a ação automática, os valores antes e depois e o turnaround, para o prazo de anonimização | RNF-2, RNF-6 |
 | `aviso_saida` | Todos | Avisos a publicar, gravados na mesma transação da mudança; `gravado_em` dá a ordem de publicação. O campo `origem` do envelope não é gravado, porque é sempre o nome do serviço | ADR-0016 |
 | `aviso_processado` | Todos | Avisos já recebidos, para descartar o repetido | ADR-0016 |
-| `pedido_pendente` | Exceções e Liberação | Pedido à Execução em Solo (exceção, reatribuição, replanejamento e liberação) gravado antes da chamada e retomado depois de uma queda, com o autor, o horário da ação e a chave de idempotência; na retomada, o serviço pergunta à Execução em Solo, pela chave, se o pedido foi aplicado | ADR-0020, RNF-20 |
+| `pedido_pendente` | Exceções e Liberação | Pedido à Execução em Solo (exceção, reatribuição, replanejamento e liberação) gravado antes da chamada e retomado depois de uma queda ou de uma falha técnica da Execução em Solo, com o autor, o horário da ação e a chave de idempotência; na retomada, o serviço pergunta à Execução em Solo, pela chave, se o pedido foi aplicado | ADR-0020, RNF-20 |
 
 A ADR-0018 fala em duas tabelas técnicas na Execução em Solo, as de avisos; a terceira, `registro_auditoria`, é a trilha do RNF-2, que todos os serviços têm.
 
