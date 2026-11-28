@@ -206,7 +206,7 @@ else escolhe uma tarefa "Aguardando" do caminho crítico (passo 3) e altera
     S --> C : falha
     C --> G : 503
     G --> V : 503
-    V --> CO : o replanejamento não foi concluído
+    V --> CO : o replanejamento não foi confirmado; o resultado aparece em até um minuto\n(retomada, como no UC29): o coordenador confere a tarefa antes de tentar de novo
   else 200 TarefaResumo
     EX --> S : TarefaResumo
     deactivate EX

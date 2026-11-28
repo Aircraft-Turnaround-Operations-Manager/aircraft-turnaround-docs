@@ -419,7 +419,7 @@ namespace excecoes {
     + registrar(tipo: TipoPedido, turnaroundId: UUID, registroId: UUID, autorId: UUID, horarioAcao: DateTime, dados: String): PedidoPendente
     + concluir(pedido: PedidoPendente): void
     + desfazer(pedido: PedidoPendente): void
-    + retomarPendentes(): void
+    + retomarPendentes(limite: DateTime): void
   }
 
   class TurnaroundReferenciaService <<service>> {
@@ -505,7 +505,7 @@ namespace excecoes {
   ' pedido pendente de um desses tipos no mesmo turnaround, para que um não decida sem o registro do outro (#151).
   interface PedidoPendenteRepository <<repository>> {
     + existePendente(turnaroundId: UUID, tipos: List<TipoPedido>): Boolean
-    + listarPendentes(): List<PedidoPendente>
+    + listarPendentes(limite: DateTime): List<PedidoPendente>
     + salvar(pedido: PedidoPendente): void
   }
 
@@ -545,8 +545,12 @@ namespace excecoes {
     # listarTurnaroundsVencidos(limite: DateTime): List<UUID>
   }
 
+  ' Ao iniciar, retoma todo pedido pendente; depois, a cada minuto, só os com horário da ação anterior ao tempo limite da
+  ' chamada à Execução em Solo, para não desfazer um pedido ainda à espera da resposta. Só consulta (consultarPedido) e
+  ' nunca repete o pedido (ADR-0020, ponto 3); sem resposta da consulta, o pedido fica pendente para a próxima vez (#273).
   class RetomadaPedidos <<scheduler>> {
     - pedidos: PedidoService
+    + executar(momento: DateTime): void
     + executarAoIniciar(): void
   }
 

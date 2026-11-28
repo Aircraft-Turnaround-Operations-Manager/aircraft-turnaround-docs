@@ -307,14 +307,20 @@ EPUB -> EDB : UPDATE aviso_saida SET publicado_em
 deactivate EPUB
 note right of MQ : o Monitoramento copia o estado pela versão\n(aplicarEstado; item 12, seção 12.5.2) e mostra\n"Em exceção" no painel em até 5 s (RNF-11)
 
-opt o Exceções e Liberação reinicia com pedido "Pendente": queda no meio do pedido ou falha técnica da Execução em Solo (RNF-20)
-  RT -> RT : executarAoIniciar()
+opt pedido "Pendente" depois de uma queda do serviço ou de uma falha técnica da Execução em Solo (RNF-20; #273)
+  alt o serviço reinicia
+    RT -> RT : executarAoIniciar()
+    note right of RT : limite = agora: ao iniciar não há chamada\nem andamento, e entram todos os pendentes
+  else a cada minuto, com o serviço no ar
+    RT -> RT : executar(momento)
+    note right of RT : limite = momento − tempo limite da chamada à Execução em Solo:\nsó os pedidos cuja chamada já terminou sem resposta;\num pedido mais novo ainda pode estar à espera da resposta
+  end
   activate RT
-  RT -> PS : retomarPendentes()
+  RT -> PS : retomarPendentes(limite)
   activate PS
-  PS -> PPR : listarPendentes()
+  PS -> PPR : listarPendentes(limite)
   activate PPR
-  PPR -> DB : SELECT pedido_pendente WHERE situacao = 'Pendente'
+  PPR -> DB : SELECT pedido_pendente WHERE situacao = 'Pendente' AND horario_acao < limite
   deactivate PPR
   loop cada pedido pendente
     PS -> EX : consultarPedido(registroId)
@@ -323,13 +329,15 @@ opt o Exceções e Liberação reinicia com pedido "Pendente": queda no meio do 
     activate ETC
     ETC --> EX : aplicado? (a Execução em Solo grava o registroId como causa_id da auditoria)
     deactivate ETC
-    EX --> PS : sim / não
+    EX --> PS : sim / não / sem resposta
     deactivate EX
     alt aplicado
       note right of PS : grava a exceção com o autor e o horário da ação guardados\nno pedido e conclui o pedido, como na transação 2
       PS -> PS : concluir(pedido)
     else não aplicado
       PS -> PS : desfazer(pedido)
+    else sem resposta da Execução em Solo (falha técnica)
+      note right of PS : só consulta, nunca repete o pedido (ADR-0020, ponto 3);\no pedido continua "Pendente" para a próxima rodada
     end
   end
   deactivate PS

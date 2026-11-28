@@ -243,7 +243,7 @@ else o coordenador escreve a solução e confirma (passo 3)
   else 409
     V --> CO : E2: a exceção já foi encerrada, com a solução, o usuário e o horário gravados (E2.1);\nou ação em andamento no turnaround: tenta de novo depois
   else 503
-    V --> CO : o encerramento não foi concluído; a exceção continua aberta
+    V --> CO : o encerramento não foi confirmado; o resultado aparece em até um minuto\n(retomada, como no UC29): o coordenador confere a lista de exceções antes de tentar de novo
   end
 end
 deactivate V

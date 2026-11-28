@@ -1102,7 +1102,7 @@ Avisos já recebidos, para descartar o repetido (ADR-0016).
 
 ### B.4.14 `pedido_pendente` (técnica)
 
-Pedido à Execução em Solo gravado antes da chamada e retomado depois de uma queda (ADR-0020; RNF-20). Vale para a abertura e o encerramento da exceção, a reatribuição, o replanejamento e a liberação; na retomada, o serviço pergunta à Execução em Solo, pelo `registro_id`, se o pedido foi aplicado.
+Pedido à Execução em Solo gravado antes da chamada e retomado depois de uma queda ou de uma falha técnica da Execução em Solo (ADR-0020; RNF-20; #273). Vale para a abertura e o encerramento da exceção, a reatribuição, o replanejamento e a liberação; na retomada, o serviço pergunta à Execução em Solo, pelo `registro_id`, se o pedido foi aplicado.
 
 | Campo | Tipo | Chave | Obrigatório | Domínio ou valores | Descrição |
 |---|---|---|---|---|---|
