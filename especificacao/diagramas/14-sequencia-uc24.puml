@@ -201,7 +201,7 @@ else turnaround em cálculo
   PR --> RS : ok (passos 3 a 5)
   deactivate PR
   RS -> RS : identificarCaminhoCritico(turnaround, projecao)
-  note right of RS : RN6: cadeia de obrigatórias que termina na de maior fim projetado;\nem empate entre predecessoras, as duas ficam no caminho
+  note right of RS : RN6: cadeia de obrigatórias que termina na de maior fim projetado;\nem empate entre predecessoras, as duas ficam no caminho; a cadeia começa\nna tarefa cujo início planejado é posterior ao fim de todas as predecessoras (#279)
   RS -> CR : buscarAtual(turnaroundId)
   activate CR
   CR -> DB : SELECT caminho_critico, caminho_critico_tarefa (o atual)
