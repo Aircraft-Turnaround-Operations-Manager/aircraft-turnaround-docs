@@ -117,6 +117,10 @@ else mesma companhia
   ER -> DB : SELECT excecao WHERE turnaround_id = turnaroundId AND encerrada_em IS NULL
   ER --> S : exceções abertas
   deactivate ER
+  S -> SL : podeLiberar()
+  activate SL
+  SL --> S : estado = "Pronto para liberação" e nenhuma exceção aberta
+  deactivate SL
   S --> C : SituacaoLiberacao
   C --> G : 200
   G --> V : 200
@@ -124,10 +128,6 @@ end
 deactivate S
 deactivate C
 deactivate G
-V -> SL : podeLiberar()
-activate SL
-SL --> V : estado = "Pronto para liberação" e nenhuma exceção aberta
-deactivate SL
 alt A1: turnaround em "Em solo", "Operações em andamento" ou "Em exceção"
   V --> AL : tarefas obrigatórias pendentes e exceções abertas,\nsem a opção "Confirmar prontidão" (A1.2); volta ao passo 2 ou termina (A1.3)
 else "Pronto para liberação"

@@ -42,7 +42,7 @@ alt A2: o coordenador escolhe "Abrir exceção" como ação de um alerta (UC31, 
 else passo 1: "Abrir exceção" no turnaround (A1: o turnaround já pode estar "Em exceção")
   CO -> V : abrir(turnaroundId, alertaId = vazio)
 end
-note right of V : a aeronave, a posição e o estado vêm da tela de onde o\nformulário foi aberto (painel, UC22, ou alerta, UC26)
+note right of V : [Inferência] a aeronave, a posição e o estado vêm da tela\nde onde o formulário foi aberto (painel, UC22, ou alerta, UC26)
 V -> G : encaminhar(sessaoId, rota = "GET /v1/excecoes/turnarounds/{turnaroundId}/tarefas", corpo = vazio, acaoDoUsuario = sim)
 activate G
 ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)

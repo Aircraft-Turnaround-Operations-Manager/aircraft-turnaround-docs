@@ -64,7 +64,7 @@ C --> G : 200
 deactivate C
 G --> V : 200
 deactivate G
-note right of V : a indicação do caminho crítico vem do Monitoramento,\ndono do caminho (UC24); ver a nota da área D
+note right of V : [Inferência] a indicação do caminho crítico vem do\nMonitoramento, dono do caminho (UC24)
 V --> CO : tarefas não iniciadas, com estado, janela planejada,\npredecessoras e indicação de caminho crítico (passo 2)
 
 == Passos 3 e 4 ==

@@ -85,14 +85,14 @@ critical trava do turnaround até o fim da transação (item 13, seção 13.2)
       deactivate AU
 
       == Passo 2: solicitação ao Coordenador de Turnaround (ADR-0020, ponto 3) ==
+      S -> SOL : antecipacao(tobtVigente)
+      activate SOL
+      SOL --> S : projeção 5 min ou mais antes do TOBT vigente?
+      deactivate SOL
       S -> N : notificarSolicitacao(solicitacao)
       activate N
       N -> V : exibirSolicitacao(solicitacao)
       activate V
-      V -> SOL : antecipacao(tobtVigente)
-      activate SOL
-      SOL --> V : projeção 5 min ou mais antes do TOBT vigente?
-      deactivate SOL
       alt A1: antecipação (TOBT vigente 10:30 e projeção 10:24; RN3; ADR-0003)
         V --> CO : solicitação como aviso de antecipação, e não como alerta de risco (A1.1)
       else projeção depois do TOBT vigente
@@ -150,7 +150,11 @@ activate TRR
 TRR -> DB : SELECT turnaround_referencia WHERE turnaround_id = turnaroundId
 TRR --> S : TOBT planejado, TOBT vigente e projeção
 deactivate TRR
-S --> C : TurnaroundReferencia
+S -> T : desvioDaProjecaoMin()
+activate T
+T --> S : diferença em minutos
+deactivate T
+S --> C : TurnaroundReferencia, com a diferença
 deactivate S
 C --> G : 200
 deactivate C
@@ -171,10 +175,6 @@ C --> G : 200
 deactivate C
 G --> V : 200
 deactivate G
-V -> T : desvioDaProjecaoMin()
-activate T
-T --> V : diferença em minutos
-deactivate T
 V --> CO : TOBT planejado, TOBT vigente, projeção, diferença e o campo do\nnovo TOBT preenchido com a projeção (passo 4)
 
 == Passos 5 a 8 ==

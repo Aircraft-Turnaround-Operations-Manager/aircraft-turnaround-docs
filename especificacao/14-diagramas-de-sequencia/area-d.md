@@ -24,8 +24,6 @@ Os avisos que a Execução em Solo publica nos pedidos da área D (troca de resp
 
 `«include»` aparece como fragmento `ref` (o UC30 inclui o UC36, e o UC35 inclui o UC21), e `«extend»` como fragmento `opt` com a condição de extensão: no UC31, o UC29, o UC30, o UC34 e o UC35 estendem o registro da ação, cada um com o tipo da ação escolhida. Nos quatro, o fluxo que vem do alerta (UC29, A2; UC30, A1; UC34, A4; UC35, A4) passa o `alertaId` e chama o `AcaoAlertaService`, desenhado uma vez no UC31, passo 7. O ator da parte 1 do UC34 é o Motor de Eventos, e o da parte 2, o Coordenador de Turnaround.
 
-Algumas telas mostram dado que nenhum método do item 13 ainda devolve à tela que o exibe; os diagramas marcam o ponto numa nota: a posição e o estado do turnaround no formulário do UC29 (passo 2) e a indicação de caminho crítico na lista do UC35 (passo 2).
-
 Os fluxos agrupados, que não mudam a interação, são estes:
 
 - UC29: o A1 é o ramo da Execução em Solo em que o turnaround já está "Em exceção" e o estado não muda.
