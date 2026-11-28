@@ -63,7 +63,7 @@ def passos_puml(f):
     ('ator'). Resposta (seta tracejada), mensagem enviada por uma tela (boundary) ou nota presa a uma tela: 'exibe' (mostra
     ou devolve o dado, não grava marco). Ref ou nota que cobre um ator, condição de bloco e divisória: 'ator'. Chamadas,
     refs e notas só entre participantes internos: 'sistema' (ou 'exibe', se só leem o banco; ver le). Fora da mensagem do ator, a partição é o primeiro ator
-    declarado (o que inicia o caso de uso)."""
+    declarado (o que inicia o caso de uso). Limite: seta invertida (A <- B) é lida como enviada por A; os diagramas não a usam."""
     tipo = {}; atores = {}; nota = None
     for l in f.read_text(encoding='utf-8').splitlines():
         s = l.strip(); inicia = next(iter(atores.values()), None)
