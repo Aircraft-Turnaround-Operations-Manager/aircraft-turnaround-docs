@@ -42,7 +42,6 @@ alt A2: o coordenador escolhe "Abrir exceção" como ação de um alerta (UC31, 
 else passo 1: "Abrir exceção" no turnaround (A1: o turnaround já pode estar "Em exceção")
   CO -> V : abrir(turnaroundId, alertaId = vazio)
 end
-note right of V : [Inferência] a aeronave, a posição e o estado vêm da tela\nde onde o formulário foi aberto (painel, UC22, ou alerta, UC26)
 V -> G : encaminhar(sessaoId, rota = "GET /v1/excecoes/turnarounds/{turnaroundId}/tarefas", corpo = vazio, acaoDoUsuario = sim)
 activate G
 ref over G : Verificar acesso na porta de entrada\n(perfil Coordenador de Turnaround; RNF-1; ADR-0023)
@@ -70,6 +69,25 @@ deactivate EX
 S --> C : tarefas
 deactivate S
 C --> G : 200 tarefas
+deactivate C
+G --> V : 200
+V -> G : encaminhar(sessaoId, rota = "GET /v1/excecoes/turnarounds/{turnaroundId}/situacao", corpo = vazio, acaoDoUsuario = sim)
+G -> C : consultarSituacao(turnaroundId, acesso)
+activate C
+C -> S : consultarSituacao(turnaroundId)
+activate S
+S -> EX : consultarSituacao(turnaroundId)
+activate EX
+EX -> ETC : consultarSituacao(turnaroundId)
+activate ETC
+ref over ETC, EDB : TurnaroundService.consultarSituacao(turnaroundId):\nSELECT turnaround (matrícula, posição e estado)
+ETC --> EX : 200 SituacaoTurnaround
+deactivate ETC
+EX --> S : SituacaoTurnaround
+deactivate EX
+S --> C : aeronave, posição e estado
+deactivate S
+C --> G : 200
 deactivate C
 G --> V : 200
 V -> G : encaminhar(sessaoId, rota = "GET /v1/codigos-atraso/vigente", corpo = vazio, acaoDoUsuario = sim)
@@ -132,124 +150,136 @@ else o coordenador escreve a descrição e confirma (passo 5)
       end
       S -> PS : registrar(tipo = "Abertura de exceção", turnaroundId, registroId = excecaoId, autorId, horarioAcao, dados = tarefaId + código + descrição + alertaId)
       activate PS
-      PS -> PPR : salvar(pedido)
+      PS -> PPR : existePendente(turnaroundId, tipos = abertura e encerramento de exceção e liberação)
       activate PPR
-      PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = excecaoId, autor_id, horario_acao)
-      PPR --> PS : ok
+      PPR -> DB : SELECT pedido_pendente WHERE turnaround_id = turnaroundId AND situacao = 'Pendente'\nAND tipo IN ('Abertura de exceção', 'Encerramento de exceção', 'Liberação')
+      PPR --> PS : sim / não
       deactivate PPR
+      alt outro pedido desses tipos ainda pendente no turnaround (a resposta da Execução em Solo não chegou)
+        PS --> S : recusa: ação em andamento no turnaround; nada é gravado
+        note right of S : sem pedido nem chamada à Execução em Solo; 409 "ação em andamento" ao usuário,\nque tenta de novo depois. Assim uma abertura pendente não fica fora\nda contagem do encerramento (UC29, RN4; UC33, RN3)
+      else nenhum pendente
+        PS -> PPR : salvar(pedido)
+        activate PPR
+        PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = excecaoId, autor_id, horario_acao)
+        PPR --> PS : ok
+        deactivate PPR
+      end
       PS --> S : PedidoPendente
       deactivate PS
     end
     note right of S : a transação 1 grava o pedido pendente antes da chamada,\npara que uma queda não perca o registro (RNF-20)
 
-    == Passos 6 e 7: pedido à Execução em Solo, dona do estado (ADR-0015, regras 3 e 4) ==
-    S -> EX : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
-    activate EX
-    EX -> ETC : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
-    activate ETC
-    ETC -> ETS : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
-    activate ETS
-    critical trava do turnaround até o fim da transação (ADR-0018)
-      ETS -> ETR : buscarComTrava(turnaroundId)
-      activate ETR
-      ETR -> EDB : SELECT turnaround, tarefa ... FOR UPDATE
-      ETR --> ETS : turnaround com as tarefas
-      deactivate ETR
-      ETS -> ET : buscarTarefa(tarefaId)
-      activate ET
-      ET --> ETS : tarefa do turnaround (ou nenhuma)
-      ETS -> ET : aceitaRegistros()
-      ET --> ETS : sim / não
-      alt E3: turnaround "Liberado" ou "Fora de bloco" (RN7), mudado depois que o formulário foi aberto
-        ETS --> ETC : recusa com o estado atual
-        ETC --> EX : 409 impedimento
-      else E2: a tarefa não é do turnaround
-        ETS --> ETC : recusa com o campo
-        ETC --> EX : 422 campo inválido
-      else A1: turnaround já "Em exceção" (RN4)
-        note right of ETS : o estado não muda; a nova exceção é aceita (A1.1)
-        ETS --> ETC : MudancaEstado com estadoAnterior e estadoNovo = "Em exceção"
-        ETC --> EX : 200
-      else "Em solo", "Operações em andamento" ou "Pronto para liberação"
-        ETS -> ET : mudarEstado(novo = "Em exceção", autorId, causaId = excecaoId, momento = horarioAcao)
-        ET --> ETS : HistoricoEstadoTurnaround (mudarEstado() soma 1 em turnaround.versao)
-        deactivate ET
-        note right of ETS : RN6: as tarefas não mudam de estado; os registros\ne a propagação seguem valendo (UC21, RN9)
-        ETS -> ETR : salvar(turnaround)
+    opt pedido pendente gravado
+      == Passos 6 e 7: pedido à Execução em Solo, dona do estado (ADR-0015, regras 3 e 4) ==
+      S -> EX : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
+      activate EX
+      EX -> ETC : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
+      activate ETC
+      ETC -> ETS : aplicarExcecao(turnaroundId, tarefaId, excecaoId, autorId, horarioAcao)
+      activate ETS
+      critical trava do turnaround até o fim da transação (ADR-0018)
+        ETS -> ETR : buscarComTrava(turnaroundId)
         activate ETR
-        ETR -> EDB : UPDATE turnaround SET estado = 'Em exceção', versao;\nINSERT historico_estado_turnaround (autor_id, causa_id = excecaoId)
+        ETR -> EDB : SELECT turnaround, tarefa ... FOR UPDATE
+        ETR --> ETS : turnaround com as tarefas
         deactivate ETR
-        ETS -> EAU : registrar(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", autorId, causaId = excecaoId, turnaroundId, valoresAnteriores = estado anterior, valoresNovos = "Em exceção")
-        activate EAU
-        EAU -> EDB : INSERT registro_auditoria
-        deactivate EAU
-        ETS -> EPUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId, causaId = excecaoId, dados = estadoAnterior, estadoNovo, versao))
-        activate EPUB
-        EPUB -> EDB : INSERT aviso_saida (mesma transação)
-        deactivate EPUB
-        ETS --> ETC : MudancaEstado com estadoNovo = "Em exceção"
-        ETC --> EX : 200
-      end
-    end
-    deactivate ETS
-    deactivate ETC
-
-    alt 409 ou 422: recusa da Execução em Solo
-      EX --> S : recusa
-      S -> PS : desfazer(pedido)
-      activate PS
-      PS -> PPR : salvar(pedido)
-      activate PPR
-      PPR -> DB : UPDATE pedido_pendente SET situacao = 'Desfeito', resolvido_em
-      deactivate PPR
-      deactivate PS
-      S --> C : recusa, sem gravar exceção
-      C --> G : 409 ou 422
-      G --> V : 409 ou 422
-    else sem resposta da Execução em Solo (falha técnica)
-      EX --> S : falha técnica
-      note right of S : o serviço não repete sozinho o pedido (ADR-0020, ponto 3);\no pedido fica "Pendente" e é resolvido pela RetomadaPedidos (abaixo)
-      S --> C : falha
-      C --> G : 503
-      G --> V : 503
-    else 200 MudancaEstado
-      EX --> S : MudancaEstado
-      deactivate EX
-
-      == Passo 7: registro da exceção (RN3; RF-36) ==
-      critical transação 2: exceção, auditoria e conclusão do pedido juntas (ADR-0020)
-        S -> TRR : buscarComTrava(turnaroundId)
-        activate TRR
-        TRR -> DB : SELECT turnaround_referencia ... FOR UPDATE
-        deactivate TRR
-        note right of E
-          Excecao nova: tarefaId, codigoAtraso (versão e sigla),
-          descricaoProblema, estadoTurnaroundAnterior =
-          mudanca.estadoAnterior (só para exibir; RN3),
-          abertaPorId = autorId, abertaEm = horarioAcao.
-        end note
-        S -> ER : salvar(excecao)
-        activate ER
-        ER -> DB : INSERT excecao (id = excecaoId, turnaround_id, tarefa_id, codigo_versao, codigo_atraso,\ndescricao_problema, estado_turnaround_anterior, aberta_por_id, aberta_em)
-        deactivate ER
-        S -> AU : registrar(objeto = "excecao", objetoId = excecaoId, acao = "Inclusão", autorId, causaId = excecaoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = exceção)
-        activate AU
-        AU -> DB : INSERT registro_auditoria
-        deactivate AU
-        opt A2: alertaId informado (A2.3)
-          ref over S, DB : UC31, passo 7 – AcaoAlertaService.registrar(acao com tipoAcao = "Abrir exceção"\ne a excecao): INSERT acao_alerta e aviso AcaoAlertaRegistrada, na mesma transação
+        ETS -> ET : buscarTarefa(tarefaId)
+        activate ET
+        ET --> ETS : tarefa do turnaround (ou nenhuma)
+        ETS -> ET : aceitaRegistros()
+        ET --> ETS : sim / não
+        alt E3: turnaround "Liberado" ou "Fora de bloco" (RN7), mudado depois que o formulário foi aberto
+          ETS --> ETC : recusa com o estado atual
+          ETC --> EX : 409 impedimento
+        else E2: a tarefa não é do turnaround
+          ETS --> ETC : recusa com o campo
+          ETC --> EX : 422 campo inválido
+        else A1: turnaround já "Em exceção" (RN4)
+          note right of ETS : o estado não muda; a nova exceção é aceita (A1.1)
+          ETS --> ETC : MudancaEstado com estadoAnterior e estadoNovo = "Em exceção"
+          ETC --> EX : 200
+        else "Em solo", "Operações em andamento" ou "Pronto para liberação"
+          ETS -> ET : mudarEstado(novo = "Em exceção", autorId, causaId = excecaoId, momento = horarioAcao)
+          ET --> ETS : HistoricoEstadoTurnaround (mudarEstado() soma 1 em turnaround.versao)
+          deactivate ET
+          note right of ETS : RN6: as tarefas não mudam de estado; os registros\ne a propagação seguem valendo (UC21, RN9)
+          ETS -> ETR : salvar(turnaround)
+          activate ETR
+          ETR -> EDB : UPDATE turnaround SET estado = 'Em exceção', versao;\nINSERT historico_estado_turnaround (autor_id, causa_id = excecaoId)
+          deactivate ETR
+          ETS -> EAU : registrar(objeto = "turnaround", objetoId = turnaroundId, acao = "Alteração", autorId, causaId = excecaoId, turnaroundId, valoresAnteriores = estado anterior, valoresNovos = "Em exceção")
+          activate EAU
+          EAU -> EDB : INSERT registro_auditoria
+          deactivate EAU
+          ETS -> EPUB : registrar(EnvelopeAviso.novo(tipo = "EstadoTurnaroundAlterado", turnaroundId, autorId, causaId = excecaoId, dados = estadoAnterior, estadoNovo, versao))
+          activate EPUB
+          EPUB -> EDB : INSERT aviso_saida (mesma transação)
+          deactivate EPUB
+          ETS --> ETC : MudancaEstado com estadoNovo = "Em exceção"
+          ETC --> EX : 200
         end
-        S -> PS : concluir(pedido)
+      end
+      deactivate ETS
+      deactivate ETC
+
+      alt 409 ou 422: recusa da Execução em Solo
+        EX --> S : recusa
+        S -> PS : desfazer(pedido)
         activate PS
         PS -> PPR : salvar(pedido)
         activate PPR
-        PPR -> DB : UPDATE pedido_pendente SET situacao = 'Concluído', resolvido_em
+        PPR -> DB : UPDATE pedido_pendente SET situacao = 'Desfeito', resolvido_em
         deactivate PPR
         deactivate PS
+        S --> C : recusa, sem gravar exceção
+        C --> G : 409 ou 422
+        G --> V : 409 ou 422
+      else sem resposta da Execução em Solo (falha técnica)
+        EX --> S : falha técnica
+        note right of S : o serviço não repete sozinho o pedido (ADR-0020, ponto 3);\no pedido fica "Pendente" e é resolvido pela RetomadaPedidos (abaixo)
+        S --> C : falha
+        C --> G : 503
+        G --> V : 503
+      else 200 MudancaEstado
+        EX --> S : MudancaEstado
+        deactivate EX
+
+        == Passo 7: registro da exceção (RN3; RF-36) ==
+        critical transação 2: exceção, auditoria e conclusão do pedido juntas (ADR-0020)
+          S -> TRR : buscarComTrava(turnaroundId)
+          activate TRR
+          TRR -> DB : SELECT turnaround_referencia ... FOR UPDATE
+          deactivate TRR
+          note right of E
+            Excecao nova: tarefaId, codigoAtraso (versão e sigla),
+            descricaoProblema, estadoTurnaroundAnterior =
+            mudanca.estadoAnterior (só para exibir; RN3),
+            abertaPorId = autorId, abertaEm = horarioAcao.
+          end note
+          S -> ER : salvar(excecao)
+          activate ER
+          ER -> DB : INSERT excecao (id = excecaoId, turnaround_id, tarefa_id, codigo_versao, codigo_atraso,\ndescricao_problema, estado_turnaround_anterior, aberta_por_id, aberta_em)
+          deactivate ER
+          S -> AU : registrar(objeto = "excecao", objetoId = excecaoId, acao = "Inclusão", autorId, causaId = excecaoId, turnaroundId, valoresAnteriores = vazio, valoresNovos = exceção)
+          activate AU
+          AU -> DB : INSERT registro_auditoria
+          deactivate AU
+          opt A2: alertaId informado (A2.3)
+            ref over S, DB : UC31, passo 7 – AcaoAlertaService.registrar(acao com tipoAcao = "Abrir exceção"\ne a excecao): INSERT acao_alerta e aviso AcaoAlertaRegistrada, na mesma transação
+          end
+          S -> PS : concluir(pedido)
+          activate PS
+          PS -> PPR : salvar(pedido)
+          activate PPR
+          PPR -> DB : UPDATE pedido_pendente SET situacao = 'Concluído', resolvido_em
+          deactivate PPR
+          deactivate PS
+        end
+        S --> C : Excecao
+        C --> G : 201 exceção
+        G --> V : 201
       end
-      S --> C : Excecao
-      C --> G : 201 exceção
-      G --> V : 201
     end
   end
   deactivate S
@@ -262,7 +292,7 @@ else o coordenador escreve a descrição e confirma (passo 5)
   else 422
     V --> CO : E1: o código é obrigatório, volta ao passo 4 (E1.2);\nE2: indica o campo que falta, volta ao passo 3 (E2.2)
   else 409
-    V --> CO : E3: informa o estado atual do turnaround e não grava exceção (E3.1)
+    V --> CO : E3: informa o estado atual do turnaround e não grava exceção (E3.1);\nou ação em andamento no turnaround: tenta de novo depois
   else 503
     V --> CO : a abertura não foi concluída; o coordenador confere a lista\nde exceções antes de tentar de novo
   end

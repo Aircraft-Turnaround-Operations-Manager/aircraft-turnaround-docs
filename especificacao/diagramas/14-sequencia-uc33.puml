@@ -129,10 +129,20 @@ else o coordenador escreve a solução e confirma (passo 3)
         else é a última exceção aberta
           S -> PS : registrar(tipo = "Encerramento de exceção", turnaroundId, registroId = excecaoId, autorId, horarioAcao, dados = solucao)
           activate PS
-          PS -> PPR : salvar(pedido)
+          PS -> PPR : existePendente(turnaroundId, tipos = abertura e encerramento de exceção e liberação)
           activate PPR
-          PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = excecaoId)
+          PPR -> DB : SELECT pedido_pendente WHERE turnaround_id = turnaroundId AND situacao = 'Pendente'\nAND tipo IN ('Abertura de exceção', 'Encerramento de exceção', 'Liberação')
+          PPR --> PS : sim / não
           deactivate PPR
+          alt outro pedido desses tipos ainda pendente no turnaround (a resposta da Execução em Solo não chegou)
+            PS --> S : recusa: ação em andamento no turnaround; nada é gravado
+            note right of S : sem pedido nem chamada à Execução em Solo; 409 "ação em andamento" ao usuário,\nque tenta de novo depois. Assim uma abertura pendente não fica fora\nda contagem do encerramento (UC29, RN4; UC33, RN3)
+          else nenhum pendente
+            PS -> PPR : salvar(pedido)
+            activate PPR
+            PPR -> DB : INSERT pedido_pendente (situacao = 'Pendente', registro_id = excecaoId)
+            deactivate PPR
+          end
           deactivate PS
         end
       end
@@ -231,7 +241,7 @@ else o coordenador escreve a solução e confirma (passo 3)
   else 422
     V --> CO : E1: a solução é obrigatória; volta ao passo 3 (E1.2)
   else 409
-    V --> CO : E2: a exceção já foi encerrada, com a solução, o usuário e o horário gravados (E2.1)
+    V --> CO : E2: a exceção já foi encerrada, com a solução, o usuário e o horário gravados (E2.1);\nou ação em andamento no turnaround: tenta de novo depois
   else 503
     V --> CO : o encerramento não foi concluído; a exceção continua aberta
   end

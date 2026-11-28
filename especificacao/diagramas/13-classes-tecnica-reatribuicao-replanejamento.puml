@@ -31,4 +31,5 @@ restore execucao.OperadorDisponivel
 restore execucao.OperadorAtivo
 restore execucao.TarefaResumo
 restore cadastro.EquipeController
+restore cadastro.UsuarioController
 @enduml

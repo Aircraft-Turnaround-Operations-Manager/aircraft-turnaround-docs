@@ -107,7 +107,7 @@ tec('tecnica-reatribuicao-replanejamento', 'Reatribuição e replanejamento', [
   'excecoes.AcaoAlertaService', 'monitoramento.LinhaDoTempoView',
   'execucao.AtribuicaoController', 'execucao.ReplanejamentoController', 'execucao.AtribuicaoService', 'execucao.ReplanejamentoService',
   'execucao.CadastroCliente', 'execucao.OperadorDisponivel', 'execucao.OperadorAtivo', 'execucao.TarefaResumo',
-  'cadastro.EquipeController'])
+  'cadastro.EquipeController', 'cadastro.UsuarioController'])
 tec('tecnica-liberacao', 'Liberação e saída da posição', [
   'excecoes.LiberacaoView', 'excecoes.LiberacaoController', 'excecoes.LiberacaoService', 'excecoes.PedidoService',
   'excecoes.LiberacaoRepository', 'excecoes.ExcecaoRepository', 'excecoes.TurnaroundReferenciaRepository',

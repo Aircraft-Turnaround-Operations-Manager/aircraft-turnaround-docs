@@ -9,6 +9,8 @@ cadastro.ExecucaoEmSoloCliente ..> execucao.ChegadaController
 cadastro.ExecucaoEmSoloCliente ..> execucao.TarefaController
 execucao.SaidaPosicaoView ..> cadastro.UsuarioController
 excecoes.ExcecaoView ..> cadastro.UsuarioController
+excecoes.LiberacaoView ..> cadastro.UsuarioController
+excecoes.ReatribuicaoView ..> cadastro.UsuarioController
 monitoramento.PainelView ..> cadastro.UsuarioController
 execucao.CadastroCliente ..> cadastro.EquipeController
 monitoramento.LinhaDoTempoView ..> cadastro.UsuarioController

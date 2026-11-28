@@ -39,7 +39,7 @@ note right of CE
   ConsumidorAvisos: o aviso repetido já foi descartado por
   aviso_processado, gravado na mesma transação (ADR-0016).
 end note
-CE -> S : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm)
+CE -> S : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm, causaId = projecaoId)
 activate S
 critical trava do turnaround até o fim da transação (item 13, seção 13.2)
   S -> TRR : buscarComTrava(turnaroundId)
