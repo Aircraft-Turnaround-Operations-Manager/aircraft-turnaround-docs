@@ -253,7 +253,7 @@ else
     else 409 E2
       V --> CO : operador não é da mesma equipe ou não está disponível;\nvolta ao passo 2 com a lista consultada de novo (E2.2; UC36)
     else 503
-      V --> CO : a reatribuição não foi concluída; a tarefa mantém o operador original
+      V --> CO : a reatribuição não foi confirmada; o resultado aparece em até um minuto\n(retomada, como no UC29): o coordenador confere a tarefa antes de tentar de novo
     end
   end
 end

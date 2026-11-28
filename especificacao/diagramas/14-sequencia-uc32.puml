@@ -310,8 +310,10 @@ else "Pronto para liberação"
       V --> AL : informa a exceção aberta; o turnaround mantém o estado (E1.2)
     else 409 E2
       V --> AL : lista as tarefas obrigatórias pendentes; o turnaround mantém o estado (E2.2)
-    else 403, 503 ou 409 de ação em andamento
+    else 403 ou 409 de ação em andamento
       V --> AL : a confirmação não foi concluída, e o turnaround mantém o estado
+    else 503
+      V --> AL : a confirmação não foi confirmada pela Execução em Solo; o resultado aparece em até um minuto\n(retomada, como no UC29): a Autoridade de Liberação confere o estado antes de tentar de novo
     end
   end
 end
