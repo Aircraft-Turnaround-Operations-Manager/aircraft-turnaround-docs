@@ -76,7 +76,7 @@ alt A5: o coordenador cancela
 else A3: "Acionar serviço sob demanda"
   ref over CO, EDB : parte 2 (abaixo)
 else escolhe uma tarefa "Aguardando" do caminho crítico (passo 3) e altera
-  alt passo 4: antecipa em 10 min o início e o fim planejados e confirma
+  alt passo 4: encurta em 5 min a janela planejada da tarefa, antecipando o fim, e confirma
     CO -> V : alterarJanela(turnaroundId, tarefaId, inicio, fim)
     V -> G : encaminhar(sessaoId, rota = "PUT /v1/replanejamentos/tarefas/{tarefaId}/janela", corpo = turnaroundId + inicio + fim + alertaId, acaoDoUsuario = sim)
     activate G
@@ -145,15 +145,15 @@ else escolhe uma tarefa "Aguardando" do caminho crítico (passo 3) e altera
         ERS -> TA : definirPredecessoras(predecessoras)
       end
       deactivate TA
-      ERS -> ERS : conferirJanelas(tarefa)
       ERS -> ERS : conferirCiclos(turnaround)
+      ERS -> ERS : conferirJanelas(tarefa)
       ERS -> ERS : conferirPolitica(turnaround)
-      alt E2: início antes do fim planejado de uma predecessora, ou fim antes do início (RN4; RF-8)
-        ERS --> ERC : recusa com a predecessora e o horário em conflito; volta ao passo 4 (E2.1)
-        ERC --> EX : 422 conflito de janela
-      else E3: a dependência cria ciclo (vindo do A2)
+      alt E3: a dependência cria ciclo (vindo do A2); conferido antes da janela (passo 5)
         ERS --> ERC : recusa com as tarefas que formam o ciclo (E3.1)
         ERC --> EX : 422 ciclo
+      else E2: início antes do fim planejado de uma predecessora, ou fim antes do início (RN4; RF-8)
+        ERS --> ERC : recusa com a predecessora e o horário em conflito; volta ao passo 4 (E2.1)
+        ERC --> EX : 422 conflito de janela
       else E4: retira a dependência desembarque → abastecimento ou abastecimento → embarque, e o turnaround não permite abastecer com passageiros a bordo (RN5; ADR-0005)
         ERS --> ERC : recusa com a regra do operador aéreo (E4.1)
         ERC --> EX : 422 regra de abastecimento
@@ -358,10 +358,10 @@ else escolhe o responsável, a janela, as predecessoras e as sucessoras, escreve
         ERS -> TA : acionar(responsavelId, inicio, fim)
         ERS -> TA : definirPredecessoras(predecessoras)
         deactivate TA
-        ERS -> ERS : conferirJanelas(tarefa)
         ERS -> ERS : conferirCiclos(turnaround)
+        ERS -> ERS : conferirJanelas(tarefa)
         ERS -> ERS : conferirPolitica(turnaround)
-        alt E2, E3 ou E4: janela antes das predecessoras, ciclo ou regra de abastecimento (RN4, RN5)
+        alt E3, E2 ou E4: ciclo, janela antes das predecessoras ou regra de abastecimento (RN4, RN5)
           ERS --> ERC : recusa com o conflito
           ERC --> EX : 422
         else travas cumpridas (A3.5)
