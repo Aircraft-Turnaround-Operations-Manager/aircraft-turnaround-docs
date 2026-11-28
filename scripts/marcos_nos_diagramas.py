@@ -3,7 +3,8 @@ definem (com o ator) e cada passo de diagrama (.bpmn, .drawio e os diagramas de 
 com a partição ou lane em que está. No diagrama de sequência, a partição é o ator que envia a mensagem ou, nos demais
 passos, o ator que inicia o caso de uso (ver passos_puml).
 
-Situação de cada passo: vazio (a partição é ator de um RF do marco), "exibe" (passo de diagrama de sequência que só mostra
+Situação de cada passo: vazio (a partição é ator de um RF que grava, corrige ou usa o marco), "cita" (a partição é ator só
+de um RF que consulta, verifica ou alerta sobre o marco, e o passo não o grava), "exibe" (passo de diagrama de sequência que só mostra
 ou devolve o dado), "dispara" (o Operador faz o registro de que o Motor de Eventos deriva o marco, pelo RF), "grava" (o
 Motor de Eventos grava o que um ator registrou) ou "conferir" (ler o RF e o UC).
 Uso: python scripts/marcos_nos_diagramas.py
@@ -14,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent; E = ROOT / 'especificacao'
 MARCOS = ['AIBT', 'ACGT', 'ASBT', 'AEGT', 'ARDT', 'AOBT']
 M = '{http://www.omg.org/spec/BPMN/20100524/MODEL}'
+SO_CITA = r'(Consultar|Verificar|Emitir)\b'  # título do RF que só lê o marco ou alerta sobre ele: seu ator não conta como ator do marco
 
 
 def rfs():
@@ -21,7 +23,7 @@ def rfs():
     for f in sorted((E / '06-requisitos-funcionais').glob('area-*.md')):
         for l in f.read_text(encoding='utf-8').splitlines():
             c = [x.strip() for x in l.strip().strip('|').split('|')]
-            if len(c) >= 6 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[2], c[3]))  # # | TÍTULO | REQUISITO | ATOR | ...
+            if len(c) >= 6 and re.fullmatch(r'RF-\d+', c[0]): out.append((c[0], c[2], c[3], c[1]))  # # | TÍTULO | REQUISITO | ATOR | ...
     return out
 
 
@@ -101,8 +103,11 @@ def main():
     for f in sorted((E / 'diagramas').glob('14-sequencia-*.puml')): passos += [(f.name, p, t, le(q, t)) for p, t, q in passos_puml(f)]
     for m in MARCOS:
         print(f'\n## {m}\n')
-        defs = [(i, t, a) for i, t, a in R if re.search(rf'\b{m}\b', t)]
-        atores = {a for _, _, a in defs}
+        defs = [(i, t, a) for i, t, a, _ in R if re.search(rf'\b{m}\b', t)]
+        atores = {a for i, t, a, tit in R if re.search(rf'\b{m}\b', t) and not re.match(SO_CITA, tit)}
+        cita = {}
+        for i, t, a, tit in R:
+            if re.search(rf'\b{m}\b', t) and re.match(SO_CITA, tit): cita.setdefault(a, []).append(i)
         for i, t, a in defs:
             k = t.find(m); print(f'- {i} ({a}): …{t[max(0, k - 160):k + len(m) + 10]}…')
         print('\n| Diagrama | Partição/lane | Passo | |\n|---|---|---|---|')
@@ -110,11 +115,13 @@ def main():
         vistos = set()
         for arq, p, t, q in passos:
             if re.search(rf'\b{m}\b', t) and (arq, p, t) not in vistos:
-                vistos.add((arq, p, t)); print(f'| {arq} | {p or "—"} | {t} | {situacao(p, t, atores, derivado, q)} |')
+                vistos.add((arq, p, t)); print(f'| {arq} | {p or "—"} | {t} | {situacao(p, t, atores, derivado, q, cita)} |')
 
 
-def situacao(p, t, atores, derivado, quem='ator'):
-    """'' quando a partição é ator de um RF do marco; 'exibe' quando o passo do diagrama de sequência só mostra ou devolve o
+def situacao(p, t, atores, derivado, quem='ator', cita={}):
+    """'' quando a partição é ator de um RF que grava, corrige ou usa o marco (o RF que só o consulta, verifica ou alerta
+    sobre ele, SO_CITA, não conta); 'cita' quando a partição é ator só desse RF e o passo não diz gravar nem registrar o
+    marco; 'exibe' quando o passo do diagrama de sequência só mostra ou devolve o
     dado (uma resposta que diga gravar o marco também cai aqui, mas a gravação em si é uma chamada e continua conferida);
     'dispara' quando o Operador faz o registro que o Motor de Eventos transforma no marco (RF que define o marco 'a partir
     dos registros dos operadores'), ou quando o sistema deriva esse marco no diagrama de sequência que o Operador inicia;
@@ -125,6 +132,7 @@ def situacao(p, t, atores, derivado, quem='ator'):
     if p == 'Operador de Solo/Rampa' and derivado:
         return 'conferir' if quem == 'ator' and re.search(r'\bregistr', t, re.I) else f'dispara ({", ".join(derivado)})'
     if p == 'Motor de Eventos' and re.match(r'Gravar\b', t): return 'grava'
+    if p in cita and not re.search(r'grav|registra|INSERT|UPDATE|«create»', t, re.I): return f'cita ({", ".join(cita[p])})'
     return 'conferir'
 
 
