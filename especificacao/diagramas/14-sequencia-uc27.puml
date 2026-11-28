@@ -152,23 +152,30 @@ end
 
 == A4: turnaround fica pronto com o aviso aberto (Motor de Eventos; RN8) ==
 ME -> MQ : consumir(fila = "monitoramento")
-MQ --> ME : aviso de estado do turnaround da Execução em Solo: "Pronto para liberação" (UC21)
+MQ --> ME : aviso de estado do turnaround da Execução em Solo: "Pronto para liberação" (UC21),\ncom a versao do turnaround
 ME -> CO : tratar(envelope)
 activate CO
-CO -> CS : aplicarEstado(turnaroundId, estado = "Pronto para liberação", momento)
+CO -> CS : aplicarEstado(turnaroundId, estado = "Pronto para liberação", momento, versao)
 activate CS
 CS -> TR : buscarComTrava(turnaroundId)
 activate TR
 TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
 TR --> CS : turnaround
 deactivate TR
-CS -> TM : aplicarEstado(estado = "Pronto para liberação", momento)
+CS -> TM : aceitaVersao(versao)
+activate TM
+TM --> CS : sim / não
+deactivate TM
+alt versão menor ou igual à versao_origem (aviso fora de ordem; item 12, seção 12.5.2)
+  CS --> CO : aviso ignorado; o aviso de checagem não é encerrado
+else versão maior
+CS -> TM : aplicarEstado(estado = "Pronto para liberação", momento, versao)
 activate TM
 TM --> CS : ok
 deactivate TM
 CS -> TR : salvar(turnaround)
 activate TR
-TR -> DB : UPDATE turnaround_monitorado SET estado e, só se vazio,\npronto_para_liberacao_em (primeira entrada no estado; RF-34)
+TR -> DB : UPDATE turnaround_monitorado SET estado, versao_origem e, só se vazio,\npronto_para_liberacao_em (primeira entrada no estado; RF-34)
 TR --> CS : ok
 deactivate TR
 CS -> S : encerrarPorProntidao(turnaroundId, momento)
@@ -201,6 +208,7 @@ opt aviso aberto
   V --> CT : aviso fora da tela e da linha do tempo (A4.2)
 end
 deactivate S
+end
 deactivate CS
 deactivate CO
 @enduml

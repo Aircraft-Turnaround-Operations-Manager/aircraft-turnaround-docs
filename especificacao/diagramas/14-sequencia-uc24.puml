@@ -1,7 +1,7 @@
 @startuml
 ' UC24 – Recalcular projeção, atraso e caminho crítico (RF-22 a RF-24, US022 a US024; inclui o UC25).
 ' O Motor de Eventos é o comportamento automático do RecalculoService (item 13, seção 13.1), acionado por aviso
-' na fila "monitoramento" ou pelo AgendadorMinuto (ADR-0015, regra 7). Tabelas do item 12 (B.3); aviso ProjecaoRecalculada (#183).
+' na fila "monitoramento" ou pelo AgendadorMinuto (ADR-0015, regra 7). Tabelas do item 12 (B.3); aviso ProjecaoRecalculada (item 12, seção 12.5.3; #183).
 ' Imagens: python scripts/exportar_plantuml.py especificacao/diagramas/14-sequencia-uc24.puml
 !include 14-sequencia-estilo.iuml
 
@@ -21,6 +21,7 @@ box "Monitoramento" #FAFAFA
   participant "ProjecaoRepository" as PR <<repository>>
   participant "CaminhoCriticoRepository" as CR <<repository>>
   participant "AuditoriaService" as AU <<service>>
+  participant "AtualizacaoTobtMonitoradaRepository" as AT <<repository>>
   participant "PublicadorAvisos" as PUB <<publisher>>
   database "BancoMonitoramento" as DB
   participant "PainelNotificador" as N <<websocket>>
@@ -73,7 +74,7 @@ alt registro aceito de tarefa (UC15 a UC18, depois do UC21) — passo 1, A2
   deactivate CO
 else A3: alteração do plano, do TOBT vigente ou do AIBT
   ME -> MQ : consumir(fila = "monitoramento")
-  MQ --> ME : aviso de replanejamento ou de serviço sob demanda (Execução em Solo),\nde atualização do TOBT (Exceções e Liberação) ou de correção do AIBT (Execução em Solo)
+  MQ --> ME : aviso de replanejamento ou de serviço sob demanda (Execução em Solo, com a versao da tarefa),\nde atualização do TOBT (Exceções e Liberação, com o registrada_em) ou de correção do AIBT\n(Execução em Solo, com a versao do turnaround)
   ME -> CO : tratar(envelope)
   activate CO
   alt replanejamento ou inclusão de serviço sob demanda (US042)
@@ -81,7 +82,7 @@ else A3: alteração do plano, do TOBT vigente ou do AIBT
   else atualização do TOBT vigente (US041)
     CO -> CS : aplicarTobtVigente(atualizacao)
   else correção do AIBT (US013)
-    CO -> CS : aplicarMarco(turnaroundId, tipo = "AIBT", horario, causaId)
+    CO -> CS : aplicarMarco(turnaroundId, tipo = "AIBT", horario, versao, causaId)
   end
   activate CS
   CS -> TR : buscarComTrava(turnaroundId)
@@ -89,23 +90,51 @@ else A3: alteração do plano, do TOBT vigente ou do AIBT
   TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
   TR --> CS : turnaround
   deactivate TR
-  opt replanejamento ou serviço sob demanda (aviso de tarefa)
+  alt replanejamento ou serviço sob demanda (aviso de tarefa)
     CS -> TA : aceitaVersao(versao)
     activate TA
     TA --> CS : sim / não
     deactivate TA
-    note right of CS : versão menor ou igual à versao_origem: o aviso é ignorado e\nnada segue, como no ramo do registro; a tarefa sob demanda\nainda desconhecida é criada com o que o aviso traz (item 12, seção 12.4)
+    note right of CS : a tarefa sob demanda ainda desconhecida é criada\ncom o que o aviso traz (item 12, seção 12.4)
+  else atualização do TOBT vigente
+    CS -> AT : listarDosTurnarounds(turnaroundIds = [turnaroundId])
+    activate AT
+    AT -> DB : SELECT atualizacao_tobt_monitorada WHERE turnaround_id
+    AT --> CS : atualizações guardadas (registrada_em da última)
+    deactivate AT
+  else correção do AIBT
+    CS -> TM : aceitaVersao(versao)
+    activate TM
+    TM --> CS : sim / não
+    deactivate TM
   end
-  CS -> TR : salvar(turnaround)
-  activate TR
-  TR -> DB : UPDATE turnaround_monitorado (tobt_vigente ou aibt)\nou tarefa_monitorada (janela e dependências);\nINSERT atualizacao_tobt_monitorada na atualização do TOBT
-  TR --> CS : ok
-  deactivate TR
-  CS -> RS : recalcular(turnaroundId, causa, causaId, momento)
-  activate RS
-  ref over RS, N : Passos 2 a 8 (abaixo), com o plano ou o TOBT novo (A3.2)
-  RS --> CS : projeção
-  deactivate RS
+  alt aviso fora de ordem: versão menor ou igual à versao_origem da tarefa ou do turnaround,\nou TOBT com registrada_em anterior ao da última atualização guardada (item 12, seção 12.5.2)
+    CS --> CO : aviso ignorado, sem recálculo
+  else aviso mais novo
+    opt correção do AIBT
+      CS -> TM : aplicarMarco(tipo = "AIBT", horario, versao)
+      activate TM
+      TM --> CS : ok
+      deactivate TM
+    end
+    CS -> TR : salvar(turnaround)
+    activate TR
+    TR -> DB : UPDATE turnaround_monitorado SET tobt_vigente, ou SET aibt e versao_origem,\nou tarefa_monitorada (janela, dependências e versao_origem)
+    TR --> CS : ok
+    deactivate TR
+    opt atualização do TOBT vigente
+      CS -> AT : salvar(atualizacao)
+      activate AT
+      AT -> DB : INSERT atualizacao_tobt_monitorada
+      AT --> CS : ok
+      deactivate AT
+    end
+    CS -> RS : recalcular(turnaroundId, causa, causaId, momento)
+    activate RS
+    ref over RS, N : Passos 2 a 8 (abaixo), com o plano ou o TOBT novo (A3.2)
+    RS --> CS : projeção
+    deactivate RS
+  end
   deactivate CS
   deactivate CO
 else A1: virada do minuto, sem registro novo
@@ -224,7 +253,7 @@ PUB -> DB : UPDATE aviso_saida SET publicado_em
 deactivate PUB
 MQ -> CE : tratar(envelope)
 activate CE
-CE -> ATS : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm)
+CE -> ATS : avaliarProjecao(turnaroundId, projecaoProntidao, calculadaEm, causaId = projecaoId)
 activate ATS
 ref over ATS : UC34 – Atualizar TOBT, passo 1: compara com o TOBT vigente\ne pede a atualização ao Coordenador de Turnaround\nse a diferença for de 5 min ou mais (ADR-0003)
 deactivate ATS

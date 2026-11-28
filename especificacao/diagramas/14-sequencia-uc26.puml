@@ -1,6 +1,6 @@
 @startuml
 ' UC26 – Consultar lista de alertas abertos (RF-33, US033; o registro da ação é o UC31, da área D).
-' O encerramento chega pelo aviso AcaoAlertaRegistrada do Exceções e Liberação (ADR-0015, regras 1 e 2; #183).
+' O encerramento chega pelo aviso AcaoAlertaRegistrada do Exceções e Liberação (ADR-0015, regras 1 e 2; item 12, seção 12.5.4; #183).
 ' Classes do item 13; tabelas do item 12 (B.3.8). Imagens: python scripts/exportar_plantuml.py <este arquivo>
 !include 14-sequencia-estilo.iuml
 
@@ -146,7 +146,7 @@ end
 MQ -> CO : tratar(envelope)
 activate CO
 note right of CO
-  Aviso AcaoAlertaRegistrada do Exceções e Liberação (#183):
+  Aviso AcaoAlertaRegistrada do Exceções e Liberação (item 12, seção 12.5.4; #183):
   envelope com turnaroundId, autorId e causaId = acaoId;
   dados: alertaId, acaoId, tipoAcao e registradaEm.
 end note

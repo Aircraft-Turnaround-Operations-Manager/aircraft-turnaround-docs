@@ -108,26 +108,40 @@ opt A3: alerta crítico em turnaround amarelo
 end
 
 opt A4: turnaround passa para "Fora de bloco"
-  ref over CS : aviso de estado do turnaround da Execução em Solo (UC37),\nconsumido pelo ConsumidorAvisosMonitoramento
+  ref over CS : aviso de encerramento do turnaround da Execução em Solo (UC37), com o AOBT,\no estado "Fora de bloco" e a versao do turnaround, consumido pelo ConsumidorAvisosMonitoramento,\nque chama aplicarMarco(turnaroundId, tipo = "AOBT", horario, versao, causaId)\ne aplicarEstado(turnaroundId, estado = "Fora de bloco", momento, versao)
+  activate CS
   CS -> TR : buscarComTrava(turnaroundId)
   activate TR
   TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
   TR --> CS : turnaround
   deactivate TR
-  CS -> TM : aplicarEstado(estado = "Fora de bloco", momento)
+  CS -> TM : aceitaVersao(versao)
   activate TM
-  TM --> CS : ok
+  TM --> CS : sim / não
   deactivate TM
-  CS -> TR : salvar(turnaround)
-  activate TR
-  TR -> DB : UPDATE turnaround_monitorado SET estado, aobt
-  TR --> CS : ok
-  deactivate TR
-  CS -> N : retirarLinha(turnaroundId)
-  activate N
-  N -> V : retirarLinha(turnaroundId)
-  deactivate N
-  V --> CT : turnaround fora da lista e resumo atualizado (US025, critério 3)
+  alt versão menor ou igual à versao_origem (aviso fora de ordem; item 12, seção 12.5.2)
+    note over CS : aviso ignorado; o turnaround continua no painel
+  else versão maior
+    CS -> TM : aplicarMarco(tipo = "AOBT", horario, versao)
+    activate TM
+    TM --> CS : ok
+    deactivate TM
+    CS -> TM : aplicarEstado(estado = "Fora de bloco", momento, versao)
+    activate TM
+    TM --> CS : ok
+    deactivate TM
+    CS -> TR : salvar(turnaround)
+    activate TR
+    TR -> DB : UPDATE turnaround_monitorado SET aobt, estado, versao_origem
+    TR --> CS : ok
+    deactivate TR
+    CS -> N : retirarLinha(turnaroundId)
+    activate N
+    N -> V : retirarLinha(turnaroundId)
+    deactivate N
+    V --> CT : turnaround fora da lista e resumo atualizado (US025, critério 3)
+  end
+  deactivate CS
 end
 
 opt A1: Coordenador de Turnaround seleciona um turnaround da lista («extend»)

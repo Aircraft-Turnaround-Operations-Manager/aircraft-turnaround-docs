@@ -32,17 +32,26 @@ alt fluxo básico (RN3, viabilidade): alteração do EIBT ou do MTTT (UC10), abe
   MQ --> ME : aviso de previsão atualizada (Cadastro e Planejamento)\nou de TOBT vigente atualizado (Exceções e Liberação)
   ME -> CO : tratar(envelope)
   activate CO
-  CO -> CS : aplicarPrevisao(turnaroundId, eibt, mtttMin)
+  CO -> CS : aplicarPrevisao(turnaroundId, eibt, mtttMin, ocorridoEm)
   activate CS
-  note right of CS : na abertura, aplicarTurnaroundAberto(turnaround);\nno TOBT novo, aplicarTobtVigente(atualizacao):\nas duas também chamam verificarViabilidade
+  note right of CS
+    na abertura, aplicarTurnaroundAberto(turnaround), que também grava
+    previsao_ocorrido_em; no TOBT novo, aplicarTobtVigente(atualizacao),
+    ordenado pelo registrada_em da última atualização em
+    atualizacao_tobt_monitorada (UC24, A3): as duas também chamam
+    verificarViabilidade (item 12, seção 12.5.2, "Ordem dos avisos")
+  end note
   CS -> TR : buscarComTrava(turnaroundId)
   activate TR
   TR -> DB : SELECT turnaround_monitorado, tarefa_monitorada (com trava)
-  TR --> CS : turnaround
+  TR --> CS : turnaround (com previsao_ocorrido_em)
   deactivate TR
+  alt ocorridoEm anterior ao previsao_ocorrido_em guardado (aviso fora de ordem; item 12, seção 12.5.2)
+    CS --> CO : aviso ignorado, sem verificar a viabilidade
+  else aviso mais novo
   CS -> TR : salvar(turnaround)
   activate TR
-  TR -> DB : UPDATE turnaround_monitorado SET eibt, mttt_min
+  TR -> DB : UPDATE turnaround_monitorado SET eibt, mttt_min, previsao_ocorrido_em
   TR --> CS : ok
   deactivate TR
   CS -> AS : verificarViabilidade(turnaroundId, momento)
@@ -61,6 +70,7 @@ alt fluxo básico (RN3, viabilidade): alteração do EIBT ou do MTTT (UC10), abe
     AS --> CS : alerta emitido
   end
   deactivate AS
+  end
   deactivate CS
   deactivate CO
 else A1 (RN2): recálculo da projeção (UC24, passo 7)
