@@ -35,7 +35,7 @@ relacionados: [adr-0001, adr-0002, adr-0003, adr-0004, adr-0005, adr-0006, adr-0
 | [0021](0021-matriz-de-rastreabilidade-estendida.md) | D21 | Matriz de rastreabilidade estendida aos itens 12, 14 e 15: RF → tabelas, caso de uso → diagrama de sequência, critério de aceite → casos de teste (complementa a 0012) | 12, 14, 15 |
 | [0022](0022-ids-provisorios-dos-casos-de-teste.md) | D22 | Casos de teste com ID provisório por área (CT-A001…) e renumeração única (CT-001…) na consolidação (complementa a 0011) | 15 |
 | [0023](0023-interfaces-da-porta-de-entrada-e-do-cadastro.md) | D23 | Interfaces da porta de entrada e do Cadastro e Planejamento com os outros serviços: token interno assinado, consultas, confirmação do plano com chave e prazo dos dados pessoais (complementa a 0016) | 12, 13, 14, 15 |
-| [0024](0024-canvas-de-design-como-fonte-das-telas.md) | D24 | Canvas de Design como fonte única das telas; Figma congelado; PNG do item 10 exportado do canvas (altera o ponto 1 da 0016) | 10 |
+| [0024](0024-canvas-de-design-como-fonte-das-telas.md) | D24 | Canvas de Design como fonte única das telas; Figma congelado; PNG do item 10 gerado do canvas por quem muda a tela (ponto 3 alterado pela #280; altera o ponto 1 da 0016) | 10 |
 | [0025](0025-token-de-servico-entre-os-servicos.md) | D25 | Token de serviço assinado nos pedidos entre os serviços, conferido com a lista de rotas de cada serviço (complementa a 0016 e o ponto 1 da 0023) | 13, 14 |
 
 ---
