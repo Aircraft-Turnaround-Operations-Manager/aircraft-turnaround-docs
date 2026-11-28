@@ -34,7 +34,7 @@ end box
 == Passo 1: o que dispara o recálculo (RN1) ==
 alt registro aceito de tarefa (UC15 a UC18, depois do UC21) — passo 1, A2
   ME -> MQ : consumir(fila = "monitoramento")
-  MQ --> ME : envelope do aviso de tarefa da Execução em Solo\n(estado, horários, versao; ocorridoEm = horário da ação)
+  MQ --> ME : envelope de TarefaIniciada, TarefaConcluida, TarefaPausada, TarefaRetomada,\nTarefaMarcadaNaoAplicavel ou EstadoTarefaPropagado (Execução em Solo)\n(estado, horários, versao; ocorridoEm = horário da ação)
   ME -> CO : tratar(envelope)
   activate CO
   note right of CO
@@ -74,7 +74,7 @@ alt registro aceito de tarefa (UC15 a UC18, depois do UC21) — passo 1, A2
   deactivate CO
 else A3: alteração do plano, do TOBT vigente ou do AIBT
   ME -> MQ : consumir(fila = "monitoramento")
-  MQ --> ME : aviso de replanejamento ou de serviço sob demanda (Execução em Solo, com a versao da tarefa),\nde atualização do TOBT (Exceções e Liberação, com o registrada_em) ou de correção do AIBT\n(Execução em Solo, com a versao do turnaround)
+  MQ --> ME : aviso de replanejamento ou de serviço sob demanda (Execução em Solo, com a versao da tarefa),\nde atualização do TOBT (Exceções e Liberação, com o registrada_em) ou AibtCorrigido\n(Execução em Solo, com a versao do turnaround)
   ME -> CO : tratar(envelope)
   activate CO
   alt replanejamento ou inclusão de serviço sob demanda (US042)

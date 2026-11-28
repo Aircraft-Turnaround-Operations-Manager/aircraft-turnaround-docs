@@ -152,7 +152,7 @@ end
 
 == A4: turnaround fica pronto com o aviso aberto (Motor de Eventos; RN8) ==
 ME -> MQ : consumir(fila = "monitoramento")
-MQ --> ME : aviso de estado do turnaround da Execução em Solo: "Pronto para liberação" (UC21),\ncom a versao do turnaround
+MQ --> ME : EstadoTurnaroundAlterado da Execução em Solo: "Pronto para liberação" (UC21),\ncom a versao do turnaround
 ME -> CO : tratar(envelope)
 activate CO
 CO -> CS : aplicarEstado(turnaroundId, estado = "Pronto para liberação", momento, versao)

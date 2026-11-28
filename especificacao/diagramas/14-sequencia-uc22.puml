@@ -108,7 +108,7 @@ opt A3: alerta crítico em turnaround amarelo
 end
 
 opt A4: turnaround passa para "Fora de bloco"
-  ref over CS : aviso de encerramento do turnaround da Execução em Solo (UC37), com o AOBT,\no estado "Fora de bloco" e a versao do turnaround, consumido pelo ConsumidorAvisosMonitoramento,\nque chama aplicarMarco(turnaroundId, tipo = "AOBT", horario, versao, causaId)\ne aplicarEstado(turnaroundId, estado = "Fora de bloco", momento, versao)
+  ref over CS : aviso TurnaroundEncerrado da Execução em Solo (UC37), com o AOBT,\no estado "Fora de bloco" e a versao do turnaround, consumido pelo ConsumidorAvisosMonitoramento,\nque chama aplicarMarco(turnaroundId, tipo = "AOBT", horario, versao, causaId)\ne aplicarEstado(turnaroundId, estado = "Fora de bloco", momento, versao)
   activate CS
   CS -> TR : buscarComTrava(turnaroundId)
   activate TR
