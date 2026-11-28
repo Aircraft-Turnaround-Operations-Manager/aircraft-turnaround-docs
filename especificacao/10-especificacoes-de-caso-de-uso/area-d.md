@@ -140,7 +140,7 @@
 
 ### Fluxo de exceção E2 – Operador de outra equipe ou indisponível (passo 5)
 
-*Condição:* o operador escolhido não é da equipe da tarefa ou iniciou outra tarefa depois que a lista foi exibida.
+*Condição:* o operador escolhido não é da equipe da tarefa ou iniciou outra tarefa depois que a lista foi exibida. A lista do UC36 mostra só a equipe da tarefa, então o operador de outra equipe só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -192,8 +192,8 @@
 | 3. O Coordenador de Turnaround escolhe "Reatribuir tarefa". |  |
 |  | 4. O sistema exibe os campos da reatribuição, com a tarefa do alerta e os operadores disponíveis (UC30). |
 | 5. O Coordenador de Turnaround escolhe o operador, escreve o motivo e confirma (**E1**). |  |
-|  | 6. O sistema executa a reatribuição (UC30) (**E2**). |
-|  | 7. O sistema grava no alerta a ação "reatribuir tarefa", o usuário e o horário, encerra o alerta e o retira da lista de alertas abertos (**E3**). O caso de uso termina. |
+|  | 6. O sistema verifica que o alerta continua aberto e executa a reatribuição (UC30) (**E2**, **E3**). |
+|  | 7. O sistema grava no alerta a ação "reatribuir tarefa", o usuário e o horário, encerra o alerta e o retira da lista de alertas abertos. O caso de uso termina. |
 
 ### Fluxo alternativo A1 – Replanejar (passo 3)
 
@@ -251,13 +251,13 @@
 |  | E2.1. O sistema exibe o motivo da recusa, não grava a ação e mantém o alerta aberto. |
 |  | E2.2. O caso de uso volta ao passo 3. |
 
-### Fluxo de exceção E3 – Alerta já encerrado (passo 7)
+### Fluxo de exceção E3 – Alerta já encerrado (passo 6)
 
-*Condição:* outro Coordenador de Turnaround registrou a ação do mesmo alerta antes.
+*Condição:* outro Coordenador de Turnaround registrou a ação do mesmo alerta antes. A verificação vem antes da execução da ação, para que a ação não seja feita duas vezes.
 
 | Ações do ator | Ações do sistema |
 |---|---|
-|  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados e não grava outro registro no alerta. |
+|  | E3.1. O sistema informa que o alerta já foi encerrado, mostra a ação, o usuário e o horário gravados, não executa a ação escolhida e não grava outro registro no alerta. |
 
 ## UC32 – Confirmar prontidão e liberar aeronave
 
@@ -310,7 +310,7 @@
 
 ### Fluxo de exceção E2 – Tarefa obrigatória pendente (passo 6)
 
-*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US039, critério 3).
+*Condição:* o turnaround ainda não está em "Pronto para liberação", com tarefa obrigatória fora dos estados "Concluída" e "Não aplicável", por exemplo quando a confirmação é pedida para um turnaround em "Operações em andamento" (US039, critério 3). Como a tela só oferece "Confirmar prontidão" em "Pronto para liberação" (A1), a confirmação nesse estado só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -493,7 +493,7 @@
 |  | 2. O sistema exibe as tarefas ainda não iniciadas do turnaround, cada uma com o estado, a janela planejada, as predecessoras e a indicação de caminho crítico. |
 | 3. O Coordenador de Turnaround escolhe uma tarefa "Aguardando" do caminho crítico, por exemplo o catering. |  |
 | 4. O Coordenador de Turnaround antecipa em 10 minutos o início e o fim planejados da tarefa e confirma. |  |
-|  | 5. O sistema verifica que a tarefa continua não iniciada, que a nova janela não começa antes do fim planejado das predecessoras e que a alteração não cria ciclo e que todas as referências a tarefas existem e pertencem ao mesmo turnaround (**E1**, **E2**, **E3**, **E4**, **E7**). |
+|  | 5. O sistema verifica, nesta ordem, que a tarefa continua não iniciada, que todas as referências a tarefas existem e pertencem ao mesmo turnaround, que a alteração não cria ciclo e que a nova janela não começa antes do fim planejado das predecessoras (**E1**, **E7**, **E3**, **E2**, **E4**). |
 |  | 6. O sistema grava a alteração com o valor anterior, o novo valor, o usuário e o horário. |
 |  | 7. O Motor de Eventos recalcula a projeção de prontidão e o caminho crítico (UC24). |
 |  | 8. O sistema exibe a projeção anterior e a nova e o novo caminho crítico. O caso de uso termina. |
@@ -557,7 +557,7 @@
 
 ### Fluxo de exceção E3 – Ciclo de dependências (passo 5, vindo do A2 ou do A3)
 
-*Condição:* a dependência informada faz uma tarefa depender, direta ou indiretamente, dela mesma.
+*Condição:* a dependência informada faz uma tarefa depender, direta ou indiretamente, dela mesma. O ciclo é conferido antes da janela (E2): num plano que respeita o RF-8, toda dependência que fecha um ciclo também faria uma tarefa começar antes do fim de uma predecessora, e a mensagem que ajuda o coordenador é a do ciclo.
 
 | Ações do ator | Ações do sistema |
 |---|---|
@@ -587,7 +587,7 @@
 
 ### Fluxo de exceção E7 – Referência inválida a tarefa (passo 5 ou A3.4)
 
-*Condição:* uma predecessora ou sucessora informada não existe ou pertence a outro turnaround.
+*Condição:* uma predecessora ou sucessora informada não existe ou pertence a outro turnaround. O formulário só oferece as tarefas do turnaround, então a referência inválida só chega no pedido enviado ao serviço sem passar pela tela; a verificação é a defesa do servidor.
 
 | Ações do ator | Ações do sistema |
 |---|---|
